@@ -1,0 +1,213 @@
+{
+    "name": "vz-like-keymap",
+    "displayName": "VZ-like Keymap",
+    "description": "A keymap similar to VZ Editor",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.39.0"
+    },
+    "categories": [
+        "Keymaps"
+    ],
+    "contributes": {
+        "keybindings": [
+            // Cursor
+            {
+                "key": "ctrl+s",
+                "command": "cursorLeft",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+d",
+                "command": "cursorRight",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+e",
+                "command": "cursorUp",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+x",
+                "command": "cursorDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+a",
+                "command": "cursorWordStartLeft",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+f",
+                "command": "cursorWordStartRight",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+r",
+                "command": "cursorPageUp",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+c",
+                "command": "cursorPageDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+w",
+                "command": "scrollLineUp",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+z",
+                "command": "scrollLineDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+s",
+                "command": "cursorLineStart",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q s",
+                "command": "cursorLineStart",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+d",
+                "command": "cursorLineEnd",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q d",
+                "command": "cursorLineEnd",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+r",
+                "command": "cursorTop",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q r",
+                "command": "cursorTop",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+c",
+                "command": "cursorBottom",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q c",
+                "command": "cursorBottom",
+                "when": "textInputFocus"
+            },
+            // Jump
+            {
+                "key": "ctrl+q ctrl+j",
+                "command": "workbench.action.gotoLine",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q j",
+                "command": "workbench.action.gotoLine",
+                "when": "textInputFocus"
+            },
+            // Delete
+            {
+                "key": "ctrl+h",
+                "command": "deleteLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+g",
+                "command": "deleteRight",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+t",
+                "command": "deleteWordRight",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+q ctrl+t",
+                "command": "deleteAllLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+q t",
+                "command": "deleteAllLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+q ctrl+y",
+                "command": "deleteAllRight",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+q y",
+                "command": "deleteAllRight",
+                "when": "textInputFocus && !editorReadonly"
+            },
+            // Insert
+            {
+                "key": "ctrl+i",
+                "command": "tab",
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+m",
+                "command": "type",
+                "args": { "text": "\n" },
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+n",
+                "command": "editor.action.insertLineBefore",
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k ctrl+d",
+                "command": "editor.action.copyLinesDownAction",
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k d",
+                "command": "editor.action.copyLinesDownAction",
+                "when": "editorTextFocus && !editorReadonly"
+            },
+            // Clipboard
+            {
+                "key": "ctrl+y",
+                "command": "editor.action.clipboardCutAction",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k ctrl+k",
+                "command": "editor.action.clipboardCopyAction",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+k k",
+                "command": "editor.action.clipboardCopyAction",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+j",
+                "command": "editor.action.clipboardPasteAction",
+                "when": "textInputFocus && !editorReadonly"
+            },
+            // History
+            {
+                "key": "ctrl+k ctrl+u",
+                "command": "undo",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k u",
+                "command": "undo",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "alt+backspace",
+                "command": "undo",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "shift+alt+backspace",
+                "command": "redo",
+                "when": "textInputFocus && !editorReadonly"
+            },
+            // Search
+            {
+                "key": "ctrl+q ctrl+f",
+                "command": "actions.find",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q f",
+                "command": "actions.find",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q ctrl+a",
+                "command": "editor.action.startFindReplaceAction",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q a",
+                "command": "editor.action.startFindReplaceAction",
+                "when": "editorTextFocus"
+            },
+            // Alternative for defaults
+            {
+                "key": "ctrl+q ctrl+q",
+                "command": "workbench.action.quickOpenView",
+                "when": "textInputFocus"
+            }
+       ]
+    }
+}
