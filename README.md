@@ -5,10 +5,11 @@ This extension provides a keymap similar to VZ Editor.
  - The focus is only on shortcut keys in the text editor.
  - The second key of a two-stroke key is allowed to be with CTRL.
    (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
+ - Ctrl+B (start selection) moves the cursor right since it seems to be required to select at least one character.
 
 ## Supported keys
 
-### Cursor, Scroll, Jump
+### Cursor, Scroll, Selection, Jump
 
 | Key | Function |
 | --- | -------- |
@@ -18,6 +19,7 @@ This extension provides a keymap similar to VZ Editor.
 | Ctrl+W, Ctrl+Z | Scroll up / down one line |
 | Ctrl+Q S, Ctrl+Q D | Move cursor to start / end of a line |
 | Ctrl+Q R, Ctrl+Q C | Move cursor to start / end of a file |
+| Ctrl+B | Toggle selection mode |
 | Ctrl+Q J | Jump by line number |
 
 ### Delete, Insert, Clipboard

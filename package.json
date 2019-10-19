@@ -15,35 +15,67 @@
             {
                 "key": "ctrl+s",
                 "command": "cursorLeft",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+s",
+                "command": "cursorLeftSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+d",
                 "command": "cursorRight",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+d",
+                "command": "cursorRightSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+e",
                 "command": "cursorUp",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+e",
+                "command": "cursorUpSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+x",
                 "command": "cursorDown",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+x",
+                "command": "cursorDownSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+a",
                 "command": "cursorWordStartLeft",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+a",
+                "command": "cursorWordStartLeftSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+f",
                 "command": "cursorWordStartRight",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+f",
+                "command": "cursorWordStartRightSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+r",
                 "command": "cursorPageUp",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+r",
+                "command": "cursorPageUpSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+c",
                 "command": "cursorPageDown",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+c",
+                "command": "cursorPageDownSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+w",
                 "command": "scrollLineUp",
@@ -55,35 +87,77 @@
             }, {
                 "key": "ctrl+q ctrl+s",
                 "command": "cursorLineStart",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q ctrl+s",
+                "command": "cursorHomeSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q s",
                 "command": "cursorLineStart",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q s",
+                "command": "cursorHomeSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q ctrl+d",
                 "command": "cursorLineEnd",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q ctrl+d",
+                "command": "cursorEndSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q d",
                 "command": "cursorLineEnd",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q d",
+                "command": "cursorEndSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q ctrl+r",
                 "command": "cursorTop",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q ctrl+r",
+                "command": "cursorTopSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q r",
                 "command": "cursorTop",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q r",
+                "command": "cursorTopSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q ctrl+c",
                 "command": "cursorBottom",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q ctrl+c",
+                "command": "cursorBottomSelect",
+                "when": "textInputFocus && editorHasSelection"
             }, {
                 "key": "ctrl+q c",
                 "command": "cursorBottom",
-                "when": "textInputFocus"
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+q c",
+                "command": "cursorBottomSelect",
+                "when": "textInputFocus && editorHasSelection"
+            },
+            // Selection
+            {
+                "key": "ctrl+b",
+                "command": "cursorRightSelect",
+                "when": "textInputFocus && !editorHasSelection"
+            }, {
+                "key": "ctrl+b",
+                "command": "cursorLeft",
+                "when": "textInputFocus && editorHasSelection"
             },
             // Jump
             {
