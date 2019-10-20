@@ -3,15 +3,26 @@
     "displayName": "VZ-like Keymap",
     "description": "A keymap similar to VZ Editor",
     "version": "0.0.1",
+    "publisher": "tshino",
     "engines": {
         "vscode": "^1.39.0"
     },
+    "license": "SEE LICENSE IN LICENSE.txt",
     "categories": [
         "Keymaps"
     ],
+    "keywords": [
+        "vz",
+        "vzeditor"
+    ],
+    "homepage": "https://github.com/tshino/vscode-vz-like-keymap/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tshino/vscode-vz-like-keymap.git"
+    },
     "contributes": {
         "keybindings": [
-            // Cursor
+
             {
                 "key": "ctrl+s",
                 "command": "cursorLeft",
@@ -149,7 +160,7 @@
                 "command": "cursorBottomSelect",
                 "when": "textInputFocus && editorHasSelection"
             },
-            // Selection
+
             {
                 "key": "ctrl+b",
                 "command": "cursorRightSelect",
@@ -159,7 +170,7 @@
                 "command": "cursorLeft",
                 "when": "textInputFocus && editorHasSelection"
             },
-            // Jump
+
             {
                 "key": "ctrl+q ctrl+j",
                 "command": "workbench.action.gotoLine",
@@ -169,7 +180,7 @@
                 "command": "workbench.action.gotoLine",
                 "when": "textInputFocus"
             },
-            // Delete
+
             {
                 "key": "ctrl+h",
                 "command": "deleteLeft",
@@ -199,7 +210,7 @@
                 "command": "deleteAllRight",
                 "when": "textInputFocus && !editorReadonly"
             },
-            // Insert
+
             {
                 "key": "ctrl+i",
                 "command": "tab",
@@ -222,7 +233,7 @@
                 "command": "editor.action.copyLinesDownAction",
                 "when": "editorTextFocus && !editorReadonly"
             },
-            // Clipboard
+
             {
                 "key": "ctrl+y",
                 "command": "editor.action.clipboardCutAction",
@@ -240,7 +251,7 @@
                 "command": "editor.action.clipboardPasteAction",
                 "when": "textInputFocus && !editorReadonly"
             },
-            // History
+
             {
                 "key": "ctrl+k ctrl+u",
                 "command": "undo",
@@ -258,7 +269,7 @@
                 "command": "redo",
                 "when": "textInputFocus && !editorReadonly"
             },
-            // Search
+
             {
                 "key": "ctrl+q ctrl+f",
                 "command": "actions.find",
@@ -276,7 +287,7 @@
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorTextFocus"
             },
-            // Alternative for defaults
+
             {
                 "key": "ctrl+q ctrl+q",
                 "command": "workbench.action.quickOpenView",
