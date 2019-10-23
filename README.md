@@ -5,7 +5,7 @@ This extension provides a keymap similar to VZ Editor.
  - The focus is only on shortcut keys in the text editor.
  - The second key of a two-stroke key is allowed to be with CTRL.
    (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
- - Ctrl+B (start selection) moves the cursor right since it seems to be required to select at least one character.
+
 
 ## Supported keys
 

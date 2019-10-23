@@ -20,73 +20,45 @@
         "type": "git",
         "url": "https://github.com/tshino/vscode-vz-like-keymap.git"
     },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./extension.js",
     "contributes": {
         "keybindings": [
 
             {
                 "key": "ctrl+s",
-                "command": "cursorLeft",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+s",
-                "command": "cursorLeftSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorLeft",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+d",
-                "command": "cursorRight",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+d",
-                "command": "cursorRightSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorRight",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+e",
-                "command": "cursorUp",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+e",
-                "command": "cursorUpSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorUp",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+x",
-                "command": "cursorDown",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+x",
-                "command": "cursorDownSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorDown",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+a",
-                "command": "cursorWordStartLeft",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+a",
-                "command": "cursorWordStartLeftSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorWordStartLeft",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+f",
-                "command": "cursorWordStartRight",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+f",
-                "command": "cursorWordStartRightSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorWordStartRight",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+r",
-                "command": "cursorPageUp",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+r",
-                "command": "cursorPageUpSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorPageUp",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+c",
-                "command": "cursorPageDown",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+c",
-                "command": "cursorPageDownSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorPageDown",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+w",
                 "command": "scrollLineUp",
@@ -97,78 +69,42 @@
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+s",
-                "command": "cursorLineStart",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q ctrl+s",
-                "command": "cursorHomeSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorLineStart",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q s",
-                "command": "cursorLineStart",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q s",
-                "command": "cursorHomeSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorLineStart",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+d",
-                "command": "cursorLineEnd",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q ctrl+d",
-                "command": "cursorEndSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorLineEnd",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q d",
-                "command": "cursorLineEnd",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q d",
-                "command": "cursorEndSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorLineEnd",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+r",
-                "command": "cursorTop",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q ctrl+r",
-                "command": "cursorTopSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorTop",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q r",
-                "command": "cursorTop",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q r",
-                "command": "cursorTopSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorTop",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+c",
-                "command": "cursorBottom",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q ctrl+c",
-                "command": "cursorBottomSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorBottom",
+                "when": "textInputFocus"
             }, {
                 "key": "ctrl+q c",
-                "command": "cursorBottom",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+q c",
-                "command": "cursorBottomSelect",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.cursorBottom",
+                "when": "textInputFocus"
             },
 
             {
                 "key": "ctrl+b",
-                "command": "cursorRightSelect",
-                "when": "textInputFocus && !editorHasSelection"
-            }, {
-                "key": "ctrl+b",
-                "command": "cursorLeft",
-                "when": "textInputFocus && editorHasSelection"
+                "command": "vz.toggleSelection",
+                "when": "textInputFocus"
             },
 
             {
