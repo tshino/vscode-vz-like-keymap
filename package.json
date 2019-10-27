@@ -32,7 +32,15 @@
                 "command": "vz.cursorLeft",
                 "when": "textInputFocus"
             }, {
+                "key": "left",
+                "command": "vz.cursorLeft",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+d",
+                "command": "vz.cursorRight",
+                "when": "textInputFocus"
+            }, {
+                "key": "right",
                 "command": "vz.cursorRight",
                 "when": "textInputFocus"
             }, {
@@ -40,7 +48,15 @@
                 "command": "vz.cursorUp",
                 "when": "textInputFocus"
             }, {
+                "key": "up",
+                "command": "vz.cursorUp",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+x",
+                "command": "vz.cursorDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "down",
                 "command": "vz.cursorDown",
                 "when": "textInputFocus"
             }, {

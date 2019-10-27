@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Cursor keys with no modifier keys for cursor movement without leaving selection mode.
+
 ## [0.1.0] - 2019-10-24
 ### Added
 - Proper selection mode (toggle with Ctrl+B) implementation.
