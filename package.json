@@ -188,7 +188,7 @@
 
             {
                 "key": "ctrl+y",
-                "command": "editor.action.clipboardCutAction",
+                "command": "vz.clipboardCut",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+k ctrl+k",

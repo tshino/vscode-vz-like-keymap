@@ -46,7 +46,13 @@ function activate(context) {
                 lastSelectionAnchor = textEditor.selection.anchor;
             }
         })
-    )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerTextEditorCommand('vz.clipboardCut', function(textEditor, edit) {
+            vscode.commands.executeCommand('editor.action.clipboardCutAction');
+            isSelectionMode = false;
+        })
+    );
 }
 exports.activate = activate;
 
