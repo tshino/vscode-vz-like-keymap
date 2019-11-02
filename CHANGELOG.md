@@ -2,7 +2,7 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-## [Unreleased]
+## [0.1.1] - 2019-11-02
 ### Fixed
 - Selection mode stops when moving the cursor by cursor keys with no modifiers keys.
 - Selection mode doesn't stop after edit actions (Cut, Copy, Delete,...).
