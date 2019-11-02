@@ -135,31 +135,43 @@
 
             {
                 "key": "ctrl+h",
-                "command": "deleteLeft",
+                "command": "vz.deleteLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "backspace",
+                "command": "vz.deleteLeft",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+g",
-                "command": "deleteRight",
+                "command": "vz.deleteRight",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "delete",
+                "command": "vz.deleteRight",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+t",
-                "command": "deleteWordRight",
+                "command": "vz.deleteWordRight",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+delete",
+                "command": "vz.deleteWordRight",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q ctrl+t",
-                "command": "deleteAllLeft",
+                "command": "vz.deleteAllLeft",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q t",
-                "command": "deleteAllLeft",
+                "command": "vz.deleteAllLeft",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q ctrl+y",
-                "command": "deleteAllRight",
+                "command": "vz.deleteAllRight",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q y",
-                "command": "deleteAllRight",
+                "command": "vz.deleteAllRight",
                 "when": "textInputFocus && !editorReadonly"
             },
 
@@ -192,15 +204,15 @@
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "ctrl+k ctrl+k",
-                "command": "editor.action.clipboardCopyAction",
+                "command": "vz.clipboardCopy",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+k k",
-                "command": "editor.action.clipboardCopyAction",
+                "command": "vz.clipboardCopy",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+j",
-                "command": "editor.action.clipboardPasteAction",
+                "command": "vz.clipboardPaste",
                 "when": "textInputFocus && !editorReadonly"
             },
 

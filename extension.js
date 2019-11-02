@@ -47,12 +47,33 @@ function activate(context) {
             }
         })
     );
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.clipboardCut', function(textEditor, edit) {
-            vscode.commands.executeCommand('editor.action.clipboardCutAction');
-            isSelectionMode = false;
-        })
-    );
+    let registerEditCommand = function(name, command) {
+        context.subscriptions.push(
+            vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
+                vscode.commands.executeCommand(command);
+                isSelectionMode = false;
+            })
+        );
+    };
+    let registerNonEditCommand = function(name, command) {
+        context.subscriptions.push(
+            vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
+                vscode.commands.executeCommand(command);
+                if (!textEditor.selection.isEmpty) {
+                    vscode.commands.executeCommand('cancelSelection');
+                }
+                isSelectionMode = false;
+            })
+        );
+    };
+    registerEditCommand('deleteLeft', 'deleteLeft');
+    registerEditCommand('deleteRight', 'deleteRight');
+    registerEditCommand('deleteWordRight', 'deleteWordRight');
+    registerEditCommand('deleteAllLeft', 'deleteAllLeft');
+    registerEditCommand('deleteAllRight', 'deleteAllRight');
+    registerEditCommand('clipboardCut', 'editor.action.clipboardCutAction');
+    registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
+    registerEditCommand('clipboardPaste', 'editor.action.clipboardPasteAction');
 }
 exports.activate = activate;
 
