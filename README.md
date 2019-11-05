@@ -48,5 +48,5 @@ This extension provides a keymap similar to VZ Editor.
 
 | Key | Function |
 | --- | -------- |
-| Ctrl+Q F | Find |
+| Ctrl+Q F, Ctrl+L | Find |
 | Ctrl+Q A | Replace |
