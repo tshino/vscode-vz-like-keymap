@@ -150,6 +150,14 @@
                 "command": "vz.deleteRight",
                 "when": "textInputFocus && !editorReadonly"
             }, {
+                "key": "ctrl+q ctrl+h",
+                "command": "vz.deleteWordLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+q h",
+                "command": "vz.deleteWordLeft",
+                "when": "textInputFocus && !editorReadonly"
+            }, {
                 "key": "ctrl+t",
                 "command": "vz.deleteWordRight",
                 "when": "textInputFocus && !editorReadonly"

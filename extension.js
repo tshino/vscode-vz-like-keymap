@@ -68,6 +68,7 @@ function activate(context) {
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
     registerEditCommand('deleteRight', 'deleteRight');
+    registerEditCommand('deleteWordLeft', 'deleteWordLeft');
     registerEditCommand('deleteWordRight', 'deleteWordRight');
     registerEditCommand('deleteAllLeft', 'deleteAllLeft');
     registerEditCommand('deleteAllRight', 'deleteAllRight');

@@ -27,7 +27,7 @@ This extension provides a keymap similar to VZ Editor.
 | Key | Function |
 | --- | -------- |
 | Ctrl+H, Ctrl+G | Delete left / right charactor |
-| Ctrl+T | Delete right word |
+| Ctrl+Q H, Ctrl+T | Delete left / right word |
 | Ctrl+Q T, Ctrl+Q Y | Delete left / right half of a line |
 | Ctrl+I | Tab |
 | Ctrl+M | Insert line break |
