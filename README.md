@@ -20,6 +20,7 @@ This extension provides a keymap similar to VZ Editor.
 | Ctrl+Q S, Ctrl+Q D | Move cursor to start / end of a line |
 | Ctrl+Q R, Ctrl+Q C | Move cursor to start / end of a file |
 | Ctrl+B | Toggle selection mode |
+| Ctrl+Q K | Jump to bracket |
 | Ctrl+Q J | Jump by line number |
 
 ### Delete, Insert, Clipboard

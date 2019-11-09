@@ -131,6 +131,14 @@
                 "key": "ctrl+q j",
                 "command": "workbench.action.gotoLine",
                 "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+k",
+                "command": "editor.action.jumpToBracket",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q k",
+                "command": "editor.action.jumpToBracket",
+                "when": "editorTextFocus"
             },
 
             {

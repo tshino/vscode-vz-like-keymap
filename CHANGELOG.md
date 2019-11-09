@@ -4,8 +4,9 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ## [Unreleased]
 ### Added
-- Ctrl+L for Find action.
-- Ctrl+Q H for Delete left word action.
+- Ctrl+L for Find.
+- Ctrl+Q H for Delete left word.
+- Ctrl+Q K for Jump to bracket.
 
 ## [0.1.1] - 2019-11-02
 ### Fixed
