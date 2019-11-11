@@ -2,7 +2,7 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-## [Unreleased]
+## [0.2.0] - 2019-11-12
 ### Added
 - Ctrl+L for Find.
 - Ctrl+Q H for Delete left word.
