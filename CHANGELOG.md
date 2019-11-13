@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Ctrl+K B for Box selection mode.
+
 ## [0.2.0] - 2019-11-12
 ### Added
 - Ctrl+L for Find.

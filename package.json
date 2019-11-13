@@ -121,6 +121,14 @@
                 "key": "ctrl+b",
                 "command": "vz.toggleSelection",
                 "when": "textInputFocus"
+            }, {
+                "key": "ctrl+k ctrl+b",
+                "command": "vz.toggleBoxSelection",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+k b",
+                "command": "vz.toggleBoxSelection",
+                "when": "textInputFocus"
             },
 
             {

@@ -2,10 +2,12 @@ const vscode = require("vscode");
 
 function activate(context) {
     var isSelectionMode = false;
+    var isSelectionModeBox = false;
     var lastSelectionAnchor = null;
     let updateIsSelectionMode = function(textEditor) {
         if (!isSelectionMode && !textEditor.selection.isEmpty) {
             isSelectionMode = true;
+            isSelectionModeBox = false;
             lastSelectionAnchor = textEditor.selection.anchor;
         }
         if (isSelectionMode && textEditor.selection.isEmpty &&
@@ -13,18 +15,21 @@ function activate(context) {
             isSelectionMode = false;
         }
     };
-    let registerCursorCommand = function(name, nameSelect) {
+    let registerCursorCommand = function(name, nameSelect, nameBoxSelect) {
         context.subscriptions.push(
             vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
                 updateIsSelectionMode(textEditor);
-                vscode.commands.executeCommand(isSelectionMode ? nameSelect : name);
+                let command = isSelectionMode ?
+                    (isSelectionModeBox && nameBoxSelect) ? nameBoxSelect : nameSelect :
+                    name
+                vscode.commands.executeCommand(command);
             })
        );
     };
-    registerCursorCommand('cursorLeft', 'cursorLeftSelect');
-    registerCursorCommand('cursorRight', 'cursorRightSelect');
-    registerCursorCommand('cursorUp', 'cursorUpSelect');
-    registerCursorCommand('cursorDown', 'cursorDownSelect');
+    registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
+    registerCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
+    registerCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
+    registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
     registerCursorCommand('cursorPageUp', 'cursorPageUpSelect');
@@ -43,6 +48,20 @@ function activate(context) {
                 isSelectionMode = false;
             } else {
                 isSelectionMode = true;
+                isSelectionModeBox = false;
+                lastSelectionAnchor = textEditor.selection.anchor;
+            }
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerTextEditorCommand('vz.toggleBoxSelection', function(textEditor, edit) {
+            updateIsSelectionMode(textEditor);
+            if (isSelectionMode) {
+                vscode.commands.executeCommand('cancelSelection');
+                isSelectionMode = false;
+            } else {
+                isSelectionMode = true;
+                isSelectionModeBox = true;
                 lastSelectionAnchor = textEditor.selection.anchor;
             }
         })
