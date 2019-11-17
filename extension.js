@@ -32,8 +32,8 @@ function activate(context) {
     registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
-    registerCursorCommand('cursorPageUp', 'cursorPageUpSelect');
-    registerCursorCommand('cursorPageDown', 'cursorPageDownSelect');
+    registerCursorCommand('cursorPageUp', 'cursorPageUpSelect', 'cursorColumnSelectPageUp');
+    registerCursorCommand('cursorPageDown', 'cursorPageDownSelect', 'cursorColumnSelectPageDown');
     // Using cursorHomeSelect is a compromise since 'cursorLineStartSelect' seems not defined.
     registerCursorCommand('cursorLineStart', 'cursorHomeSelect');
     // Using cursorEndSelect is a compromise since 'cursorLineEndSelect' seems not defined.
