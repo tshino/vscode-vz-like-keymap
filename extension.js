@@ -15,16 +15,19 @@ function activate(context) {
             isSelectionMode = false;
         }
     };
-    let registerCursorCommand = function(name, nameSelect, nameBoxSelect) {
+    let registerTextEditorCommand = function(name, func) {
         context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
-                updateIsSelectionMode(textEditor);
-                let command = isSelectionMode ?
-                    (isSelectionModeBox && nameBoxSelect) ? nameBoxSelect : nameSelect :
-                    name
-                vscode.commands.executeCommand(command);
-            })
-       );
+            vscode.commands.registerTextEditorCommand('vz.' + name, func)
+        );
+    };
+    let registerCursorCommand = function(name, nameSelect, nameBoxSelect) {
+        registerTextEditorCommand(name, function(textEditor, edit) {
+            updateIsSelectionMode(textEditor);
+            let command = isSelectionMode ?
+                (isSelectionModeBox && nameBoxSelect) ? nameBoxSelect : nameSelect :
+                name;
+            vscode.commands.executeCommand(command);
+        });
     };
     registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
     registerCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
@@ -52,32 +55,26 @@ function activate(context) {
         }
     };
     let registerToggleSelectionCommand = function(name, isBox) {
-        context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand('vz.' + name, function (textEditor, edit) {
-                toggleSelectionMode(textEditor, isBox);
-            })
-        );
+        registerTextEditorCommand(name, function(textEditor, edit) {
+            toggleSelectionMode(textEditor, isBox);
+        });
     };
     registerToggleSelectionCommand('toggleSelection', false);
     registerToggleSelectionCommand('toggleBoxSelection', true);
     let registerEditCommand = function(name, command) {
-        context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
-                vscode.commands.executeCommand(command);
-                isSelectionMode = false;
-            })
-        );
+        registerTextEditorCommand(name, function(textEditor, edit) {
+            vscode.commands.executeCommand(command);
+            isSelectionMode = false;
+        });
     };
     let registerNonEditCommand = function(name, command) {
-        context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
-                vscode.commands.executeCommand(command);
-                if (!textEditor.selection.isEmpty) {
-                    vscode.commands.executeCommand('cancelSelection');
-                }
-                isSelectionMode = false;
-            })
-        );
+        registerTextEditorCommand(name, function(textEditor, edit) {
+            vscode.commands.executeCommand(command);
+            if (!textEditor.selection.isEmpty) {
+                vscode.commands.executeCommand('cancelSelection');
+            }
+            isSelectionMode = false;
+        });
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
     registerEditCommand('deleteRight', 'deleteRight');
