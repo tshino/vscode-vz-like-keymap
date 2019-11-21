@@ -51,16 +51,15 @@ function activate(context) {
             lastSelectionAnchor = textEditor.selection.anchor;
         }
     };
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.toggleSelection', function(textEditor, edit) {
-            toggleSelectionMode(textEditor, false);
-        })
-    );
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.toggleBoxSelection', function(textEditor, edit) {
-            toggleSelectionMode(textEditor, true);
-        })
-    );
+    let registerToggleSelectionCommand = function(name, isBox) {
+        context.subscriptions.push(
+            vscode.commands.registerTextEditorCommand('vz.' + name, function (textEditor, edit) {
+                toggleSelectionMode(textEditor, isBox);
+            })
+        );
+    };
+    registerToggleSelectionCommand('toggleSelection', false);
+    registerToggleSelectionCommand('toggleBoxSelection', true);
     let registerEditCommand = function(name, command) {
         context.subscriptions.push(
             vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
