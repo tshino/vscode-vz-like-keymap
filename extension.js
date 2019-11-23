@@ -43,20 +43,17 @@ function activate(context) {
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
-    let toggleSelectionMode = function(textEditor, isBox) {
-        updateIsSelectionMode(textEditor);
-        if (isSelectionMode) {
-            vscode.commands.executeCommand('cancelSelection');
-            isSelectionMode = false;
-        } else {
-            isSelectionMode = true;
-            isSelectionModeBox = isBox;
-            lastSelectionAnchor = textEditor.selection.anchor;
-        }
-    };
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, edit) {
-            toggleSelectionMode(textEditor, isBox);
+            updateIsSelectionMode(textEditor);
+            if (isSelectionMode) {
+                vscode.commands.executeCommand('cancelSelection');
+                isSelectionMode = false;
+            } else {
+                isSelectionMode = true;
+                isSelectionModeBox = isBox;
+                lastSelectionAnchor = textEditor.selection.anchor;
+            }
         });
     };
     registerToggleSelectionCommand('toggleSelection', false);
