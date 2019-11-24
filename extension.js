@@ -60,7 +60,12 @@ function activate(context) {
     registerToggleSelectionCommand('toggleBoxSelection', true);
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, edit) {
-            vscode.commands.executeCommand(command);
+            var res = vscode.commands.executeCommand(command);
+            if (!textEditor.selection.isEmpty && isSelectionMode && isSelectionModeBox) {
+                res.then(function() {
+                    vscode.commands.executeCommand('removeSecondaryCursors');
+                });
+            }
             isSelectionMode = false;
         });
     };
