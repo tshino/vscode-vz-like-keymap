@@ -71,9 +71,11 @@ function activate(context) {
     };
     let registerNonEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, edit) {
-            vscode.commands.executeCommand(command);
+            var res = vscode.commands.executeCommand(command);
             if (!textEditor.selection.isEmpty) {
-                vscode.commands.executeCommand('cancelSelection');
+                res.then(function() {
+                    vscode.commands.executeCommand('cancelSelection');
+                });
             }
             isSelectionMode = false;
         });
