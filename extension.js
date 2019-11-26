@@ -58,6 +58,10 @@ function activate(context) {
     };
     registerToggleSelectionCommand('toggleSelection', false);
     registerToggleSelectionCommand('toggleBoxSelection', true);
+    registerTextEditorCommand('stopBoxSelection', function(textEditor, edit) {
+        vscode.commands.executeCommand('removeSecondaryCursors');
+        isSelectionModeBox = false;
+    });
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, edit) {
             var res = vscode.commands.executeCommand(command);

@@ -129,6 +129,14 @@
                 "key": "ctrl+k b",
                 "command": "vz.toggleBoxSelection",
                 "when": "textInputFocus"
+            }, {
+                "key": "escape",
+                "command": "vz.stopBoxSelection",
+                "when": "editorHasMultipleSelections && textInputFocus"
+            }, {
+                "key": "shift+escape",
+                "command": "vz.stopBoxSelection",
+                "when": "editorHasMultipleSelections && textInputFocus"
             },
 
             {
