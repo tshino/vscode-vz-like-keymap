@@ -3,7 +3,7 @@
 This extension provides a keymap similar to VZ Editor.
 
  - The focus is only on shortcut keys in the text editor.
- - The second key of a two-stroke key is allowed to be with CTRL.
+ - The second key of a two-stroke key is allowed to be pressed with or without CTRL.
    (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
 
