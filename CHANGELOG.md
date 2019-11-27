@@ -2,7 +2,7 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-## [Unreleased]
+## [0.3.0] - 2019-11-28
 ### Added
 - Ctrl+K B for Box selection mode.
 

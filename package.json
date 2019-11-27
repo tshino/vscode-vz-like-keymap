@@ -1,8 +1,8 @@
 {
     "name": "vz-like-keymap",
-    "displayName": "VZ-like Keymap",
+    "displayName": "VZ Keymap",
     "description": "A keymap similar to VZ Editor",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "publisher": "tshino",
     "engines": {
         "vscode": "^1.40.0"
