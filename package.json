@@ -286,6 +286,14 @@
                 "key": "ctrl+q a",
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+r",
+                "command": "editor.action.previousMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "ctrl+c",
+                "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
             },
 
             {

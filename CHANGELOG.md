@@ -3,6 +3,8 @@
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Ctrl+R, Ctrl+C for Find previous / next match when find input is focussed.
 
 ## [0.3.0] - 2019-11-28
 ### Added
