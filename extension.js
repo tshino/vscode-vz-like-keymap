@@ -13,6 +13,7 @@ function activate(context) {
         if (isSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             isSelectionMode = false;
+            isSelectionModeBox = false;
         }
     };
     let registerTextEditorCommand = function(name, func) {
@@ -49,6 +50,7 @@ function activate(context) {
             if (isSelectionMode) {
                 vscode.commands.executeCommand('cancelSelection');
                 isSelectionMode = false;
+                isSelectionModeBox = false;
             } else {
                 isSelectionMode = true;
                 isSelectionModeBox = isBox;
@@ -71,6 +73,7 @@ function activate(context) {
                 });
             }
             isSelectionMode = false;
+            isSelectionModeBox = false;
         });
     };
     let registerNonEditCommand = function(name, command) {
@@ -82,6 +85,7 @@ function activate(context) {
                 });
             }
             isSelectionMode = false;
+            isSelectionModeBox = false;
         });
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
