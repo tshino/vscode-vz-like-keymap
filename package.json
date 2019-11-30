@@ -72,7 +72,15 @@
                 "command": "vz.cursorPageUp",
                 "when": "textInputFocus"
             }, {
+                "key": "pageup",
+                "command": "vz.cursorPageUp",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+c",
+                "command": "vz.cursorPageDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "pagedown",
                 "command": "vz.cursorPageDown",
                 "when": "textInputFocus"
             }, {
@@ -291,7 +299,15 @@
                 "command": "editor.action.previousMatchFindAction",
                 "when": "editorFocus && findInputFocussed"
             }, {
+                "key": "pageup",
+                "command": "editor.action.previousMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
+            }, {
                 "key": "ctrl+c",
+                "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findInputFocussed"
             },

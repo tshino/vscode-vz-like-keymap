@@ -15,7 +15,7 @@ This extension provides a keymap similar to VZ Editor.
 | --- | -------- |
 | Ctrl+S, Ctrl+D, Ctrl+E, Ctrl+X  | Move cursor left / right / up / down |
 | Ctrl+A, Ctrl+F | Move cursor to left / right start of a word |
-| Ctrl+R, Ctrl+C | Move cursor up / down one page |
+| Ctrl+R, PageUp, Ctrl+C, PageDown | Move cursor up / down one page |
 | Ctrl+W, Ctrl+Z | Scroll up / down one line |
 | Ctrl+Q S, Ctrl+Q D | Move cursor to start / end of a line |
 | Ctrl+Q R, Ctrl+Q C | Move cursor to start / end of a file |
@@ -52,4 +52,4 @@ This extension provides a keymap similar to VZ Editor.
 | --- | -------- |
 | Ctrl+Q F, Ctrl+L | Find |
 | Ctrl+Q A | Replace |
-| Ctrl+R, Ctrl+C | Find previous / next match |
+| Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous / next match |
