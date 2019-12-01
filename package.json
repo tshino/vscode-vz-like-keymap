@@ -295,6 +295,14 @@
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorTextFocus"
             }, {
+                "key": "ctrl+e",
+                "command": "history.showPrevious",
+                "when": "historyNavigationEnabled && historyNavigationWidget"
+            }, {
+                "key": "ctrl+x",
+                "command": "history.showNext",
+                "when": "historyNavigationEnabled && historyNavigationWidget"
+            }, {
                 "key": "ctrl+r",
                 "command": "editor.action.previousMatchFindAction",
                 "when": "editorFocus && findInputFocussed"
@@ -309,6 +317,14 @@
             }, {
                 "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "ctrl+w",
+                "command": "scrollLineUp",
+                "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "ctrl+z",
+                "command": "scrollLineDown",
                 "when": "editorFocus && findInputFocussed"
             },
 
