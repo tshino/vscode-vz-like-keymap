@@ -86,11 +86,11 @@
             }, {
                 "key": "ctrl+w",
                 "command": "scrollLineUp",
-                "when": "textInputFocus"
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+z",
                 "command": "scrollLineDown",
-                "when": "textInputFocus"
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+q ctrl+s",
                 "command": "vz.cursorLineStart",
@@ -318,14 +318,6 @@
                 "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
-            }, {
-                "key": "ctrl+w",
-                "command": "scrollLineUp",
-                "when": "editorFocus && findInputFocussed"
-            }, {
-                "key": "ctrl+z",
-                "command": "scrollLineDown",
-                "when": "editorFocus && findInputFocussed"
             },
 
             {
