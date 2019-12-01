@@ -4,8 +4,10 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ## [Unreleased]
 ### Added
-- Ctrl+R, Ctrl+C for Find previous / next match when find input is focussed.
-- PageUp, PageDown for alias of Ctrl+R, Ctrl+C.
+- Ctrl+R, PageUp, Ctrl+C, PageDown for Find previous / next match when find input is focussed.
+- 'Alternatives for conflicts' section in README.
+### Fixed
+- Selection mode stops when moving the cursor by PageUp or PageDown.
 
 ## [0.3.0] - 2019-11-28
 ### Added
