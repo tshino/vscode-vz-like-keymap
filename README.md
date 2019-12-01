@@ -53,3 +53,9 @@ This extension provides a keymap similar to VZ Editor.
 | Ctrl+Q F, Ctrl+L | Find |
 | Ctrl+Q A | Replace |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous / next match |
+
+## Alternatives for conflicts
+
+| Key | VS Code default key | Function |
+| --- | ------------------- | -------- |
+| Ctrl+Q Ctrl+Q | Ctrl+Q | Quick Open View |
