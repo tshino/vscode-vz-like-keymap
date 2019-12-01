@@ -305,19 +305,19 @@
             }, {
                 "key": "ctrl+r",
                 "command": "editor.action.previousMatchFindAction",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "pageup",
                 "command": "editor.action.previousMatchFindAction",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "ctrl+c",
                 "command": "editor.action.nextMatchFindAction",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "ctrl+w",
                 "command": "scrollLineUp",

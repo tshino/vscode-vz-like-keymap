@@ -4,7 +4,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ## [Unreleased]
 ### Added
-- Ctrl+R, PageUp, Ctrl+C, PageDown for Find previous / next match when find input is focussed.
+- Ctrl+R, PageUp, Ctrl+C, PageDown for Find previous / next match.
 - Ctrl+E, Ctrl+X for Show previous / next item in history (as same as UpArrow / DownArray) when find input is focussed.
 - Ctrl+W, Ctrl+Z for Scroll line up / down when find input is focussed.
 - 'Alternatives for conflicts' section in README.
