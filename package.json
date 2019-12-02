@@ -167,12 +167,20 @@
 
             {
                 "key": "ctrl+h",
+                "command": "",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+h",
                 "command": "vz.deleteLeft",
                 "when": "textInputFocus && !editorReadonly"
             }, {
                 "key": "backspace",
                 "command": "vz.deleteLeft",
                 "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+g",
+                "command": "",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+g",
                 "command": "vz.deleteRight",
@@ -189,6 +197,10 @@
                 "key": "ctrl+q h",
                 "command": "vz.deleteWordLeft",
                 "when": "textInputFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+t",
+                "command": "",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+t",
                 "command": "vz.deleteWordRight",
