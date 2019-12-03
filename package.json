@@ -336,7 +336,15 @@
                 "key": "ctrl+q ctrl+q",
                 "command": "workbench.action.quickOpenView",
                 "when": "editorFocus"
+            }, {
+                "key": "ctrl+q ctrl+b",
+                "command": "workbench.action.toggleSidebarVisibility",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+q ctrl+p",
+                "command": "workbench.action.togglePanel",
+                "when": "editorFocus"
             }
-       ]
+        ]
     }
 }

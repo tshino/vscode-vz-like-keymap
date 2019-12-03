@@ -58,4 +58,6 @@ This extension provides a keymap similar to VZ Editor.
 
 | Key | VS Code default key | Function |
 | --- | ------------------- | -------- |
-| Ctrl+Q Ctrl+Q | Ctrl+Q | Quick Open View |
+| Ctrl+Q Ctrl+Q | Ctrl+Q | Quick open view |
+| Ctrl+Q Ctrl+B | Ctrl+B | Toggle side bar visibility |
+| Ctrl+Q Ctrl+P | Ctrl+J | Toggle panel visibility |

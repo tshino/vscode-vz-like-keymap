@@ -7,6 +7,8 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 - Ctrl+R, PageUp, Ctrl+C, PageDown for Find previous / next match.
 - Ctrl+E, Ctrl+X for Show previous / next item in history (as same as UpArrow / DownArray) when find input is focussed.
 - 'Alternatives for conflicts' section in README.
+- Ctrl+Q Ctrl+B as an alternative of Ctrl+B for Toggle side bar visibility.
+- Ctrl+Q Ctrl+P as an alternative of Ctrl+J for Toggle panel visibility.
 ### Changed
 - Allow Ctrl+W and Ctrl+Z (scroll one line) to work almost anywhere in an editor including when find/replace widget has a focus.
 - Disable Ctrl+G, Ctrl+H, Ctrl+T when the editor has focus but the text input doesn't have focus, to avoid misuse of those default functions.
