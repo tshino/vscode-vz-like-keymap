@@ -11,7 +11,8 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 - Ctrl+Q Ctrl+P as an alternative of Ctrl+J for Toggle panel visibility.
 ### Changed
 - Allow Ctrl+W and Ctrl+Z (scroll one line) to work almost anywhere in an editor including when find/replace widget has a focus.
-- Disable Ctrl+G, Ctrl+H, Ctrl+T when the editor has focus but the text input doesn't have focus, to avoid misuse of those default functions.
+- Allow Ctrl+Q F (find) and Ctrl+Q A (replace) to work while find/replace widget has focus.
+- Disable Ctrl+G, Ctrl+H, Ctrl+T when the editor has focus but the text doesn't have focus, to avoid misuse of those default functions.
 ### Fixed
 - Selection mode stops when moving the cursor by PageUp or PageDown.
 

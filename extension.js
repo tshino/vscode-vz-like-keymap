@@ -97,6 +97,12 @@ function activate(context) {
     registerEditCommand('clipboardCut', 'editor.action.clipboardCutAction');
     registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
     registerEditCommand('clipboardPaste', 'editor.action.clipboardPasteAction');
+    registerTextEditorCommand('find', function(textEditor, edit) {
+        var res = vscode.commands.executeCommand('closeFindWidget');
+        res.then(function() {
+            vscode.commands.executeCommand('actions.find');
+        });
+    });
 }
 exports.activate = activate;
 

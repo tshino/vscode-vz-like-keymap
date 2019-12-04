@@ -288,12 +288,12 @@
 
             {
                 "key": "ctrl+q ctrl+f",
-                "command": "actions.find",
-                "when": "editorTextFocus"
+                "command": "vz.find",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+q f",
-                "command": "actions.find",
-                "when": "editorTextFocus"
+                "command": "vz.find",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+l",
                 "command": "actions.find",
@@ -301,11 +301,11 @@
             }, {
                 "key": "ctrl+q ctrl+a",
                 "command": "editor.action.startFindReplaceAction",
-                "when": "editorTextFocus"
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+q a",
                 "command": "editor.action.startFindReplaceAction",
-                "when": "editorTextFocus"
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+e",
                 "command": "history.showPrevious",
