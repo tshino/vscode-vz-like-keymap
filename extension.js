@@ -22,7 +22,7 @@ function activate(context) {
         );
     };
     let registerCursorCommand = function(name, nameSelect, nameBoxSelect) {
-        registerTextEditorCommand(name, function(textEditor, edit) {
+        registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             let command = isSelectionMode ?
                 (isSelectionModeBox && nameBoxSelect) ? nameBoxSelect : nameSelect :
@@ -45,7 +45,7 @@ function activate(context) {
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
     let registerToggleSelectionCommand = function(name, isBox) {
-        registerTextEditorCommand(name, function(textEditor, edit) {
+        registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             if (isSelectionMode) {
                 vscode.commands.executeCommand('cancelSelection');
@@ -60,12 +60,12 @@ function activate(context) {
     };
     registerToggleSelectionCommand('toggleSelection', false);
     registerToggleSelectionCommand('toggleBoxSelection', true);
-    registerTextEditorCommand('stopBoxSelection', function(textEditor, edit) {
+    registerTextEditorCommand('stopBoxSelection', function(_textEditor, _edit) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         isSelectionModeBox = false;
     });
     let registerEditCommand = function(name, command) {
-        registerTextEditorCommand(name, function(textEditor, edit) {
+        registerTextEditorCommand(name, function(textEditor, _edit) {
             var res = vscode.commands.executeCommand(command);
             if (!textEditor.selection.isEmpty && isSelectionMode && isSelectionModeBox) {
                 res.then(function() {
@@ -77,7 +77,7 @@ function activate(context) {
         });
     };
     let registerNonEditCommand = function(name, command) {
-        registerTextEditorCommand(name, function(textEditor, edit) {
+        registerTextEditorCommand(name, function(textEditor, _edit) {
             var res = vscode.commands.executeCommand(command);
             if (!textEditor.selection.isEmpty) {
                 res.then(function() {
@@ -97,7 +97,7 @@ function activate(context) {
     registerEditCommand('clipboardCut', 'editor.action.clipboardCutAction');
     registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
     registerEditCommand('clipboardPaste', 'editor.action.clipboardPasteAction');
-    registerTextEditorCommand('find', function(textEditor, edit) {
+    registerTextEditorCommand('find', function(_textEditor, _edit) {
         var res = vscode.commands.executeCommand('closeFindWidget');
         res.then(function() {
             vscode.commands.executeCommand('actions.find');
