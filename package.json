@@ -109,16 +109,32 @@
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+r",
+                "command": "cursorTop",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+q ctrl+r",
                 "command": "vz.cursorTop",
                 "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q r",
+                "command": "cursorTop",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+q r",
                 "command": "vz.cursorTop",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+q ctrl+c",
+                "command": "cursorBottom",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+q ctrl+c",
                 "command": "vz.cursorBottom",
                 "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q c",
+                "command": "cursorBottom",
+                "when": "editorFocus"
             }, {
                 "key": "ctrl+q c",
                 "command": "vz.cursorBottom",
