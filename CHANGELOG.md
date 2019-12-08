@@ -4,6 +4,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ### [Unreleased]
 - Changed: Allow Ctrl+Q R, Ctrl+Q C to work while find/replace widget has focus.
+- Changed: Disable Ctrl+M when the editor has focus but the text doesn't have focus, to avoid misuse of the default function.
 
 ### [0.4.0] - 2019-12-07
 - Added:
@@ -15,7 +16,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 - Changed:
   - Allow Ctrl+W and Ctrl+Z (scroll one line) to work almost anywhere in an editor including when find/replace widget has focus.
   - Allow Ctrl+Q F (find) and Ctrl+Q A (replace) to work while find/replace widget has focus.
-  - Disable Ctrl+G, Ctrl+H, Ctrl+T when the editor has focus but the text doesn't have focus, to avoid misuse of those default functions (e.g. Ctrl+H for Replace)
+  - Disable Ctrl+G, Ctrl+H, Ctrl+T when the editor has focus but the text doesn't have focus, to avoid misuse of those default functions (e.g. Ctrl+H for Replace).
 - Fixed:
   - Selection mode stops when moving the cursor by PageUp or PageDown.
 
