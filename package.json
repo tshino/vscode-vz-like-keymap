@@ -258,6 +258,10 @@
                 "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+n",
+                "command": "",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+n",
                 "command": "editor.action.insertLineBefore",
                 "when": "editorTextFocus && !editorReadonly"
             }, {
