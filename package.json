@@ -288,6 +288,10 @@
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+j",
+                "command": "",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+j",
                 "command": "vz.clipboardPaste",
                 "when": "textInputFocus && !editorReadonly"
             },
