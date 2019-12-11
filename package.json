@@ -29,6 +29,10 @@
 
             {
                 "key": "ctrl+s",
+                "command": "",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+s",
                 "command": "vz.cursorLeft",
                 "when": "textInputFocus"
             }, {
@@ -142,6 +146,10 @@
             },
 
             {
+                "key": "ctrl+b",
+                "command": "",
+                "when": "editorFocus"
+            }, {
                 "key": "ctrl+b",
                 "command": "vz.toggleSelection",
                 "when": "textInputFocus"
