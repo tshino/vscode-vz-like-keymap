@@ -2,9 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-### [Unreleased]
-- Changed: Allow Ctrl+Q R, Ctrl+Q C to work while find / replace widget has focus.
-- Changed: Disable Ctrl+B, Ctrl+J, Ctrl+M, Ctrl+N, Ctrl+S when the editor has focus but the text doesn't have focus, to avoid misuse of those default functions.
+### [0.4.1] - 2019-12-14
+- Changed:
+  - Allow Ctrl+Q R, Ctrl+Q C to work while find / replace widget has focus.
+  - Disable Ctrl+B, Ctrl+J, Ctrl+M, Ctrl+N, Ctrl+S when the editor has focus but the text doesn't have focus, to avoid misuse of those default functions.
 
 ### [0.4.0] - 2019-12-07
 - Added:
