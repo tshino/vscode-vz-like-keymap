@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+### [Unreleased]
+- Fixed:
+  - Possible selection mode confusion between different editor instances.
+
 ### [0.4.1] - 2019-12-14
 - Changed:
   - Allow Ctrl+Q R, Ctrl+Q C to work while find / replace widget has focus.

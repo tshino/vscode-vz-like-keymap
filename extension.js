@@ -16,6 +16,16 @@ function activate(context) {
             isSelectionModeBox = false;
         }
     };
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
+            if (textEditor) {
+                isSelectionMode = false;
+                isSelectionModeBox = false;
+                lastSelectionAnchor = null;
+                updateIsSelectionMode(textEditor);
+            }
+        })
+    );
     let registerTextEditorCommand = function(name, func) {
         context.subscriptions.push(
             vscode.commands.registerTextEditorCommand('vz.' + name, func)
