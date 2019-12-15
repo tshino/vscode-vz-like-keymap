@@ -7,7 +7,7 @@ function activate(context) {
     let updateIsSelectionMode = function(textEditor) {
         if (!isSelectionMode && !textEditor.selection.isEmpty) {
             isSelectionMode = true;
-            isSelectionModeBox = false;
+            isSelectionModeBox = 1 < textEditor.selections.length;
             lastSelectionAnchor = textEditor.selection.anchor;
         }
         if (isSelectionMode && textEditor.selection.isEmpty &&
@@ -22,7 +22,6 @@ function activate(context) {
                 isSelectionMode = false;
                 isSelectionModeBox = false;
                 lastSelectionAnchor = null;
-                updateIsSelectionMode(textEditor);
             }
         })
     );
