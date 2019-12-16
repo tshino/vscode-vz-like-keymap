@@ -30,11 +30,13 @@ function activate(context) {
             vscode.commands.registerTextEditorCommand('vz.' + name, func)
         );
     };
-    let registerCursorCommand = function(name, nameSelect, nameBoxSelect) {
+    let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             let command = isSelectionMode ?
-                (isSelectionModeBox && nameBoxSelect) ? nameBoxSelect : nameSelect :
+                isSelectionModeBox ?
+                    (cmdForBoxSelect || cmdForSelect) :
+                    cmdForSelect :
                 name;
             vscode.commands.executeCommand(command);
         });
