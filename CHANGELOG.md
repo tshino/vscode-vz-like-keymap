@@ -2,9 +2,9 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-### [Unreleased]
+### [0.4.2] - 2019-12-18
 - Fixed:
-  - Possible selection mode confusion between different editor instances.
+  - Possible selection mode status confusion between different editor instances.
 
 ### [0.4.1] - 2019-12-14
 - Changed:
