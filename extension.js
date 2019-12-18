@@ -30,6 +30,15 @@ function activate(context) {
             vscode.commands.registerTextEditorCommand('vz.' + name, func)
         );
     };
+    let exec = function(commands) {
+        if (0 < commands.length) {
+            var command = commands.shift();
+            var res = vscode.commands.executeCommand(command);
+            res.then(function() {
+                exec(commands);
+            });
+        }
+    };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
@@ -55,6 +64,18 @@ function activate(context) {
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
+    registerTextEditorCommand('scrollLineUp', function(_textEditor, _edit) {
+        exec(['scrollLineUp', 'vz.cursorUp']);
+    });
+    registerTextEditorCommand('scrollLineUpUnselect', function(_textEditor, _edit) {
+        exec(['cancelSelection', 'scrollLineUp', 'vz.cursorUp']);
+    });
+    registerTextEditorCommand('scrollLineDown', function(_textEditor, _edit) {
+        exec(['scrollLineDown', 'vz.cursorDown']);
+    });
+    registerTextEditorCommand('scrollLineDownUnselect', function(_textEditor, _edit) {
+        exec(['cancelSelection', 'scrollLineDown', 'vz.cursorDown']);
+    });
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);

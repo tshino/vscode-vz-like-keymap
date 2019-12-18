@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+### [Unreleased]
+- Changed:
+  - Ctrl+W, Ctrl+Z now move the cursor up / down as well as scroll up / down.
+
 ### [0.4.2] - 2019-12-18
 - Fixed:
   - Possible selection mode status confusion between different editor instances.

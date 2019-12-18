@@ -89,12 +89,20 @@
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+w",
-                "command": "scrollLineUp",
+                "command": "vz.scrollLineUp",
+                "when": "editorFocus"
+            }, {
+                "key": "ctrl+w",
+                "command": "vz.scrollLineUpUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            }, {
+                "key": "ctrl+z",
+                "command": "vz.scrollLineDown",
                 "when": "editorFocus"
             }, {
                 "key": "ctrl+z",
-                "command": "scrollLineDown",
-                "when": "editorFocus"
+                "command": "vz.scrollLineDownUnselect",
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "ctrl+q ctrl+s",
                 "command": "vz.cursorLineStart",
