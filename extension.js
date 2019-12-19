@@ -31,12 +31,9 @@ function activate(context) {
         );
     };
     let exec = function(commands) {
+        var res = vscode.commands.executeCommand(commands.shift());
         if (0 < commands.length) {
-            var command = commands.shift();
-            var res = vscode.commands.executeCommand(command);
-            res.then(function() {
-                exec(commands);
-            });
+            res.then(function() { exec(commands); });
         }
     };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
