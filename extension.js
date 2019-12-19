@@ -95,11 +95,10 @@ function activate(context) {
     });
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
-            var res = vscode.commands.executeCommand(command);
             if (!textEditor.selection.isEmpty && isSelectionMode && isSelectionModeBox) {
-                res.then(function() {
-                    vscode.commands.executeCommand('removeSecondaryCursors');
-                });
+                exec([command, 'removeSecondaryCursors']);
+            } else {
+                exec([command]);
             }
             isSelectionMode = false;
             isSelectionModeBox = false;
@@ -107,11 +106,10 @@ function activate(context) {
     };
     let registerNonEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
-            var res = vscode.commands.executeCommand(command);
             if (!textEditor.selection.isEmpty) {
-                res.then(function() {
-                    vscode.commands.executeCommand('cancelSelection');
-                });
+                exec([command, 'cancelSelection']);
+            } else {
+                exec([command]);
             }
             isSelectionMode = false;
             isSelectionModeBox = false;
@@ -127,10 +125,7 @@ function activate(context) {
     registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
     registerEditCommand('clipboardPaste', 'editor.action.clipboardPasteAction');
     registerTextEditorCommand('find', function(_textEditor, _edit) {
-        var res = vscode.commands.executeCommand('closeFindWidget');
-        res.then(function() {
-            vscode.commands.executeCommand('actions.find');
-        });
+        exec(['closeFindWidget', 'actions.find']);
     });
 }
 exports.activate = activate;
