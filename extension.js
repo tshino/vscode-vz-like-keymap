@@ -61,17 +61,25 @@ function activate(context) {
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
-    registerTextEditorCommand('scrollLineUp', function(_textEditor, _edit) {
-        exec(['scrollLineUp', 'vz.cursorUp']);
+    registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
+        if (0 < textEditor.selection.active.line) {
+            exec(['scrollLineUp', 'vz.cursorUp']);
+        }
     });
-    registerTextEditorCommand('scrollLineUpUnselect', function(_textEditor, _edit) {
-        exec(['cancelSelection', 'scrollLineUp', 'vz.cursorUp']);
+    registerTextEditorCommand('scrollLineUpUnselect', function(textEditor, _edit) {
+        if (0 < textEditor.selection.active.line) {
+            exec(['cancelSelection', 'scrollLineUp', 'vz.cursorUp']);
+        }
     });
-    registerTextEditorCommand('scrollLineDown', function(_textEditor, _edit) {
-        exec(['scrollLineDown', 'vz.cursorDown']);
+    registerTextEditorCommand('scrollLineDown', function(textEditor, _edit) {
+        if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
+            exec(['scrollLineDown', 'vz.cursorDown']);
+        }
     });
-    registerTextEditorCommand('scrollLineDownUnselect', function(_textEditor, _edit) {
-        exec(['cancelSelection', 'scrollLineDown', 'vz.cursorDown']);
+    registerTextEditorCommand('scrollLineDownUnselect', function(textEditor, _edit) {
+        if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
+            exec(['cancelSelection', 'scrollLineDown', 'vz.cursorDown']);
+        }
     });
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
