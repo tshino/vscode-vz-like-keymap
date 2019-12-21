@@ -39,12 +39,15 @@ function activate(context) {
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
-            let command = isSelectionMode ?
-                isSelectionModeBox ?
-                    (cmdForBoxSelect || cmdForSelect) :
-                    cmdForSelect :
-                name;
-            vscode.commands.executeCommand(command);
+            if (isSelectionMode) {
+                if (isSelectionModeBox) {
+                    exec([cmdForBoxSelect || cmdForSelect]);
+                } else {
+                    exec([cmdForSelect]);
+                }
+            } else {
+                exec([name]);
+            }
         });
     };
     registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
