@@ -66,22 +66,32 @@ function activate(context) {
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         if (0 < textEditor.selection.active.line) {
-            exec(['scrollLineUp', 'vz.cursorUp']);
+            exec(['scrollLineUp']);
+            exec(['vz.cursorUp']);
         }
     });
     registerTextEditorCommand('scrollLineUpUnselect', function(textEditor, _edit) {
         if (0 < textEditor.selection.active.line) {
-            exec(['cancelSelection', 'scrollLineUp', 'vz.cursorUp']);
+            var res = vscode.commands.executeCommand('cancelSelection');
+            res.then(function() {
+                exec(['scrollLineUp']);
+                exec(['vz.cursorUp']);
+            });
         }
     });
     registerTextEditorCommand('scrollLineDown', function(textEditor, _edit) {
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            exec(['scrollLineDown', 'vz.cursorDown']);
+            exec(['scrollLineDown']);
+            exec(['vz.cursorDown']);
         }
     });
     registerTextEditorCommand('scrollLineDownUnselect', function(textEditor, _edit) {
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            exec(['cancelSelection', 'scrollLineDown', 'vz.cursorDown']);
+            var res = vscode.commands.executeCommand('cancelSelection');
+            res.then(function() {
+                exec(['scrollLineDown']);
+                exec(['vz.cursorDown']);
+            });
         }
     });
     let registerToggleSelectionCommand = function(name, isBox) {
