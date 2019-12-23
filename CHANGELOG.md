@@ -2,7 +2,7 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
-### [Unreleased]
+### [0.5.0] - 2019-12-24
 - Changed:
   - Ctrl+W, Ctrl+Z now not only scrolls up / down but also moves the cursor up / down.
 
