@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+### [Unreleased]
+- Added:
+  - Ctrl+Q E, Ctrl+Q X for Move cursor to view top / bottom.
+
 ### [0.5.0] - 2019-12-24
 - Changed:
   - Ctrl+W, Ctrl+Z now not only scrolls up / down but also moves the cursor up / down.

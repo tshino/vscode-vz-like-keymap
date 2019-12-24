@@ -151,6 +151,22 @@
                 "key": "ctrl+q c",
                 "command": "vz.cursorBottom",
                 "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+e",
+                "command": "vz.cursorViewTop",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q e",
+                "command": "vz.cursorViewTop",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q ctrl+x",
+                "command": "vz.cursorViewBottom",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q x",
+                "command": "vz.cursorViewBottom",
+                "when": "textInputFocus"
             },
 
             {

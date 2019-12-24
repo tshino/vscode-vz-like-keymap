@@ -64,6 +64,20 @@ function activate(context) {
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
+    registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        vscode.commands.executeCommand('cursorMove', {
+            to: 'viewPortTop',
+            select: isSelectionMode
+        });
+    });
+    registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        vscode.commands.executeCommand('cursorMove', {
+            to: 'viewPortBottom',
+            select: isSelectionMode
+        });
+    });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         if (0 < textEditor.selection.active.line) {
             exec(['scrollLineUp']);
