@@ -5,6 +5,8 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 ### [Unreleased]
 - Added:
   - Ctrl+Q E, Ctrl+Q X for Move cursor to view top / bottom.
+- Fixed:
+  - Box selection range disappears with certain operations.
 
 ### [0.5.0] - 2019-12-24
 - Changed:

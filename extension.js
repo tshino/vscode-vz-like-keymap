@@ -41,6 +41,9 @@ function activate(context) {
             updateIsSelectionMode(textEditor);
             if (isSelectionMode) {
                 if (isSelectionModeBox) {
+                    if (!cmdForBoxSelect) {
+                        isSelectionModeBox = false;
+                    }
                     exec([cmdForBoxSelect || cmdForSelect]);
                 } else {
                     exec([cmdForSelect]);
@@ -66,6 +69,7 @@ function activate(context) {
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
+        isSelectionModeBox = false;
         vscode.commands.executeCommand('cursorMove', {
             to: 'viewPortTop',
             select: isSelectionMode
@@ -73,6 +77,7 @@ function activate(context) {
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
+        isSelectionModeBox = false;
         vscode.commands.executeCommand('cursorMove', {
             to: 'viewPortBottom',
             select: isSelectionMode
