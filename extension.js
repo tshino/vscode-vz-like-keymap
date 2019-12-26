@@ -67,6 +67,12 @@ function activate(context) {
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
+    registerCursorCommand('cursorLeftSelect', 'cursorLeftSelect');
+    registerCursorCommand('cursorRightSelect', 'cursorRightSelect');
+    registerCursorCommand('cursorUpSelect', 'cursorUpSelect');
+    registerCursorCommand('cursorDownSelect', 'cursorDownSelect');
+    registerCursorCommand('cursorPageUpSelect', 'cursorPageUpSelect');
+    registerCursorCommand('cursorPageDownSelect', 'cursorPageDownSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;

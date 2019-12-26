@@ -40,12 +40,20 @@
                 "command": "vz.cursorLeft",
                 "when": "textInputFocus"
             }, {
+                "key": "shift+left",
+                "command": "vz.cursorLeftSelect",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+d",
                 "command": "vz.cursorRight",
                 "when": "textInputFocus"
             }, {
                 "key": "right",
                 "command": "vz.cursorRight",
+                "when": "textInputFocus"
+            }, {
+                "key": "shift+right",
+                "command": "vz.cursorRightSelect",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+e",
@@ -56,12 +64,20 @@
                 "command": "vz.cursorUp",
                 "when": "textInputFocus"
             }, {
+                "key": "shift+up",
+                "command": "vz.cursorUpSelect",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+x",
                 "command": "vz.cursorDown",
                 "when": "textInputFocus"
             }, {
                 "key": "down",
                 "command": "vz.cursorDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "shift+down",
+                "command": "vz.cursorDownSelect",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+a",
@@ -80,12 +96,20 @@
                 "command": "vz.cursorPageUp",
                 "when": "textInputFocus"
             }, {
+                "key": "shift+pageup",
+                "command": "vz.cursorPageUpSelect",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+c",
                 "command": "vz.cursorPageDown",
                 "when": "textInputFocus"
             }, {
                 "key": "pagedown",
                 "command": "vz.cursorPageDown",
+                "when": "textInputFocus"
+            }, {
+                "key": "shift+pagedown",
+                "command": "vz.cursorPageDownSelect",
                 "when": "textInputFocus"
             }, {
                 "key": "ctrl+w",
