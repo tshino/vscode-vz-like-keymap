@@ -144,6 +144,22 @@
                 "command": "vz.cursorLineEnd",
                 "when": "textInputFocus"
             }, {
+                "key": "home",
+                "command": "vz.cursorHome",
+                "when": "textInputFocus"
+            }, {
+                "key": "shift+home",
+                "command": "vz.cursorHomeSelect",
+                "when": "textInputFocus"
+            }, {
+                "key": "end",
+                "command": "vz.cursorEnd",
+                "when": "textInputFocus"
+            }, {
+                "key": "shift+end",
+                "command": "vz.cursorEndSelect",
+                "when": "textInputFocus"
+            }, {
                 "key": "ctrl+q ctrl+r",
                 "command": "cursorTop",
                 "when": "editorFocus"

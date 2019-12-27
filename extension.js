@@ -63,8 +63,10 @@ function activate(context) {
     registerCursorCommand('cursorPageDown', 'cursorPageDownSelect', 'cursorColumnSelectPageDown');
     // Using cursorHomeSelect is a compromise since 'cursorLineStartSelect' seems not defined.
     registerCursorCommand('cursorLineStart', 'cursorHomeSelect');
+    registerCursorCommand('cursorHome', 'cursorHomeSelect');
     // Using cursorEndSelect is a compromise since 'cursorLineEndSelect' seems not defined.
     registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
+    registerCursorCommand('cursorEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');
     registerCursorCommand('cursorLeftSelect', 'cursorLeftSelect');
@@ -73,6 +75,8 @@ function activate(context) {
     registerCursorCommand('cursorDownSelect', 'cursorDownSelect');
     registerCursorCommand('cursorPageUpSelect', 'cursorPageUpSelect');
     registerCursorCommand('cursorPageDownSelect', 'cursorPageDownSelect');
+    registerCursorCommand('cursorHomeSelect', 'cursorHomeSelect');
+    registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;
