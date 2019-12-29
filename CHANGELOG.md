@@ -5,6 +5,8 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 ### [Unreleased]
 - Added:
   - Ctrl+Q E, Ctrl+Q X for Move cursor to view top / bottom.
+- Changed:
+  - Changed alternative keys from Ctrl+Q Ctrl+B and Ctrl+Q Ctrl+P to Ctrl+Alt+B and Ctrl+Alt+J respectively.
 - Fixed:
   - Box selection range disappears unexpectedly with certain operations.
   - Selection mode implicitly stops unexpectedly with certain operations.

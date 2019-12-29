@@ -437,11 +437,11 @@
                 "command": "workbench.action.quickOpenView",
                 "when": "editorFocus"
             }, {
-                "key": "ctrl+q ctrl+b",
+                "key": "ctrl+alt+b",
                 "command": "workbench.action.toggleSidebarVisibility",
                 "when": "editorFocus"
             }, {
-                "key": "ctrl+q ctrl+p",
+                "key": "ctrl+alt+j",
                 "command": "workbench.action.togglePanel",
                 "when": "editorFocus"
             }
