@@ -439,11 +439,11 @@
             }, {
                 "key": "ctrl+alt+b",
                 "command": "workbench.action.toggleSidebarVisibility",
-                "when": "editorFocus"
+                "when": ""
             }, {
                 "key": "ctrl+alt+j",
                 "command": "workbench.action.togglePanel",
-                "when": "editorFocus"
+                "when": ""
             }
         ]
     }
