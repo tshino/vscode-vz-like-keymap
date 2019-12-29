@@ -137,6 +137,21 @@ function activate(context) {
             }
         });
     };
+    registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
+        var sel = textEditor.selection;
+        if (!sel.isEmpty && 1 === textEditor.selections.length) {
+            vscode.commands.executeCommand('setSelection', {
+                selection: {
+                    selectionStartLineNumber: sel.active.line + 1,
+                    selectionStartColumn: sel.active.character + 1,
+                    positionLineNumber: sel.anchor.line + 1,
+                    positionColumn: sel.anchor.character + 1,
+                }
+            });
+            isSelectionMode = false;
+            isSelectionModeBox = false;
+        }
+    });
     registerToggleSelectionCommand('toggleSelection', false);
     registerToggleSelectionCommand('toggleBoxSelection', true);
     registerTextEditorCommand('stopBoxSelection', function(_textEditor, _edit) {

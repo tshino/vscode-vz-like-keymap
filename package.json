@@ -226,6 +226,14 @@
                 "command": "vz.toggleBoxSelection",
                 "when": "textInputFocus"
             }, {
+                "key": "ctrl+q ctrl+b",
+                "command": "vz.reverseSelection",
+                "when": "textInputFocus"
+            }, {
+                "key": "ctrl+q b",
+                "command": "vz.reverseSelection",
+                "when": "textInputFocus"
+            }, {
                 "key": "escape",
                 "command": "vz.stopBoxSelection",
                 "when": "editorHasMultipleSelections && textInputFocus"
