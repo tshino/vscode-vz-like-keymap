@@ -140,13 +140,18 @@ function activate(context) {
     registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
         var sel = textEditor.selection;
         if (!sel.isEmpty && 1 === textEditor.selections.length) {
-            vscode.commands.executeCommand('setSelection', {
+            var res = vscode.commands.executeCommand('setSelection', {
                 selection: {
                     selectionStartLineNumber: sel.active.line + 1,
                     selectionStartColumn: sel.active.character + 1,
                     positionLineNumber: sel.anchor.line + 1,
                     positionColumn: sel.anchor.character + 1,
                 }
+            });
+            res.then(function() {
+                textEditor.revealRange(
+                    new vscode.Range(sel.anchor, sel.anchor)
+                );
             });
             isSelectionMode = false;
             isSelectionModeBox = false;
