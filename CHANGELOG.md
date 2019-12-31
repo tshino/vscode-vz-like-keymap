@@ -11,6 +11,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 - Fixed:
   - Box selection range disappears unexpectedly with certain operations.
   - Selection mode implicitly stops unexpectedly with certain operations.
+  - Ctrl+B fails to stop box selection mode when selection range is empty.
 
 ### [0.5.0] - 2019-12-24
 - Changed:

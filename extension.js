@@ -5,7 +5,8 @@ function activate(context) {
     var isSelectionModeBox = false;
     var lastSelectionAnchor = null;
     let updateIsSelectionMode = function(textEditor) {
-        if (!isSelectionMode && !textEditor.selection.isEmpty) {
+        if (!isSelectionMode &&
+            (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
             isSelectionMode = true;
             isSelectionModeBox = 1 < textEditor.selections.length;
             lastSelectionAnchor = textEditor.selection.anchor;
@@ -127,7 +128,11 @@ function activate(context) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             if (isSelectionMode) {
-                vscode.commands.executeCommand('cancelSelection');
+                if (!textEditor.selection.isEmpty) {
+                    vscode.commands.executeCommand('cancelSelection');
+                } else {
+                    vscode.commands.executeCommand('removeSecondaryCursors');
+                }
                 isSelectionMode = false;
                 isSelectionModeBox = false;
             } else {
