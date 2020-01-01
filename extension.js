@@ -37,15 +37,15 @@ function activate(context) {
             res.then(function() { exec(commands); });
         }
     };
-    let moveCursorTo = function(line, col) {
-        vscode.commands.executeCommand('setSelection', {
-            selection: {
-                selectionStartLineNumber: line + 1,
-                selectionStartColumn: col + 1,
-                positionLineNumber: line + 1,
-                positionColumn: col + 1
-            }
-        });
+    let moveCursorTo = function(textEditor, line, col, select) {
+        var anchor = textEditor.selection.anchor;
+        var selection = {
+            selectionStartLineNumber: (select ? anchor.line : line) + 1,
+            selectionStartColumn: (select ? anchor.character : col) + 1,
+            positionLineNumber: line + 1,
+            positionColumn: col + 1
+        };
+        vscode.commands.executeCommand('setSelection', { selection: selection });
     };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
@@ -91,18 +91,22 @@ function activate(context) {
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;
-        vscode.commands.executeCommand('cursorMove', {
-            to: 'viewPortTop',
-            select: isSelectionMode
-        });
+        var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        var top = textEditor.visibleRanges[0].start.line;
+        var bottom = textEditor.visibleRanges[0].end.line;
+        var line = top === 0 ? top : Math.min(top + margin, bottom);
+        var col = textEditor.selection.active.character;
+        moveCursorTo(textEditor, line, col, isSelectionMode);
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;
-        vscode.commands.executeCommand('cursorMove', {
-            to: 'viewPortBottom',
-            select: isSelectionMode
-        });
+        var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        var top = textEditor.visibleRanges[0].start.line;
+        var bottom = textEditor.visibleRanges[0].end.line;
+        var line = Math.max(top, bottom - margin);
+        var col = textEditor.selection.active.character;
+        moveCursorTo(textEditor, line, col, isSelectionMode);
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         if (0 < textEditor.selection.active.line) {
