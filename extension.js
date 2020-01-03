@@ -45,7 +45,13 @@ function activate(context) {
             positionLineNumber: line + 1,
             positionColumn: col + 1
         };
-        vscode.commands.executeCommand('setSelection', { selection: selection });
+        var res = vscode.commands.executeCommand('setSelection', { selection: selection });
+        res.then(function() {
+            var pos = new vscode.Position(line, col);
+            textEditor.revealRange(
+                new vscode.Range(pos, pos)
+            );
+        });
     };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
