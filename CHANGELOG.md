@@ -4,7 +4,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ### [Unreleased]
 - Added:
-  - Ctrl+Q E, Ctrl+Q X for Move cursor to view top / bottom.
+  - Ctrl+Q E, Ctrl+Q X for Move cursor to top / bottom of current view.
   - Ctrl+Q B for Jump to opposite side of selection range.
 - Changed:
   - Changed alternative keys from Ctrl+Q Ctrl+B and Ctrl+Q Ctrl+P to Ctrl+Alt+B and Ctrl+Alt+J respectively.
