@@ -18,7 +18,7 @@ This extension provides a keymap similar to VZ Editor.
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Move cursor up / down one page |
 | Ctrl+W, Ctrl+Z | Scroll up / down one line |
 | Ctrl+Q S, Ctrl+Q D | Move cursor to start / end of a line |
-| Ctrl+Q E, Ctrl+Q X | Move cursor to start / end of a view |
+| Ctrl+Q E, Ctrl+Q X | Move cursor to top / bottom of a view |
 | Ctrl+Q R, Ctrl+Q C | Move cursor to start / end of a file |
 | Ctrl+B | Toggle selection mode |
 | Ctrl+K B | Toggle box selection mode |
