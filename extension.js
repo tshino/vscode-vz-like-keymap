@@ -53,6 +53,18 @@ function activate(context) {
             );
         });
     };
+    let enumVisibleLines = function(textEditor) {
+        var vranges = textEditor.visibleRanges;
+        var lines = [];
+        for (var i = 0; i < vranges.length; i++) {
+            var start = vranges[i].start.line;
+            var end = vranges[i].end.line;
+            for (var j = start; j <= end; j++) {
+                lines.push(j);
+            }
+        }
+        return lines;
+    };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
@@ -98,10 +110,8 @@ function activate(context) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        var vranges = textEditor.visibleRanges;
-        var top = vranges[0].start.line;
-        var bottom = vranges[vranges.length - 1].end.line;
-        var line = top === 0 ? top : Math.min(top + margin, bottom);
+        var vlines = enumVisibleLines(textEditor);
+        var line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         var col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, isSelectionMode);
     });
@@ -110,10 +120,9 @@ function activate(context) {
         isSelectionModeBox = false;
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         var lineCount = textEditor.document.lineCount;
-        var vranges = textEditor.visibleRanges;
-        var top = vranges[0].start.line;
-        var bottom = vranges[vranges.length - 1].end.line;
-        var line = bottom === lineCount - 1 ? bottom : Math.max(top, bottom - margin);
+        var vlines = enumVisibleLines(textEditor);
+        var bottom = vlines.length - 1;
+        var line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         var col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, isSelectionMode);
     });
