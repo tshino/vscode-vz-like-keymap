@@ -98,8 +98,9 @@ function activate(context) {
         updateIsSelectionMode(textEditor);
         isSelectionModeBox = false;
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        var top = textEditor.visibleRanges[0].start.line;
-        var bottom = textEditor.visibleRanges[0].end.line;
+        var vranges = textEditor.visibleRanges;
+        var top = vranges[0].start.line;
+        var bottom = vranges[vranges.length - 1].end.line;
         var line = top === 0 ? top : Math.min(top + margin, bottom);
         var col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, isSelectionMode);
@@ -109,8 +110,9 @@ function activate(context) {
         isSelectionModeBox = false;
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         var lineCount = textEditor.document.lineCount;
-        var top = textEditor.visibleRanges[0].start.line;
-        var bottom = textEditor.visibleRanges[0].end.line;
+        var vranges = textEditor.visibleRanges;
+        var top = vranges[0].start.line;
+        var bottom = vranges[vranges.length - 1].end.line;
         var line = bottom === lineCount - 1 ? bottom : Math.max(top, bottom - margin);
         var col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, isSelectionMode);
