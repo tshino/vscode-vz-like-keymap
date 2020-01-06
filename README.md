@@ -2,10 +2,13 @@
 
 This extension provides a keymap similar to VZ Editor.
 
- - The focus is only on shortcut keys in the text editor.
- - The second key of a two-stroke key is allowed to be pressed with or without CTRL.
-   (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
+The focus of this extension is only on providing the shortcut keys in the text editor.
 
+For the better compatible experience, the second key of a two-stroke key is always allowed to be pressed with or without the Ctrl key.
+(e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
+
+This extension does not provide any two-stroke shortcut keys starting from ESC key such as ESC S for save, in order to avoid to break existing functionalities of ESC key.
+Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
 
 ## Supported keys
 
