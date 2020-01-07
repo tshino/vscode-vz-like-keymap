@@ -2,12 +2,16 @@
 
 This extension provides a keymap similar to VZ Editor.
 
-The focus of this extension is only on providing the shortcut keys in the text editor.
+Almost all cursor movement keys and editing keys are supported.
+See the table below for the detail.
 
-For the better compatible experience, the second key of a two-stroke key is always allowed to be pressed with or without the Ctrl key.
+Note that, since each shortcut key is mapped to the corresponding functionality of VS Code, the behavior may be different than VZ Editor.
+For example, Ctrl+F moves the cursor to the next word while the word border is defined differently in VS Code and VZ Editor.
+
+For the compatible experience, the second key of a two-stroke key may be pressed with or without the Ctrl key.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
-This extension does not provide any two-stroke shortcut keys starting from ESC key such as ESC S for save, in order to avoid to break existing functionalities of ESC key.
+This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
 
 ## Supported keys
