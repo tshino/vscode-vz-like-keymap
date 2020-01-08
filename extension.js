@@ -82,6 +82,15 @@ function activate(context) {
             }
         });
     };
+    registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
+        var line = textEditor.selection.active.line;
+        moveCursorTo(textEditor, line, 0, true);
+    });
+    registerTextEditorCommand('cursorLineEndSelect', function(textEditor, _edit) {
+        var line = textEditor.selection.active.line;
+        var col = textEditor.document.lineAt(line).range.end.character;
+        moveCursorTo(textEditor, line, col, true);
+    });
     registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
     registerCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
     registerCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
@@ -90,11 +99,9 @@ function activate(context) {
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
     registerCursorCommand('cursorPageUp', 'cursorPageUpSelect', 'cursorColumnSelectPageUp');
     registerCursorCommand('cursorPageDown', 'cursorPageDownSelect', 'cursorColumnSelectPageDown');
-    // Using cursorHomeSelect is a compromise since 'cursorLineStartSelect' seems not defined.
-    registerCursorCommand('cursorLineStart', 'cursorHomeSelect');
+    registerCursorCommand('cursorLineStart', 'vz.cursorLineStartSelect');
     registerCursorCommand('cursorHome', 'cursorHomeSelect');
-    // Using cursorEndSelect is a compromise since 'cursorLineEndSelect' seems not defined.
-    registerCursorCommand('cursorLineEnd', 'cursorEndSelect');
+    registerCursorCommand('cursorLineEnd', 'vz.cursorLineEndSelect');
     registerCursorCommand('cursorEnd', 'cursorEndSelect');
     registerCursorCommand('cursorTop', 'cursorTopSelect');
     registerCursorCommand('cursorBottom', 'cursorBottomSelect');

@@ -2,6 +2,10 @@
 
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
+### [Unreleased]
+- Fixed:
+  - Ctrl+Q S, Ctrl+Q D (move cursor to start/end of a line) moves cursor differently in selection mode compared to non-selection mode.
+
 ### [0.6.0] - 2020-01-08
 - Added:
   - Ctrl+Q E, Ctrl+Q X for Move cursor to top / bottom of current view.
