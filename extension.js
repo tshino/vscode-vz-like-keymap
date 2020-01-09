@@ -9,6 +9,11 @@ function activate(context) {
         isSelectionModeBox = box;
         lastSelectionAnchor = textEditor.selection.anchor;
     };
+    let resetSelection = function() {
+        isSelectionMode = false;
+        isSelectionModeBox = false;
+        lastSelectionAnchor = null;
+    };
     let updateIsSelectionMode = function(textEditor) {
         if (!isSelectionMode &&
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
@@ -16,16 +21,13 @@ function activate(context) {
         }
         if (isSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
-            isSelectionMode = false;
-            isSelectionModeBox = false;
+            resetSelection();
         }
     };
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
-                isSelectionMode = false;
-                isSelectionModeBox = false;
-                lastSelectionAnchor = null;
+                resetSelection();
             }
         })
     );
@@ -175,8 +177,7 @@ function activate(context) {
                 } else {
                     vscode.commands.executeCommand('removeSecondaryCursors');
                 }
-                isSelectionMode = false;
-                isSelectionModeBox = false;
+                resetSelection();
             } else {
                 startSelection(textEditor, isBox);
             }
@@ -198,8 +199,7 @@ function activate(context) {
                     new vscode.Range(sel.anchor, sel.anchor)
                 );
             });
-            isSelectionMode = false;
-            isSelectionModeBox = false;
+            resetSelection();
         }
     });
     registerToggleSelectionCommand('toggleSelection', false);
@@ -215,8 +215,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            isSelectionMode = false;
-            isSelectionModeBox = false;
+            resetSelection();
         });
     };
     let registerNonEditCommand = function(name, command) {
@@ -226,8 +225,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            isSelectionMode = false;
-            isSelectionModeBox = false;
+            resetSelection();
         });
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
