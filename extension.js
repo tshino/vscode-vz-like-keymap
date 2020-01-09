@@ -4,12 +4,15 @@ function activate(context) {
     var isSelectionMode = false;
     var isSelectionModeBox = false;
     var lastSelectionAnchor = null;
+    let startSelection = function(textEditor, box) {
+        isSelectionMode = true;
+        isSelectionModeBox = box;
+        lastSelectionAnchor = textEditor.selection.anchor;
+    };
     let updateIsSelectionMode = function(textEditor) {
         if (!isSelectionMode &&
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
-            isSelectionMode = true;
-            isSelectionModeBox = 1 < textEditor.selections.length;
-            lastSelectionAnchor = textEditor.selection.anchor;
+            startSelection(textEditor, 1 < textEditor.selections.length);
         }
         if (isSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
@@ -175,9 +178,7 @@ function activate(context) {
                 isSelectionMode = false;
                 isSelectionModeBox = false;
             } else {
-                isSelectionMode = true;
-                isSelectionModeBox = isBox;
-                lastSelectionAnchor = textEditor.selection.anchor;
+                startSelection(textEditor, isBox);
             }
         });
     };
