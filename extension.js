@@ -14,6 +14,9 @@ function activate(context) {
         isSelectionModeBox = false;
         lastSelectionAnchor = null;
     };
+    let resetBoxSelection = function() {
+        isSelectionModeBox = false;
+    };
     let updateIsSelectionMode = function(textEditor) {
         if (!isSelectionMode &&
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
@@ -76,7 +79,7 @@ function activate(context) {
             if (isSelectionMode) {
                 if (isSelectionModeBox) {
                     if (!cmdForBoxSelect) {
-                        isSelectionModeBox = false;
+                        resetBoxSelection();
                     }
                     exec([cmdForBoxSelect || cmdForSelect]);
                 } else {
@@ -120,7 +123,7 @@ function activate(context) {
     registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        isSelectionModeBox = false;
+        resetBoxSelection();
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         var vlines = enumVisibleLines(textEditor);
         var line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
@@ -129,7 +132,7 @@ function activate(context) {
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        isSelectionModeBox = false;
+        resetBoxSelection();
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         var lineCount = textEditor.document.lineCount;
         var vlines = enumVisibleLines(textEditor);
@@ -206,7 +209,7 @@ function activate(context) {
     registerToggleSelectionCommand('toggleBoxSelection', true);
     registerTextEditorCommand('stopBoxSelection', function(_textEditor, _edit) {
         vscode.commands.executeCommand('removeSecondaryCursors');
-        isSelectionModeBox = false;
+        resetBoxSelection();
     });
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
