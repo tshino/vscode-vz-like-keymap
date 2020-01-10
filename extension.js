@@ -27,10 +27,21 @@ function activate(context) {
             resetSelection();
         }
     };
+    if (vscode.window.activeTextEditor) {
+        updateIsSelectionMode(vscode.window.activeTextEditor);
+    }
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
                 resetSelection();
+                updateIsSelectionMode(textEditor);
+            }
+        })
+    );
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorSelection(function(event) {
+            if (event.textEditor === vscode.window.activeTextEditor) {
+                updateIsSelectionMode(event.textEditor);
             }
         })
     );
