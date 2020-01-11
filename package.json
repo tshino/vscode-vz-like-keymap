@@ -235,6 +235,14 @@
                 "when": "textInputFocus"
             }, {
                 "key": "escape",
+                "command": "vz.toggleSelection",
+                "when": "textInputFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+            }, {
+                "key": "shift+escape",
+                "command": "vz.toggleSelection",
+                "when": "textInputFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+            }, {
+                "key": "escape",
                 "command": "vz.stopBoxSelection",
                 "when": "editorHasMultipleSelections && textInputFocus"
             }, {

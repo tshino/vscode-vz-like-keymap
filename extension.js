@@ -8,11 +8,13 @@ function activate(context) {
         isSelectionMode = true;
         isSelectionModeBox = box;
         lastSelectionAnchor = textEditor.selection.anchor;
+        vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
     };
     let resetSelection = function() {
         isSelectionMode = false;
         isSelectionModeBox = false;
         lastSelectionAnchor = null;
+        vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
     };
     let resetBoxSelection = function() {
         isSelectionModeBox = false;

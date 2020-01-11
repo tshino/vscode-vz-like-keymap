@@ -3,8 +3,11 @@
 All notable changes to the "vz-like-keymap" extension will be documented in this file.
 
 ### [Unreleased]
+- Added:
+  - New 'when' clause context 'vz.inSelectionMode' which indicates VZ Keymap is in selection mode.
 - Fixed:
   - Ctrl+Q S, Ctrl+Q D (move cursor to start/end of a line) moves cursor differently in selection mode compared to non-selection mode.
+  - Selection mode started by Ctrl+B can't be stopped by Escape key when the selection range is empty.
 
 ### [0.6.0] - 2020-01-08
 - Added:
