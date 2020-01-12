@@ -8,7 +8,7 @@ See the table below for the detail.
 Note that, since each shortcut key is mapped to the corresponding functionality of VS Code, the behavior may be different than VZ Editor.
 For example, Ctrl+F moves the cursor to the next word while the word border is defined differently in VS Code and VZ Editor.
 
-For the compatible experience, the second key of a two-stroke key may be pressed with or without the Ctrl key.
+For the compatible experience, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
