@@ -11,6 +11,10 @@ For example, Ctrl+F moves the cursor to the next word while the word border is d
 For the compatible experience, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
+The selection mode of VZ Editor is something a little unique feature, which can be toggled by Ctrl+B, allowing you to make a selection range using un-modified cursor keys.
+You can use a context variable 'vz.inSelectionMode' in the 'when' clause in your keybindings.json to determine whether it is in selection mode or not.
+The difference between standard 'editorHasSelection' and 'vz.inSelectionMode' is whether it includes the state in which the selection range is empty.
+
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
 
