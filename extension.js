@@ -256,6 +256,9 @@ function activate(context) {
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
+    registerTextEditorCommand('closeFindWidget', function(_textEditor, _edit) {
+        exec(['closeFindWidget', 'cancelSelection']);
+    });
 }
 exports.activate = activate;
 

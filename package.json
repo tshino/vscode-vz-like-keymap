@@ -446,6 +446,26 @@
                 "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
+            }, {
+                "key": "ctrl+s",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findWidgetVisible"
+            }, {
+                "key": "ctrl+d",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findWidgetVisible"
+            }, {
+                "key": "ctrl+f",
+                "command": "editor.action.startFindReplaceAction",
+                "when": "editorFocus && findWidgetVisible && findInputFocussed"
+            }, {
+                "key": "ctrl+f",
+                "command": "vz.find",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
+            }, {
+                "key": "ctrl+h",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findWidgetVisible"
             },
 
             {

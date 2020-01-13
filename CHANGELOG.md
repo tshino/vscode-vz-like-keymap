@@ -4,6 +4,8 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ### [Unreleased]
 - Added:
+  - Ctrl+S, Ctrl+D, Ctrl+H for Close find widget (experimental for ease of use).
+  - Ctrl+F for Toggle find/replace widget when it's focussed (experimental).
   - New 'when' clause context 'vz.inSelectionMode' which is a boolean indicating VZ Keymap is in selection mode.
 - Fixed:
   - Ctrl+Q S, Ctrl+Q D (move cursor to start/end of a line) moves cursor differently in selection mode compared to non-selection mode.
