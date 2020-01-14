@@ -447,14 +447,6 @@
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
             }, {
-                "key": "ctrl+s",
-                "command": "vz.closeFindWidget",
-                "when": "editorFocus && findWidgetVisible"
-            }, {
-                "key": "ctrl+d",
-                "command": "vz.closeFindWidget",
-                "when": "editorFocus && findWidgetVisible"
-            }, {
                 "key": "ctrl+f",
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorFocus && findWidgetVisible && findInputFocussed"
@@ -463,9 +455,21 @@
                 "command": "vz.find",
                 "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             }, {
+                "key": "ctrl+s",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            }, {
+                "key": "ctrl+d",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            }, {
+                "key": "ctrl+b",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            }, {
                 "key": "ctrl+h",
                 "command": "vz.closeFindWidget",
-                "when": "editorFocus && findWidgetVisible"
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
 
             {
