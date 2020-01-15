@@ -447,6 +447,14 @@
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
             }, {
+                "key": "ctrl+m",
+                "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "ctrl+m",
+                "command": "editor.action.replaceOne",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
+            }, {
                 "key": "ctrl+f",
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorFocus && findWidgetVisible && findInputFocussed"

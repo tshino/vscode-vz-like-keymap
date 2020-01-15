@@ -66,6 +66,7 @@ Instead, it is recommended to use acceleration keys such as Alt+F S to save the 
 | Ctrl+Q F, Ctrl+L | Find |
 | Ctrl+Q A | Replace |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous / next match |
+| Ctrl+M | Find next match / Replace one |
 
 ## Alternatives for conflicts
 
