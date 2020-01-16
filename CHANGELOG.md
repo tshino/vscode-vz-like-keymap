@@ -4,7 +4,7 @@ All notable changes to the "vz-like-keymap" extension will be documented in this
 
 ### [Unreleased]
 - Added:
-  - Ctrl+M for Find next match / Replace one.
+  - Ctrl+M for Find next match and Replace one as a correspondence of the default Enter key of VS Code.
   - Ctrl+S, Ctrl+D, Ctrl+B, Ctrl+H for Close find widget (experimental for ease of use).
   - Ctrl+F for Toggle find/replace widget when the widget has focus (experimental).
   - New 'when' clause context 'vz.inSelectionMode' which is a boolean indicating VZ Keymap is in selection mode.
