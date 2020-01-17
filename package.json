@@ -431,25 +431,25 @@
                 "command": "history.showNext",
                 "when": "historyNavigationEnabled && historyNavigationWidget"
             }, {
-                "key": "ctrl+r",
-                "command": "editor.action.previousMatchFindAction",
-                "when": "editorFocus && findWidgetVisible"
-            }, {
                 "key": "pageup",
                 "command": "editor.action.previousMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
             }, {
-                "key": "ctrl+c",
-                "command": "editor.action.nextMatchFindAction",
-                "when": "editorFocus && findWidgetVisible"
-            }, {
-                "key": "pagedown",
-                "command": "editor.action.nextMatchFindAction",
+                "key": "ctrl+r",
+                "command": "editor.action.previousMatchFindAction",
                 "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "ctrl+m",
                 "command": "editor.action.nextMatchFindAction",
                 "when": "editorFocus && findInputFocussed"
+            }, {
+                "key": "pagedown",
+                "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findWidgetVisible"
+            }, {
+                "key": "ctrl+c",
+                "command": "editor.action.nextMatchFindAction",
+                "when": "editorFocus && findWidgetVisible"
             }, {
                 "key": "ctrl+m",
                 "command": "editor.action.replaceOne",
