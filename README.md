@@ -1,17 +1,17 @@
-# VZ-like Keymap Extension for VS Code
+# Vz Keymap for Visual Studio Code
 
-This extension provides a keymap similar to VZ Editor.
+This is a VS Code extension which provides a keymap similar to Vz Editor.
 
 Almost all cursor movement keys and editing keys are supported.
 See the table below for the detail.
 
-Note that, since each shortcut key is basically mapped to the corresponding functionality of VS Code directly, the behavior may be different than on VZ Editor.
-For example, Ctrl+F moves the cursor to the next word while the word border is defined differently in VS Code and VZ Editor.
+Note that, since each shortcut key is basically mapped to the corresponding functionality of VS Code directly, the behavior may be different than on Vz Editor.
+For example, the result of Ctrl+F which moves the cursor to the next word may differ since word borders are defined differently in VS Code and Vz Editor.
 
 For the compatible experience, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
-The selection mode of VZ Editor is something a little unique feature, which can be toggled by Ctrl+B, allowing you to make a selection range using un-modified cursor keys.
+The selection mode of Vz Editor is something a little unique feature, which can be toggled by Ctrl+B, allowing you to make a selection range using un-modified cursor keys.
 You can use a context variable 'vz.inSelectionMode' in the 'when' clause in your keybindings.json to determine whether it is in selection mode or not.
 The difference between standard 'editorHasSelection' and 'vz.inSelectionMode' is whether it includes the state in which the selection range is empty.
 
