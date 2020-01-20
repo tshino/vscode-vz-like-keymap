@@ -5,7 +5,7 @@ This extension provides a keymap similar to VZ Editor.
 Almost all cursor movement keys and editing keys are supported.
 See the table below for the detail.
 
-Note that, since each shortcut key is mapped to the corresponding functionality of VS Code, the behavior may be different than VZ Editor.
+Note that, since each shortcut key is basically mapped to the corresponding functionality of VS Code directly, the behavior may be different than on VZ Editor.
 For example, Ctrl+F moves the cursor to the next word while the word border is defined differently in VS Code and VZ Editor.
 
 For the compatible experience, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
