@@ -1,7 +1,7 @@
 {
     "name": "vz-like-keymap",
-    "displayName": "VZ Keymap",
-    "description": "A keymap similar to VZ Editor",
+    "displayName": "Vz Keymap",
+    "description": "A keymap similar to Vz Editor",
     "version": "0.6.0",
     "publisher": "tshino",
     "engines": {
