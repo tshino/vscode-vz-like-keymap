@@ -1,30 +1,30 @@
 const vscode = require("vscode");
 
 function activate(context) {
-    var isSelectionMode = false;
-    var isSelectionModeBox = false;
+    var inSelectionMode = false;
+    var inBoxSelectionMode = false;
     var lastSelectionAnchor = null;
     let startSelection = function(textEditor, box) {
-        isSelectionMode = true;
-        isSelectionModeBox = box;
+        inSelectionMode = true;
+        inBoxSelectionMode = box;
         lastSelectionAnchor = textEditor.selection.anchor;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
     };
     let resetSelection = function() {
-        isSelectionMode = false;
-        isSelectionModeBox = false;
+        inSelectionMode = false;
+        inBoxSelectionMode = false;
         lastSelectionAnchor = null;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
     };
     let resetBoxSelection = function() {
-        isSelectionModeBox = false;
+        inBoxSelectionMode = false;
     };
     let updateIsSelectionMode = function(textEditor) {
-        if (!isSelectionMode &&
+        if (!inSelectionMode &&
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
             startSelection(textEditor, 1 < textEditor.selections.length);
         }
-        if (isSelectionMode && textEditor.selection.isEmpty &&
+        if (inSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection();
         }
@@ -89,8 +89,8 @@ function activate(context) {
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
-            if (isSelectionMode) {
-                if (isSelectionModeBox) {
+            if (inSelectionMode) {
+                if (inBoxSelectionMode) {
                     if (!cmdForBoxSelect) {
                         resetBoxSelection();
                     }
@@ -141,7 +141,7 @@ function activate(context) {
         var vlines = enumVisibleLines(textEditor);
         var line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         var col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, isSelectionMode);
+        moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
@@ -152,7 +152,7 @@ function activate(context) {
         var bottom = vlines.length - 1;
         var line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         var col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, isSelectionMode);
+        moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         if (0 < textEditor.selection.active.line) {
@@ -187,7 +187,7 @@ function activate(context) {
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
-            if (isSelectionMode) {
+            if (inSelectionMode) {
                 if (!textEditor.selection.isEmpty) {
                     vscode.commands.executeCommand('cancelSelection');
                 } else {
@@ -226,7 +226,7 @@ function activate(context) {
     });
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty && isSelectionMode && isSelectionModeBox) {
+            if (!textEditor.selection.isEmpty && inSelectionMode && inBoxSelectionMode) {
                 exec([command, 'removeSecondaryCursors']);
             } else {
                 exec([command]);

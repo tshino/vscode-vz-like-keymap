@@ -2,6 +2,8 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+
 ### [0.7.0] - 2020-01-23
 - Added:
   - Ctrl+M for Find next match and Replace one as a correspondence of the default Enter key of VS Code.
