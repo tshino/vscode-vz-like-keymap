@@ -36,6 +36,7 @@ Instead, it is recommended to use acceleration keys such as Alt+F S to save the 
 | Ctrl+Q B | Jump to opposite side of selection range |
 | Ctrl+Q K | Jump to bracket |
 | Ctrl+Q J | Jump by line number |
+| Shift+F10 | Tag jump |
 
 ### Delete, Insert, Clipboard
 

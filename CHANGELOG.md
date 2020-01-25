@@ -3,6 +3,8 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
+- Added:
+  - Shift+F10 for Tag jump.
 
 ### [0.7.0] - 2020-01-23
 - Added:
