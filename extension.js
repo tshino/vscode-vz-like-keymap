@@ -257,7 +257,7 @@ function activate(context) {
     let extractFileNames = function(textEditor) {
         let line = textEditor.selection.active.line;
         let text = textEditor.document.lineAt(line).text;
-        let names = text.split(/[ :;"'<>(){}\[\]@+*]+/);
+        let names = text.split(/[\s:;,"'<>(){}\|\[\]@=+*]+/);
         return names;
     };
     let tagJump = function(textEditor) {
