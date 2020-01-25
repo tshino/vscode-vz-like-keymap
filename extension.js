@@ -252,19 +252,37 @@ function activate(context) {
             }, function(err) {});
         }, function(err) {});
     };
-    let extractFileName = function(textEditor) {
+    let extractFileNames = function(textEditor) {
         let line = textEditor.selection.active.line;
         let text = textEditor.document.lineAt(line).text;
-        text = text.trim();
-        return text;
+        let names = text.split(/[ :;"'<>(){}\[\]@+*]+/);
+        return names;
     };
     let tagJump = function(textEditor) {
         let folder = getFolderUri(textEditor);
         if (folder) {
-            let name = extractFileName(textEditor);
-            let uri = makeFileUri(folder, name);
-            //console.log(uri.toString());
-            openTextDocument(uri);
+            let names = extractFileNames(textEditor);
+            let tryNext = function() {
+                if (0 === names.length) {
+                    return;
+                }
+                let name = names.shift().trim();
+                name = name.replace(/\\/g, '/');
+                name = name.replace(/\/+/g, '/');
+                name = name.replace(/^\.?\/|\/$/g, '');
+                if (name === '') {
+                    tryNext();
+                    return;
+                }
+                let uri = makeFileUri(folder, name);
+                //console.log(uri.toString());
+                vscode.workspace.fs.stat(uri).then(function(_stat) {
+                    openTextDocument(uri);
+                }, function(e) { // No entry
+                    tryNext();
+                });
+            };
+            tryNext();
         }
     };
     registerTextEditorCommand('tagJump', tagJump);
