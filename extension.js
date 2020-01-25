@@ -245,10 +245,12 @@ function activate(context) {
             path: folderUri.path + '/' + relativePath,
         });
     };
-    let openTextDocument = function(uri) {
+    let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
-            vscode.window.showTextDocument(doc).then(function(_textEditor) {
-                // success
+            vscode.window.showTextDocument(doc).then(function(textEditor) {
+                if (line) {
+                    moveCursorTo(textEditor, line - 1, 0, false);
+                }
             }, function(err) {});
         }, function(err) {});
     };
@@ -274,10 +276,14 @@ function activate(context) {
                     tryNext();
                     return;
                 }
+                let line = 0;
+                if (0 < names.length) {
+                    line = parseInt(names[0].match(/^[0-9]+/) || '0');
+                }
                 let uri = makeFileUri(folder, name);
                 //console.log(uri.toString());
                 vscode.workspace.fs.stat(uri).then(function(_stat) {
-                    openTextDocument(uri);
+                    openTextDocument(uri, line);
                 }, function(e) { // No entry
                     tryNext();
                 });
