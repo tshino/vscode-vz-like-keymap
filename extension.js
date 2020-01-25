@@ -224,11 +224,26 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let relativeToAbsoluteUri = function(textEditor, relative) {
-        let baseUri = textEditor.document.uri;
-        let basepath = baseUri.path.replace(/[/\\][^/\\]+$/, '');
-        let uri = baseUri.with({ path:basepath + '/' + relative });
-        return uri;
+    let getFolderUri = function(textEditor) {
+        let docUri = textEditor.document.uri;
+        if (docUri.scheme !== 'untitled') {
+            let parentPath = docUri.path.replace(/[/\\][^/\\]+$/, '');
+            return docUri.with({
+                path: parentPath,
+                query: '',
+                fragment: ''
+            });
+        }
+        let wsFolders = vscode.workspace.workspaceFolders;
+        if (wsFolders) {
+            return wsFolders[0].uri;
+        }
+        return null;
+    };
+    let makeFileUri = function(folderUri, relativePath) {
+        return folderUri.with({
+            path: folderUri.path + '/' + relativePath,
+        });
     };
     let openTextDocument = function(uri) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
@@ -243,10 +258,13 @@ function activate(context) {
         return text;
     };
     let tagJump = function(textEditor) {
-        let name = extractFileName(textEditor);
-        let uri = relativeToAbsoluteUri(textEditor, name);
-        //console.log(uri);
-        openTextDocument(uri);
+        let folder = getFolderUri(textEditor);
+        if (folder) {
+            let name = extractFileName(textEditor);
+            let uri = makeFileUri(folder, name);
+            //console.log(uri.toString());
+            openTextDocument(uri);
+        }
     };
     registerTextEditorCommand('tagJump', tagJump);
     let registerEditCommand = function(name, command) {
