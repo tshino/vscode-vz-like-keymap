@@ -255,6 +255,7 @@ function activate(context) {
     let extractFileName = function(textEditor) {
         let line = textEditor.selection.active.line;
         let text = textEditor.document.lineAt(line).text;
+        text = text.trim();
         return text;
     };
     let tagJump = function(textEditor) {
