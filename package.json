@@ -267,6 +267,10 @@
                 "key": "ctrl+q k",
                 "command": "editor.action.jumpToBracket",
                 "when": "editorTextFocus"
+            }, {
+                "key": "shift+f10",
+                "command":  "vz.tagJump",
+                "when": "editorTextFocus"
             },
 
             {

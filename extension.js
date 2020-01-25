@@ -224,6 +224,31 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
+    let relativeToAbsoluteUri = function(textEditor, relative) {
+        let baseUri = textEditor.document.uri;
+        let basepath = baseUri.path.replace(/[/\\][^/\\]+$/, '');
+        let uri = baseUri.with({ path:basepath + '/' + relative });
+        return uri;
+    };
+    let openTextDocument = function(uri) {
+        vscode.workspace.openTextDocument(uri).then(function(doc) {
+            vscode.window.showTextDocument(doc).then(function(_textEditor) {
+                // success
+            }, function(err) {});
+        }, function(err) {});
+    };
+    let extractFileName = function(textEditor) {
+        let line = textEditor.selection.active.line;
+        let text = textEditor.document.lineAt(line).text;
+        return text;
+    };
+    let tagJump = function(textEditor) {
+        let name = extractFileName(textEditor);
+        let uri = relativeToAbsoluteUri(textEditor, name);
+        //console.log(uri);
+        openTextDocument(uri);
+    };
+    registerTextEditorCommand('tagJump', tagJump);
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             if (!textEditor.selection.isEmpty && inSelectionMode && inBoxSelectionMode) {
