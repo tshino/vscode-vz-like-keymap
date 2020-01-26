@@ -240,10 +240,12 @@ function activate(context) {
         }
         return null;
     };
-    let makeFileUri = function(folderUri, relativePath) {
-        return folderUri.with({
-            path: folderUri.path + '/' + relativePath,
-        });
+    let makeFileUri = function(folderUri, path) {
+        if (path.match(/^\//)) { // absolute path
+            return folderUri.with({ path: path });
+        } else {
+            return folderUri.with({ path: folderUri.path + '/' + path });
+        }
     };
     let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
@@ -271,7 +273,7 @@ function activate(context) {
                 let name = names.shift().trim();
                 name = name.replace(/\\/g, '/');
                 name = name.replace(/\/+/g, '/');
-                name = name.replace(/^\.?\/|\/$/g, '');
+                name = name.replace(/^\.\/|\/$/g, '');
                 if (name === '') {
                     tryNext();
                     return;
