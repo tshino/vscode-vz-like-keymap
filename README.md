@@ -5,15 +5,17 @@ This is a VS Code extension which provides a keymap similar to Vz Editor.
 Almost all cursor movement keys and editing keys are supported.
 See the table below for the detail.
 
-Note that, since each shortcut key is basically mapped to the corresponding functionality of VS Code directly, the behavior may be different than on Vz Editor.
-For example, the result of Ctrl+F which moves the cursor to the next word may differ since word borders are defined differently in VS Code and Vz Editor.
+## Compatibility
 
-For the compatible experience, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
+For basic compatibility, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
-The selection mode of Vz Editor is something a little unique feature, which can be toggled by Ctrl+B, allowing you to make a selection range using un-modified cursor keys.
+The selection mode of Vz Editor is something a little unique feature. Once you start it by Ctrl+B, you can make a selection range using cursor keys without the Shift key.
 You can use a context variable 'vz.inSelectionMode' in the 'when' clause in your keybindings.json to determine whether it is in selection mode or not.
 The difference between standard 'editorHasSelection' and 'vz.inSelectionMode' is whether it includes the state in which the selection range is empty.
+
+Note that, since some shortcut keys are mapped to the corresponding functionality of the VS Code directly, the behavior may be different than on Vz Editor.
+For example, the result of Ctrl+F which moves the cursor to the next word may differ since word borders are defined differently in VS Code and Vz Editor.
 
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
