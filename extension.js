@@ -240,8 +240,11 @@ function activate(context) {
         }
         return null;
     };
+    let isAbsolutePath = function(path) {
+        return path.match(/^(?:\/|[a-zA-Z]:\/)/);
+    };
     let makeFileUri = function(folderUri, path) {
-        if (path.match(/^\//)) { // absolute path
+        if (isAbsolutePath(path)) {
             return folderUri.with({ path: path });
         } else {
             return folderUri.with({ path: folderUri.path + '/' + path });
@@ -259,7 +262,7 @@ function activate(context) {
     let extractFileNames = function(textEditor) {
         let line = textEditor.selection.active.line;
         let text = textEditor.document.lineAt(line).text;
-        let names = text.split(/[\s:;,"'<>(){}\|\[\]@=+*]+/);
+        let names = text.split(/(?:[\s;,"'<>(){}\|\[\]@=+*]|:(?![\/\\]))+/);
         return names;
     };
     let tagJump = function(textEditor) {
