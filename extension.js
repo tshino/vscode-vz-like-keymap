@@ -240,15 +240,25 @@ function activate(context) {
         }
         return null;
     };
+    let isUNCPath = function(path) {
+        return path.match(/^\/\/[^\/]+\//);
+    };
     let isAbsolutePath = function(path) {
         return path.match(/^(?:\/|[a-zA-Z]:\/)/);
     };
     let makeFileUri = function(folderUri, path) {
-        if (isAbsolutePath(path)) {
-            return folderUri.with({ path: path });
-        } else {
-            return folderUri.with({ path: folderUri.path + '/' + path });
+        if (folderUri.scheme === 'file') {
+            if (isUNCPath(path)) {
+                return folderUri.with({
+                    authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
+                    path: path.replace(/^\/\/[^\/]+/, '')
+                });
+            }
+            if (isAbsolutePath(path)) {
+                return folderUri.with({ path: path });
+            }
         }
+        return folderUri.with({ path: folderUri.path + '/' + path });
     };
     let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
@@ -274,8 +284,10 @@ function activate(context) {
                     return;
                 }
                 let name = names.shift().trim();
+                if (name.match(/^.+\\\\/)) {
+                    name = name.replace(/\\\\/g, '\\');
+                }
                 name = name.replace(/\\/g, '/');
-                name = name.replace(/\/+/g, '/');
                 name = name.replace(/^\.\/|\/$/g, '');
                 if (name === '') {
                     tryNext();
