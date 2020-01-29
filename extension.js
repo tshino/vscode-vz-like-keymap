@@ -224,21 +224,24 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let getFolderUri = function(textEditor) {
+    let getFolderUris = function(textEditor) {
+        let uris = [];
         let docUri = textEditor.document.uri;
         if (docUri.scheme !== 'untitled') {
             let parentPath = docUri.path.replace(/[/\\][^/\\]+$/, '');
-            return docUri.with({
+            uris.push(docUri.with({
                 path: parentPath,
                 query: '',
                 fragment: ''
-            });
+            }));
         }
         let wsFolders = vscode.workspace.workspaceFolders;
         if (wsFolders) {
-            return wsFolders[0].uri;
+            for (var i = 0; i < wsFolders.length; i++) {
+                uris.push(wsFolders[i].uri);
+            }
         }
-        return null;
+        return uris;
     };
     let isUNCPath = function(path) {
         return path.match(/^\/\/[^\/]+\//);
@@ -276,14 +279,21 @@ function activate(context) {
         return names;
     };
     let tagJump = function(textEditor) {
-        let folder = getFolderUri(textEditor);
-        if (folder) {
-            let names = extractFileNames(textEditor);
+        let folders = getFolderUris(textEditor);
+        let names = extractFileNames(textEditor);
+        if (0 < folders.length) {
+            let index = 0;
             let tryNext = function() {
-                if (0 === names.length) {
+                if (index === names.length) {
+                    index = 0;
+                    folders.shift();
+                    if (0 < folders.length) {
+                        tryNext();
+                    }
                     return;
                 }
-                let name = names.shift().trim();
+                let name = names[index].trim();
+                index += 1;
                 if (name.match(/^.+\\\\/)) {
                     name = name.replace(/\\\\/g, '\\');
                 }
@@ -294,10 +304,10 @@ function activate(context) {
                     return;
                 }
                 let line = 0;
-                if (0 < names.length) {
-                    line = parseInt(names[0].match(/^[0-9]+/) || '0');
+                if (index < names.length) {
+                    line = parseInt(names[index].match(/^[0-9]+/) || '0');
                 }
-                let uri = makeFileUri(folder, name);
+                let uri = makeFileUri(folders[0], name);
                 //console.log(uri.toString());
                 vscode.workspace.fs.stat(uri).then(function(_stat) {
                     openTextDocument(uri, line);
