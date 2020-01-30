@@ -250,18 +250,22 @@ function activate(context) {
         return path.match(/^(?:\/|[a-zA-Z]:\/)/);
     };
     let makeFileUri = function(folderUri, path) {
-        if (folderUri.scheme === 'file') {
-            if (isUNCPath(path)) {
-                return folderUri.with({
-                    authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
-                    path: path.replace(/^\/\/[^\/]+/, '')
-                });
+        try {
+            if (folderUri.scheme === 'file') {
+                if (isUNCPath(path)) {
+                    return folderUri.with({
+                        authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
+                        path: path.replace(/^\/\/[^\/]+/, '')
+                    });
+                }
+                if (isAbsolutePath(path)) {
+                    return folderUri.with({ path: path });
+                }
             }
-            if (isAbsolutePath(path)) {
-                return folderUri.with({ path: path });
-            }
+            return folderUri.with({ path: folderUri.path + '/' + path });
+        } catch (_e) {
+            return null;
         }
-        return folderUri.with({ path: folderUri.path + '/' + path });
     };
     let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
@@ -308,6 +312,10 @@ function activate(context) {
                     line = parseInt(names[index].match(/^[0-9]+/) || '0');
                 }
                 let uri = makeFileUri(folders[0], name);
+                if (!uri) {
+                    tryNext();
+                    return;
+                }
                 //console.log(uri.toString());
                 vscode.workspace.fs.stat(uri).then(function(_stat) {
                     openTextDocument(uri, line);
