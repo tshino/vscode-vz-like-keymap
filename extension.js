@@ -317,8 +317,13 @@ function activate(context) {
                     return;
                 }
                 //console.log(uri.toString());
-                vscode.workspace.fs.stat(uri).then(function(_stat) {
-                    openTextDocument(uri, line);
+                vscode.workspace.fs.stat(uri).then(function(stat) {
+                    if (stat.type === vscode.FileType.File ||
+                        stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
+                        openTextDocument(uri, line);
+                    } else {
+                        tryNext();
+                    }
                 }, function(e) { // No entry
                     tryNext();
                 });
