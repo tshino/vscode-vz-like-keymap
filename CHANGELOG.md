@@ -5,6 +5,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Added:
   - Shift+F10 for Tag jump.
+- Fixed:
+  - Some key bindings are affecting to screens other than text editors.
 
 ### [0.7.0] - 2020-01-23
 - Added:

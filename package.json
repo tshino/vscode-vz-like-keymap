@@ -34,83 +34,83 @@
             }, {
                 "key": "ctrl+s",
                 "command": "vz.cursorLeft",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "left",
                 "command": "vz.cursorLeft",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+left",
                 "command": "vz.cursorLeftSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+d",
                 "command": "vz.cursorRight",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "right",
                 "command": "vz.cursorRight",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+right",
                 "command": "vz.cursorRightSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+e",
                 "command": "vz.cursorUp",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "up",
                 "command": "vz.cursorUp",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+up",
                 "command": "vz.cursorUpSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+x",
                 "command": "vz.cursorDown",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "down",
                 "command": "vz.cursorDown",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+down",
                 "command": "vz.cursorDownSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+a",
                 "command": "vz.cursorWordStartLeft",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+f",
                 "command": "vz.cursorWordStartRight",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+r",
                 "command": "vz.cursorPageUp",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "pageup",
                 "command": "vz.cursorPageUp",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+pageup",
                 "command": "vz.cursorPageUpSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+c",
                 "command": "vz.cursorPageDown",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "pagedown",
                 "command": "vz.cursorPageDown",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+pagedown",
                 "command": "vz.cursorPageDownSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+w",
                 "command": "vz.scrollLineUp",
@@ -130,35 +130,35 @@
             }, {
                 "key": "ctrl+q ctrl+s",
                 "command": "vz.cursorLineStart",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q s",
                 "command": "vz.cursorLineStart",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+d",
                 "command": "vz.cursorLineEnd",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q d",
                 "command": "vz.cursorLineEnd",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "home",
                 "command": "vz.cursorHome",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+home",
                 "command": "vz.cursorHomeSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "end",
                 "command": "vz.cursorEnd",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "shift+end",
                 "command": "vz.cursorEndSelect",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+r",
                 "command": "cursorTop",
@@ -166,7 +166,7 @@
             }, {
                 "key": "ctrl+q ctrl+r",
                 "command": "vz.cursorTop",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q r",
                 "command": "cursorTop",
@@ -174,7 +174,7 @@
             }, {
                 "key": "ctrl+q r",
                 "command": "vz.cursorTop",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+c",
                 "command": "cursorBottom",
@@ -182,7 +182,7 @@
             }, {
                 "key": "ctrl+q ctrl+c",
                 "command": "vz.cursorBottom",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q c",
                 "command": "cursorBottom",
@@ -190,23 +190,23 @@
             }, {
                 "key": "ctrl+q c",
                 "command": "vz.cursorBottom",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+e",
                 "command": "vz.cursorViewTop",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q e",
                 "command": "vz.cursorViewTop",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+x",
                 "command": "vz.cursorViewBottom",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q x",
                 "command": "vz.cursorViewBottom",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             },
 
             {
@@ -216,49 +216,49 @@
             }, {
                 "key": "ctrl+b",
                 "command": "vz.toggleSelection",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+k ctrl+b",
                 "command": "vz.toggleBoxSelection",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+k b",
                 "command": "vz.toggleBoxSelection",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+b",
                 "command": "vz.reverseSelection",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q b",
                 "command": "vz.reverseSelection",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "escape",
                 "command": "vz.toggleSelection",
-                "when": "textInputFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             }, {
                 "key": "shift+escape",
                 "command": "vz.toggleSelection",
-                "when": "textInputFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             }, {
                 "key": "escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && textInputFocus"
+                "when": "editorHasMultipleSelections && editorTextFocus"
             }, {
                 "key": "shift+escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && textInputFocus"
+                "when": "editorHasMultipleSelections && editorTextFocus"
             },
 
             {
                 "key": "ctrl+q ctrl+j",
                 "command": "workbench.action.gotoLine",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q j",
                 "command": "workbench.action.gotoLine",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+q ctrl+k",
                 "command": "editor.action.jumpToBracket",
@@ -280,11 +280,11 @@
             }, {
                 "key": "ctrl+h",
                 "command": "vz.deleteLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "backspace",
                 "command": "vz.deleteLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+g",
                 "command": "",
@@ -292,19 +292,19 @@
             }, {
                 "key": "ctrl+g",
                 "command": "vz.deleteRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "delete",
                 "command": "vz.deleteRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q ctrl+h",
                 "command": "vz.deleteWordLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q h",
                 "command": "vz.deleteWordLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+t",
                 "command": "",
@@ -312,27 +312,27 @@
             }, {
                 "key": "ctrl+t",
                 "command": "vz.deleteWordRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+delete",
                 "command": "vz.deleteWordRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q ctrl+t",
                 "command": "vz.deleteAllLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q t",
                 "command": "vz.deleteAllLeft",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q ctrl+y",
                 "command": "vz.deleteAllRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+q y",
                 "command": "vz.deleteAllRight",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             },
 
             {
@@ -369,15 +369,15 @@
             {
                 "key": "ctrl+y",
                 "command": "vz.clipboardCut",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+k ctrl+k",
                 "command": "vz.clipboardCopy",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+k k",
                 "command": "vz.clipboardCopy",
-                "when": "textInputFocus"
+                "when": "editorTextFocus"
             }, {
                 "key": "ctrl+j",
                 "command": "",
@@ -385,25 +385,25 @@
             }, {
                 "key": "ctrl+j",
                 "command": "vz.clipboardPaste",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             },
 
             {
                 "key": "ctrl+k ctrl+u",
                 "command": "undo",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "ctrl+k u",
                 "command": "undo",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "alt+backspace",
                 "command": "undo",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             }, {
                 "key": "shift+alt+backspace",
                 "command": "redo",
-                "when": "textInputFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly"
             },
 
             {
