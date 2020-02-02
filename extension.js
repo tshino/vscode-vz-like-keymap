@@ -285,51 +285,58 @@ function activate(context) {
     let tagJump = function(textEditor) {
         let folders = getFolderUris(textEditor);
         let names = extractFileNames(textEditor);
-        if (0 < folders.length) {
-            let index = 0;
-            let tryNext = function() {
-                if (index === names.length) {
-                    index = 0;
-                    folders.shift();
-                    if (0 < folders.length) {
-                        tryNext();
-                    }
-                    return;
+        let index = 0;
+        let getNextCandidate = function() {
+            if (0 < names.length) {
+                if (index < folders.length) {
+                    let ret = { name: names[0], folder: folders[index] };
+                    index += 1;
+                    return ret;
                 }
-                let name = names[index].trim();
-                index += 1;
-                if (name.match(/^.+\\\\/)) {
-                    name = name.replace(/\\\\/g, '\\');
-                }
-                name = name.replace(/\\/g, '/');
-                name = name.replace(/^\.\/|\/$/g, '');
-                if (name === '') {
+                index = 0;
+                names.shift();
+                return getNextCandidate();
+            }
+            return undefined;
+        };
+        let tryNext = function() {
+            let cand = getNextCandidate();
+            if (!cand) {
+                return;
+            }
+            let name = cand.name.trim();
+            let folder = cand.folder;
+            if (name.match(/^.+\\\\/)) {
+                name = name.replace(/\\\\/g, '\\');
+            }
+            name = name.replace(/\\/g, '/');
+            name = name.replace(/^\.\/|\/$/g, '');
+            if (name === '') {
+                tryNext();
+                return;
+            }
+            let line = 0;
+            if (index < names.length) {
+                line = parseInt(names[index].match(/^[0-9]+/) || '0');
+            }
+            let uri = makeFileUri(folders[0], name);
+            if (!uri) {
+                tryNext();
+                return;
+            }
+            //console.log(uri.toString());
+            vscode.workspace.fs.stat(uri).then(function(stat) {
+                if (stat.type === vscode.FileType.File ||
+                    stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
+                    openTextDocument(uri, line);
+                } else {
                     tryNext();
-                    return;
                 }
-                let line = 0;
-                if (index < names.length) {
-                    line = parseInt(names[index].match(/^[0-9]+/) || '0');
-                }
-                let uri = makeFileUri(folders[0], name);
-                if (!uri) {
-                    tryNext();
-                    return;
-                }
-                //console.log(uri.toString());
-                vscode.workspace.fs.stat(uri).then(function(stat) {
-                    if (stat.type === vscode.FileType.File ||
-                        stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
-                        openTextDocument(uri, line);
-                    } else {
-                        tryNext();
-                    }
-                }, function(e) { // No entry
-                    tryNext();
-                });
-            };
-            tryNext();
-        }
+            }, function(e) { // No entry
+                tryNext();
+            });
+        };
+        tryNext();
     };
     registerTextEditorCommand('tagJump', tagJump);
     let registerEditCommand = function(name, command) {
