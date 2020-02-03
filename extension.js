@@ -319,7 +319,7 @@ function activate(context) {
             if (index < names.length) {
                 line = parseInt(names[index].match(/^[0-9]+/) || '0');
             }
-            let uri = makeFileUri(folders[0], name);
+            let uri = makeFileUri(folder, name);
             if (!uri) {
                 tryNext();
                 return;
