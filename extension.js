@@ -243,6 +243,15 @@ function activate(context) {
         }
         return uris;
     };
+    let getHomePath = function() {
+        if ('HOME' in process.env) {
+            return process.env['HOME'];
+        }
+        if ('HOMEDRIVE' in process.env && 'HOMEPATH' in process.env) {
+            return process.env['HOMEDRIVE'] + process.env['HOMEPATH'];
+        }
+        return '';
+    };
     let isUNCPath = function(path) {
         return path.match(/^\/\/[^\/]+\//);
     };
@@ -251,16 +260,15 @@ function activate(context) {
     };
     let makeFileUri = function(folderUri, path) {
         try {
-            if (folderUri.scheme === 'file') {
-                if (isUNCPath(path)) {
-                    return folderUri.with({
-                        authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
-                        path: path.replace(/^\/\/[^\/]+/, '')
-                    });
-                }
-                if (isAbsolutePath(path)) {
-                    return folderUri.with({ path: path });
-                }
+            if (isUNCPath(path)) {
+                return new vscode.Uri({
+                    scheme: 'file',
+                    authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
+                    path: path.replace(/^\/\/[^\/]+/, '')
+                });
+            }
+            if (isAbsolutePath(path) && folderUri.scheme === 'file') {
+                return folderUri.with({ path: path });
             }
             return folderUri.with({ path: folderUri.path + '/' + path });
         } catch (_e) {
@@ -308,6 +316,12 @@ function activate(context) {
             let folder = cand.folder;
             if (name.match(/^.+\\\\/)) {
                 name = name.replace(/\\\\/g, '\\');
+            }
+            if (name.match(/^\~[\/\\]/)) {
+                let home = getHomePath();
+                if (home !== '') {
+                    name = home + '/' + name.substring(2);
+                }
             }
             name = name.replace(/\\/g, '/');
             name = name.replace(/^\.\/|\/$/g, '');
