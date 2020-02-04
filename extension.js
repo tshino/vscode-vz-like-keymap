@@ -316,8 +316,8 @@ function activate(context) {
                 return;
             }
             let line = 0;
-            if (index < names.length) {
-                line = parseInt(names[index].match(/^[0-9]+/) || '0');
+            if (2 <= names.length) {
+                line = parseInt(names[1].match(/^[0-9]+/) || '0');
             }
             let uri = makeFileUri(folder, name);
             if (!uri) {
