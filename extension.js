@@ -297,8 +297,15 @@ function activate(context) {
         let getNextCandidate = function() {
             if (0 < names.length) {
                 if (index < folders.length) {
-                    let ret = { name: names[0], folder: folders[index] };
+                    let ret = {
+                        folder: folders[index],
+                        name: names[0].trim(),
+                        line: 0
+                    };
                     index += 1;
+                    if (2 <= names.length) {
+                        ret.line = parseInt(names[1].match(/^[0-9]+/) || '0');
+                    }
                     return ret;
                 }
                 index = 0;
@@ -312,8 +319,9 @@ function activate(context) {
             if (!cand) {
                 return;
             }
-            let name = cand.name.trim();
             let folder = cand.folder;
+            let name = cand.name;
+            let line = cand.line;
             if (name.match(/^.+\\\\/)) {
                 name = name.replace(/\\\\/g, '\\');
             }
@@ -328,10 +336,6 @@ function activate(context) {
             if (name === '') {
                 tryNext();
                 return;
-            }
-            let line = 0;
-            if (2 <= names.length) {
-                line = parseInt(names[1].match(/^[0-9]+/) || '0');
             }
             let uri = makeFileUri(folder, name);
             if (!uri) {
