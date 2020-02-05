@@ -73,8 +73,17 @@ Instead, it is recommended to use acceleration keys such as Alt+F S to save the 
 
 ## Alternatives for conflicts
 
-| Key | VS Code default key | Function |
-| --- | ------------------- | -------- |
-| Ctrl+Q Ctrl+Q | Ctrl+Q | Quick open view |
-| Ctrl+Alt+B | Ctrl+B | Toggle side bar visibility |
-| Ctrl+Alt+J | Ctrl+J | Toggle panel visibility |
+| Key with conflict | Alternative key provided by Vz Keymap | Function |
+| ----------------- | ------------------------------------- | -------- |
+| Ctrl+Q | Ctrl+Q Ctrl+Q | Quick open view |
+| Ctrl+B | Ctrl+Alt+B | Toggle side bar visibility |
+| Ctrl+J | Ctrl+Alt+J | Toggle panel visibility |
+
+### Existing alternatives (Just for your information)
+
+| Key with conflict | Alternative way existing in VS Code | Function |
+| ----------------- | ----------------------------------- | -------- |
+| Ctrl+A | Quadrupled click | Select all |
+| Ctrl+N | Alt+F N (File > New File) | New untitled file |
+| Ctrl+S | Alt+F S (File > Save) | Save file |
+| Ctrl+W | Ctrl+F4 | Close editor tab |
