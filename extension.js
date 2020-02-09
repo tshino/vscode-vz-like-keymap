@@ -315,14 +315,7 @@ function activate(context) {
             }
             return undefined;
         };
-        let tryNext = function() {
-            let cand = getNextCandidate();
-            if (!cand) {
-                return;
-            }
-            let folder = cand.folder;
-            let name = cand.name;
-            let line = cand.line;
+        let cleanName = function(name) {
             if (name.match(/^.+\\\\/)) {
                 name = name.replace(/\\\\/g, '\\');
             }
@@ -334,6 +327,17 @@ function activate(context) {
             }
             name = name.replace(/\\/g, '/');
             name = name.replace(/^\.\/|\/$/g, '');
+            return name;
+        };
+        let tryNext = function() {
+            let cand = getNextCandidate();
+            if (!cand) {
+                return;
+            }
+            let folder = cand.folder;
+            let name = cand.name;
+            let line = cand.line;
+            name = cleanName(name);
             if (name === '') {
                 tryNext();
                 return;
