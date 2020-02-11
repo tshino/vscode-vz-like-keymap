@@ -24,6 +24,9 @@
         "*"
     ],
     "main": "./src/extension.js",
+    "scripts": {
+        "test": "mocha"
+    },
     "contributes": {
         "keybindings": [
 
