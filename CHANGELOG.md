@@ -2,9 +2,9 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.8.2] - 2020-02-12
 - Fixed:
-  - Suggestion list (IntelliSense) could not be selected by cursor keys.
+  - Suggestion list (IntelliSense) cannot be selected by cursor keys.
 
 ### [0.8.1] - 2020-02-08
 - Added:
