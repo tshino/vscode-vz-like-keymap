@@ -62,7 +62,7 @@
             }, {
                 "key": "up",
                 "command": "vz.cursorUp",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !suggestWidgetVisible"
             }, {
                 "key": "shift+up",
                 "command": "vz.cursorUpSelect",
@@ -74,7 +74,7 @@
             }, {
                 "key": "down",
                 "command": "vz.cursorDown",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !suggestWidgetVisible"
             }, {
                 "key": "shift+down",
                 "command": "vz.cursorDownSelect",
@@ -94,7 +94,7 @@
             }, {
                 "key": "pageup",
                 "command": "vz.cursorPageUp",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !suggestWidgetVisible"
             }, {
                 "key": "shift+pageup",
                 "command": "vz.cursorPageUpSelect",
@@ -106,7 +106,7 @@
             }, {
                 "key": "pagedown",
                 "command": "vz.cursorPageDown",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !suggestWidgetVisible"
             }, {
                 "key": "shift+pagedown",
                 "command": "vz.cursorPageDownSelect",
@@ -437,7 +437,7 @@
             }, {
                 "key": "pageup",
                 "command": "editor.action.previousMatchFindAction",
-                "when": "editorFocus && findWidgetVisible"
+                "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
             }, {
                 "key": "ctrl+r",
                 "command": "editor.action.previousMatchFindAction",
@@ -449,7 +449,7 @@
             }, {
                 "key": "pagedown",
                 "command": "editor.action.nextMatchFindAction",
-                "when": "editorFocus && findWidgetVisible"
+                "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
             }, {
                 "key": "ctrl+c",
                 "command": "editor.action.nextMatchFindAction",

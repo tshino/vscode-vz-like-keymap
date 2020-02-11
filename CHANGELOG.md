@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Fixed:
+  - Suggestion list (IntelliSense) could not be selected by cursor keys.
+
 ### [0.8.1] - 2020-02-08
 - Added:
   - Support for HOME path notation (~/) in Tag jump.
