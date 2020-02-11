@@ -1,5 +1,6 @@
 "use strict";
 const vscode = require("vscode");
+const tag_jump = require("./tag_jump");
 
 function activate(context) {
     var inSelectionMode = false;
@@ -225,25 +226,6 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let getFolderUris = function(textEditor) {
-        let uris = [];
-        let docUri = textEditor.document.uri;
-        if (docUri.scheme !== 'untitled') {
-            let parentPath = docUri.path.replace(/[/\\][^/\\]+$/, '');
-            uris.push(docUri.with({
-                path: parentPath,
-                query: '',
-                fragment: ''
-            }));
-        }
-        let wsFolders = vscode.workspace.workspaceFolders;
-        if (wsFolders) {
-            for (var i = 0; i < wsFolders.length; i++) {
-                uris.push(wsFolders[i].uri);
-            }
-        }
-        return uris;
-    };
     let getHomePath = function() {
         if ('HOME' in process.env) {
             return process.env['HOME'];
@@ -292,7 +274,10 @@ function activate(context) {
         return names;
     };
     let tagJump = function(textEditor) {
-        let folders = getFolderUris(textEditor);
+        const docUri = textEditor.document.uri;
+        const wsFolders = vscode.workspace.workspaceFolders;
+        const wsFoldersUris = wsFolders ? wsFolders.map(f => f.uri) : [];
+        let folders = tag_jump.enumFolderUris(docUri, wsFoldersUris);
         let names = extractFileNames(textEditor);
         let index = 0;
         let getNextCandidate = function() {
