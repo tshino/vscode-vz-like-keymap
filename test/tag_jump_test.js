@@ -4,6 +4,53 @@ const UriMock = require('./uri_mock.js');
 const tag_jump = require('../src/tag_jump.js');
 
 describe('tag_jump', function() {
+    describe('getHomePath', function() {
+        const restoreEnv = function(name, value) {
+            if (value == undefined) {
+                delete process.env[name];
+            } else {
+                process.env[name] = value;
+            }
+        };
+        const HOME = process.env.HOME;
+        const HOMEDRIVE = process.env.HOMEDRIVE;
+        const HOMEPATH = process.env.HOMEPATH;
+        beforeEach(function() {
+            delete process.env.HOME;
+            delete process.env.HOMEDRIVE;
+            delete process.env.HOMEPATH;
+        });
+        after(function() {
+            restoreEnv('HOME', HOME);
+            restoreEnv('HOMEDRIVE', HOMEDRIVE);
+            restoreEnv('HOMEPATH', HOMEPATH);
+        });
+        it('should return empty string if no HOME/HOMEDRIVE/HOMEPATH env var present', function() {
+            assert.equal(tag_jump.getHomePath(), '');
+        });
+        it('should return empty string if only HOMEDRIVE/HOMEPATH present', function() {
+            process.env.HOMEDRIVE = 'c:';
+            assert.equal(tag_jump.getHomePath(), '');
+            delete process.env.HOMEDRIVE;
+            process.env.HOMEPATH = '\\path\\to\\home';
+            assert.equal(tag_jump.getHomePath(), '');
+        });
+        it('should return HOME env var if present', function() {
+            process.env.HOME = '/path/to/home';
+            assert.equal(tag_jump.getHomePath(), '/path/to/home');
+        });
+        it('should return HOMEDRIVE+HOMEPATH env var if both present', function() {
+            process.env.HOMEDRIVE = 'c:';
+            process.env.HOMEPATH = '\\path\\to\\home';
+            assert.equal(tag_jump.getHomePath(), 'c:\\path\\to\\home');
+        });
+        it('should return HOME env var if present even if HOMEDRIVE and HOMEPATH present', function() {
+            process.env.HOME = '/path/to/home';
+            process.env.HOMEDRIVE = 'c:';
+            process.env.HOMEPATH = '\\path\\to\\home';
+            assert.equal(tag_jump.getHomePath(), '/path/to/home');
+        });
+    });
     describe('enumFolderUris', function() {
         it('should return array containing document base folder', function() {
             assert.deepStrictEqual(
