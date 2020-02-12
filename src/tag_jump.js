@@ -11,9 +11,7 @@ const enumFolderUris = function(documentUri, folderUris) {
         }));
     }
     if (folderUris) {
-        for (var i = 0; i < folderUris.length; i++) {
-            uris.push(folderUris[i]);
-        }
+        uris = uris.concat(folderUris);
     }
     return uris;
 };
