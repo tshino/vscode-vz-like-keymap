@@ -1,6 +1,6 @@
 "use strict";
 const vscode = require("vscode");
-const tag_jump = require("./tag_jump");
+const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
     var inSelectionMode = false;
@@ -226,15 +226,6 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let getHomePath = function() {
-        if ('HOME' in process.env) {
-            return process.env['HOME'];
-        }
-        if ('HOMEDRIVE' in process.env && 'HOMEPATH' in process.env) {
-            return process.env['HOMEDRIVE'] + process.env['HOMEPATH'];
-        }
-        return '';
-    };
     let isUNCPath = function(path) {
         return path.match(/^\/\/[^\/]+\//);
     };
@@ -305,7 +296,7 @@ function activate(context) {
                 name = name.replace(/\\\\/g, '\\');
             }
             if (name.match(/^\~[\/\\]/)) {
-                let home = getHomePath();
+                let home = tag_jump.getHomePath();
                 if (home !== '') {
                     name = home + '/' + name.substring(2);
                 }

@@ -1,5 +1,15 @@
 "use strict";
 
+const getHomePath = function() {
+    if ('HOME' in process.env) {
+        return process.env['HOME'];
+    }
+    if ('HOMEDRIVE' in process.env && 'HOMEPATH' in process.env) {
+        return process.env['HOMEDRIVE'] + process.env['HOMEPATH'];
+    }
+    return '';
+};
+
 const enumFolderUris = function(documentUri, folderUris) {
     let uris = [];
     if (documentUri.scheme !== 'untitled') {
@@ -16,4 +26,5 @@ const enumFolderUris = function(documentUri, folderUris) {
     return uris;
 };
 
+exports.getHomePath = getHomePath;
 exports.enumFolderUris = enumFolderUris;
