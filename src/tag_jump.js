@@ -10,6 +10,14 @@ const getHomePath = function() {
     return '';
 };
 
+const isUNCPath = function(path) {
+    return path.match(/^\/\/[^\/]+\//);
+};
+
+const isAbsolutePath = function(path) {
+    return path.match(/^(?:\/|[a-zA-Z]:\/)/);
+};
+
 const enumFolderUris = function(documentUri, folderUris) {
     let uris = [];
     if (documentUri.scheme !== 'untitled') {
@@ -27,4 +35,6 @@ const enumFolderUris = function(documentUri, folderUris) {
 };
 
 exports.getHomePath = getHomePath;
+exports.isUNCPath = isUNCPath;
+exports.isAbsolutePath = isAbsolutePath;
 exports.enumFolderUris = enumFolderUris;

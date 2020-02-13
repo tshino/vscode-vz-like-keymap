@@ -226,22 +226,16 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let isUNCPath = function(path) {
-        return path.match(/^\/\/[^\/]+\//);
-    };
-    let isAbsolutePath = function(path) {
-        return path.match(/^(?:\/|[a-zA-Z]:\/)/);
-    };
     let makeFileUri = function(folderUri, path) {
         try {
-            if (isUNCPath(path)) {
+            if (tag_jump.isUNCPath(path)) {
                 return new vscode.Uri({
                     scheme: 'file',
                     authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
                     path: path.replace(/^\/\/[^\/]+/, '')
                 });
             }
-            if (isAbsolutePath(path) && folderUri.scheme === 'file') {
+            if (tag_jump.isAbsolutePath(path) && folderUri.scheme === 'file') {
                 return folderUri.with({ path: path });
             }
             return folderUri.with({ path: folderUri.path + '/' + path });
