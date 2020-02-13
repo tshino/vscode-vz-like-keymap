@@ -6,7 +6,7 @@ const tag_jump = require('../src/tag_jump.js');
 describe('tag_jump', function() {
     describe('getHomePath', function() {
         const restoreEnv = function(name, value) {
-            if (value == undefined) {
+            if (value === undefined) {
                 delete process.env[name];
             } else {
                 process.env[name] = value;
