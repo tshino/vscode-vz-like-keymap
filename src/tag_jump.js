@@ -11,7 +11,7 @@ const getHomePath = function() {
 };
 
 const isUNCPath = function(path) {
-    return path.match(/^\/\/[^\/]+\//);
+    return path.match(/^\/\/[^\/]+\//) ? true : false;
 };
 
 const isAbsolutePath = function(path) {
