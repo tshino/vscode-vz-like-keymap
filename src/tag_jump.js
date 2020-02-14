@@ -15,7 +15,7 @@ const isUNCPath = function(path) {
 };
 
 const isAbsolutePath = function(path) {
-    return path.match(/^(?:\/|[a-zA-Z]:\/)/);
+    return path.match(/^(?:\/|[a-zA-Z]:\/)/) ? true : false;
 };
 
 const enumFolderUris = function(documentUri, folderUris) {

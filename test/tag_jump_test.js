@@ -51,6 +51,41 @@ describe('tag_jump', function() {
             assert.equal(tag_jump.getHomePath(), '/path/to/home');
         });
     });
+    describe('isUNCPath', function() {
+        // Note: every backslash is replaced to slash before calling this function.
+        it('should return true for UNC path, false otherwise', function() {
+            const isUNCPath = tag_jump.isUNCPath;
+            assert.equal(isUNCPath('//example.com/path/to/doc.txt'), true);
+            assert.equal(isUNCPath('//hostname/path/to/doc.txt'), true);
+            assert.equal(isUNCPath('//192.168.9.9/path/to/doc.txt'), true);
+            assert.equal(isUNCPath('//example.com/some/where'), true);
+            assert.equal(isUNCPath('//example.com/some'), true);
+            assert.equal(isUNCPath('//example.com/'), true);
+            assert.equal(isUNCPath('//example.com'), false);
+            assert.equal(isUNCPath('/example.com/path/to/doc.txt'), false);
+            assert.equal(isUNCPath('example.com/path/to/doc.txt'), false);
+            assert.equal(isUNCPath('c:/path/to/doc.txt'), false);
+            assert.equal(isUNCPath('/path/to/doc.txt'), false);
+            assert.equal(isUNCPath('path/to/doc.txt'), false);
+            assert.equal(isUNCPath('./doc.txt'), false);
+            assert.equal(isUNCPath('../doc.txt'), false);
+        });
+    });
+    describe('isAbsolutePath', function() {
+        // Note: every backslash is replaced to slash before calling this function.
+        it('should return true for absolute path, false otherwise', function() {
+            const isAbsolutePath = tag_jump.isAbsolutePath;
+            assert.equal(isAbsolutePath('//example.com/path/to/doc.txt'), true);
+            assert.equal(isAbsolutePath('//example.com'), true);
+            assert.equal(isAbsolutePath('/example.com/path/to/doc.txt'), true);
+            assert.equal(isAbsolutePath('example.com/path/to/doc.txt'), false);
+            assert.equal(isAbsolutePath('c:/path/to/doc.txt'), true);
+            assert.equal(isAbsolutePath('/path/to/doc.txt'), true);
+            assert.equal(isAbsolutePath('path/to/doc.txt'), false);
+            assert.equal(isAbsolutePath('./doc.txt'), false);
+            assert.equal(isAbsolutePath('../doc.txt'), false);
+        });
+    });
     describe('enumFolderUris', function() {
         it('should return array containing document base folder', function() {
             assert.deepStrictEqual(
