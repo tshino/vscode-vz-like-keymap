@@ -54,10 +54,13 @@ function activate(context) {
             vscode.commands.registerTextEditorCommand('vz.' + name, func)
         );
     };
-    let exec = function(commands) {
-        var res = vscode.commands.executeCommand(commands.shift());
-        if (0 < commands.length) {
-            res.then(function() { exec(commands); });
+    let exec = function(commands, index = 0) {
+        if (typeof commands === 'string') {
+            commands = [ commands ];
+        }
+        var res = vscode.commands.executeCommand(commands[index]);
+        if (index + 1 < commands.length) {
+            res.then(function() { exec(commands, index + 1); });
         }
     };
     let moveCursorTo = function(textEditor, line, col, select) {
@@ -78,22 +81,25 @@ function activate(context) {
         }
         return lines;
     };
-    let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
+    let registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             if (inSelectionMode) {
                 if (inBoxSelectionMode) {
-                    if (!cmdForBoxSelect) {
+                    if (!boxSelectCmd) {
                         resetBoxSelection();
                     }
-                    exec([cmdForBoxSelect || cmdForSelect]);
+                    exec(boxSelectCmd || selectCmd);
                 } else {
-                    exec([cmdForSelect]);
+                    exec(selectCmd);
                 }
             } else {
-                exec([name]);
+                exec(basicCmd);
             }
         });
+    };
+    let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
+        registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
     };
     registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
         var line = textEditor.selection.active.line;
