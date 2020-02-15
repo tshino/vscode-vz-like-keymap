@@ -61,20 +61,10 @@ function activate(context) {
         }
     };
     let moveCursorTo = function(textEditor, line, col, select) {
-        var anchor = textEditor.selection.anchor;
-        var selection = {
-            selectionStartLineNumber: (select ? anchor.line : line) + 1,
-            selectionStartColumn: (select ? anchor.character : col) + 1,
-            positionLineNumber: line + 1,
-            positionColumn: col + 1
-        };
-        var res = vscode.commands.executeCommand('setSelection', { selection: selection });
-        res.then(function() {
-            var pos = new vscode.Position(line, col);
-            textEditor.revealRange(
-                new vscode.Range(pos, pos)
-            );
-        });
+        var cursor = new vscode.Position(line, col);
+        var anchor = select ? textEditor.selection.anchor : cursor;
+        textEditor.selection = new vscode.Selection(anchor, cursor);
+        textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
     let enumVisibleLines = function(textEditor) {
         var vranges = textEditor.visibleRanges;
