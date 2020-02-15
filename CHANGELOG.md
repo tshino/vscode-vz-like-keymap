@@ -2,9 +2,13 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Changed:
+  - Changed page up/down behavior so that preserves the vertical position of the cursor in the view.
+
 ### [0.8.2] - 2020-02-12
 - Fixed:
-  - Suggestion list (IntelliSense) cannot be selected by cursor keys.
+  - The suggestion list (IntelliSense) cannot be selected by cursor keys.
 
 ### [0.8.1] - 2020-02-08
 - Added:

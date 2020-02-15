@@ -116,8 +116,18 @@ function activate(context) {
     registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
-    registerCursorCommand('cursorPageUp', 'cursorPageUpSelect', 'cursorColumnSelectPageUp');
-    registerCursorCommand('cursorPageDown', 'cursorPageDownSelect', 'cursorColumnSelectPageDown');
+    registerCursorCommand3(
+        'cursorPageUp',
+        ['scrollPageUp', 'cursorPageUp'],
+        ['scrollPageUp', 'cursorPageUpSelect'],
+        ['scrollPageUp', 'cursorColumnSelectPageUp']
+    );
+    registerCursorCommand3(
+        'cursorPageDown',
+        ['scrollPageDown', 'cursorPageDown'],
+        ['scrollPageDown', 'cursorPageDownSelect'],
+        ['scrollPageDown', 'cursorColumnSelectPageDown']
+    );
     registerCursorCommand('cursorLineStart', 'vz.cursorLineStartSelect');
     registerCursorCommand('cursorHome', 'cursorHomeSelect');
     registerCursorCommand('cursorLineEnd', 'vz.cursorLineEndSelect');
@@ -128,8 +138,16 @@ function activate(context) {
     registerCursorCommand('cursorRightSelect', 'cursorRightSelect');
     registerCursorCommand('cursorUpSelect', 'cursorUpSelect');
     registerCursorCommand('cursorDownSelect', 'cursorDownSelect');
-    registerCursorCommand('cursorPageUpSelect', 'cursorPageUpSelect');
-    registerCursorCommand('cursorPageDownSelect', 'cursorPageDownSelect');
+    registerCursorCommand3(
+        'cursorPageUpSelect',
+        ['scrollPageUp', 'cursorPageUpSelect'],
+        ['scrollPageUp', 'cursorPageUpSelect']
+    );
+    registerCursorCommand3(
+        'cursorPageDownSelect',
+        ['scrollPageDown', 'cursorPageDownSelect'],
+        ['scrollPageDown', 'cursorPageDownSelect']
+    );
     registerCursorCommand('cursorHomeSelect', 'cursorHomeSelect');
     registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
