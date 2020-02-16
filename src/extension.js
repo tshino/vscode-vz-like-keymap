@@ -85,11 +85,11 @@ function activate(context) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             if (inSelectionMode) {
+                if (inBoxSelectionMode && !boxSelectCmd) {
+                    resetBoxSelection();
+                }
                 if (inBoxSelectionMode) {
-                    if (!boxSelectCmd) {
-                        resetBoxSelection();
-                    }
-                    exec(boxSelectCmd || selectCmd);
+                    exec(boxSelectCmd);
                 } else {
                     exec(selectCmd);
                 }
