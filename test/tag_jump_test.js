@@ -132,4 +132,40 @@ describe('tag_jump', function() {
             );
         });
     });
+    describe('extractFileNames', function() {
+        const extractFileNames = tag_jump.extractFileNames;
+        it('should return array of extracted strings', function() {
+            assert.deepStrictEqual(extractFileNames(''), []);
+            assert.deepStrictEqual(extractFileNames(' '), []);
+            assert.deepStrictEqual(extractFileNames('< >'), []);
+            assert.deepStrictEqual(extractFileNames('README.txt'), ['README.txt']);
+            assert.deepStrictEqual(extractFileNames('hello.txt world.txt'), ['hello.txt', 'world.txt']);
+            assert.deepStrictEqual(extractFileNames('abc def hijklmn.'), ['abc', 'def', 'hijklmn.']);
+        });
+        it('should split text with delimiters which unlikely are part of a filename', function() {
+            assert.deepStrictEqual(extractFileNames('FOO.txt(100): BAR'), ['FOO.txt', '100', 'BAR']);
+            assert.deepStrictEqual(extractFileNames('FOO.txt:44 xxxx'), ['FOO.txt', '44', 'xxxx']);
+            assert.deepStrictEqual(extractFileNames('file_name.ext'), ['file_name.ext']);
+            assert.deepStrictEqual(extractFileNames('FOO-BAR.txt'), ['FOO-BAR.txt']);
+            assert.deepStrictEqual(extractFileNames('name@line:col'), ['name', 'line', 'col']);
+            assert.deepStrictEqual(extractFileNames('===FOO.txt==='), ['FOO.txt']);
+            assert.deepStrictEqual(extractFileNames('===FOO.txt(10)==='), ['FOO.txt', '10']);
+            assert.deepStrictEqual(extractFileNames('path/to/FOO.txt:123'), ['path/to/FOO.txt', '123']);
+            assert.deepStrictEqual(extractFileNames('#include <zoo/config.h>'), ['#include', 'zoo/config.h']);
+            assert.deepStrictEqual(extractFileNames('#include "zoo/config.h"'), ['#include', 'zoo/config.h']);
+            assert.deepStrictEqual(extractFileNames('[hello.txt]'), ['hello.txt']);
+            assert.deepStrictEqual(extractFileNames('{hello.txt}'), ['hello.txt']);
+            assert.deepStrictEqual(extractFileNames('abc:def(hij) klm'), ['abc', 'def', 'hij', 'klm']);
+        });
+        it('should keep path-like strings untouched', function() {
+            assert.deepStrictEqual(extractFileNames('path/to/some/file.txt'), ['path/to/some/file.txt']);
+            assert.deepStrictEqual(extractFileNames('/abs/path/to/file.txt'), ['/abs/path/to/file.txt']);
+            assert.deepStrictEqual(extractFileNames('./file.txt'), ['./file.txt']);
+            assert.deepStrictEqual(extractFileNames('../file.txt'), ['../file.txt']);
+            assert.deepStrictEqual(extractFileNames('~/file.txt'), ['~/file.txt']);
+            assert.deepStrictEqual(extractFileNames('C:\\path\\to\\file.txt'), ['C:\\path\\to\\file.txt']);
+            assert.deepStrictEqual(extractFileNames('z:/path/to/file.txt'), ['z:/path/to/file.txt']);
+            assert.deepStrictEqual(extractFileNames('\\\\unc\\path\\name.txt'), ['\\\\unc\\path\\name.txt']);
+        });
+    });
 });
