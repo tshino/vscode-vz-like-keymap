@@ -34,7 +34,13 @@ const enumFolderUris = function(documentUri, folderUris) {
     return uris;
 };
 
+const extractFileNames = function(text) {
+    let names = text.split(/(?:[\s;,"'<>(){}\|\[\]@=+*]|:(?![\/\\]))+/);
+    return names;
+};
+
 exports.getHomePath = getHomePath;
 exports.isUNCPath = isUNCPath;
 exports.isAbsolutePath = isAbsolutePath;
 exports.enumFolderUris = enumFolderUris;
+exports.extractFileNames = extractFileNames;
