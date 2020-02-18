@@ -272,7 +272,7 @@ function activate(context) {
                 if (index < folders.length) {
                     let ret = {
                         folder: folders[index],
-                        name: names[0].trim(),
+                        name: names[0],
                         line: 0
                     };
                     index += 1;
