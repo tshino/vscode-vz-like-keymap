@@ -167,5 +167,12 @@ describe('tag_jump', function() {
             assert.deepStrictEqual(extractFileNames('z:/path/to/file.txt'), ['z:/path/to/file.txt']);
             assert.deepStrictEqual(extractFileNames('\\\\unc\\path\\name.txt'), ['\\\\unc\\path\\name.txt']);
         });
+        it('should remove redundant backslash pairs', function() {
+            assert.deepStrictEqual(extractFileNames('path\\\\to\\\\file.txt'), ['path\\to\\file.txt']);
+            assert.deepStrictEqual(extractFileNames('c:\\\\foo\\\\bar.txt'), ['c:\\foo\\bar.txt']);
+            assert.deepStrictEqual(extractFileNames('c://foo//bar.txt'), ['c://foo//bar.txt']);
+            assert.deepStrictEqual(extractFileNames('\\\\foo\\bar\\boo.txt'), ['\\\\foo\\bar\\boo.txt']);
+            assert.deepStrictEqual(extractFileNames('\\\\\\\\foo\\\\bar\\\\boo.txt'), ['\\\\foo\\bar\\boo.txt']);
+        });
     });
 });

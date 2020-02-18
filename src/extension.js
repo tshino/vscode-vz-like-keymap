@@ -288,9 +288,6 @@ function activate(context) {
             return undefined;
         };
         let cleanName = function(name) {
-            if (name.match(/^.+\\\\/)) {
-                name = name.replace(/\\\\/g, '\\');
-            }
             if (name.match(/^\~[\/\\]/)) {
                 let home = tag_jump.getHomePath();
                 if (home !== '') {
