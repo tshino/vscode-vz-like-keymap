@@ -259,13 +259,21 @@ function activate(context) {
         let line = textEditor.selection.active.line;
         return textEditor.document.lineAt(line).text;
     };
-    let tagJump = function(textEditor) {
-        const docUri = textEditor.document.uri;
-        const wsFolders = vscode.workspace.workspaceFolders;
-        const wsFoldersUris = wsFolders ? wsFolders.map(f => f.uri) : [];
+    const getBaseFolders = function(textEditor) {
+        let docUri = textEditor.document.uri;
+        let wsFolders = vscode.workspace.workspaceFolders;
+        let wsFoldersUris = wsFolders ? wsFolders.map(f => f.uri) : [];
         let folders = tag_jump.enumFolderUris(docUri, wsFoldersUris);
+        return folders;
+    };
+    const getFileNames = function(textEditor) {
         let text = getCurrentLineText(textEditor);
         let names = tag_jump.extractFileNames(text);
+        return names;
+    };
+    let tagJump = function(textEditor) {
+        let folders = getBaseFolders(textEditor);
+        let names = getFileNames(textEditor);
         let index = 0;
         let getNextCandidate = function() {
             if (0 < names.length) {
