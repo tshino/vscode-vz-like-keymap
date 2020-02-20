@@ -231,6 +231,17 @@ function activate(context) {
     });
     let makeFileUri = function(folderUri, path) {
         try {
+            if (path.match(/^\~[\/\\]/)) {
+                let home = tag_jump.getHomePath();
+                if (home !== '') {
+                    path = home + '/' + path.substring(2);
+                }
+            }
+            path = path.replace(/\\/g, '/');
+            path = path.replace(/^\.\/|\/$/g, '');
+            if (path === '') {
+                return null;
+            }
             if (tag_jump.isUNCPath(path)) {
                 return new vscode.Uri({
                     scheme: 'file',
@@ -295,17 +306,6 @@ function activate(context) {
             }
             return undefined;
         };
-        let cleanName = function(name) {
-            if (name.match(/^\~[\/\\]/)) {
-                let home = tag_jump.getHomePath();
-                if (home !== '') {
-                    name = home + '/' + name.substring(2);
-                }
-            }
-            name = name.replace(/\\/g, '/');
-            name = name.replace(/^\.\/|\/$/g, '');
-            return name;
-        };
         let tryNext = function() {
             let cand = getNextCandidate();
             if (!cand) {
@@ -314,11 +314,6 @@ function activate(context) {
             let folder = cand.folder;
             let name = cand.name;
             let line = cand.line;
-            name = cleanName(name);
-            if (name === '') {
-                tryNext();
-                return;
-            }
             let uri = makeFileUri(folder, name);
             if (!uri) {
                 tryNext();
