@@ -231,12 +231,7 @@ function activate(context) {
     });
     let makeFileUri = function(folderUri, path) {
         try {
-            if (path.match(/^\~[\/\\]/)) {
-                let home = tag_jump.getHomePath();
-                if (home !== '') {
-                    path = home + '/' + path.substring(2);
-                }
-            }
+            path = tag_jump.expandTildePrefix(path);
             path = path.replace(/\\/g, '/');
             path = path.replace(/^\.\/|\/$/g, '');
             if (path === '') {

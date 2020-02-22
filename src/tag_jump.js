@@ -10,6 +10,16 @@ const getHomePath = function() {
     return '';
 };
 
+const expandTildePrefix = function(path) {
+    if (path.match(/^\~[\\\/]/)) {
+        let home = getHomePath();
+        if (home !== '') {
+            path = home + '/' + path.substring(2);
+        }
+    }
+    return path;
+};
+
 const isUNCPath = function(path) {
     return path.match(/^\/\/[^\/]+\//) ? true : false;
 };
@@ -48,6 +58,7 @@ const extractFileNames = function(text) {
 };
 
 exports.getHomePath = getHomePath;
+exports.expandTildePrefix = expandTildePrefix;
 exports.isUNCPath = isUNCPath;
 exports.isAbsolutePath = isAbsolutePath;
 exports.enumFolderUris = enumFolderUris;
