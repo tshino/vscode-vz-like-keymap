@@ -4,14 +4,14 @@ const UriMock = require('./uri_mock.js');
 const tag_jump = require('../src/tag_jump.js');
 
 describe('tag_jump', function() {
+    const restoreEnv = function(name, value) {
+        if (value === undefined) {
+            delete process.env[name];
+        } else {
+            process.env[name] = value;
+        }
+    };
     describe('getHomePath', function() {
-        const restoreEnv = function(name, value) {
-            if (value === undefined) {
-                delete process.env[name];
-            } else {
-                process.env[name] = value;
-            }
-        };
         const HOME = process.env.HOME;
         const HOMEDRIVE = process.env.HOMEDRIVE;
         const HOMEPATH = process.env.HOMEPATH;
@@ -49,6 +49,43 @@ describe('tag_jump', function() {
             process.env.HOMEDRIVE = 'c:';
             process.env.HOMEPATH = '\\path\\to\\home';
             assert.equal(tag_jump.getHomePath(), '/path/to/home');
+        });
+    });
+    describe('expandTildePrefix', function() {
+        const HOME = process.env.HOME;
+        const HOMEDRIVE = process.env.HOMEDRIVE;
+        const HOMEPATH = process.env.HOMEPATH;
+        const expandTildePrefix = tag_jump.expandTildePrefix;
+        beforeEach(function() {
+            delete process.env.HOME;
+            delete process.env.HOMEDRIVE;
+            delete process.env.HOMEPATH;
+        });
+        after(function() {
+            restoreEnv('HOME', HOME);
+            restoreEnv('HOMEDRIVE', HOMEDRIVE);
+            restoreEnv('HOMEPATH', HOMEPATH);
+        });
+        it('should replace tilde prefix with HOME env var', function() {
+            process.env.HOME = '/HOME/PATH';
+            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            assert.equal(expandTildePrefix('/some/where'), '/some/where');
+            assert.equal(expandTildePrefix('some/where'), 'some/where');
+        });
+        it('should nothing if HOME env var is empty or not present', function() {
+            process.env.HOME = '/HOME/PATH';
+            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            process.env.HOME = '';
+            assert.equal(expandTildePrefix('~/some/where'), '~/some/where');
+            delete process.env.HOME;
+            assert.equal(expandTildePrefix('~/some/where'), '~/some/where');
+        });
+        it('should treat backslashes same as slashes considering cross platform situations', function() {
+            process.env.HOME = '/HOME/PATH';
+            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            assert.equal(expandTildePrefix('~\\some\\where'), '/HOME/PATH/some\\where');
+            process.env.HOME = 'C:\\HOME\\PATH';
+            assert.equal(expandTildePrefix('~\\some\\where'), 'C:\\HOME\\PATH/some\\where');
         });
     });
     describe('isUNCPath', function() {
