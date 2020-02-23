@@ -238,14 +238,22 @@ function activate(context) {
                 return null;
             }
             if (tag_jump.isUNCPath(path)) {
-                return new vscode.Uri({
+                return folderUri.with({
                     scheme: 'file',
                     authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
-                    path: path.replace(/^\/\/[^\/]+/, '')
+                    path: path.replace(/^\/\/[^\/]+/, ''),
+                    query: '',
+                    fragment: ''
                 });
             }
-            if (tag_jump.isAbsolutePath(path) && folderUri.scheme === 'file') {
-                return folderUri.with({ path: path });
+            if (tag_jump.isAbsolutePath(path)) {
+                return folderUri.with({
+                    scheme: 'file',
+                    authority: '',
+                    path: path,
+                    query: '',
+                    fragment: ''
+                });
             }
             return folderUri.with({ path: folderUri.path + '/' + path });
         } catch (_e) {
