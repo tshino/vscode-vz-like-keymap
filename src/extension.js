@@ -285,39 +285,35 @@ function activate(context) {
         let names = tag_jump.extractFileNames(text);
         return names;
     };
+    const makeTagCandidates = function(folders, fileNames) {
+        let candidates = [];
+        for (let i = 0; i < fileNames.length; i++) {
+            let line = 0;
+            if (i + 1 < fileNames.length) {
+                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0');
+            }
+            for (let j = 0; j < folders.length; j++) {
+                candidates.push({
+                    folder: folders[j],
+                    name: fileNames[i],
+                    line: line
+                });
+            }
+        }
+        return candidates;
+    };
     let tagJump = function(textEditor) {
         let folders = getBaseFolders(textEditor);
         let names = getFileNames(textEditor);
+        let candidates = makeTagCandidates(folders, names);
         let index = 0;
-        let getNextCandidate = function() {
-            if (0 < names.length) {
-                if (index < folders.length) {
-                    let ret = {
-                        folder: folders[index],
-                        name: names[0],
-                        line: 0
-                    };
-                    index += 1;
-                    if (2 <= names.length) {
-                        ret.line = parseInt(names[1].match(/^[0-9]+/) || '0');
-                    }
-                    return ret;
-                }
-                index = 0;
-                names.shift();
-                return getNextCandidate();
-            }
-            return undefined;
-        };
         let tryNext = function() {
-            let cand = getNextCandidate();
-            if (!cand) {
+            if (index >= candidates.length) {
                 return;
             }
-            let folder = cand.folder;
-            let name = cand.name;
+            let cand = candidates[index++];
             let line = cand.line;
-            let uri = makeFileUri(folder, name);
+            let uri = makeFileUri(cand.folder, cand.name);
             if (!uri) {
                 tryNext();
                 return;
