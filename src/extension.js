@@ -107,8 +107,8 @@ function activate(context) {
         }
         return lines.length;
     };
-    let registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
-        registerTextEditorCommand(name, function(textEditor, _edit) {
+    let makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
+        return function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
             if (inSelectionMode) {
                 if (inBoxSelectionMode && !boxSelectCmd) {
@@ -122,7 +122,10 @@ function activate(context) {
             } else {
                 exec(basicCmd);
             }
-        });
+        };
+    };
+    let registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
+        registerTextEditorCommand(name, makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
     };
     let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
