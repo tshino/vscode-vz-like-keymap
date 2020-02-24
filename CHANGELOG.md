@@ -3,6 +3,9 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
+- Added:
+  - Half page scroll as optional scroll behavior of PageUp/PageDown (and its shortcut Ctrl+R/Ctrl+C).
+  - New option `Scroll Page Size` which you can choose from Full and Half.
 - Changed:
   - Changed page up/down behavior so that preserves the vertical position of the cursor in the view.
 

@@ -145,7 +145,7 @@ function activate(context) {
     registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
-    let cursorHalfPageUp = function(textEditor, select) {
+    let cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = enumVisibleLines(textEditor);
         let currIndex = getLowerBoundLineIndex(vlines, curr.line);
@@ -178,7 +178,7 @@ function activate(context) {
             );
         }
     };
-    let cursorHalfPageDown = function(textEditor, select) {
+    let cursorHalfPageDownImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = enumVisibleLines(textEditor);
         var lineCount = textEditor.document.lineCount;
@@ -202,46 +202,84 @@ function activate(context) {
             );
         }
     };
-    registerTextEditorCommand('cursorHalfPageUp', function(textEditor, _edit) {
+    let cursorHalfPageUp = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         if (inSelectionMode && inBoxSelectionMode) {
             resetBoxSelection();
         }
-        cursorHalfPageUp(textEditor, inSelectionMode);
-    });
-    registerTextEditorCommand('cursorHalfPageDown', function(textEditor, _edit) {
+        cursorHalfPageUpImpl(textEditor, inSelectionMode);
+    };
+    let cursorHalfPageDown = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         if (inSelectionMode && inBoxSelectionMode) {
             resetBoxSelection();
         }
-        cursorHalfPageDown(textEditor, inSelectionMode);
-    });
-    registerTextEditorCommand('cursorHalfPageUpSelect', function(textEditor, _edit) {
+        cursorHalfPageDownImpl(textEditor, inSelectionMode);
+    };
+    let cursorHalfPageUpSelect = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         if (inSelectionMode && inBoxSelectionMode) {
             resetBoxSelection();
         }
-        cursorHalfPageUp(textEditor, true);
-    });
-    registerTextEditorCommand('cursorHalfPageDownSelect', function(textEditor, _edit) {
+        cursorHalfPageUpImpl(textEditor, true);
+    };
+    let cursorHalfPageDownSelect = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         if (inSelectionMode && inBoxSelectionMode) {
             resetBoxSelection();
         }
-        cursorHalfPageDown(textEditor, true);
-    });
-    registerCursorCommand3(
-        'cursorPageUp',
+        cursorHalfPageDownImpl(textEditor, true);
+    };
+    registerTextEditorCommand('cursorHalfPageUp', cursorHalfPageUp);
+    registerTextEditorCommand('cursorHalfPageDown', cursorHalfPageDown);
+    registerTextEditorCommand('cursorHalfPageUpSelect', cursorHalfPageUpSelect);
+    registerTextEditorCommand('cursorHalfPageDownSelect', cursorHalfPageDownSelect);
+    let cursorFullPageUp = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUp'],
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
     );
-    registerCursorCommand3(
-        'cursorPageDown',
+    let cursorFullPageDown = makeCursorCommand(
         ['scrollPageDown', 'cursorPageDown'],
         ['scrollPageDown', 'cursorPageDownSelect'],
         ['scrollPageDown', 'cursorColumnSelectPageDown']
     );
+    let cursorFullPageUpSelect = makeCursorCommand(
+        ['scrollPageUp', 'cursorPageUpSelect'],
+        ['scrollPageUp', 'cursorPageUpSelect']
+    );
+    let cursorFullPageDownSelect = makeCursorCommand(
+        ['scrollPageDown', 'cursorPageDownSelect'],
+        ['scrollPageDown', 'cursorPageDownSelect']
+    );
+    registerTextEditorCommand('cursorPageUp', function(textEditor) {
+        if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+            return cursorHalfPageUp(textEditor);
+        } else {
+            return cursorFullPageUp(textEditor);
+        }
+    });
+    registerTextEditorCommand('cursorPageDown', function(textEditor) {
+        if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+            return cursorHalfPageDown(textEditor);
+        } else {
+            return cursorFullPageDown(textEditor);
+        }
+    });
+    registerTextEditorCommand('cursorPageUpSelect', function(textEditor) {
+        if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+            return cursorHalfPageUpSelect(textEditor);
+        } else {
+            return cursorFullPageUpSelect(textEditor);
+        }
+    });
+    registerTextEditorCommand('cursorPageDownSelect', function(textEditor) {
+        if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+            return cursorHalfPageDownSelect(textEditor);
+        } else {
+            return cursorFullPageDownSelect(textEditor);
+        }
+    });
     registerCursorCommand('cursorLineStart', 'vz.cursorLineStartSelect');
     registerCursorCommand('cursorHome', 'cursorHomeSelect');
     registerCursorCommand('cursorLineEnd', 'vz.cursorLineEndSelect');
@@ -252,16 +290,6 @@ function activate(context) {
     registerCursorCommand('cursorRightSelect', 'cursorRightSelect');
     registerCursorCommand('cursorUpSelect', 'cursorUpSelect');
     registerCursorCommand('cursorDownSelect', 'cursorDownSelect');
-    registerCursorCommand3(
-        'cursorPageUpSelect',
-        ['scrollPageUp', 'cursorPageUpSelect'],
-        ['scrollPageUp', 'cursorPageUpSelect']
-    );
-    registerCursorCommand3(
-        'cursorPageDownSelect',
-        ['scrollPageDown', 'cursorPageDownSelect'],
-        ['scrollPageDown', 'cursorPageDownSelect']
-    );
     registerCursorCommand('cursorHomeSelect', 'cursorHomeSelect');
     registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {

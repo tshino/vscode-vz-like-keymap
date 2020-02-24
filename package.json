@@ -28,6 +28,20 @@
         "test": "mocha"
     },
     "contributes": {
+        "configuration": {
+            "title": "Vz Keymap",
+            "properties": {
+                "vzKeymap.scrollPageSize": {
+                    "type": "string",
+                    "default": "Half",
+                    "enum": ["Full", "Half"],
+                    "enumDescriptions": [
+                        "Scroll up/down by one page",
+                        "Scroll up/down by half a page"
+                    ]
+                }
+            }
+        },
         "keybindings": [
 
             {
