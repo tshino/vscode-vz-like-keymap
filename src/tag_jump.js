@@ -57,9 +57,44 @@ const extractFileNames = function(text) {
     return names;
 };
 
+const makeFileUri = function(folderUri, path) {
+    try {
+        path = expandTildePrefix(path);
+        path = path.replace(/\\/g, '/');
+        path = path.replace(/^\.\/|\/$/g, '');
+        if (path === '') {
+            return null;
+        }
+        if (isUNCPath(path)) {
+            return folderUri.with({
+                scheme: 'file',
+                authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
+                path: path.replace(/^\/\/[^\/]+/, ''),
+                query: '',
+                fragment: ''
+            });
+        }
+        if (isAbsolutePath(path)) {
+            return folderUri.with({
+                scheme: 'file',
+                authority: '',
+                path: path,
+                query: '',
+                fragment: ''
+            });
+        }
+        return folderUri.with({
+            path: folderUri.path + '/' + path
+        });
+    } catch (_e) {
+        return null;
+    }
+};
+
 exports.getHomePath = getHomePath;
 exports.expandTildePrefix = expandTildePrefix;
 exports.isUNCPath = isUNCPath;
 exports.isAbsolutePath = isAbsolutePath;
 exports.enumFolderUris = enumFolderUris;
 exports.extractFileNames = extractFileNames;
+exports.makeFileUri = makeFileUri;

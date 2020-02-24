@@ -229,37 +229,6 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         resetBoxSelection();
     });
-    let makeFileUri = function(folderUri, path) {
-        try {
-            path = tag_jump.expandTildePrefix(path);
-            path = path.replace(/\\/g, '/');
-            path = path.replace(/^\.\/|\/$/g, '');
-            if (path === '') {
-                return null;
-            }
-            if (tag_jump.isUNCPath(path)) {
-                return folderUri.with({
-                    scheme: 'file',
-                    authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
-                    path: path.replace(/^\/\/[^\/]+/, ''),
-                    query: '',
-                    fragment: ''
-                });
-            }
-            if (tag_jump.isAbsolutePath(path)) {
-                return folderUri.with({
-                    scheme: 'file',
-                    authority: '',
-                    path: path,
-                    query: '',
-                    fragment: ''
-                });
-            }
-            return folderUri.with({ path: folderUri.path + '/' + path });
-        } catch (_e) {
-            return null;
-        }
-    };
     let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
             vscode.window.showTextDocument(doc).then(function(textEditor) {
@@ -313,7 +282,7 @@ function activate(context) {
             }
             let cand = candidates[index++];
             let line = cand.line;
-            let uri = makeFileUri(cand.folder, cand.name);
+            let uri = tag_jump.makeFileUri(cand.folder, cand.name);
             if (!uri) {
                 tryNext();
                 return;
