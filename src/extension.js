@@ -42,10 +42,23 @@ function activate(context) {
             }
         })
     );
+    let taskAfterScroll = null;
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection(function(event) {
             if (event.textEditor === vscode.window.activeTextEditor) {
+                taskAfterScroll = null;
                 updateIsSelectionMode(event.textEditor);
+            }
+        })
+    );
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorVisibleRanges(function(event) {
+            if (event.textEditor === vscode.window.activeTextEditor) {
+                let task = taskAfterScroll;
+                if (task) {
+                    taskAfterScroll = null;
+                    task(event.textEditor);
+                }
             }
         })
     );
@@ -62,6 +75,11 @@ function activate(context) {
         if (index + 1 < commands.length) {
             res.then(function() { exec(commands, index + 1); });
         }
+    };
+    let moveCursorToWithoutScroll = function(textEditor, line, col, select) {
+        var cursor = new vscode.Position(line, col);
+        var anchor = select ? textEditor.selection.anchor : cursor;
+        textEditor.selection = new vscode.Selection(anchor, cursor);
     };
     let moveCursorTo = function(textEditor, line, col, select) {
         var cursor = new vscode.Position(line, col);
@@ -80,6 +98,14 @@ function activate(context) {
             }
         }
         return lines;
+    };
+    let getLowerBoundLineIndex = function(lines, line) {
+        for (var i = 0; i < lines.length; i++) {
+            if (line <= lines[i]) {
+                return i;
+            }
+        }
+        return lines.length;
     };
     let registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
@@ -116,6 +142,91 @@ function activate(context) {
     registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
+    let cursorHalfPageUp = function(textEditor, select) {
+        let curr = textEditor.selection.active;
+        let vlines = enumVisibleLines(textEditor);
+        let currIndex = getLowerBoundLineIndex(vlines, curr.line);
+        let onePage = Math.max(1, vlines.length);
+        let halfPage = Math.max(1, Math.floor(onePage / 2));
+        if (0 === vlines[0]) {
+            let newLine = vlines[Math.max(0, currIndex - halfPage)];
+            moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+        } else {
+            taskAfterScroll = function(textEditor) {
+                let newVlines = enumVisibleLines(textEditor);
+                let deltaScroll = getLowerBoundLineIndex(newVlines, vlines[0]);
+                let delta = Math.max(halfPage, deltaScroll);
+                let newLine = (
+                    0 === newVlines[0] ? (
+                        delta <= currIndex
+                            ? vlines[currIndex - delta]
+                            : newVlines[Math.max(0, deltaScroll + currIndex - delta)]
+                    ) : (
+                        newVlines[Math.min(newVlines.length - 1, currIndex)]
+                    )
+                );
+                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            };
+            textEditor.revealRange(
+                new vscode.Range(
+                    new vscode.Position(vlines[0], 0),
+                    new vscode.Position(vlines[0], 0)
+                ), vscode.TextEditorRevealType.InCenter
+            );
+        }
+    };
+    let cursorHalfPageDown = function(textEditor, select) {
+        let curr = textEditor.selection.active;
+        let vlines = enumVisibleLines(textEditor);
+        var lineCount = textEditor.document.lineCount;
+        let currIndex = getLowerBoundLineIndex(vlines, curr.line);
+        let onePage = Math.max(1, vlines.length);
+        let halfPage = Math.max(1, Math.floor(onePage / 2));
+        if (lineCount - 1 === vlines[vlines.length - 1]) {
+            let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
+            moveCursorTo(textEditor, newLine, curr.character, select);
+        } else {
+            taskAfterScroll = function(textEditor) {
+                let newVlines = enumVisibleLines(textEditor);
+                let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
+                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            };
+            textEditor.revealRange(
+                new vscode.Range(
+                    new vscode.Position(vlines[vlines.length - 1], 0),
+                    new vscode.Position(vlines[vlines.length - 1], 0)
+                ), vscode.TextEditorRevealType.InCenter
+            );
+        }
+    };
+    registerTextEditorCommand('cursorHalfPageUp', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        if (inSelectionMode && inBoxSelectionMode) {
+            resetBoxSelection();
+        }
+        cursorHalfPageUp(textEditor, inSelectionMode);
+    });
+    registerTextEditorCommand('cursorHalfPageDown', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        if (inSelectionMode && inBoxSelectionMode) {
+            resetBoxSelection();
+        }
+        cursorHalfPageDown(textEditor, inSelectionMode);
+    });
+    registerTextEditorCommand('cursorHalfPageUpSelect', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        if (inSelectionMode && inBoxSelectionMode) {
+            resetBoxSelection();
+        }
+        cursorHalfPageUp(textEditor, true);
+    });
+    registerTextEditorCommand('cursorHalfPageDownSelect', function(textEditor, _edit) {
+        updateIsSelectionMode(textEditor);
+        if (inSelectionMode && inBoxSelectionMode) {
+            resetBoxSelection();
+        }
+        cursorHalfPageDown(textEditor, true);
+    });
     registerCursorCommand3(
         'cursorPageUp',
         ['scrollPageUp', 'cursorPageUp'],
