@@ -239,19 +239,36 @@ function activate(context) {
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
     );
-    let cursorFullPageDown = makeCursorCommand(
-        ['scrollPageDown', 'cursorPageDown'],
-        ['scrollPageDown', 'cursorPageDownSelect'],
-        ['scrollPageDown', 'cursorColumnSelectPageDown']
+    let cursorFullPageDownImpl = makeCursorCommand(
+        ['cursorPageDown'],
+        ['cursorPageDownSelect'],
+        ['cursorColumnSelectPageDown']
     );
     let cursorFullPageUpSelect = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorPageUpSelect']
     );
-    let cursorFullPageDownSelect = makeCursorCommand(
-        ['scrollPageDown', 'cursorPageDownSelect'],
-        ['scrollPageDown', 'cursorPageDownSelect']
+    let cursorFullPageDownSelectImpl = makeCursorCommand(
+        ['cursorPageDownSelect'],
+        ['cursorPageDownSelect']
     );
+    let isLastLineVisible = function(textEditor) {
+        let vlines = enumVisibleLines(textEditor);
+        var lineCount = textEditor.document.lineCount;
+        return vlines[vlines.length - 1] === lineCount - 1;
+    };
+    let cursorFullPageDown = function(textEditor) {
+        if (!isLastLineVisible(textEditor)) {
+            exec('scrollPageDown');
+        }
+        cursorFullPageDownImpl(textEditor);
+    };
+    let cursorFullPageDownSelect = function(textEditor) {
+        if (!isLastLineVisible(textEditor)) {
+            exec('scrollPageDown');
+        }
+        cursorFullPageDownSelectImpl(textEditor);
+    };
     registerTextEditorCommand('cursorPageUp', function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
             return cursorHalfPageUp(textEditor);
