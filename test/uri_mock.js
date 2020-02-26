@@ -3,11 +3,14 @@ const assert = require('assert');
 
 const UriMock = (function() {
     var proto = {};
+    const resolvePath = function(path) {
+        return (path === '' || path[0] !== '/') ? '/' + path : path;
+    };
     proto.with = function(change) {
         return {
             scheme : change.scheme !== undefined ? change.scheme : this.scheme,
             authority : change.authority !== undefined ? change.authority : this.authority,
-            path : change.path !== undefined ? change.path : this.path,
+            path : change.path !== undefined ? resolvePath(change.path) : this.path,
             query :  change.query !== undefined ? change.query : this.query,
             fragment : change.fragment !== undefined ? change.fragment : this.fragment,
             __proto__ : proto
@@ -17,7 +20,7 @@ const UriMock = (function() {
         return {
             scheme : s,
             authority : a,
-            path : p,
+            path : resolvePath(p || ''),
             query : q,
             fragment : f,
             __proto__ : proto
@@ -39,9 +42,16 @@ describe('UriMock', function() {
         let uri = UriMock('s', 'a', 'p', 'q', 'f');
         assert.equal(uri.scheme, 's');
         assert.equal(uri.authority, 'a');
-        assert.equal(uri.path, 'p');
+        assert.equal(uri.path, '/p');
         assert.equal(uri.query, 'q');
         assert.equal(uri.fragment, 'f');
+    });
+    it('should maintain path property to be absolute', function() {
+        assert.equal(UriMock('s', 'a', '/p', 'q', 'f').path, '/p');
+        assert.equal(UriMock('s', 'a', 'p', 'q', 'f').path, '/p');
+        assert.equal(UriMock('', '', '', '', '').path, '/');
+        assert.equal(UriMock().path, '/');
+        assert.equal(UriMock().with({ path: 'p' }).path, '/p');
     });
     it('should be deep-equality comparable', function() {
         let uri1 = UriMock('s', 'a', 'p', 'q', 'f');
