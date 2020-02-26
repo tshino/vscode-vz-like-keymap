@@ -6,25 +6,31 @@ const UriMock = (function() {
     const resolvePath = function(path) {
         return (path === '' || path[0] !== '/') ? '/' + path : path;
     };
+    const validate = function(uri) {
+        if (!uri.authority && /^\/\//.test(uri.path)) {
+            throw new Error('invalid URI');
+        }
+        return uri;
+    };
     proto.with = function(change) {
-        return {
+        return validate({
             scheme : change.scheme !== undefined ? change.scheme : this.scheme,
             authority : change.authority !== undefined ? change.authority : this.authority,
             path : change.path !== undefined ? resolvePath(change.path) : this.path,
             query :  change.query !== undefined ? change.query : this.query,
             fragment : change.fragment !== undefined ? change.fragment : this.fragment,
             __proto__ : proto
-        };
+        });
     };
     return function(s, a, p, q, f) {
-        return {
+        return validate({
             scheme : s,
             authority : a,
             path : resolvePath(p || ''),
             query : q,
             fragment : f,
             __proto__ : proto
-        };
+        });
     };
 })();
 module.exports = UriMock;
@@ -38,7 +44,7 @@ describe('UriMock', function() {
         assert('query' in uri);
         assert('fragment' in uri);
     });
-    it('can be constructed with property values', function() {
+    it('should be able to be constructed with property values', function() {
         let uri = UriMock('s', 'a', 'p', 'q', 'f');
         assert.equal(uri.scheme, 's');
         assert.equal(uri.authority, 'a');
@@ -52,6 +58,11 @@ describe('UriMock', function() {
         assert.equal(UriMock('', '', '', '', '').path, '/');
         assert.equal(UriMock().path, '/');
         assert.equal(UriMock().with({ path: 'p' }).path, '/p');
+    });
+    it('should throw exception when making invalid URI', function() {
+        assert.throws(() => UriMock('s', '', '//path', '', ''));
+        assert.throws(() => UriMock('s', '', '///path', '', ''));
+        assert.throws(() => UriMock().with({ path: '//path' }));
     });
     it('should be deep-equality comparable', function() {
         let uri1 = UriMock('s', 'a', 'p', 'q', 'f');
