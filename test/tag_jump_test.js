@@ -72,7 +72,7 @@ describe('tag_jump', function() {
             assert.equal(expandTildePrefix('/some/where'), '/some/where');
             assert.equal(expandTildePrefix('some/where'), 'some/where');
         });
-        it('should nothing if HOME env var is empty or not present', function() {
+        it('should do nothing if HOME env var is empty or not present', function() {
             process.env.HOME = '/HOME/PATH';
             assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
             process.env.HOME = '';
