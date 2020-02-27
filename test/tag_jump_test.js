@@ -222,7 +222,7 @@ describe('tag_jump', function() {
         });
         const makeFileUri = tag_jump.makeFileUri;
         const baseUri = UriMock('file', '', '/base/path', '', '');
-        it('should create new URI by combining base URI and relative path', function() {
+        it('should create an URI by combining base URI and relative path', function() {
             assert.deepStrictEqual(
                 makeFileUri(baseUri, 'relative/path/file.txt'),
                 UriMock('file', '', '/base/path/relative/path/file.txt', '', '')
@@ -234,6 +234,26 @@ describe('tag_jump', function() {
             assert.deepStrictEqual(
                 makeFileUri(baseUri, './file.txt'),
                 UriMock('file', '', '/base/path/file.txt', '', '')
+            );
+        });
+        it('should create an URI refering to an file of specified absolute path', function() {
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, '/absolute/path/file.txt'),
+                UriMock('file', '', '/absolute/path/file.txt', '', '')
+            );
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, '\\absolute\\path\\file.txt'),
+                UriMock('file', '', '/absolute/path/file.txt', '', '')
+            );
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, 'D:\\absolute\\path\\file.txt'),
+                UriMock('file', '', '/D:/absolute/path/file.txt', '', '')
+            );
+        });
+        it('should create an URI refering to an UNC file path if specified', function() {
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, '\\\\unc\\path\\to\\file.txt'),
+                UriMock('file', 'unc', '/path/to/file.txt', '', '')
             );
         });
         it('should perform tilde prefix expansion', function() {
@@ -254,12 +274,12 @@ describe('tag_jump', function() {
                 UriMock('file', '', '/base/path/path/to/file.txt', '', '')
             );
         });
-        it('should fail if path is evaluated as empty string', function() {
+        it('should return null if specified path is evaluated as empty string', function() {
             assert.equal(makeFileUri(baseUri, ''), null);
             assert.equal(makeFileUri(baseUri, './'), null);
             assert.equal(makeFileUri(baseUri, './/'), null);
         });
-        it('should fail if resulting invalid URI', function() {
+        it('should return null if it is resulting ill-formed URI', function() {
             assert.equal(makeFileUri(baseUri, '///too/many/leading/slash'), null);
             assert.equal(makeFileUri(baseUri, '////too/many/leading/slash'), null);
         });
