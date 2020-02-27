@@ -212,4 +212,56 @@ describe('tag_jump', function() {
             assert.deepStrictEqual(extractFileNames('\\\\\\\\foo\\\\bar\\\\boo.txt'), ['\\\\foo\\bar\\boo.txt']);
         });
     });
+    describe('makeFileUri', function() {
+        const HOME = process.env.HOME;
+        beforeEach(function() {
+            delete process.env.HOME;
+        });
+        after(function() {
+            restoreEnv('HOME', HOME);
+        });
+        const makeFileUri = tag_jump.makeFileUri;
+        const baseUri = UriMock('file', '', '/base/path', '', '');
+        it('should create new URI by combining base URI and relative path', function() {
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, 'relative/path/file.txt'),
+                UriMock('file', '', '/base/path/relative/path/file.txt', '', '')
+            );
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, 'file.txt'),
+                UriMock('file', '', '/base/path/file.txt', '', '')
+            );
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, './file.txt'),
+                UriMock('file', '', '/base/path/file.txt', '', '')
+            );
+        });
+        it('should perform tilde prefix expansion', function() {
+            process.env.HOME = '/home/path';
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, '~/file.txt'),
+                UriMock('file', '', '/home/path/file.txt', '', '')
+            );
+            process.env.HOME = 'c:\\home\\path';
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, '~\\file.txt'),
+                UriMock('file', '', '/c:/home/path/file.txt', '', '')
+            );
+        });
+        it('should replace backslash with slash', function() {
+            assert.deepStrictEqual(
+                makeFileUri(baseUri, 'path\\to\\file.txt'),
+                UriMock('file', '', '/base/path/path/to/file.txt', '', '')
+            );
+        });
+        it('should fail if path is evaluated as empty string', function() {
+            assert.equal(makeFileUri(baseUri, ''), null);
+            assert.equal(makeFileUri(baseUri, './'), null);
+            assert.equal(makeFileUri(baseUri, './/'), null);
+        });
+        it('should fail if resulting invalid URI', function() {
+            assert.equal(makeFileUri(baseUri, '///too/many/leading/slash'), null);
+            assert.equal(makeFileUri(baseUri, '////too/many/leading/slash'), null);
+        });
+    });
 });
