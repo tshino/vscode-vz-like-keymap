@@ -54,8 +54,9 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 
 | Key | Function |
 | --- | -------- |
-| Ctrl+Q F, Ctrl+L | Find |
+| Ctrl+Q F | Find |
 | Ctrl+Q A | Replace |
+| Ctrl+L | Select word to find |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous/next match |
 | Ctrl+M | Find next match/Replace one |
 

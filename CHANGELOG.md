@@ -3,13 +3,14 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
-- Changed:
-  - Modified full size page scroll behavior not to overshoot when the view is at the bottom of a document.
+- Improved:
+  - Behavior of Ctrl+L for Select words to find.
+  - Behavior of full size page scroll not to overshoot when the view is at the bottom of a document.
 
 ### [0.9.0] - 2020-02-25
 - Added:
   - Half-page scroll as optional scroll behavior of PageUp/PageDown (and its shortcut Ctrl+R/Ctrl+C).
-  - New option `Scroll Page Size` which you can choose from Full and Half.
+  - New option 'Scroll Page Size' which you can choose from Full and Half.
 - Changed:
   - Modified page scroll behavior to preserve the vertical position of the cursor in the view.
 

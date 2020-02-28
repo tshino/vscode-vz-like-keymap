@@ -434,8 +434,12 @@
                 "when": "editorFocus"
             }, {
                 "key": "ctrl+l",
-                "command": "actions.find",
+                "command": "vz.selectWordToFind",
                 "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+l",
+                "command": "vz.expandWordToFind",
+                "when": "editorFocus && findInputFocussed"
             }, {
                 "key": "ctrl+q ctrl+a",
                 "command": "editor.action.startFindReplaceAction",

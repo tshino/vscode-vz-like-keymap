@@ -493,6 +493,26 @@ function activate(context) {
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
+    registerTextEditorCommand('selectWordToFind', function(_textEditor, _edit) {
+        exec(['actions.find']);
+    });
+    registerTextEditorCommand('expandWordToFind', function(textEditor, _edit) {
+        let sel = textEditor.selection;
+        if (1 < textEditor.selections.length || sel.anchor.line !== sel.active.line) {
+            return;
+        }
+        if (sel.anchor.character > sel.active.character) {
+            // reverse the direction
+            sel = new vscode.Selection(sel.active, sel.anchor);
+            textEditor.selection = sel;
+        }
+        let len = textEditor.document.lineAt(sel.active.line).range.end.character;
+        if (len <= sel.active.character) {
+            // no more characters in the current line
+            return;
+        }
+        exec(['cursorWordEndRightSelect', 'actions.find']);
+    });
     registerTextEditorCommand('closeFindWidget', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'cancelSelection']);
     });
