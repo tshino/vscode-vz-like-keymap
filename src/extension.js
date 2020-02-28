@@ -493,8 +493,17 @@ function activate(context) {
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
-    registerTextEditorCommand('selectWordToFind', function(_textEditor, _edit) {
-        exec(['actions.find']);
+    const isCursorAtEndOfLine = function(textEditor) {
+        let cursor = textEditor.selection.active;
+        let lineLen = textEditor.document.lineAt(cursor.line).range.end.character;
+        return lineLen <= cursor.character;
+    };
+    registerTextEditorCommand('selectWordToFind', function(textEditor, _edit) {
+        if (textEditor.selection.isEmpty && !isCursorAtEndOfLine(textEditor)) {
+            exec(['cursorWordEndRightSelect', 'actions.find']);
+        } else {
+            exec(['actions.find']);
+        }
     });
     registerTextEditorCommand('expandWordToFind', function(textEditor, _edit) {
         let sel = textEditor.selection;
@@ -502,13 +511,10 @@ function activate(context) {
             return;
         }
         if (sel.anchor.character > sel.active.character) {
-            // reverse the direction
             sel = new vscode.Selection(sel.active, sel.anchor);
             textEditor.selection = sel;
         }
-        let len = textEditor.document.lineAt(sel.active.line).range.end.character;
-        if (len <= sel.active.character) {
-            // no more characters in the current line
+        if (isCursorAtEndOfLine(textEditor)) {
             return;
         }
         exec(['cursorWordEndRightSelect', 'actions.find']);
