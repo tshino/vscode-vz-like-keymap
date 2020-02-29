@@ -3,9 +3,9 @@ const vscode = require("vscode");
 const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
-    var inSelectionMode = false;
-    var inBoxSelectionMode = false;
-    var lastSelectionAnchor = null;
+    let inSelectionMode = false;
+    let inBoxSelectionMode = false;
+    let lastSelectionAnchor = null;
     let startSelection = function(textEditor, box) {
         inSelectionMode = true;
         inBoxSelectionMode = box;
