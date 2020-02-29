@@ -501,6 +501,11 @@
                 "command": "vz.closeFindWidget",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
+            {
+                "key": "escape",
+                "command": "vz.closeFindWidget",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
 
             {
                 "key": "ctrl+q ctrl+q",

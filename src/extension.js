@@ -519,8 +519,13 @@ function activate(context) {
         }
         exec(['cursorWordEndRightSelect', 'actions.find']);
     });
-    registerTextEditorCommand('closeFindWidget', function(_textEditor, _edit) {
-        exec(['closeFindWidget', 'cancelSelection']);
+    registerTextEditorCommand('closeFindWidget', function(textEditor, _edit) {
+        textEditor.selection = new vscode.Selection(
+            textEditor.selection.start,
+            textEditor.selection.start
+        );
+        resetSelection();
+        exec(['closeFindWidget']);
     });
 }
 exports.activate = activate;
