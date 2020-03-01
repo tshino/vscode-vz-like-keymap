@@ -178,6 +178,22 @@
                 "command": "vz.cursorEndSelect",
                 "when": "editorTextFocus"
             }, {
+                "key": "ctrl+q [",
+                "command": "vz.cursorHome",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q ctrl+[",
+                "command": "vz.cursorHome",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q ]",
+                "command": "vz.cursorEnd",
+                "when": "editorTextFocus"
+            }, {
+                "key": "ctrl+q ctrl+]",
+                "command": "vz.cursorEnd",
+                "when": "editorTextFocus"
+            }, {
                 "key": "ctrl+q ctrl+r",
                 "command": "cursorTop",
                 "when": "editorFocus"

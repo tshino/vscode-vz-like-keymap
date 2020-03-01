@@ -18,7 +18,8 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+A, Ctrl+F | Move cursor to left/right start of a word |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Scroll up/down one/half page |
 | Ctrl+W, Ctrl+Z | Scroll up/down one line |
-| Ctrl+Q S, Ctrl+Q D | Move cursor to start/end of a line |
+| Ctrl+Q S, Ctrl+Q D | Move cursor to start/end of a logical line |
+| Ctrl+Q [, Ctrl+Q ] | Move cursor to start/end of a display line |
 | Ctrl+Q E, Ctrl+Q X | Move cursor to top/bottom of a view |
 | Ctrl+Q R, Ctrl+Q C | Move cursor to start/end of a file |
 | Ctrl+B | Toggle selection mode |
