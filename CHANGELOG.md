@@ -7,6 +7,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Ctrl+Q [ and Ctrl+Q ] for Move cursor to start/end of current display line.
 - Improved:
   - The behavior of repeated Ctrl+L for Select words to find.
+  - The behavior of Ctrl+Q X so that the view does not scroll.
   - The behavior of Escape key for Close find widget to do cancel selection as well.
   - The behavior of full size page scroll not to overshoot when the view is at the bottom of a document.
 

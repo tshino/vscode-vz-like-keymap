@@ -322,6 +322,7 @@ function activate(context) {
         updateIsSelectionMode(textEditor);
         resetBoxSelection();
         var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        margin = Math.max(1, margin);
         var lineCount = textEditor.document.lineCount;
         var vlines = enumVisibleLines(textEditor);
         var bottom = vlines.length - 1;
