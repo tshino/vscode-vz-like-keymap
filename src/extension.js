@@ -312,22 +312,22 @@ function activate(context) {
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         resetBoxSelection();
-        var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        var vlines = enumVisibleLines(textEditor);
-        var line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
-        var col = textEditor.selection.active.character;
+        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        let vlines = enumVisibleLines(textEditor);
+        let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
+        let col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
         resetBoxSelection();
-        var margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         margin = Math.max(1, margin);
-        var lineCount = textEditor.document.lineCount;
-        var vlines = enumVisibleLines(textEditor);
-        var bottom = vlines.length - 1;
-        var line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
-        var col = textEditor.selection.active.character;
+        let lineCount = textEditor.document.lineCount;
+        let vlines = enumVisibleLines(textEditor);
+        let bottom = vlines.length - 1;
+        let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
+        let col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
