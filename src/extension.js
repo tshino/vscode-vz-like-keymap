@@ -331,19 +331,13 @@ function activate(context) {
         moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
+        exec(['scrollLineUp']);
         if (0 < textEditor.selection.active.line) {
-            exec(['scrollLineUp']);
             exec(['vz.cursorUp']);
         }
     });
-    registerTextEditorCommand('scrollLineUpUnselect', function(textEditor, _edit) {
-        if (0 < textEditor.selection.active.line) {
-            var res = vscode.commands.executeCommand('cancelSelection');
-            res.then(function() {
-                exec(['scrollLineUp']);
-                exec(['vz.cursorUp']);
-            });
-        }
+    registerTextEditorCommand('scrollLineUpUnselect', function() {
+        exec(['cancelSelection', 'vz.scrollLineUp']);
     });
     registerTextEditorCommand('scrollLineDown', function(textEditor, _edit) {
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
