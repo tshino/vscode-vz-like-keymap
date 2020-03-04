@@ -346,13 +346,7 @@ function activate(context) {
         }
     });
     registerTextEditorCommand('scrollLineDownUnselect', function(textEditor, _edit) {
-        if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            var res = vscode.commands.executeCommand('cancelSelection');
-            res.then(function() {
-                exec(['scrollLineDown']);
-                exec(['vz.cursorDown']);
-            });
-        }
+        exec(['cancelSelection', 'vz.scrollLineDown']);
     });
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
