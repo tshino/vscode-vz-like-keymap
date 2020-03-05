@@ -331,6 +331,7 @@ function activate(context) {
         moveCursorTo(textEditor, line, col, inSelectionMode);
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
+        // Scroll and cursor are dispatched concurrently to avoid flickering.
         exec(['scrollLineUp']);
         if (0 < textEditor.selection.active.line) {
             exec(['vz.cursorUp']);
@@ -340,12 +341,13 @@ function activate(context) {
         exec(['cancelSelection', 'vz.scrollLineUp']);
     });
     registerTextEditorCommand('scrollLineDown', function(textEditor, _edit) {
+        // Scroll and cursor are dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
             exec(['scrollLineDown']);
             exec(['vz.cursorDown']);
         }
     });
-    registerTextEditorCommand('scrollLineDownUnselect', function(textEditor, _edit) {
+    registerTextEditorCommand('scrollLineDownUnselect', function() {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     });
     let registerToggleSelectionCommand = function(name, isBox) {
