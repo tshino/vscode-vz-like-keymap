@@ -4,7 +4,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
-  - Ctrl+Q [ and Ctrl+Q ] for Move cursor to start/end of current display line.
+  - Ctrl+Q '[' and Ctrl+Q ']' for Move cursor to start/end of current visual line.
 - Improved:
   - The behavior of repeated Ctrl+L for Select words to find.
   - The behavior of Ctrl+Q X so that the view does not scroll.
