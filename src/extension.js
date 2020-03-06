@@ -131,12 +131,12 @@ function activate(context) {
         registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
     };
     registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
-        var line = textEditor.selection.active.line;
+        let line = textEditor.selection.active.line;
         moveCursorTo(textEditor, line, 0, true);
     });
     registerTextEditorCommand('cursorLineEndSelect', function(textEditor, _edit) {
-        var line = textEditor.selection.active.line;
-        var col = textEditor.document.lineAt(line).range.end.character;
+        let line = textEditor.selection.active.line;
+        let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
     });
     registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
@@ -181,7 +181,7 @@ function activate(context) {
     let cursorHalfPageDownImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = enumVisibleLines(textEditor);
-        var lineCount = textEditor.document.lineCount;
+        let lineCount = textEditor.document.lineCount;
         let currIndex = getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2));
@@ -254,7 +254,7 @@ function activate(context) {
     );
     let isLastLineVisible = function(textEditor) {
         let vlines = enumVisibleLines(textEditor);
-        var lineCount = textEditor.document.lineCount;
+        let lineCount = textEditor.document.lineCount;
         return vlines[vlines.length - 1] === lineCount - 1;
     };
     let cursorFullPageDown = function(textEditor) {
@@ -366,7 +366,7 @@ function activate(context) {
         });
     };
     registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
-        var sel = textEditor.selection;
+        let sel = textEditor.selection;
         if (!sel.isEmpty && 1 === textEditor.selections.length) {
             resetSelection();
             textEditor.selection = new vscode.Selection(sel.active, sel.anchor);
