@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Added:
+  - Changing the cursor style according to the selection mode status.
+
 ### [0.9.1] - 2020-03-07
 - Added:
   - Ctrl+Q '[' and Ctrl+Q ']' for Move cursor to start/end of current visual line.

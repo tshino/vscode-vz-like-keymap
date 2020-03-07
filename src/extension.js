@@ -3,20 +3,35 @@ const vscode = require("vscode");
 const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
+    let userCursorStyle = null;
     let inSelectionMode = false;
     let inBoxSelectionMode = false;
     let lastSelectionAnchor = null;
+    let getSelectionModeCursorStyle = function(userCursorStyle) {
+        if (userCursorStyle !== vscode.TextEditorCursorStyle.Block) {
+            return vscode.TextEditorCursorStyle.Block;
+        } else {
+            return vscode.TextEditorCursorStyle.Line;
+        }
+    };
     let startSelection = function(textEditor, box) {
         inSelectionMode = true;
         inBoxSelectionMode = box;
         lastSelectionAnchor = textEditor.selection.anchor;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
+        if (userCursorStyle === null) {
+            userCursorStyle = textEditor.options.cursorStyle;
+        }
+        textEditor.options.cursorStyle = getSelectionModeCursorStyle(userCursorStyle);
     };
-    let resetSelection = function() {
+    let resetSelection = function(textEditor) {
         inSelectionMode = false;
         inBoxSelectionMode = false;
         lastSelectionAnchor = null;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
+        if (userCursorStyle !== null) {
+            textEditor.options.cursorStyle = userCursorStyle;
+        }
     };
     let resetBoxSelection = function() {
         inBoxSelectionMode = false;
@@ -28,7 +43,7 @@ function activate(context) {
         }
         if (inSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
-            resetSelection();
+            resetSelection(textEditor);
         }
     };
     if (vscode.window.activeTextEditor) {
@@ -37,7 +52,7 @@ function activate(context) {
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
-                resetSelection();
+                resetSelection(textEditor);
                 updateIsSelectionMode(textEditor);
             }
         })
@@ -359,7 +374,7 @@ function activate(context) {
                 } else {
                     vscode.commands.executeCommand('removeSecondaryCursors');
                 }
-                resetSelection();
+                resetSelection(textEditor);
             } else {
                 startSelection(textEditor, isBox);
             }
@@ -368,7 +383,7 @@ function activate(context) {
     registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
         let sel = textEditor.selection;
         if (!sel.isEmpty && 1 === textEditor.selections.length) {
-            resetSelection();
+            resetSelection(textEditor);
             textEditor.selection = new vscode.Selection(sel.active, sel.anchor);
             textEditor.revealRange(new vscode.Range(sel.anchor, sel.anchor));
         }
@@ -459,7 +474,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            resetSelection();
+            resetSelection(textEditor);
         });
     };
     let registerNonEditCommand = function(name, command) {
@@ -469,7 +484,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            resetSelection();
+            resetSelection(textEditor);
         });
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
@@ -515,7 +530,7 @@ function activate(context) {
             textEditor.selection.start,
             textEditor.selection.start
         );
-        resetSelection();
+        resetSelection(textEditor);
         exec(['closeFindWidget']);
     });
 }
