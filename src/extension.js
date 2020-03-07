@@ -52,6 +52,8 @@ function activate(context) {
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
+                // The cursor style may have changed while the editor is inactive.
+                userCursorStyle = null;
                 resetSelection(textEditor);
                 updateIsSelectionMode(textEditor);
             }
