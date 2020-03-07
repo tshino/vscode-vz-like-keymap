@@ -5,7 +5,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 - More than 40 shortcuts to provide basic experience almost identical to Vz Editor
 - Permissive two-stroke shortcuts (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 - Selection mode (toggle by Ctrl+B)
-- Half page scroll (you can choose either Full or Half page scroll. Search for 'Vz Keymap: Scroll Page Size' in Settings)
+- Half-page scroll (you can choose either Full or Half page scroll. Search for 'Vz Keymap: Scroll Page Size' in Settings)
 - Tag jump (Shift+F10)
 
 ## Supported keys

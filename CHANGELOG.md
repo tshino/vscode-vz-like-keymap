@@ -10,7 +10,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - The behavior of Ctrl+Q X so that the view does not scroll.
   - The behavior of Ctrl+W.
   - The behavior of Escape key for Close find widget to do cancel selection as well.
-  - The behavior of full size page scroll not to overshoot when the view is at the bottom of a document.
+  - The behavior of full-size page scroll not to overshoot when the view is at the bottom of a document.
 
 ### [0.9.0] - 2020-02-25
 - Added:
