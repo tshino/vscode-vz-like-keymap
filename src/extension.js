@@ -1,37 +1,26 @@
 "use strict";
 const vscode = require("vscode");
+const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
-    let userCursorStyle = null;
+    let cursor_style_controller = cursor_style.CursorStyleController();
     let inSelectionMode = false;
     let inBoxSelectionMode = false;
     let lastSelectionAnchor = null;
-    let getSelectionModeCursorStyle = function(userCursorStyle) {
-        if (userCursorStyle !== vscode.TextEditorCursorStyle.Block) {
-            return vscode.TextEditorCursorStyle.Block;
-        } else {
-            return vscode.TextEditorCursorStyle.Line;
-        }
-    };
     let startSelection = function(textEditor, box) {
         inSelectionMode = true;
         inBoxSelectionMode = box;
         lastSelectionAnchor = textEditor.selection.anchor;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
-        if (userCursorStyle === null) {
-            userCursorStyle = textEditor.options.cursorStyle;
-        }
-        textEditor.options.cursorStyle = getSelectionModeCursorStyle(userCursorStyle);
+        cursor_style_controller.startSelection(textEditor);
     };
     let resetSelection = function(textEditor) {
         inSelectionMode = false;
         inBoxSelectionMode = false;
         lastSelectionAnchor = null;
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
-        if (userCursorStyle !== null) {
-            textEditor.options.cursorStyle = userCursorStyle;
-        }
+        cursor_style_controller.resetSelection(textEditor);
     };
     let resetBoxSelection = function() {
         inBoxSelectionMode = false;
@@ -53,7 +42,7 @@ function activate(context) {
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
                 // The cursor style may have changed while the editor is inactive.
-                userCursorStyle = null;
+                cursor_style_controller.initialize();
                 resetSelection(textEditor);
                 updateIsSelectionMode(textEditor);
             }
