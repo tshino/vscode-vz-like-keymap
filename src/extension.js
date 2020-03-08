@@ -88,29 +88,29 @@ function activate(context) {
         if (typeof commands === 'string') {
             commands = [ commands ];
         }
-        var res = vscode.commands.executeCommand(commands[index]);
+        let res = vscode.commands.executeCommand(commands[index]);
         if (index + 1 < commands.length) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
     let moveCursorToWithoutScroll = function(textEditor, line, col, select) {
-        var cursor = new vscode.Position(line, col);
-        var anchor = select ? textEditor.selection.anchor : cursor;
+        let cursor = new vscode.Position(line, col);
+        let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
     };
     let moveCursorTo = function(textEditor, line, col, select) {
-        var cursor = new vscode.Position(line, col);
-        var anchor = select ? textEditor.selection.anchor : cursor;
+        let cursor = new vscode.Position(line, col);
+        let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
     let enumVisibleLines = function(textEditor) {
-        var vranges = textEditor.visibleRanges;
-        var lines = [];
-        for (var i = 0; i < vranges.length; i++) {
-            var start = vranges[i].start.line;
-            var end = vranges[i].end.line;
-            for (var j = start; j <= end; j++) {
+        let vranges = textEditor.visibleRanges;
+        let lines = [];
+        for (let i = 0; i < vranges.length; i++) {
+            let start = vranges[i].start.line;
+            let end = vranges[i].end.line;
+            for (let j = start; j <= end; j++) {
                 lines.push(j);
             }
         }
