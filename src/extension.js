@@ -8,6 +8,10 @@ function activate(context) {
     let inSelectionMode = false;
     let inBoxSelectionMode = false;
     let lastSelectionAnchor = null;
+    let mode = {
+        inSelection: function() { return inSelectionMode; },
+        inBoxSelection: function() { return inBoxSelectionMode; },
+    };
     let startSelection = function(textEditor, box) {
         inSelectionMode = true;
         inBoxSelectionMode = box;
@@ -116,11 +120,11 @@ function activate(context) {
     let makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
-            if (inSelectionMode) {
-                if (inBoxSelectionMode && !boxSelectCmd) {
+            if (mode.inSelection()) {
+                if (mode.inBoxSelection() && !boxSelectCmd) {
                     resetBoxSelection();
                 }
-                if (inBoxSelectionMode) {
+                if (mode.inBoxSelection()) {
                     exec(boxSelectCmd);
                 } else {
                     exec(selectCmd);
@@ -210,28 +214,28 @@ function activate(context) {
     };
     let cursorHalfPageUp = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        if (inSelectionMode && inBoxSelectionMode) {
+        if (mode.inSelection() && mode.inBoxSelection()) {
             resetBoxSelection();
         }
-        cursorHalfPageUpImpl(textEditor, inSelectionMode);
+        cursorHalfPageUpImpl(textEditor, mode.inSelection());
     };
     let cursorHalfPageDown = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        if (inSelectionMode && inBoxSelectionMode) {
+        if (mode.inSelection() && mode.inBoxSelection()) {
             resetBoxSelection();
         }
-        cursorHalfPageDownImpl(textEditor, inSelectionMode);
+        cursorHalfPageDownImpl(textEditor, mode.inSelection());
     };
     let cursorHalfPageUpSelect = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        if (inSelectionMode && inBoxSelectionMode) {
+        if (mode.inSelection() && mode.inBoxSelection()) {
             resetBoxSelection();
         }
         cursorHalfPageUpImpl(textEditor, true);
     };
     let cursorHalfPageDownSelect = function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
-        if (inSelectionMode && inBoxSelectionMode) {
+        if (mode.inSelection() && mode.inBoxSelection()) {
             resetBoxSelection();
         }
         cursorHalfPageDownImpl(textEditor, true);
@@ -322,7 +326,7 @@ function activate(context) {
         let vlines = enumVisibleLines(textEditor);
         let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, inSelectionMode);
+        moveCursorTo(textEditor, line, col, mode.inSelection());
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         updateIsSelectionMode(textEditor);
@@ -334,7 +338,7 @@ function activate(context) {
         let bottom = vlines.length - 1;
         let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, inSelectionMode);
+        moveCursorTo(textEditor, line, col, mode.inSelection());
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         // Scroll and cursor are dispatched concurrently to avoid flickering.
@@ -359,7 +363,7 @@ function activate(context) {
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             updateIsSelectionMode(textEditor);
-            if (inSelectionMode) {
+            if (mode.inSelection()) {
                 if (!textEditor.selection.isEmpty) {
                     vscode.commands.executeCommand('cancelSelection');
                 } else {
@@ -460,7 +464,7 @@ function activate(context) {
     registerTextEditorCommand('tagJump', tagJump);
     let registerEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty && inSelectionMode && inBoxSelectionMode) {
+            if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
                 exec([command, 'removeSecondaryCursors']);
             } else {
                 exec([command]);
