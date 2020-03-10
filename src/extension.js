@@ -1,54 +1,30 @@
 "use strict";
 const vscode = require("vscode");
+const mode_handler = require("./mode_handler.js");
 const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
+    let mode = mode_handler.ModeHandler();
     let cursor_style_controller = cursor_style.CursorStyleController();
-    let inSelectionMode = false;
-    let inBoxSelectionMode = false;
-    let lastSelectionAnchor = null;
-    let mode = {
-        inSelection: function() { return inSelectionMode; },
-        inBoxSelection: function() { return inBoxSelectionMode; },
-    };
-    let startSelection = function(textEditor, box) {
-        inSelectionMode = true;
-        inBoxSelectionMode = box;
-        lastSelectionAnchor = textEditor.selection.anchor;
+    mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
         cursor_style_controller.startSelection(textEditor);
-    };
-    let resetSelection = function(textEditor) {
-        inSelectionMode = false;
-        inBoxSelectionMode = false;
-        lastSelectionAnchor = null;
+    });
+    mode.onResetSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
         cursor_style_controller.resetSelection(textEditor);
-    };
-    let resetBoxSelection = function() {
-        inBoxSelectionMode = false;
-    };
-    let updateIsSelectionMode = function(textEditor) {
-        if (!inSelectionMode &&
-            (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
-            startSelection(textEditor, 1 < textEditor.selections.length);
-        }
-        if (inSelectionMode && textEditor.selection.isEmpty &&
-            !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
-            resetSelection(textEditor);
-        }
-    };
+    });
     if (vscode.window.activeTextEditor) {
-        updateIsSelectionMode(vscode.window.activeTextEditor);
+        mode.sync(vscode.window.activeTextEditor);
     }
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
             if (textEditor) {
                 // The cursor style may have changed while the editor is inactive.
                 cursor_style_controller.initialize();
-                resetSelection(textEditor);
-                updateIsSelectionMode(textEditor);
+                mode.resetSelection(textEditor);
+                mode.sync(textEditor);
             }
         })
     );
@@ -57,7 +33,7 @@ function activate(context) {
         vscode.window.onDidChangeTextEditorSelection(function(event) {
             if (event.textEditor === vscode.window.activeTextEditor) {
                 taskAfterScroll = null;
-                updateIsSelectionMode(event.textEditor);
+                mode.sync(event.textEditor);
             }
         })
     );
@@ -119,10 +95,10 @@ function activate(context) {
     };
     let makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
-            updateIsSelectionMode(textEditor);
+            mode.sync(textEditor);
             if (mode.inSelection()) {
                 if (mode.inBoxSelection() && !boxSelectCmd) {
-                    resetBoxSelection();
+                    mode.resetBoxSelection();
                 }
                 if (mode.inBoxSelection()) {
                     exec(boxSelectCmd);
@@ -213,30 +189,30 @@ function activate(context) {
         }
     };
     let cursorHalfPageUp = function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
+        mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
-            resetBoxSelection();
+            mode.resetBoxSelection();
         }
         cursorHalfPageUpImpl(textEditor, mode.inSelection());
     };
     let cursorHalfPageDown = function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
+        mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
-            resetBoxSelection();
+            mode.resetBoxSelection();
         }
         cursorHalfPageDownImpl(textEditor, mode.inSelection());
     };
     let cursorHalfPageUpSelect = function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
+        mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
-            resetBoxSelection();
+            mode.resetBoxSelection();
         }
         cursorHalfPageUpImpl(textEditor, true);
     };
     let cursorHalfPageDownSelect = function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
+        mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
-            resetBoxSelection();
+            mode.resetBoxSelection();
         }
         cursorHalfPageDownImpl(textEditor, true);
     };
@@ -320,8 +296,8 @@ function activate(context) {
     registerCursorCommand('cursorHomeSelect', 'cursorHomeSelect');
     registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
-        resetBoxSelection();
+        mode.sync(textEditor);
+        mode.resetBoxSelection();
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         let vlines = enumVisibleLines(textEditor);
         let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
@@ -329,8 +305,8 @@ function activate(context) {
         moveCursorTo(textEditor, line, col, mode.inSelection());
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
-        updateIsSelectionMode(textEditor);
-        resetBoxSelection();
+        mode.sync(textEditor);
+        mode.resetBoxSelection();
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         margin = Math.max(1, margin);
         let lineCount = textEditor.document.lineCount;
@@ -362,23 +338,23 @@ function activate(context) {
     });
     let registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
-            updateIsSelectionMode(textEditor);
+            mode.sync(textEditor);
             if (mode.inSelection()) {
                 if (!textEditor.selection.isEmpty) {
                     vscode.commands.executeCommand('cancelSelection');
                 } else {
                     vscode.commands.executeCommand('removeSecondaryCursors');
                 }
-                resetSelection(textEditor);
+                mode.resetSelection(textEditor);
             } else {
-                startSelection(textEditor, isBox);
+                mode.startSelection(textEditor, isBox);
             }
         });
     };
     registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
         let sel = textEditor.selection;
         if (!sel.isEmpty && 1 === textEditor.selections.length) {
-            resetSelection(textEditor);
+            mode.resetSelection(textEditor);
             textEditor.selection = new vscode.Selection(sel.active, sel.anchor);
             textEditor.revealRange(new vscode.Range(sel.anchor, sel.anchor));
         }
@@ -387,7 +363,7 @@ function activate(context) {
     registerToggleSelectionCommand('toggleBoxSelection', true);
     registerTextEditorCommand('stopBoxSelection', function(_textEditor, _edit) {
         vscode.commands.executeCommand('removeSecondaryCursors');
-        resetBoxSelection();
+        mode.resetBoxSelection();
     });
     let openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
@@ -469,7 +445,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            resetSelection(textEditor);
+            mode.resetSelection(textEditor);
         });
     };
     let registerNonEditCommand = function(name, command) {
@@ -479,7 +455,7 @@ function activate(context) {
             } else {
                 exec([command]);
             }
-            resetSelection(textEditor);
+            mode.resetSelection(textEditor);
         });
     };
     registerEditCommand('deleteLeft', 'deleteLeft');
@@ -525,7 +501,7 @@ function activate(context) {
             textEditor.selection.start,
             textEditor.selection.start
         );
-        resetSelection(textEditor);
+        mode.resetSelection(textEditor);
         exec(['closeFindWidget']);
     });
 }
