@@ -23,8 +23,7 @@ function activate(context) {
             if (textEditor) {
                 // The cursor style may have changed while the editor is inactive.
                 cursor_style_controller.initialize();
-                mode.resetSelection(textEditor);
-                mode.sync(textEditor);
+                mode.initialize(textEditor);
             }
         })
     );

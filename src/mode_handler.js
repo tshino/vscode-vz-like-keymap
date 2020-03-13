@@ -35,6 +35,10 @@ const ModeHandler = function() {
             resetSelection(textEditor);
         }
     };
+    const initialize = function(textEditor) {
+        resetSelection(textEditor);
+        sync(textEditor);
+    };
     return {
         inSelection: function() { return inSelectionMode; },
         inBoxSelection: function() { return inBoxSelectionMode; },
@@ -44,6 +48,7 @@ const ModeHandler = function() {
         resetSelection: resetSelection,
         resetBoxSelection: resetBoxSelection,
         sync: sync,
+        initialize: initialize,
     };
 };
 
