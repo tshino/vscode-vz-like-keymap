@@ -16,7 +16,8 @@ function activate(context) {
         cursor_style_controller.resetSelection(textEditor);
     });
     if (vscode.window.activeTextEditor) {
-        mode.sync(vscode.window.activeTextEditor);
+        cursor_style_controller.initialize();
+        mode.initialize(vscode.window.activeTextEditor);
     }
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
