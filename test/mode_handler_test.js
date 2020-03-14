@@ -34,11 +34,32 @@ describe('mode_handler', function() {
             assert.equal(mode.inBoxSelection(), false);
         });
         describe('startSelection', function() {
-            it('should initiate selection state', function() {
+            it('should turn on selection mode', function() {
                 let mode = mode_handler.ModeHandler();
                 let te = TextEditorMock();
                 mode.startSelection(te, false);
                 assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode = mode_handler.ModeHandler();
+                mode.startSelection(te, true);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+            });
+        });
+        describe('resetSelection', function() {
+            it('should turn off selection mode', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+                mode.startSelection(te, false);
+                mode.resetSelection(te);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode = mode_handler.ModeHandler();
+                mode.startSelection(te, true);
+                mode.resetSelection(te);
+                assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
             });
         });
