@@ -63,5 +63,15 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), false);
             });
         });
+        describe('resetBoxSelection', function() {
+            it('should turn off box selection mode', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+                mode.startSelection(te, true);
+                mode.resetBoxSelection();
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+            });
+        });
     });
 });
