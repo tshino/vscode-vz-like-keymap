@@ -46,6 +46,16 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
             });
+            it('should invoke event handler if set', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+                let count = 0;
+                mode.onStartSelection(function() {
+                    count++;
+                });
+                mode.startSelection(te, false);
+                assert.equal(count, 1);
+            });
         });
         describe('resetSelection', function() {
             it('should turn off selection mode', function() {
@@ -61,6 +71,16 @@ describe('mode_handler', function() {
                 mode.resetSelection(te);
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
+            });
+            it('should invoke event handler if set', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+                let count = 0;
+                mode.onResetSelection(function() {
+                    count++;
+                });
+                mode.resetSelection(te);
+                assert.equal(count, 1);
             });
         });
         describe('resetBoxSelection', function() {
