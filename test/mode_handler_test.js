@@ -2,20 +2,28 @@
 const assert = require('assert');
 const mode_handler = require('../src/mode_handler.js');
 
+const PositionMock = (function() {
+    let proto = {};
+    proto.isEqual = function(other) {
+        return (
+            this.line === other.line &&
+            this.character == other.character
+        );
+    };
+    return function(line, col) {
+        return {
+            line: line,
+            character: col,
+            __proto__: proto
+        };
+    };
+})();
+
 const TextEditorMock = (function() {
     let sels = [
         {
             isEmpty: true,
-            anchor: {
-                line: 0,
-                character: 0,
-                isEqual: function(other) {
-                    return (
-                        line === other.line &&
-                        character == other.character
-                    );
-                }
-            },
+            anchor: PositionMock(0, 0)
         }
     ];
     return function() {
@@ -25,6 +33,22 @@ const TextEditorMock = (function() {
         };
     };
 })();
+
+describe('PositionMock', function() {
+    it('should have properties line and character', function() {
+        let pos = PositionMock(3, 4);
+        assert.equal(pos.line, 3);
+        assert.equal(pos.character, 4);
+    });
+    describe('isEqual', function() {
+        it('should return true iff two positions are equal', function() {
+            assert.equal(PositionMock(3, 4).isEqual(PositionMock(3, 4)), true);
+            assert.equal(PositionMock(3, 4).isEqual(PositionMock(1, 2)), false);
+            assert.equal(PositionMock(3, 4).isEqual(PositionMock(3, 0)), false);
+            assert.equal(PositionMock(3, 4).isEqual(PositionMock(0, 4)), false);
+        });
+    });
+});
 
 describe('mode_handler', function() {
     describe('ModeHandler', function() {
