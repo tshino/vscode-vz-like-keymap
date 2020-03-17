@@ -19,12 +19,19 @@ const PositionMock = (function() {
     };
 })();
 
+const SelectionMock = (function() {
+    return function(anchor, active) {
+        return {
+            isEmpty: anchor.isEqual(active),
+            anchor: anchor,
+            active: active
+        };
+    };
+})();
+
 const TextEditorMock = (function() {
     let sels = [
-        {
-            isEmpty: true,
-            anchor: PositionMock(0, 0)
-        }
+        SelectionMock(PositionMock(0, 0), PositionMock(0, 0))
     ];
     return function() {
         return {
@@ -46,6 +53,23 @@ describe('PositionMock', function() {
             assert.equal(PositionMock(3, 4).isEqual(PositionMock(1, 2)), false);
             assert.equal(PositionMock(3, 4).isEqual(PositionMock(3, 0)), false);
             assert.equal(PositionMock(3, 4).isEqual(PositionMock(0, 4)), false);
+        });
+    });
+});
+
+describe('SelectionMock', function() {
+    it('should have properties anchor, active and isEmpty', function() {
+        let sel = SelectionMock(PositionMock(1, 2), PositionMock(3, 4));
+        assert('anchor' in sel);
+        assert('active' in sel);
+        assert('isEmpty' in sel);
+    });
+    describe('isEmpty', function() {
+        it('should be true iff anchor and active are equal', function() {
+            let sel1 = SelectionMock(PositionMock(1, 2), PositionMock(3, 4));
+            let sel2 = SelectionMock(PositionMock(1, 2), PositionMock(1, 2));
+            assert.equal(sel1.isEmpty, false);
+            assert.equal(sel2.isEmpty, true);
         });
     });
 });
