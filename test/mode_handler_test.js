@@ -74,6 +74,15 @@ describe('SelectionMock', function() {
     });
 });
 
+describe('TextEditorMock', function() {
+    it('should have properties selection and selections', function() {
+        let te = TextEditorMock();
+        assert('selection' in te);
+        assert('selections' in te);
+        assert('length' in te.selections);
+    });
+});
+
 describe('mode_handler', function() {
     describe('ModeHandler', function() {
         it('should be normal (non-selection) state when it is initialized', function() {
