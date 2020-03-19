@@ -30,13 +30,13 @@ const SelectionMock = (function() {
 })();
 
 const TextEditorMock = (function() {
-    let sels = [
+    let emptySelections = [
         SelectionMock(PositionMock(0, 0), PositionMock(0, 0))
     ];
-    return function() {
+    return function(selections = emptySelections) {
         return {
-            selection: sels[0],
-            selections: sels
+            selection: selections[0],
+            selections: selections
         };
     };
 })();
@@ -79,7 +79,20 @@ describe('TextEditorMock', function() {
         let te = TextEditorMock();
         assert('selection' in te);
         assert('selections' in te);
-        assert('length' in te.selections);
+    });
+    it('should have an empty selection if it is constructed with no argument', function() {
+        let te = TextEditorMock();
+        assert.equal(te.selections.length, 1);
+        assert.equal(te.selection.isEmpty, true);
+        assert.equal(te.selections[0].isEmpty, true);
+    });
+    it('should have selections if it is constructed with selections argument', function() {
+        let te = TextEditorMock([
+            SelectionMock(PositionMock(0, 0), PositionMock(3, 4))
+        ]);
+        assert.equal(te.selections.length, 1);
+        assert.equal(te.selection.isEmpty, false);
+        assert.equal(te.selections[0].isEmpty, false);
     });
 });
 
