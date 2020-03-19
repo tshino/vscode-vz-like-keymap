@@ -20,7 +20,7 @@ const PositionMock = (function() {
 })();
 
 const SelectionMock = (function() {
-    return function(anchor, active) {
+    return function(anchor, active = anchor) {
         return {
             isEmpty: anchor.isEqual(active),
             anchor: anchor,
@@ -63,6 +63,18 @@ describe('SelectionMock', function() {
         assert('anchor' in sel);
         assert('active' in sel);
         assert('isEmpty' in sel);
+    });
+    it('should be able to be constructed with one position argument', function() {
+        let sel = SelectionMock(PositionMock(5, 7));
+        assert.equal(sel.isEmpty, true);
+        assert(sel.anchor.isEqual(PositionMock(5, 7)));
+        assert(sel.active.isEqual(PositionMock(5, 7)));
+    });
+    it('should be able to be constructed with two position arguments', function() {
+        let sel = SelectionMock(PositionMock(5, 7), PositionMock(10, 0));
+        assert.equal(sel.isEmpty, false);
+        assert(sel.anchor.isEqual(PositionMock(5, 7)));
+        assert(sel.active.isEqual(PositionMock(10, 0)));
     });
     describe('isEmpty', function() {
         it('should be true iff anchor and active are equal', function() {
