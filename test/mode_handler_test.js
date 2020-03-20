@@ -175,5 +175,48 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), false);
             });
         });
+        describe('initialize', function() {
+            it('should ensure the state to be consistent with given TextEditor', function() {
+                let mode = mode_handler.ModeHandler();
+
+                mode.initialize(TextEditorMock());
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0))
+                ]));
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10))
+                ]));
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
+                ]));
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+            });
+        });
+        describe('sync', function() {
+            it('should do nothing if the state did not change', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+                let countStart = 0, countReset = 0;
+                mode.initialize(te);
+                mode.onStartSelection(function() { countStart++; });
+                mode.onResetSelection(function() { countReset++; });
+                mode.sync(te);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+            });
+        });
     });
 });
