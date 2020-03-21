@@ -220,16 +220,76 @@ describe('mode_handler', function() {
         describe('sync', function() {
             it('should do nothing if the state did not change', function() {
                 let mode = mode_handler.ModeHandler();
-                let te = TextEditorMock();
                 let countStart = 0, countReset = 0;
-                mode.initialize(te);
                 mode.onStartSelection(function() { countStart++; });
                 mode.onResetSelection(function() { countReset++; });
-                mode.sync(te);
+
+                mode.initialize(TextEditorMock());
+                countStart = countReset = 0;
+                mode.sync(TextEditorMock());
                 assert.equal(countStart, 0);
                 assert.equal(countReset, 0);
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
+
+                let empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                mode.initialize(empty);
+                countStart = countReset = 0;
+                mode.sync(empty);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(empty);
+                mode.startSelection(empty, false);
+                countStart = countReset = 0;
+                mode.sync(empty);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(empty);
+                mode.startSelection(empty, true);
+                countStart = countReset = 0;
+                mode.sync(empty);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                let single = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(10, 0))
+                ]);
+                mode.initialize(single);
+                countStart = countReset = 0;
+                mode.sync(single);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(empty);
+                mode.startSelection(single, true);
+                countStart = countReset = 0;
+                mode.sync(single);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                let multi = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
+                ]);
+                mode.initialize(multi);
+                countStart = countReset = 0;
+                mode.sync(multi);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
             });
         });
     });
