@@ -174,6 +174,20 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
             });
+            it('should do nothing if not in box selection mode', function() {
+                let mode = mode_handler.ModeHandler();
+                let te = TextEditorMock();
+
+                mode.startSelection(te, false);
+                mode.resetBoxSelection();
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.resetSelection(te);
+                mode.resetBoxSelection();
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+            });
         });
         describe('initialize', function() {
             it('should ensure the state to be consistent with given TextEditor', function() {
