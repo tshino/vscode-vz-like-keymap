@@ -3,7 +3,7 @@ const assert = require('assert');
 const mode_handler = require('../src/mode_handler.js');
 
 const PositionMock = (function() {
-    let proto = {};
+    const proto = {};
     proto.isEqual = function(other) {
         return (
             this.line === other.line &&

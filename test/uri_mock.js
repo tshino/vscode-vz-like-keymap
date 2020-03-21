@@ -2,7 +2,7 @@
 const assert = require('assert');
 
 const UriMock = (function() {
-    var proto = {};
+    const proto = {};
     const resolvePath = function(path) {
         return (path === '' || path[0] !== '/') ? '/' + path : path;
     };
