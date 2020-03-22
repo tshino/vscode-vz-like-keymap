@@ -291,6 +291,64 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
             });
+            it('should do nothing if selection mode continues', function() {
+                let mode = mode_handler.ModeHandler();
+                let countStart = 0, countReset = 0;
+                mode.onStartSelection(function() { countStart++; });
+                mode.onResetSelection(function() { countReset++; });
+
+                let empty = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5))
+                ]);
+                let single = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10))
+                ]);
+                let emptyWithDifferentAnchor = TextEditorMock([
+                    SelectionMock(PositionMock(5, 0))
+                ]);
+                mode.initialize(empty);
+                mode.startSelection(empty, false);
+                countStart = countReset = 0;
+                mode.sync(single);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(single);
+                countStart = countReset = 0;
+                mode.sync(empty);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(single);
+                countStart = countReset = 0;
+                mode.sync(emptyWithDifferentAnchor);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 1);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+            });
+            it('should start selection mode if appropriate', function() {
+                let mode = mode_handler.ModeHandler();
+                let countStart = 0, countReset = 0;
+                mode.onStartSelection(function() { countStart++; });
+                mode.onResetSelection(function() { countReset++; });
+
+                let empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                let single = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10))
+                ]);
+                mode.initialize(empty);
+                countStart = countReset = 0;
+                mode.sync(single);
+                assert.equal(countStart, 1);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+            });
         });
     });
 });
