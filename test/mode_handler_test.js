@@ -291,6 +291,32 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
             });
+            it('should do nothing if cursor moved in non-selection mode', function() {
+                let mode = mode_handler.ModeHandler();
+                let countStart = 0, countReset = 0;
+                mode.onStartSelection(function() { countStart++; });
+                mode.onResetSelection(function() { countReset++; });
+
+                let cursor_pos1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                let cursor_pos2 = TextEditorMock([SelectionMock(PositionMock(5, 6))]);
+                let cursor_pos3 = TextEditorMock([SelectionMock(PositionMock(6, 0))]);
+
+                mode.initialize(cursor_pos1);
+                countStart = countReset = 0;
+                mode.sync(cursor_pos2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                mode.initialize(cursor_pos2);
+                countStart = countReset = 0;
+                mode.sync(cursor_pos3);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+            });
             it('should do nothing if selection mode continues', function() {
                 let mode = mode_handler.ModeHandler();
                 let countStart = 0, countReset = 0;
