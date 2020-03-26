@@ -110,7 +110,21 @@ describe('TextEditorMock', function() {
 
 describe('mode_handler', function() {
     describe('ModeHandler', function() {
-        it('should be normal (non-selection) state when it is initialized', function() {
+        /* Selection state and selection mode:
+
+            [A1] Empty selection - non-selection mode
+            [A2] Empty selection - selection mode
+            [A3] Empty selection - box selection mode
+
+            [B1] Single selection - non-selection mode (INCONSISTENT)
+            [B2] Single selection - selection mode
+            [B3] Single selection - box selection mode
+
+            [C1] Multi selections - non-selection mode (INCONSISTENT)
+            [C2] Multi selections - selection mode (INCONSISTENT)
+            [C3] Multi selections - box selection mode
+        */
+       it('should be non-selection mode just after constrution', function() {
             let mode = mode_handler.ModeHandler();
             assert.equal(mode.inSelection(), false);
             assert.equal(mode.inBoxSelection(), false);
@@ -193,22 +207,26 @@ describe('mode_handler', function() {
             it('should ensure the state to be consistent with given TextEditor', function() {
                 let mode = mode_handler.ModeHandler();
 
+                // A --> [1]
                 mode.initialize(TextEditorMock());
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // A --> [1]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0))
                 ]));
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // B --> [2]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0), PositionMock(5, 10))
                 ]));
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // C --> [3]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
                     SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
@@ -224,6 +242,7 @@ describe('mode_handler', function() {
                 mode.onStartSelection(function() { countStart++; });
                 mode.onResetSelection(function() { countReset++; });
 
+                // [A1]
                 mode.initialize(TextEditorMock());
                 countStart = countReset = 0;
                 mode.sync(TextEditorMock());
@@ -232,6 +251,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // [A1]
                 let empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 mode.initialize(empty);
                 countStart = countReset = 0;
@@ -241,6 +261,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // [A2]
                 mode.initialize(empty);
                 mode.startSelection(empty, false);
                 countStart = countReset = 0;
@@ -250,6 +271,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // [A3]
                 mode.initialize(empty);
                 mode.startSelection(empty, true);
                 countStart = countReset = 0;
@@ -259,6 +281,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
 
+                // [B2]
                 let single = TextEditorMock([
                     SelectionMock(PositionMock(5, 5), PositionMock(10, 0))
                 ]);
@@ -270,6 +293,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
 
+                // [B3]
                 mode.initialize(empty);
                 mode.startSelection(single, true);
                 countStart = countReset = 0;
@@ -279,6 +303,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
 
+                // [C3]
                 let multi = TextEditorMock([
                     SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
                     SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
@@ -301,6 +326,7 @@ describe('mode_handler', function() {
                 let cursor_pos2 = TextEditorMock([SelectionMock(PositionMock(5, 6))]);
                 let cursor_pos3 = TextEditorMock([SelectionMock(PositionMock(6, 0))]);
 
+                // [A1] -> [A1']
                 mode.initialize(cursor_pos1);
                 countStart = countReset = 0;
                 mode.sync(cursor_pos2);
