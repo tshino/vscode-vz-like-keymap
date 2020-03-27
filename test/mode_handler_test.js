@@ -341,6 +341,29 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
             });
+            it('should do nothing if cursor moved in selection mode', function() {
+                let empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                let single1 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 6))]);
+                let single2 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(6, 5))]);
+
+                // [A2] -> [B2]
+                mode.initialize(empty1);
+                mode.startSelection(empty1, false);
+                countStart = countReset = 0;
+                mode.sync(single1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+
+                // [B2] -> [B2']
+                countStart = countReset = 0;
+                mode.sync(single2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), false);
+            });
             it('should do nothing if selection mode continues', function() {
                 let empty = TextEditorMock([
                     SelectionMock(PositionMock(5, 5))
