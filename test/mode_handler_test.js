@@ -432,9 +432,15 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), false);
                 assert.equal(mode.inBoxSelection(), false);
             });
-            it('should start selection mode if appropriate', function() {
+            it('should start selection mode if selection became non-empty', function() {
                 const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 const single = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
+                const multi = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
+                ]);
+
+                // [A1] -> [B2]
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(single);
@@ -442,18 +448,15 @@ describe('mode_handler', function() {
                 assert.equal(countReset, 0);
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
-            });
-            it('should stop selection mode if appropriate', function() {
-                const single = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
-                const empty = TextEditorMock([SelectionMock(PositionMock(5, 0))]);
 
-                mode.initialize(single);
+                // [A1] -> [C3]
+                mode.initialize(empty);
                 countStart = countReset = 0;
-                mode.sync(empty);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                mode.sync(multi);
+                assert.equal(countStart, 1);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
             });
         });
     });
