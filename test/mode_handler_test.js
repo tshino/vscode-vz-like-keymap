@@ -255,7 +255,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), false);
 
                 // [A1]
-                let empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(empty);
@@ -285,7 +285,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), true);
 
                 // [B2]
-                let single = TextEditorMock([
+                const single = TextEditorMock([
                     SelectionMock(PositionMock(5, 5), PositionMock(10, 0))
                 ]);
                 mode.initialize(single);
@@ -307,7 +307,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), true);
 
                 // [C3]
-                let multi = TextEditorMock([
+                const multi = TextEditorMock([
                     SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
                     SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
                 ]);
@@ -320,9 +320,9 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), true);
             });
             it('should do nothing if cursor moved in non-selection mode', function() {
-                let cursor_pos1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
-                let cursor_pos2 = TextEditorMock([SelectionMock(PositionMock(5, 6))]);
-                let cursor_pos3 = TextEditorMock([SelectionMock(PositionMock(6, 0))]);
+                const cursor_pos1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                const cursor_pos2 = TextEditorMock([SelectionMock(PositionMock(5, 6))]);
+                const cursor_pos3 = TextEditorMock([SelectionMock(PositionMock(6, 0))]);
 
                 // [A1] -> [A1']
                 mode.initialize(cursor_pos1);
@@ -382,7 +382,7 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
             });
-            it('should keep selection mode even when anchor moved if selection is not empty', function() {
+            it('should keep selection mode even when anchor moved unless selection is empty', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
                 const single1 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
                 const single2 = TextEditorMock([SelectionMock(PositionMock(5, 0), PositionMock(5, 10))]);
@@ -433,10 +433,8 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), false);
             });
             it('should start selection mode if appropriate', function() {
-                let empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
-                let single = TextEditorMock([
-                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10))
-                ]);
+                const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                const single = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(single);
@@ -446,16 +444,12 @@ describe('mode_handler', function() {
                 assert.equal(mode.inBoxSelection(), false);
             });
             it('should stop selection mode if appropriate', function() {
-                let single = TextEditorMock([
-                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10))
-                ]);
-                let emptyWithDifferentAnchor = TextEditorMock([
-                    SelectionMock(PositionMock(5, 0))
-                ]);
+                const single = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
+                const empty = TextEditorMock([SelectionMock(PositionMock(5, 0))]);
 
                 mode.initialize(single);
                 countStart = countReset = 0;
-                mode.sync(emptyWithDifferentAnchor);
+                mode.sync(empty);
                 assert.equal(countStart, 0);
                 assert.equal(countReset, 1);
                 assert.equal(mode.inSelection(), false);
