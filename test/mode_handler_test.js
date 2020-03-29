@@ -435,7 +435,11 @@ describe('mode_handler', function() {
             it('should start selection mode if selection became non-empty', function() {
                 const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 const single = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
-                const multi = TextEditorMock([
+                const multi1 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5)),
+                    SelectionMock(PositionMock(6, 5))
+                ]);
+                const multi2 = TextEditorMock([
                     SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
                     SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
                 ]);
@@ -452,8 +456,49 @@ describe('mode_handler', function() {
                 // [A1] -> [C3]
                 mode.initialize(empty);
                 countStart = countReset = 0;
-                mode.sync(multi);
+                mode.sync(multi1);
                 assert.equal(countStart, 1);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [A1] -> [C3']
+                mode.initialize(empty);
+                countStart = countReset = 0;
+                mode.sync(multi2);
+                assert.equal(countStart, 1);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+            });
+            it('should promote to box-selection mode if multi-line selection turns out', function() {
+                const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
+                const single1 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 6))]);
+                const multi1 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5)),
+                    SelectionMock(PositionMock(6, 5))
+                ]);
+                const multi2 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
+                ]);
+
+                // [A2] -> [C3]
+                mode.initialize(empty1);
+                mode.startSelection(empty1, false);
+                countStart = countReset = 0;
+                mode.sync(multi1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [B2] -> [C3]
+                mode.initialize(single1);
+                mode.startSelection(single1, false);
+                countStart = countReset = 0;
+                mode.sync(multi2);
+                assert.equal(countStart, 0);
                 assert.equal(countReset, 0);
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);

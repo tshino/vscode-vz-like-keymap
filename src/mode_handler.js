@@ -30,6 +30,11 @@ const ModeHandler = function() {
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
             startSelection(textEditor, 1 < textEditor.selections.length);
         }
+        if (inSelectionMode && !inBoxSelectionMode &&
+            1 < textEditor.selections.length) {
+            inBoxSelectionMode = true;
+            lastSelectionAnchor = textEditor.selection.anchor;
+        }
         if (inSelectionMode && textEditor.selection.isEmpty &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection(textEditor);
