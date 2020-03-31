@@ -486,6 +486,71 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), false);
             });
+            it('should keep box-selection mode even when anchor moved unless selection is empty', function() {
+                const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
+                const single1 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
+                const single2 = TextEditorMock([SelectionMock(PositionMock(5, 0), PositionMock(5, 10))]);
+                const multi1 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 5), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
+                ]);
+                const multi2 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
+                ]);
+
+                // [A3] -> [B3]
+                mode.initialize(empty1);
+                mode.startSelection(empty1, true);
+                countStart = countReset = 0;
+                mode.sync(single1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [B3] -> [B3']
+                countStart = countReset = 0;
+                mode.sync(single2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [B3'] -> [C3]
+                countStart = countReset = 0;
+                mode.sync(multi1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [C3] -> [C3']
+                countStart = countReset = 0;
+                mode.sync(multi2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [C3'] -> [B3]
+                countStart = countReset = 0;
+                mode.sync(single1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [A3] -> [C3]
+                mode.initialize(empty1);
+                mode.startSelection(empty1, true);
+                countStart = countReset = 0;
+                mode.sync(multi1);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+            });
             it('should stop selection mode when anchor moved and new selection is empty', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 const empty2 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
