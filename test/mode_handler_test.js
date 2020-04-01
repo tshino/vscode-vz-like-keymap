@@ -555,10 +555,24 @@ describe('mode_handler', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 const empty2 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
                 const single1 = TextEditorMock([SelectionMock(PositionMock(5, 5), PositionMock(5, 10))]);
+                const multi1 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
+                ]);
 
                 // [A2] -> [A1]
                 mode.initialize(empty1);
                 mode.startSelection(empty1, false);
+                countStart = countReset = 0;
+                mode.sync(empty2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 1);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                // [A3] -> [A1]
+                mode.initialize(empty1);
+                mode.startSelection(empty1, true);
                 countStart = countReset = 0;
                 mode.sync(empty2);
                 assert.equal(countStart, 0);
@@ -571,6 +585,26 @@ describe('mode_handler', function() {
                 mode.startSelection(single1, false);
                 countStart = countReset = 0;
                 mode.sync(empty2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 1);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                // [B3] -> [A1]
+                mode.initialize(single1);
+                mode.startSelection(single1, true);
+                countStart = countReset = 0;
+                mode.sync(empty2);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 1);
+                assert.equal(mode.inSelection(), false);
+                assert.equal(mode.inBoxSelection(), false);
+
+                // [C3] -> [A1]
+                mode.initialize(multi1);
+                mode.startSelection(multi1, true);
+                countStart = countReset = 0;
+                mode.sync(empty1);
                 assert.equal(countStart, 0);
                 assert.equal(countReset, 1);
                 assert.equal(mode.inSelection(), false);
