@@ -36,6 +36,7 @@ const ModeHandler = function() {
             lastSelectionAnchor = textEditor.selection.anchor;
         }
         if (inSelectionMode && textEditor.selection.isEmpty &&
+            1 === textEditor.selections.length &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection(textEditor);
         }

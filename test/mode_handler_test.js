@@ -495,8 +495,12 @@ describe('mode_handler', function() {
                     SelectionMock(PositionMock(6, 5), PositionMock(6, 10))
                 ]);
                 const multi2 = TextEditorMock([
-                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
-                    SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 0)),
+                    SelectionMock(PositionMock(6, 0), PositionMock(6, 0))
+                ]);
+                const multi3 = TextEditorMock([
+                    SelectionMock(PositionMock(5, 1), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 1), PositionMock(6, 10))
                 ]);
 
                 // [A3] -> [B3]
@@ -533,7 +537,15 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
 
-                // [C3'] -> [B3]
+                // [C3'] -> [C3'']
+                countStart = countReset = 0;
+                mode.sync(multi3);
+                assert.equal(countStart, 0);
+                assert.equal(countReset, 0);
+                assert.equal(mode.inSelection(), true);
+                assert.equal(mode.inBoxSelection(), true);
+
+                // [C3''] -> [B3]
                 countStart = countReset = 0;
                 mode.sync(single1);
                 assert.equal(countStart, 0);
