@@ -1,41 +1,43 @@
 "use strict";
 
 const ModeHandler = function() {
-    let inSelectionMode = false;
-    let inBoxSelectionMode = false;
+    const MODE_NORMAL = 0;
+    const MODE_SELECTION = 1;
+    const MODE_BOX_SELECTION = 2;
+    let mode = MODE_NORMAL;
     let lastSelectionAnchor = null;
     let onStartSelection = null;
     let onResetSelection = null;
     const startSelection = function(textEditor, box) {
-        inSelectionMode = true;
-        inBoxSelectionMode = box;
+        mode = box ? MODE_BOX_SELECTION : MODE_SELECTION;
         lastSelectionAnchor = textEditor.selection.anchor;
         if (onStartSelection) {
             onStartSelection(textEditor);
         }
     };
     const resetSelection = function(textEditor) {
-        inSelectionMode = false;
-        inBoxSelectionMode = false;
+        mode = MODE_NORMAL;
         lastSelectionAnchor = null;
         if (onResetSelection) {
             onResetSelection(textEditor);
         }
     };
     const resetBoxSelection = function() {
-        inBoxSelectionMode = false;
+        if (mode === MODE_BOX_SELECTION) {
+            mode = MODE_SELECTION;
+        }
     };
     const sync = function(textEditor) {
-        if (!inSelectionMode &&
+        if (mode === MODE_NORMAL &&
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
             startSelection(textEditor, 1 < textEditor.selections.length);
         }
-        if (inSelectionMode && !inBoxSelectionMode &&
+        if (mode === MODE_SELECTION &&
             1 < textEditor.selections.length) {
-            inBoxSelectionMode = true;
+            mode = MODE_BOX_SELECTION;
             lastSelectionAnchor = textEditor.selection.anchor;
         }
-        if (inSelectionMode && textEditor.selection.isEmpty &&
+        if (mode !== MODE_NORMAL && textEditor.selection.isEmpty &&
             1 === textEditor.selections.length &&
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection(textEditor);
@@ -46,8 +48,8 @@ const ModeHandler = function() {
         sync(textEditor);
     };
     return {
-        inSelection: function() { return inSelectionMode; },
-        inBoxSelection: function() { return inBoxSelectionMode; },
+        inSelection: function() { return mode !== MODE_NORMAL; },
+        inBoxSelection: function() { return mode === MODE_BOX_SELECTION; },
         onStartSelection: function(func) { onStartSelection = func; },
         onResetSelection: function(func) { onResetSelection = func; },
         startSelection: startSelection,
