@@ -234,6 +234,39 @@ describe('mode_handler', function() {
                 assert.equal(mode.inSelection(), true);
                 assert.equal(mode.inBoxSelection(), true);
             });
+            it('should invoke at least one callback function', function() {
+                let mode = mode_handler.ModeHandler();
+                let countStart, countReset;
+                mode.onStartSelection(function() { countStart++; });
+                mode.onResetSelection(function() { countReset++; });
+
+                // A --> [1]
+                countStart = countReset = 0;
+                mode.initialize(TextEditorMock());
+                assert( 0 < countReset );
+
+                // A --> [1]
+                countStart = countReset = 0;
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0))
+                ]));
+                assert( 0 < countReset );
+
+                // B --> [2]
+                countStart = countReset = 0;
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10))
+                ]));
+                assert( 0 < countStart );
+
+                // C --> [3]
+                countStart = countReset = 0;
+                mode.initialize(TextEditorMock([
+                    SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
+                    SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
+                ]));
+                assert( 0 < countStart );
+            });
         });
         describe('sync', function() {
             let mode;
