@@ -438,15 +438,15 @@ function activate(context) {
         tryNext();
     };
     registerTextEditorCommand('tagJump', tagJump);
-    let registerEditCommand = function(name, command) {
-        registerTextEditorCommand(name, function(textEditor, _edit) {
+    let makeEditCommand = function(command) {
+        return function(textEditor, _edit) {
             if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
                 exec([command, 'removeSecondaryCursors']);
             } else {
                 exec([command]);
             }
             mode.resetSelection(textEditor);
-        });
+        };
     };
     let registerNonEditCommand = function(name, command) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
@@ -458,15 +458,15 @@ function activate(context) {
             mode.resetSelection(textEditor);
         });
     };
-    registerEditCommand('deleteLeft', 'deleteLeft');
-    registerEditCommand('deleteRight', 'deleteRight');
-    registerEditCommand('deleteWordLeft', 'deleteWordLeft');
-    registerEditCommand('deleteWordRight', 'deleteWordRight');
-    registerEditCommand('deleteAllLeft', 'deleteAllLeft');
-    registerEditCommand('deleteAllRight', 'deleteAllRight');
-    registerEditCommand('clipboardCut', 'editor.action.clipboardCutAction');
+    registerTextEditorCommand('deleteLeft', makeEditCommand('deleteLeft'));
+    registerTextEditorCommand('deleteRight', makeEditCommand('deleteRight'));
+    registerTextEditorCommand('deleteWordLeft', makeEditCommand('deleteWordLeft'));
+    registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
+    registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
+    registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
+    registerTextEditorCommand('clipboardCut', makeEditCommand('editor.action.clipboardCutAction'));
     registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
-    registerEditCommand('clipboardPaste', 'editor.action.clipboardPasteAction');
+    registerTextEditorCommand('clipboardPaste', makeEditCommand('editor.action.clipboardPasteAction'));
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
