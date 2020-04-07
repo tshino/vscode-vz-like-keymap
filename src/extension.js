@@ -438,7 +438,7 @@ function activate(context) {
         tryNext();
     };
     registerTextEditorCommand('tagJump', tagJump);
-    let makeEditCommand = function(command) {
+    const makeEditCommand = function(command) {
         return function(textEditor, _edit) {
             if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
                 exec([command, 'removeSecondaryCursors']);
@@ -448,15 +448,15 @@ function activate(context) {
             mode.resetSelection(textEditor);
         };
     };
-    let registerNonEditCommand = function(name, command) {
-        registerTextEditorCommand(name, function(textEditor, _edit) {
+    const makeNonEditCommand = function(command) {
+        return function(textEditor, _edit) {
             if (!textEditor.selection.isEmpty) {
                 exec([command, 'cancelSelection']);
             } else {
                 exec([command]);
             }
             mode.resetSelection(textEditor);
-        });
+        };
     };
     registerTextEditorCommand('deleteLeft', makeEditCommand('deleteLeft'));
     registerTextEditorCommand('deleteRight', makeEditCommand('deleteRight'));
@@ -465,7 +465,7 @@ function activate(context) {
     registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
     registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
     registerTextEditorCommand('clipboardCut', makeEditCommand('editor.action.clipboardCutAction'));
-    registerNonEditCommand('clipboardCopy', 'editor.action.clipboardCopyAction');
+    registerTextEditorCommand('clipboardCopy', makeNonEditCommand('editor.action.clipboardCopyAction'));
     registerTextEditorCommand('clipboardPaste', makeEditCommand('editor.action.clipboardPasteAction'));
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
