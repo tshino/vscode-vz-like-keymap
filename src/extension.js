@@ -450,7 +450,9 @@ function activate(context) {
     };
     const makeNonEditCommand = function(command) {
         return function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty) {
+            if (1 < textEditor.selections.length) {
+                exec([command, 'removeSecondaryCursors', 'cancelSelection']);
+            } else if (!textEditor.selection.isEmpty) {
                 exec([command, 'cancelSelection']);
             } else {
                 exec([command]);

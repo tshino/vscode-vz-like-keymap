@@ -7,6 +7,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Changing the cursor style according to the selection mode status.
 - Improved:
   - The behavior of box-selection mode in terms of compatibility with Column Selection Mode.
+  - The behavior of Ctrl+K K (copy) in box-selection mode.
 
 ### [0.9.1] - 2020-03-07
 - Added:
