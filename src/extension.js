@@ -438,14 +438,17 @@ function activate(context) {
         tryNext();
     };
     registerTextEditorCommand('tagJump', tagJump);
+    const runEditCommand = function(command, textEditor, _edit) {
+        if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
+            exec([command, 'removeSecondaryCursors']);
+        } else {
+            exec([command]);
+        }
+        mode.resetSelection(textEditor);
+    };
     const makeEditCommand = function(command) {
-        return function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
-                exec([command, 'removeSecondaryCursors']);
-            } else {
-                exec([command]);
-            }
-            mode.resetSelection(textEditor);
+        return function(textEditor, edit) {
+            runEditCommand(command, textEditor, edit);
         };
     };
     const makeNonEditCommand = function(command) {
