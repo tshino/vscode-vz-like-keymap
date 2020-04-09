@@ -5,8 +5,8 @@ const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
 
 function activate(context) {
-    let mode = mode_handler.ModeHandler();
-    let cursor_style_controller = cursor_style.CursorStyleController();
+    const mode = mode_handler.ModeHandler();
+    const cursor_style_controller = cursor_style.CursorStyleController();
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
         cursor_style_controller.startSelection(textEditor);
@@ -48,12 +48,12 @@ function activate(context) {
             }
         })
     );
-    let registerTextEditorCommand = function(name, func) {
+    const registerTextEditorCommand = function(name, func) {
         context.subscriptions.push(
             vscode.commands.registerTextEditorCommand('vz.' + name, func)
         );
     };
-    let exec = function(commands, index = 0) {
+    const exec = function(commands, index = 0) {
         if (typeof commands === 'string') {
             commands = [ commands ];
         }
@@ -62,18 +62,18 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    let moveCursorToWithoutScroll = function(textEditor, line, col, select) {
+    const moveCursorToWithoutScroll = function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
     };
-    let moveCursorTo = function(textEditor, line, col, select) {
+    const moveCursorTo = function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
-    let enumVisibleLines = function(textEditor) {
+    const enumVisibleLines = function(textEditor) {
         let vranges = textEditor.visibleRanges;
         let lines = [];
         for (let i = 0; i < vranges.length; i++) {
@@ -85,7 +85,7 @@ function activate(context) {
         }
         return lines;
     };
-    let getLowerBoundLineIndex = function(lines, line) {
+    const getLowerBoundLineIndex = function(lines, line) {
         for (var i = 0; i < lines.length; i++) {
             if (line <= lines[i]) {
                 return i;
@@ -93,7 +93,7 @@ function activate(context) {
         }
         return lines.length;
     };
-    let makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
+    const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
             if (mode.inSelection()) {
@@ -110,10 +110,10 @@ function activate(context) {
             }
         };
     };
-    let registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
+    const registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
         registerTextEditorCommand(name, makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
     };
-    let registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
+    const registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
     };
     registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
@@ -131,7 +131,7 @@ function activate(context) {
     registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
-    let cursorHalfPageUpImpl = function(textEditor, select) {
+    const cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = enumVisibleLines(textEditor);
         let currIndex = getLowerBoundLineIndex(vlines, curr.line);
@@ -164,7 +164,7 @@ function activate(context) {
             );
         }
     };
-    let cursorHalfPageDownImpl = function(textEditor, select) {
+    const cursorHalfPageDownImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
@@ -188,28 +188,28 @@ function activate(context) {
             );
         }
     };
-    let cursorHalfPageUp = function(textEditor, _edit) {
+    const cursorHalfPageUp = function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
         cursorHalfPageUpImpl(textEditor, mode.inSelection());
     };
-    let cursorHalfPageDown = function(textEditor, _edit) {
+    const cursorHalfPageDown = function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
         cursorHalfPageDownImpl(textEditor, mode.inSelection());
     };
-    let cursorHalfPageUpSelect = function(textEditor, _edit) {
+    const cursorHalfPageUpSelect = function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
         cursorHalfPageUpImpl(textEditor, true);
     };
-    let cursorHalfPageDownSelect = function(textEditor, _edit) {
+    const cursorHalfPageDownSelect = function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
@@ -220,36 +220,36 @@ function activate(context) {
     registerTextEditorCommand('cursorHalfPageDown', cursorHalfPageDown);
     registerTextEditorCommand('cursorHalfPageUpSelect', cursorHalfPageUpSelect);
     registerTextEditorCommand('cursorHalfPageDownSelect', cursorHalfPageDownSelect);
-    let cursorFullPageUp = makeCursorCommand(
+    const cursorFullPageUp = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUp'],
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
     );
-    let cursorFullPageDownImpl = makeCursorCommand(
+    const cursorFullPageDownImpl = makeCursorCommand(
         ['cursorPageDown'],
         ['cursorPageDownSelect'],
         ['cursorColumnSelectPageDown']
     );
-    let cursorFullPageUpSelect = makeCursorCommand(
+    const cursorFullPageUpSelect = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorPageUpSelect']
     );
-    let cursorFullPageDownSelectImpl = makeCursorCommand(
+    const cursorFullPageDownSelectImpl = makeCursorCommand(
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
-    let isLastLineVisible = function(textEditor) {
+    const isLastLineVisible = function(textEditor) {
         let vlines = enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
         return vlines[vlines.length - 1] === lineCount - 1;
     };
-    let cursorFullPageDown = function(textEditor) {
+    const cursorFullPageDown = function(textEditor) {
         if (!isLastLineVisible(textEditor)) {
             exec('scrollPageDown');
         }
         cursorFullPageDownImpl(textEditor);
     };
-    let cursorFullPageDownSelect = function(textEditor) {
+    const cursorFullPageDownSelect = function(textEditor) {
         if (!isLastLineVisible(textEditor)) {
             exec('scrollPageDown');
         }
@@ -336,7 +336,7 @@ function activate(context) {
     registerTextEditorCommand('scrollLineDownUnselect', function() {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     });
-    let registerToggleSelectionCommand = function(name, isBox) {
+    const registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             mode.sync(textEditor);
             if (mode.inSelection()) {
@@ -365,7 +365,7 @@ function activate(context) {
         vscode.commands.executeCommand('removeSecondaryCursors');
         mode.resetBoxSelection();
     });
-    let openTextDocument = function(uri, line) {
+    const openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
             vscode.window.showTextDocument(doc).then(function(textEditor) {
                 if (line) {
@@ -374,7 +374,7 @@ function activate(context) {
             }, function(err) {});
         }, function(err) {});
     };
-    let getCurrentLineText = function(textEditor) {
+    const getCurrentLineText = function(textEditor) {
         let line = textEditor.selection.active.line;
         return textEditor.document.lineAt(line).text;
     };
@@ -407,7 +407,7 @@ function activate(context) {
         }
         return candidates;
     };
-    let tagJump = function(textEditor) {
+    const tagJump = function(textEditor) {
         let folders = getBaseFolders(textEditor);
         let names = getFileNames(textEditor);
         let candidates = makeTagCandidates(folders, names);
