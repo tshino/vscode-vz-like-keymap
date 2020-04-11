@@ -507,6 +507,11 @@ function activate(context) {
     registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
     registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
     registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
+    const getUniqueLineNumbersOfRanges = function(ranges) {
+        let lines = ranges.map((range) => range.start.line);
+        lines = [...new Set(lines)];
+        return lines;
+    };
     const makeCutCopyRanges = function(textEditor) {
         let ranges = textEditor.selections.map(
             (selection) => new vscode.Range(selection.start, selection.end)
@@ -514,9 +519,10 @@ function activate(context) {
         sortRangesInAscending(ranges);
         if (rangesAllEmpty(ranges)) {
             if (1 < ranges.length || mode.inBoxSelection()) {
+                let lines = getUniqueLineNumbersOfRanges(ranges);
                 // Each range should NOT contain '\n' at the last.
-                ranges = ranges.map(
-                    (range) => textEditor.document.lineAt(range.start.line).range
+                ranges = lines.map(
+                    (line) => textEditor.document.lineAt(line).range
                 );
             } else {
                 // This range has a '\n' at the last.
