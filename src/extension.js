@@ -3,6 +3,7 @@ const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
+const edit_util = require("./edit_util.js");
 
 function activate(context) {
     const mode = mode_handler.ModeHandler();
@@ -439,30 +440,15 @@ function activate(context) {
     };
     registerTextEditorCommand('tagJump', tagJump);
 
-    const rangesAllEmpty = function(ranges) {
-        return ranges.every((range) => range.isEmpty);
-    };
     const singleLineRange = function(line) {
         return new vscode.Range(
             new vscode.Position(line, 0),
             new vscode.Position(line + 1, 0)
         );
     };
-    const sortRangesInAscending = function(ranges) {
-        if (1 < ranges.length && ranges[0].start.isAfter(ranges[1].start)) {
-            ranges.reverse();
-        }
-    };
-    const topmostSelection = function(selections) {
-        if (1 < selections.length && selections[0].start.isAfter(selections[1].start)) {
-            return selections[selections.length - 1];
-        } else {
-            return selections[0];
-        }
-    };
     const cancelSelection = function(textEditor) {
         let cursor = mode.inBoxSelection() ?
-            topmostSelection(textEditor.selections).start :
+            edit_util.topmostSelection(textEditor.selections).start :
             textEditor.selections[0].active;
         textEditor.selection = new vscode.Selection(cursor, cursor);
         if (mode.inSelection()) {
@@ -516,8 +502,8 @@ function activate(context) {
         let ranges = textEditor.selections.map(
             (selection) => new vscode.Range(selection.start, selection.end)
         );
-        sortRangesInAscending(ranges);
-        if (rangesAllEmpty(ranges)) {
+        edit_util.sortRangesInAscending(ranges);
+        if (edit_util.rangesAllEmpty(ranges)) {
             if (1 < ranges.length || mode.inBoxSelection()) {
                 let lines = getUniqueLineNumbersOfRanges(ranges);
                 // Each range should NOT contain '\n' at the last.
