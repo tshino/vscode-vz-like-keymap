@@ -449,12 +449,12 @@ function activate(context) {
         );
     };
     const sortRangesInAscending = function(ranges) {
-        if (1 < ranges.length && ranges[0].start.line > ranges[1].start.line) {
+        if (1 < ranges.length && ranges[0].start.isAfter(ranges[1].start)) {
             ranges.reverse();
         }
     };
     const topmostSelection = function(selections) {
-        if (1 < selections.length && selections[0].start.line > selections[1].start.line) {
+        if (1 < selections.length && selections[0].start.isAfter(selections[1].start)) {
             return selections[selections.length - 1];
         } else {
             return selections[0];
@@ -472,7 +472,7 @@ function activate(context) {
     const readText = function(textEditor, ranges) {
         let texts = ranges.map((range) => textEditor.document.getText(range));
         if (1 < ranges.length) {
-            if (ranges[0].start.line > ranges[1].start.line) {
+            if (ranges[0].start.isAfter(ranges[1].start)) {
                 texts.reverse();
             }
             return texts.map((text) => text + '\n').join('');
@@ -511,6 +511,7 @@ function activate(context) {
         let ranges = textEditor.selections.map(
             (selection) => new vscode.Range(selection.start, selection.end)
         );
+        sortRangesInAscending(ranges);
         if (rangesAllEmpty(ranges)) {
             if (1 < ranges.length || mode.inBoxSelection()) {
                 // Each range should NOT contain '\n' at the last.
@@ -522,7 +523,6 @@ function activate(context) {
                 ranges = [ singleLineRange(ranges[0].start.line) ];
             }
         }
-        sortRangesInAscending(ranges);
         return ranges;
     };
     const cutAndPush = function(textEditor, _edit) {
