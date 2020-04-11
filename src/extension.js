@@ -446,21 +446,19 @@ function activate(context) {
         }
         mode.resetSelection(textEditor);
     };
+    const runNonEditCommand = function(command, textEditor, _edit) {
+        if (1 < textEditor.selections.length) {
+            exec([command, 'removeSecondaryCursors', 'cancelSelection']);
+        } else if (!textEditor.selection.isEmpty) {
+            exec([command, 'cancelSelection']);
+        } else {
+            exec([command]);
+        }
+        mode.resetSelection(textEditor);
+    };
     const makeEditCommand = function(command) {
         return function(textEditor, edit) {
             runEditCommand(command, textEditor, edit);
-        };
-    };
-    const makeNonEditCommand = function(command) {
-        return function(textEditor, _edit) {
-            if (1 < textEditor.selections.length) {
-                exec([command, 'removeSecondaryCursors', 'cancelSelection']);
-            } else if (!textEditor.selection.isEmpty) {
-                exec([command, 'cancelSelection']);
-            } else {
-                exec([command]);
-            }
-            mode.resetSelection(textEditor);
         };
     };
     registerTextEditorCommand('deleteLeft', makeEditCommand('deleteLeft'));
@@ -469,9 +467,18 @@ function activate(context) {
     registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
     registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
     registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
-    registerTextEditorCommand('clipboardCut', makeEditCommand('editor.action.clipboardCutAction'));
-    registerTextEditorCommand('clipboardCopy', makeNonEditCommand('editor.action.clipboardCopyAction'));
-    registerTextEditorCommand('clipboardPaste', makeEditCommand('editor.action.clipboardPasteAction'));
+    const cutAndPush = function(textEditor, edit) {
+        runEditCommand('editor.action.clipboardCutAction', textEditor, edit);
+    };
+    const copyAndPush = function(textEditor, edit) {
+        runNonEditCommand('editor.action.clipboardCopyAction', textEditor, edit);
+    };
+    const popAndPaste = function(textEditor, edit) {
+        runEditCommand('editor.action.clipboardPasteAction', textEditor, edit);
+    };
+    registerTextEditorCommand('clipboardCut', cutAndPush);
+    registerTextEditorCommand('clipboardCopy', copyAndPush);
+    registerTextEditorCommand('clipboardPaste', popAndPaste);
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
