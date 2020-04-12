@@ -74,4 +74,16 @@ describe('EditUtil', function() {
             assert(EditUtil.topmostSelection(multi3).start.isEqual(PositionMock(5,0)));
         });
     });
+    describe('getUniqueLineNumbersOfRanges', function() {
+        it('should remove duplicate line numbers in ranges', function() {
+            const ranges1 = [
+                RangeMock(PositionMock(5, 0), PositionMock(5, 10)),
+                RangeMock(PositionMock(6, 0), PositionMock(6, 10)),
+                RangeMock(PositionMock(6, 80), PositionMock(6, 85)),
+                RangeMock(PositionMock(7, 0), PositionMock(7, 10))
+            ];
+            const lines1 = EditUtil.getUniqueLineNumbersOfRanges(ranges1);
+            assert.deepStrictEqual(lines1, [5, 6, 7]);
+        });
+    });
 });
