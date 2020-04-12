@@ -1,18 +1,18 @@
 "use strict";
 
-const edit_util = {};
+const EditUtil = {};
 
-edit_util.rangesAllEmpty = function(ranges) {
+EditUtil.rangesAllEmpty = function(ranges) {
     return ranges.every((range) => range.isEmpty);
 };
 
-edit_util.sortRangesInAscending = function(ranges) {
+EditUtil.sortRangesInAscending = function(ranges) {
     if (1 < ranges.length && ranges[0].start.isAfter(ranges[1].start)) {
         ranges.reverse();
     }
 };
 
-edit_util.topmostSelection = function(selections) {
+EditUtil.topmostSelection = function(selections) {
     if (1 < selections.length && selections[0].start.isAfter(selections[1].start)) {
         return selections[selections.length - 1];
     } else {
@@ -20,4 +20,10 @@ edit_util.topmostSelection = function(selections) {
     }
 };
 
-module.exports = edit_util;
+EditUtil.getUniqueLineNumbersOfRanges = function(ranges) {
+    let lines = ranges.map((range) => range.start.line);
+    lines = [...new Set(lines)];
+    return lines;
+};
+
+module.exports = EditUtil;

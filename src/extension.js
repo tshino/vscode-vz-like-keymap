@@ -3,11 +3,13 @@ const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
-const edit_util = require("./edit_util.js");
+const EditUtil = require("./edit_util.js");
+const edit_commands = require("./edit_commands.js");
 
 function activate(context) {
     const mode = mode_handler.ModeHandler();
     const cursor_style_controller = cursor_style.CursorStyleController();
+    const editHandler = edit_commands.EditHandler(context, mode);
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
         cursor_style_controller.startSelection(textEditor);
@@ -440,40 +442,6 @@ function activate(context) {
     };
     registerTextEditorCommand('tagJump', tagJump);
 
-    const singleLineRange = function(line) {
-        return new vscode.Range(
-            new vscode.Position(line, 0),
-            new vscode.Position(line + 1, 0)
-        );
-    };
-    const cancelSelection = function(textEditor) {
-        let cursor = mode.inBoxSelection() ?
-            edit_util.topmostSelection(textEditor.selections).start :
-            textEditor.selections[0].active;
-        textEditor.selection = new vscode.Selection(cursor, cursor);
-        if (mode.inSelection()) {
-            mode.resetSelection(textEditor);
-        }
-    };
-    const readText = function(textEditor, ranges) {
-        let texts = ranges.map((range) => textEditor.document.getText(range));
-        if (1 < ranges.length) {
-            if (ranges[0].start.isAfter(ranges[1].start)) {
-                texts.reverse();
-            }
-            return texts.map((text) => text + '\n').join('');
-        } else {
-            return texts[0];
-        }
-    };
-    const deleteRanges = function(textEditor, ranges) {
-        textEditor.edit(function(editBuilder) {
-            ranges.forEach((range) => {
-                editBuilder.delete(range);
-            });
-        });
-    };
-
     const runEditCommand = function(command, textEditor, _edit) {
         if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
             exec([command, 'removeSecondaryCursors']);
@@ -493,48 +461,9 @@ function activate(context) {
     registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
     registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
     registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
-    const getUniqueLineNumbersOfRanges = function(ranges) {
-        let lines = ranges.map((range) => range.start.line);
-        lines = [...new Set(lines)];
-        return lines;
-    };
-    const makeCutCopyRanges = function(textEditor) {
-        let ranges = textEditor.selections.map(
-            (selection) => new vscode.Range(selection.start, selection.end)
-        );
-        edit_util.sortRangesInAscending(ranges);
-        if (edit_util.rangesAllEmpty(ranges)) {
-            if (1 < ranges.length || mode.inBoxSelection()) {
-                let lines = getUniqueLineNumbersOfRanges(ranges);
-                // Each range should NOT contain '\n' at the last.
-                ranges = lines.map(
-                    (line) => textEditor.document.lineAt(line).range
-                );
-            } else {
-                // This range has a '\n' at the last.
-                ranges = [ singleLineRange(ranges[0].start.line) ];
-            }
-        }
-        return ranges;
-    };
-    const cutAndPush = function(textEditor, _edit) {
-        let ranges = makeCutCopyRanges(textEditor);
-        let text = readText(textEditor, ranges);
-        vscode.env.clipboard.writeText(text);
-        cancelSelection(textEditor);
-        deleteRanges(textEditor, ranges);
-    };
-    const copyAndPush = function(textEditor, edit) {
-        let ranges = makeCutCopyRanges(textEditor);
-        let text = readText(textEditor, ranges);
-        vscode.env.clipboard.writeText(text);
-        cancelSelection(textEditor);
-    };
     const popAndPaste = function(textEditor, edit) {
         runEditCommand('editor.action.clipboardPasteAction', textEditor, edit);
     };
-    registerTextEditorCommand('clipboardCut', cutAndPush);
-    registerTextEditorCommand('clipboardCopy', copyAndPush);
     registerTextEditorCommand('clipboardPaste', popAndPaste);
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
