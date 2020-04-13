@@ -70,14 +70,19 @@ const EditHandler = function(context, modeHandler) {
         cancelSelection(textEditor);
         deleteRanges(textEditor, ranges);
     };
-    const copyAndPush = function(textEditor, edit) {
+    const copyAndPush = function(textEditor, _edit) {
         let ranges = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
     };
+    const popAndPaste = async function(_textEditor, _edit) {
+        let text = await vscode.env.clipboard.readText();
+        vscode.commands.executeCommand('paste', { text: text });
+    };
     registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
     registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
+    registerTextEditorCommand(context, 'clipboardPaste', popAndPaste);
     return {
         singleLineRange: singleLineRange,
         cancelSelection: cancelSelection,

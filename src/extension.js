@@ -461,10 +461,6 @@ function activate(context) {
     registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
     registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
     registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
-    const popAndPaste = function(textEditor, edit) {
-        runEditCommand('editor.action.clipboardPasteAction', textEditor, edit);
-    };
-    registerTextEditorCommand('clipboardPaste', popAndPaste);
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
