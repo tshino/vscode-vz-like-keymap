@@ -4,7 +4,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
-  - Changing the cursor style according to the selection mode status.
+  - Added text stack finally. Cut (Ctrl+Y), Copy (Ctrl+K K) and Paste (Ctrl+J) perform now push/pop to the text stack as well as write/read to the clipboard.
+  - Added changing the cursor style according to the selection mode status.
 - Improved:
   - The behavior of box-selection mode in terms of compatibility with Column Selection Mode.
   - The behavior of Ctrl+K K (copy) in box-selection mode.
