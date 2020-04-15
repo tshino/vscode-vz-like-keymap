@@ -38,11 +38,9 @@ const EditHandler = function(context, modeHandler) {
             return texts[0];
         }
     };
-    const deleteRanges = function(textEditor, ranges) {
-        textEditor.edit(function(editBuilder) {
-            ranges.forEach((range) => {
-                editBuilder.delete(range);
-            });
+    const deleteRanges = function(edit, ranges) {
+        ranges.forEach((range) => {
+            edit.delete(range);
         });
     };
     const makeCutCopyRanges = function(textEditor) {
@@ -66,7 +64,8 @@ const EditHandler = function(context, modeHandler) {
         }
         return [ranges, isLineMode];
     };
-    const cutAndPush = function(textEditor, _edit) {
+    let pasteReentryLock = false;
+    const cutAndPush = function(textEditor, edit) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         textStack.push({
@@ -76,7 +75,8 @@ const EditHandler = function(context, modeHandler) {
         });
         vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
-        deleteRanges(textEditor, ranges);
+        deleteRanges(edit, ranges);
+        pasteReentryLock = false;
     };
     const copyAndPush = function(textEditor, _edit) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
@@ -88,8 +88,13 @@ const EditHandler = function(context, modeHandler) {
         });
         vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
+        pasteReentryLock = false;
     };
     const popAndPaste = async function(textEditor, _edit) {
+        if (pasteReentryLock) {
+            return;
+        }
+        pasteReentryLock = true;
         let text = await vscode.env.clipboard.readText();
         let isLineMode = false;
         let isBoxMode = false;
@@ -103,9 +108,9 @@ const EditHandler = function(context, modeHandler) {
         }
         if (0 < textStack.length) {
             let next = textStack[textStack.length - 1];
-            vscode.env.clipboard.writeText(next.text);
+            await vscode.env.clipboard.writeText(next.text);
         } else {
-            vscode.env.clipboard.writeText('');
+            await vscode.env.clipboard.writeText('');
         }
         if (isLineMode) {
             let lastPos = textEditor.selection.start;
@@ -114,9 +119,15 @@ const EditHandler = function(context, modeHandler) {
             let res = vscode.commands.executeCommand('paste', { text: text });
             res.then(function() {
                 textEditor.selection = new vscode.Selection(lastPos, lastPos);
+                pasteReentryLock = false;
             });
+            return res;
         } else {
-            vscode.commands.executeCommand('paste', { text: text });
+            let res = vscode.commands.executeCommand('paste', { text: text });
+            res.then(function() {
+                pasteReentryLock = false;
+            });
+            return res;
         }
     };
     registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
