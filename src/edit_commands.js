@@ -90,19 +90,27 @@ const EditHandler = function(context, modeHandler) {
         cancelSelection(textEditor);
         pasteReentryLock = false;
     };
-    const popAndPaste = async function(textEditor, _edit) {
-        if (pasteReentryLock) {
-            return;
-        }
-        pasteReentryLock = true;
+    const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
         let isLineMode = false;
-        let isBoxMode = false;
+        //let isBoxMode = false;
         if (0 < textStack.length) {
             let top = textStack[textStack.length - 1];
             if (top.text === text) {
                 isLineMode = top.isLineMode;
-                isBoxMode = top.isBoxMode;
+            }
+        }
+        return [text, isLineMode];
+    };
+    const popTextStack = async function() {
+        let text = await vscode.env.clipboard.readText();
+        let isLineMode = false;
+        //let isBoxMode = false;
+        if (0 < textStack.length) {
+            let top = textStack[textStack.length - 1];
+            if (top.text === text) {
+                isLineMode = top.isLineMode;
+                //isBoxMode = top.isBoxMode;
                 textStack.pop();
             }
         }
@@ -112,6 +120,14 @@ const EditHandler = function(context, modeHandler) {
         } else {
             await vscode.env.clipboard.writeText('');
         }
+        return [text, isLineMode];
+    };
+    const popAndPasteImpl = async function(textEditor, withoutPop = false) {
+        if (pasteReentryLock) {
+            return;
+        }
+        pasteReentryLock = true;
+        let [text, isLineMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isLineMode) {
             let lastPos = textEditor.selection.start;
             let lineStart = new vscode.Position(lastPos.line, 0);
@@ -130,9 +146,16 @@ const EditHandler = function(context, modeHandler) {
             return res;
         }
     };
+    const popAndPaste = async function(textEditor, _edit) {
+        await popAndPasteImpl(textEditor, false);
+    };
+    const paste = async function(textEditor, _edit) {
+        await popAndPasteImpl(textEditor, true);
+    };
     registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
     registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
-    registerTextEditorCommand(context, 'clipboardPaste', popAndPaste);
+    registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
+    registerTextEditorCommand(context, 'clipboardPaste', paste);
     return {
         singleLineRange: singleLineRange,
         cancelSelection: cancelSelection,

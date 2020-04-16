@@ -418,6 +418,14 @@
                 "when": "editorFocus"
             }, {
                 "key": "ctrl+j",
+                "command": "vz.clipboardPopAndPaste",
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k ctrl+c",
+                "command": "vz.clipboardPaste",
+                "when": "editorTextFocus && !editorReadonly"
+            }, {
+                "key": "ctrl+k c",
                 "command": "vz.clipboardPaste",
                 "when": "editorTextFocus && !editorReadonly"
             },
