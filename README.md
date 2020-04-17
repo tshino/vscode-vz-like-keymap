@@ -40,9 +40,10 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+M | Insert line break |
 | Ctrl+N | Insert new line above |
 | Ctrl+K D | Duplicate lines |
-| Ctrl+Y | Cut |
-| Ctrl+K K | Copy |
-| Ctrl+J | Paste |
+| Ctrl+Y | Cut (push to text stack) |
+| Ctrl+J | Paste (pop from text stack) |
+| Ctrl+K K | Copy (push to text stack) |
+| Ctrl+K C | Paste |
 
 ### Undo, Redo
 
@@ -77,6 +78,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+N | Alt+F N (File > New File) | New untitled file |
 | Ctrl+S | Alt+F S (File > Save) | Save file |
 | Ctrl+W | Ctrl+F4 | Close editor tab |
+| Ctrl+K Ctrl+C | Ctrl+/ | Single line comment |
 
 ## Compatibility in detail
 
