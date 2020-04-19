@@ -3,10 +3,10 @@
 This is a Visual Studio Code extension which provides a keymap similar to good old Vz Editor.
 
 - More than 40 shortcuts to provide basic experience almost identical to Vz Editor
-- Permissive two-stroke shortcuts (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
-- Text stack (push/pop to the clibboard) for actions Cut/Copy/Paste (you can disable it through Settings)
+- Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
+- Text stack (push/pop to the clibboard) is supported for actions Cut, Copy and Paste
 - Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
-- Half-page scroll option
+- Half-page scroll an an option
 - Tag jump (Shift+F10)
 
 ## Supported keys
