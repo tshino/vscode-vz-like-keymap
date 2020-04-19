@@ -6,8 +6,9 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 - Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 - Text stack (push/pop to the clibboard) is supported for actions Cut, Copy and Paste
 - Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
-- Half-page scroll an an option
+- Half-page scroll as an option
 - Tag jump (Shift+F10)
+- Some options are available (search for 'vz' in the Settings)
 
 ## Supported keys
 
