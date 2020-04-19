@@ -32,6 +32,11 @@
         "configuration": {
             "title": "Vz Keymap",
             "properties": {
+                "vzKeymap.textStack": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Controls whether the clipboard acts as a stack for actions Cut, Copy and Paste"
+                },
                 "vzKeymap.scrollPageSize": {
                     "type": "string",
                     "default": "Half",

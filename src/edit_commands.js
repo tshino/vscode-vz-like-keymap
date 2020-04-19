@@ -68,6 +68,10 @@ const EditHandler = function(context, modeHandler) {
     const cutAndPush = function(textEditor, edit) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
+        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+        if (!enableTextStack) {
+            textStack.length = 0;
+        }
         textStack.push({
             text: text,
             isLineMode: isLineMode,
@@ -81,6 +85,10 @@ const EditHandler = function(context, modeHandler) {
     const copyAndPush = function(textEditor, _edit) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
+        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+        if (!enableTextStack) {
+            textStack.length = 0;
+        }
         textStack.push({
             text: text,
             isLineMode: isLineMode,
@@ -147,7 +155,8 @@ const EditHandler = function(context, modeHandler) {
         }
     };
     const popAndPaste = async function(textEditor, _edit) {
-        await popAndPasteImpl(textEditor, false);
+        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+        await popAndPasteImpl(textEditor, enableTextStack ? false : true);
     };
     const paste = async function(textEditor, _edit) {
         await popAndPasteImpl(textEditor, true);
