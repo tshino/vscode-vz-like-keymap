@@ -101,24 +101,25 @@ const EditHandler = function(context, modeHandler) {
     const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
         let isLineMode = false;
-        //let isBoxMode = false;
+        let isBoxMode = false;
         if (0 < textStack.length) {
             let top = textStack[textStack.length - 1];
             if (top.text === text) {
                 isLineMode = top.isLineMode;
+                isBoxMode = top.isBoxMode;
             }
         }
-        return [text, isLineMode];
+        return [text, isLineMode, isBoxMode];
     };
     const popTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
         let isLineMode = false;
-        //let isBoxMode = false;
+        let isBoxMode = false;
         if (0 < textStack.length) {
             let top = textStack[textStack.length - 1];
             if (top.text === text) {
                 isLineMode = top.isLineMode;
-                //isBoxMode = top.isBoxMode;
+                isBoxMode = top.isBoxMode;
                 textStack.pop();
             }
         }
@@ -128,30 +129,36 @@ const EditHandler = function(context, modeHandler) {
         } else {
             await vscode.env.clipboard.writeText('');
         }
-        return [text, isLineMode];
+        return [text, isLineMode, isBoxMode];
+    };
+    const pasteLines = function(textEditor, text) {
+        let lastPos = textEditor.selection.start;
+        let lineStart = new vscode.Position(lastPos.line, 0);
+        textEditor.selection = new vscode.Selection(lineStart, lineStart);
+        let res = vscode.commands.executeCommand('paste', { text: text });
+        res.then(function() {
+            textEditor.selection = new vscode.Selection(lastPos, lastPos);
+            pasteReentryLock = false;
+        });
+        return res;
+    };
+    const pasteInlineText = function(text) {
+        let res = vscode.commands.executeCommand('paste', { text: text });
+        res.then(function() {
+            pasteReentryLock = false;
+        });
+        return res;
     };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
         if (pasteReentryLock) {
             return;
         }
         pasteReentryLock = true;
-        let [text, isLineMode] = withoutPop ? await peekTextStack() : await popTextStack();
+        let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isLineMode) {
-            let lastPos = textEditor.selection.start;
-            let lineStart = new vscode.Position(lastPos.line, 0);
-            textEditor.selection = new vscode.Selection(lineStart, lineStart);
-            let res = vscode.commands.executeCommand('paste', { text: text });
-            res.then(function() {
-                textEditor.selection = new vscode.Selection(lastPos, lastPos);
-                pasteReentryLock = false;
-            });
-            return res;
+            return pasteLines(textEditor, text);
         } else {
-            let res = vscode.commands.executeCommand('paste', { text: text });
-            res.then(function() {
-                pasteReentryLock = false;
-            });
-            return res;
+            return pasteInlineText(text);
         }
     };
     const popAndPaste = async function(textEditor, _edit) {
