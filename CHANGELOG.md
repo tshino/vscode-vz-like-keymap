@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Changed:
+  - Changed the behavior of Paste of a text which is from box-selection mode to make more compatible with Vz Editor.
+
 ### [0.10.0] - 2020-04-20
 - Added:
   - Added text stack finally! Cut (Ctrl+Y), Copy (Ctrl+K K) and Paste (Ctrl+J) perform now push/pop to the text stack as well as write/read to the clipboard.

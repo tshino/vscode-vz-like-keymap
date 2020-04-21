@@ -149,6 +149,22 @@ const EditHandler = function(context, modeHandler) {
         });
         return res;
     };
+    const pasteBoxText = function(textEditor, text) {
+        let pos = textEditor.selection.active;
+        let lines = text.split('\n');
+        let res = textEditor.edit((edit) => {
+            for (let i = 0, n = lines.length; i < n; i++) {
+                edit.insert(
+                    pos.with(pos.line + i),
+                    lines[i]
+                );
+            }
+        });
+        res.then(function() {
+            pasteReentryLock = false;
+        });
+        return res;
+    };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
         if (pasteReentryLock) {
             return;
@@ -158,7 +174,11 @@ const EditHandler = function(context, modeHandler) {
         if (isLineMode) {
             return pasteLines(textEditor, text);
         } else {
-            return pasteInlineText(text);
+            if (isBoxMode) {
+                return pasteBoxText(textEditor, text);
+            } else {
+                return pasteInlineText(text);
+            }
         }
     };
     const popAndPaste = async function(textEditor, _edit) {
