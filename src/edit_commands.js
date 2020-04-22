@@ -171,14 +171,12 @@ const EditHandler = function(context, modeHandler) {
         }
         pasteReentryLock = true;
         let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
-        if (isLineMode) {
+        if (isBoxMode) {
+            return pasteBoxText(textEditor, text);
+        } else if (isLineMode) {
             return pasteLines(textEditor, text);
         } else {
-            if (isBoxMode) {
-                return pasteBoxText(textEditor, text);
-            } else {
-                return pasteInlineText(text);
-            }
+            return pasteInlineText(text);
         }
     };
     const popAndPaste = async function(textEditor, _edit) {
