@@ -152,6 +152,16 @@ const EditHandler = function(context, modeHandler) {
     const pasteBoxText = function(textEditor, text) {
         let pos = textEditor.selection.active;
         let lines = text.split('\n');
+        if (0 < lines.length && lines[lines.length - 1] === '') {
+            lines.length = lines.length - 1;
+        }
+        let lineCount = textEditor.document.lineCount;
+        let overflow = pos.line + lines.length - lineCount;
+        if (0 < overflow) {
+            let rest = lines.slice(lines.length - overflow).join('\n');
+            lines.length = lines.length - overflow;
+            lines[lines.length] = '\n' + rest;
+        }
         let res = textEditor.edit((edit) => {
             for (let i = 0, n = lines.length; i < n; i++) {
                 edit.insert(
