@@ -183,7 +183,7 @@ const EditHandler = function(context, modeHandler) {
         let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isBoxMode) {
             return pasteBoxText(textEditor, text);
-        } else if (isLineMode) {
+        } else if (isLineMode && !mode.inBoxSelection()) {
             return pasteLines(textEditor, text);
         } else {
             return pasteInlineText(text);
