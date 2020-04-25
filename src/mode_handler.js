@@ -32,8 +32,7 @@ const ModeHandler = function() {
             (!textEditor.selection.isEmpty || 1 < textEditor.selections.length)) {
             startSelection(textEditor, 1 < textEditor.selections.length);
         }
-        if (mode === MODE_SELECTION &&
-            1 < textEditor.selections.length) {
+        if (mode !== MODE_NORMAL && 1 < textEditor.selections.length) {
             mode = MODE_BOX_SELECTION;
             lastSelectionAnchor = textEditor.selection.anchor;
         }
