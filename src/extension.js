@@ -364,9 +364,17 @@ function activate(context) {
     });
     registerToggleSelectionCommand('toggleSelection', false);
     registerToggleSelectionCommand('toggleBoxSelection', true);
-    registerTextEditorCommand('stopBoxSelection', function(_textEditor, _edit) {
-        vscode.commands.executeCommand('removeSecondaryCursors');
-        mode.resetBoxSelection();
+    registerTextEditorCommand('stopBoxSelection', function(textEditor, _edit) {
+        if (EditUtil.rangesAllEmpty(textEditor.selections)) {
+            vscode.commands.executeCommand('removeSecondaryCursors');
+            if (mode.inSelection()) {
+                mode.resetSelection(textEditor);
+            }
+        } else {
+            textEditor.selections = textEditor.selections.map((sel) => {
+                return new vscode.Selection(sel.active, sel.active);
+            });
+        }
     });
     const openTextDocument = function(uri, line) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
