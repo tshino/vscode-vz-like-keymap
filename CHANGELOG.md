@@ -5,6 +5,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Improved:
   - The behavior of Paste of a text which is from box-selection mode to be more compatible with Vz Editor.
+  - The behavior of Delete/Backspace in box-selection mode.
 
 ### [0.10.0] - 2020-04-20
 - Added:

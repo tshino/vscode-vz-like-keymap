@@ -443,12 +443,12 @@ function activate(context) {
     registerTextEditorCommand('tagJump', tagJump);
 
     const runEditCommand = function(command, textEditor, _edit) {
-        if (!textEditor.selection.isEmpty && mode.inSelection() && mode.inBoxSelection()) {
-            exec([command, 'removeSecondaryCursors']);
+        if (mode.inSelection() && !mode.inBoxSelection()) {
+            exec([command]);
+            mode.resetSelection(textEditor);
         } else {
             exec([command]);
         }
-        mode.resetSelection(textEditor);
     };
     const makeEditCommand = function(command) {
         return function(textEditor, edit) {
