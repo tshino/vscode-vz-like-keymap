@@ -355,11 +355,15 @@ function activate(context) {
         });
     };
     registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
-        let sel = textEditor.selection;
-        if (!sel.isEmpty && 1 === textEditor.selections.length) {
+        if (mode.inSelection()) {
+            let box = mode.inBoxSelection();
             mode.resetSelection(textEditor);
-            textEditor.selection = new vscode.Selection(sel.active, sel.anchor);
-            textEditor.revealRange(new vscode.Range(sel.anchor, sel.anchor));
+            textEditor.selections = textEditor.selections.map((sel) => (
+                new vscode.Selection(sel.active, sel.anchor)
+            )).reverse();
+            let pos = textEditor.selections[textEditor.selections.length - 1].active;
+            textEditor.revealRange(new vscode.Range(pos, pos));
+            mode.startSelection(textEditor, box);
         }
     });
     registerToggleSelectionCommand('toggleSelection', false);
