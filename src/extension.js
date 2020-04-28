@@ -375,9 +375,9 @@ function activate(context) {
                 mode.resetSelection(textEditor);
             }
         } else {
-            textEditor.selections = textEditor.selections.map((sel) => {
-                return new vscode.Selection(sel.active, sel.active);
-            });
+            textEditor.selections = textEditor.selections.map((sel) => (
+                new vscode.Selection(sel.active, sel.active)
+            ));
         }
     });
     const openTextDocument = function(uri, line) {
