@@ -9,7 +9,8 @@ const edit_commands = require("./edit_commands.js");
 function activate(context) {
     const mode = mode_handler.ModeHandler();
     const cursor_style_controller = cursor_style.CursorStyleController();
-    const editHandler = edit_commands.EditHandler(context, mode);
+    const editHandler = edit_commands.EditHandler(mode);
+    editHandler.registerCommands(context);
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
         cursor_style_controller.startSelection(textEditor);

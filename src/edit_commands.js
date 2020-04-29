@@ -8,7 +8,7 @@ const registerTextEditorCommand = function(context, name, func) {
     );
 };
 
-const EditHandler = function(context, modeHandler) {
+const EditHandler = function(modeHandler) {
     const mode = modeHandler;
     const textStack = [];
 
@@ -196,10 +196,12 @@ const EditHandler = function(context, modeHandler) {
     const paste = async function(textEditor, _edit) {
         await popAndPasteImpl(textEditor, true);
     };
-    registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
-    registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
-    registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
-    registerTextEditorCommand(context, 'clipboardPaste', paste);
+    const registerCommands = function(context) {
+        registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
+        registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
+        registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
+        registerTextEditorCommand(context, 'clipboardPaste', paste);
+    };
     return {
         singleLineRange: singleLineRange,
         cancelSelection: cancelSelection,
@@ -208,6 +210,7 @@ const EditHandler = function(context, modeHandler) {
         makeCutCopyRanges: makeCutCopyRanges,
         cutAndPush: cutAndPush,
         copyAndPush: copyAndPush,
+        registerCommands
     };
 };
 

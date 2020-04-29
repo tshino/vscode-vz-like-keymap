@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Added:
+  - An integration test with VS Code.
+
 ### [0.10.1] - 2020-04-29
 - Improved:
   - The behavior of Paste of a text which is from box-selection mode to be more compatible with Vz Editor.

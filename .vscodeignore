@@ -1,6 +1,7 @@
 .vscode/**
 .vscode-test/**
 test/**
+test_with_vscode/**
 **/.eslintrc.json
 .gitignore
 vsc-extension-quickstart.md
