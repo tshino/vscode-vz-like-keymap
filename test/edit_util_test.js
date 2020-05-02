@@ -86,4 +86,28 @@ describe('EditUtil', function() {
             assert.deepStrictEqual(lines1, [5, 6, 7]);
         });
     });
+    describe('normalizeEOL', function() {
+        it('should replace every CRLF to LF', function() {
+            assert.equal(
+                EditUtil.normalizeEOL('hogehoge\r\n'),
+                'hogehoge\n'
+            );
+            assert.equal(
+                EditUtil.normalizeEOL('hogehoge'),
+                'hogehoge'
+            );
+            assert.equal(
+                EditUtil.normalizeEOL('\r\nhogehoge'),
+                '\nhogehoge'
+            );
+            assert.equal(
+                EditUtil.normalizeEOL('hoge\r\nhoge\r\n'),
+                'hoge\nhoge\n'
+            );
+            assert.equal(
+                EditUtil.normalizeEOL('hoge\nhoge\n'),
+                'hoge\nhoge\n'
+            );
+        });
+    });
 });

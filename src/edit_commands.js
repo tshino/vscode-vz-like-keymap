@@ -28,7 +28,10 @@ const EditHandler = function(modeHandler) {
         }
     };
     const readText = function(textEditor, ranges) {
-        let texts = ranges.map((range) => textEditor.document.getText(range));
+        let texts = ranges.map((range) => {
+            let text = textEditor.document.getText(range)
+            return EditUtil.normalizeEOL(text);
+        });
         if (1 < ranges.length) {
             if (ranges[0].start.isAfter(ranges[1].start)) {
                 texts.reverse();

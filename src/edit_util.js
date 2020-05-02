@@ -26,4 +26,8 @@ EditUtil.getUniqueLineNumbersOfRanges = function(ranges) {
     return lines;
 };
 
+EditUtil.normalizeEOL = function(text) {
+    return text.replace(/\r\n/g, '\n');
+};
+
 module.exports = EditUtil;

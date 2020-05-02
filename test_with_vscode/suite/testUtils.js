@@ -2,9 +2,9 @@
 const assert = require('assert');
 const vscode = require("vscode");
 
-const TestUtils = {};
+const testUtils = {};
 
-TestUtils.setupTextEditor = async function({ content, language }) {
+testUtils.setupTextEditor = async function({ content, language }) {
     const doc = await vscode.workspace.openTextDocument({ content, language });
     await vscode.window.showTextDocument(doc);
     const textEditor = vscode.window.activeTextEditor;
@@ -12,4 +12,19 @@ TestUtils.setupTextEditor = async function({ content, language }) {
     return textEditor;
 };
 
-module.exports = TestUtils;
+testUtils.resetDocument = async function(textEditor, content, eol = vscode.EndOfLine.LF) {
+    let lineCount = textEditor.document.lineCount;
+    let entireDocument = new vscode.Range(0, 0, lineCount, 0);
+    await textEditor.edit((edit) => {
+        edit.replace(entireDocument, content);
+        edit.setEndOfLine(eol);
+    });
+};
+
+testUtils.setEndOfLine = async function(textEditor, eol) {
+    await textEditor.edit((edit) => {
+        edit.setEndOfLine(eol);
+    });
+};
+
+module.exports = testUtils;

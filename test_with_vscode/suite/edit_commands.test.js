@@ -85,7 +85,22 @@ describe('EditHandler', () => {
         });
     });
     describe('readText', () => {
-        it('should extract text from document (single range)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.LF
+            );
+        });
+        it('should extract text from document (single range)', async () => {
             mode.initialize(textEditor);
             assert.equal(
                 editHandler.readText(textEditor, [ new vscode.Range(1, 3, 1, 7) ]),
@@ -95,6 +110,12 @@ describe('EditHandler', () => {
                 editHandler.readText(textEditor, [ new vscode.Range(0, 0, 0, 10) ]),
                 '1234567890'
             );
+            await testUtils.setEndOfLine(textEditor, vscode.EndOfLine.CRLF);
+            assert.equal(
+                editHandler.readText(textEditor, [ new vscode.Range(0, 0, 1, 0) ]),
+                '1234567890\n'
+            );
+            await testUtils.setEndOfLine(textEditor, vscode.EndOfLine.LF);
             assert.equal(
                 editHandler.readText(textEditor, [ new vscode.Range(0, 0, 1, 0) ]),
                 '1234567890\n'
@@ -107,6 +128,12 @@ describe('EditHandler', () => {
                 editHandler.readText(textEditor, [ new vscode.Range(0, 10, 1, 0) ]),
                 '\n'
             );
+            await testUtils.setEndOfLine(textEditor, vscode.EndOfLine.CRLF);
+            assert.equal(
+                editHandler.readText(textEditor, [ new vscode.Range(3, 0, 6, 0) ]),
+                'fghij\n\n12345\n'
+            );
+            await testUtils.setEndOfLine(textEditor, vscode.EndOfLine.LF);
             assert.equal(
                 editHandler.readText(textEditor, [ new vscode.Range(3, 0, 6, 0) ]),
                 'fghij\n\n12345\n'
@@ -151,7 +178,7 @@ describe('EditHandler', () => {
                     new vscode.Range(5, 0, 5, 5),
                     new vscode.Range(6, 0, 6, 5)
                 ]),
-                '12345\n67890\n'
+                '12345\n67890\n'    // added new line
             );
         });
     });
