@@ -13,6 +13,7 @@ describe('EditHandler', () => {
     let textEditor;
     before(async () => {
         textEditor = await testUtils.setupTextEditor({ content: '' });
+        mode.initialize(textEditor);
     });
     describe('singleLineRange', () => {
         it('makes a single line range', () => {
@@ -248,6 +249,145 @@ describe('EditHandler', () => {
                 editHandler.deleteRanges(edit, [ new vscode.Range(6, 0, 7, 0) ]);
             });
             assert.equal(textEditor.document.lineCount, 7);
+        });
+    });
+    describe('makeCutCopyRanges', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.LF
+            );
+        });
+        it('should make a range array corresponding to current selection (single)', () => {
+            {
+                textEditor.selections = [ new vscode.Selection(0, 0, 1, 0) ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 1);
+                assert.equal(ranges[0].isEqual(new vscode.Range(0, 0, 1, 0)), true);
+                assert.equal(isLineMode, false);
+            }
+            {
+                textEditor.selections = [ new vscode.Selection(2, 3, 0, 5) ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 1);
+                assert.equal(ranges[0].isEqual(new vscode.Range(0, 5, 2, 3)), true);
+                assert.equal(isLineMode, false);
+            }
+        });
+        it('should make a range array corresponding to current selection (multiple)', () => {
+            {
+                textEditor.selections = [
+                    new vscode.Selection(0, 0, 0, 7),
+                    new vscode.Selection(1, 0, 1, 7)
+                ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 2);
+                assert.equal(ranges[0].isEqual(new vscode.Range(0, 0, 0, 7)), true);
+                assert.equal(ranges[1].isEqual(new vscode.Range(1, 0, 1, 7)), true);
+                assert.equal(isLineMode, false);
+            }
+        });
+        it('should retain ranges even if the selections contain empty ranges', () => {
+            {
+                textEditor.selections = [
+                    new vscode.Selection(0, 5, 0, 8),
+                    new vscode.Selection(1, 5, 1, 8),
+                    new vscode.Selection(2, 5, 2, 5)
+                ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 3);
+                assert.equal(ranges[0].isEqual(new vscode.Range(0, 5, 0, 8)), true);
+                assert.equal(ranges[1].isEqual(new vscode.Range(1, 5, 1, 8)), true);
+                assert.equal(ranges[2].isEqual(new vscode.Range(2, 5, 2, 5)), true);
+                assert.equal(isLineMode, false);
+            }
+        });
+        it('should reverse the range array to make it ascending order', () => {
+            {
+                textEditor.selections = [
+                    new vscode.Selection(3, 2, 3, 5),
+                    new vscode.Selection(2, 2, 2, 5),
+                    new vscode.Selection(1, 2, 1, 5)
+                ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 3);
+                assert.equal(ranges[0].isEqual(new vscode.Range(1, 2, 1, 5)), true);
+                assert.equal(ranges[2].isEqual(new vscode.Range(3, 2, 3, 5)), true);
+                assert.equal(isLineMode, false);
+            }
+            {
+                textEditor.selections = [
+                    new vscode.Selection(1, 8, 1, 10),
+                    new vscode.Selection(1, 0, 1, 2),
+                    new vscode.Selection(0, 0, 0, 2)
+                ];
+                mode.initialize(textEditor);
+                let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+                assert.equal(ranges.length, 3);
+                assert.equal(ranges[0].isEqual(new vscode.Range(0, 0, 0, 2)), true);
+                assert.equal(ranges[2].isEqual(new vscode.Range(1, 8, 1, 10)), true);
+                assert.equal(isLineMode, false);
+            }
+        });
+        it('should make a single-line range when the selection is empty (Line mode)', () => {
+            textEditor.selections = [ new vscode.Selection(1, 4, 1, 4) ];
+            mode.initialize(textEditor);
+            let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+            assert.equal(ranges.length, 1);
+            assert.equal(ranges[0].isEqual(new vscode.Range(1, 0, 2, 0)), true);
+            assert.equal(isLineMode, true);
+        });
+        it('should make a single-line, but excluding new line character, range when the selection is empty and is in box-selection mode', () => {
+            textEditor.selections = [ new vscode.Selection(1, 4, 1, 4) ];
+            mode.initialize(textEditor);
+            mode.startSelection(textEditor, true); // box-selection mode
+            let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+            assert.equal(ranges.length, 1);
+            assert.equal(ranges[0].isEqual(new vscode.Range(1, 0, 1, 10)), true);
+            assert.equal(isLineMode, true);
+        });
+        it('should make multiple single-line, but excluding new line character, ranges when the selections are all empty', () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 3, 3, 3),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 3, 5, 3)
+            ];
+            mode.initialize(textEditor);
+            let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+            assert.equal(ranges.length, 3);
+            assert.equal(ranges[0].isEqual(new vscode.Range(3, 0, 3, 5)), true);
+            assert.equal(ranges[1].isEqual(new vscode.Range(4, 0, 4, 0)), true);
+            assert.equal(ranges[2].isEqual(new vscode.Range(5, 0, 5, 5)), true);
+            assert.equal(isLineMode, true);
+        });
+        it('should remove duplicate lines from the resulting multiple single-line ranges', () => {
+            textEditor.selections = [
+                new vscode.Selection(1, 3, 1, 3),
+                new vscode.Selection(1, 9, 1, 9), // can happen if the line is wrapped
+                new vscode.Selection(2, 3, 2, 3),
+                new vscode.Selection(3, 3, 3, 3)
+            ];
+            mode.initialize(textEditor);
+            let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
+            assert.equal(ranges.length, 3);
+            assert.equal(ranges[0].isEqual(new vscode.Range(1, 0, 1, 10)), true);
+            assert.equal(ranges[1].isEqual(new vscode.Range(2, 0, 2, 5)), true);
+            assert.equal(ranges[2].isEqual(new vscode.Range(3, 0, 3, 5)), true);
+            assert.equal(isLineMode, true);
         });
     });
 });
