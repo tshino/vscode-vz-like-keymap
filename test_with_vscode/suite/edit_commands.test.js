@@ -390,4 +390,31 @@ describe('EditHandler', () => {
             assert.equal(isLineMode, true);
         });
     });
+    describe('cutAndPush', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.LF
+            );
+        });
+        it('should delete selected part of document', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.cutAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 6);
+            assert.equal(textEditor.document.lineAt(0).text, '123890');
+        });
+    });
 });
