@@ -12,17 +12,7 @@ describe('EditHandler', () => {
 
     let textEditor;
     before(async () => {
-        textEditor = await testUtils.setupTextEditor({
-            content: (
-                '1234567890\n' +
-                '1234567890\n' +
-                'abcde\n' +
-                'fghij\n' +
-                '\n' +
-                '12345\n' +
-                '67890' // <= no new line
-            )
-        });
+        textEditor = await testUtils.setupTextEditor({ content: '' });
     });
     describe('singleLineRange', () => {
         it('makes a single line range', () => {
@@ -34,6 +24,20 @@ describe('EditHandler', () => {
         });
     });
     describe('cancelSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                )
+            );
+        });
         it('should cancel single selection range and retain cursor position', () => {
             textEditor.selections = [ new vscode.Selection(1, 0, 1, 10) ];
             mode.initialize(textEditor);
@@ -150,7 +154,7 @@ describe('EditHandler', () => {
                 ''
             );
         });
-        it('should extract text from document (multi range)', () => {
+        it('should extract text from document (multiple ranges)', () => {
             mode.initialize(textEditor);
             assert.equal(
                 editHandler.readText(textEditor, [
@@ -180,6 +184,70 @@ describe('EditHandler', () => {
                 ]),
                 '12345\n67890\n'    // added new line
             );
+        });
+    });
+    describe('deleteRanges', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.LF
+            );
+        });
+        it('should delete texts in specified ranges (single range)', async () => {
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [ new vscode.Range(0, 5, 0, 8) ]);
+            });
+            assert.equal(textEditor.document.lineAt(0).text, '1234590');
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [ new vscode.Range(1, 5, 2, 2) ]);
+            });
+            assert.equal(textEditor.document.lineAt(1).text, '12345cde');
+        });
+        it('should delete texts in specified ranges (multiple ranges)', async () => {
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [
+                    new vscode.Range(0, 5, 0, 8),
+                    new vscode.Range(1, 5, 1, 8)
+                ]);
+            });
+            assert.equal(textEditor.document.lineAt(0).text, '1234590');
+            assert.equal(textEditor.document.lineAt(1).text, '1234590');
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [
+                    new vscode.Range(2, 1, 2, 2),
+                    new vscode.Range(2, 3, 2, 4)
+                ]);
+            });
+            assert.equal(textEditor.document.lineAt(2).text, 'ace');
+        });
+        it('should concatenate two lines when deleting a new line', async () => {
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [ new vscode.Range(2, 5, 3, 0) ]);
+            });
+            assert.equal(textEditor.document.lineAt(2).text, 'abcdefghij');
+        });
+        it('should decrement lineCount when deleting a single line', async () => {
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [ new vscode.Range(3, 0, 4, 0) ]);
+            });
+            assert.equal(textEditor.document.lineCount, 6);
+        });
+        it('should retain lineCount when deleting the last line which has no new line', async () => {
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.deleteRanges(edit, [ new vscode.Range(6, 0, 7, 0) ]);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
         });
     });
 });
