@@ -403,7 +403,7 @@ describe('EditHandler', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.LF
+                vscode.EndOfLine.CRLF
             );
         });
         it('should delete selected part of document', async () => {
@@ -415,6 +415,42 @@ describe('EditHandler', () => {
             });
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(0).text, '123890');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, '4567890\n1234567');
+        });
+        it('should delete an entire line when selection is empty', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.cutAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 6);
+            assert.equal(textEditor.document.lineAt(2).text, 'fghij');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'abcde\n');
+        });
+        it('should delete the line but leave empty line there when in box-selection mode', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            mode.startSelection(textEditor, true); // box-selection mode
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.cutAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(2).text, '');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'abcde');
         });
     });
 });
