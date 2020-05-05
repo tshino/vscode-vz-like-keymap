@@ -417,6 +417,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(0).text, '123890');
             assert.equal(textEditor.selections.length, 1);
             assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(0, 3, 0, 3)), true);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, '4567890\n1234567');
@@ -432,6 +433,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
             assert.equal(textEditor.selections.length, 1);
             assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 0, 2, 0)), true);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde\n');
@@ -448,9 +450,32 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, '');
             assert.equal(textEditor.selections.length, 1);
             assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 0, 2, 0)), true);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde');
+        });
+        it('should delete multiple lines and leave empty line there when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 2, 3, 2),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 2, 5, 2)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.cutAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(3).text, '');
+            assert.equal(textEditor.document.lineAt(4).text, '');
+            assert.equal(textEditor.document.lineAt(5).text, '');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 0, 3, 0)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'fghij\n\n12345\n');
         });
     });
 });
