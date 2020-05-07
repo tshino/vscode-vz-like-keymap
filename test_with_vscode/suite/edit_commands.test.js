@@ -478,4 +478,92 @@ describe('EditHandler', () => {
             assert.equal(clipboard, 'fghij\n\n12345\n');
         });
     });
+    describe('copyAndPush', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+        });
+        it('should copy selected part of document', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(0).text, '1234567890');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 7, 1, 7)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, '4567890\n1234567');
+        });
+        it('should copy an entire line when selection is empty', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(2).text, 'abcde');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'abcde\n');
+        });
+        it('should copy the line when in box-selection mode', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            mode.startSelection(textEditor, true); // box-selection mode
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(2).text, 'abcde');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'abcde');
+        });
+        it('should copy multiple lines when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 2, 3, 2),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 2, 5, 2)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(3).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(4).text, '');
+            assert.equal(textEditor.document.lineAt(5).text, '12345');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 2, 3, 2)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'fghij\n\n12345\n');
+        });
+    });
 });
