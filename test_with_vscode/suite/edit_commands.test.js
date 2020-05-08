@@ -566,4 +566,73 @@ describe('EditHandler', () => {
             assert.equal(clipboard, 'fghij\n\n12345\n');
         });
     });
+    describe('peekTextStack', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+        });
+        it('should read the last copied/cut part of document', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
+            mode.initialize(textEditor);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, '4567890\n1234567');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+        });
+        it('should read the last copied/cut line with empty selection', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'abcde\n');
+            assert.equal(isLineMode, true);
+            assert.equal(isBoxMode, false);
+        });
+        it('should read the last copied/cut line in box-selection mode', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            mode.initialize(textEditor);
+            mode.startSelection(textEditor, true); // box-selection mode
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'abcde');
+            assert.equal(isLineMode, true);
+            assert.equal(isBoxMode, true);
+        });
+        it('should copy multiple lines when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 2, 3, 2),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 2, 5, 2)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'fghij\n\n12345\n');
+            assert.equal(isLineMode, true);
+            assert.equal(isBoxMode, true);
+        });
+    });
 });

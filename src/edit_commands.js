@@ -213,6 +213,7 @@ const EditHandler = function(modeHandler) {
         makeCutCopyRanges: makeCutCopyRanges,
         cutAndPush: cutAndPush,
         copyAndPush: copyAndPush,
+        peekTextStack,
         registerCommands
     };
 };
