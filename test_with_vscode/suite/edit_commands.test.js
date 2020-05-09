@@ -455,6 +455,28 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde');
         });
+        it('should delete multiple selection ranges when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 1, 3, 4),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 1, 5, 4)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.cutAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(3).text, 'fj');
+            assert.equal(textEditor.document.lineAt(4).text, '');
+            assert.equal(textEditor.document.lineAt(5).text, '15');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 1, 3, 1)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'ghi\n\n234\n');
+        });
         it('should delete multiple lines and leave empty line there when in box-selection mode', async () => {
             textEditor.selections = [
                 new vscode.Selection(3, 2, 3, 2),
@@ -543,6 +565,28 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde');
         });
+        it('should copy multiple selection ranges when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 1, 3, 4),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 1, 5, 4)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(3).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(4).text, '');
+            assert.equal(textEditor.document.lineAt(5).text, '12345');
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].isEmpty, true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 1, 3, 1)), true);
+            assert.equal(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, 'ghi\n\n234\n');
+        });
         it('should copy multiple lines when in box-selection mode', async () => {
             textEditor.selections = [
                 new vscode.Selection(3, 2, 3, 2),
@@ -616,6 +660,22 @@ describe('EditHandler', () => {
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, 'abcde');
             assert.equal(isLineMode, true);
+            assert.equal(isBoxMode, true);
+        });
+        it('should copy multiple selection ranges when in box-selection mode', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 1, 3, 4),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 1, 5, 4)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'ghi\n\n234\n');
+            assert.equal(isLineMode, false);
             assert.equal(isBoxMode, true);
         });
         it('should copy multiple lines when in box-selection mode', async () => {
