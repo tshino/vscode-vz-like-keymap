@@ -7,7 +7,7 @@ const EditUtil = require("./edit_util.js");
 const edit_commands = require("./edit_commands.js");
 
 function activate(context) {
-    const mode = mode_handler.ModeHandler();
+    const mode = mode_handler.getInstance();
     const cursor_style_controller = cursor_style.CursorStyleController();
     const editHandler = edit_commands.EditHandler(mode);
     editHandler.registerCommands(context);

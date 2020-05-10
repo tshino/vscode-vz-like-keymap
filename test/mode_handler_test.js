@@ -686,4 +686,13 @@ describe('mode_handler', function() {
             });
         });
     });
+    describe('getInstance', function() {
+        it('should return the global instance of ModeHandler', function() {
+            let mode1 = mode_handler.getInstance();
+            assert('inSelection' in mode1);
+            assert('inBoxSelection' in mode1);
+            let mode2 = mode_handler.getInstance();
+            assert.equal(mode1 === mode2, true);
+        });
+    });
 });

@@ -60,3 +60,8 @@ const ModeHandler = function() {
 };
 
 exports.ModeHandler = ModeHandler;
+
+const theInstance = ModeHandler();
+exports.getInstance = function() {
+    return theInstance;
+};
