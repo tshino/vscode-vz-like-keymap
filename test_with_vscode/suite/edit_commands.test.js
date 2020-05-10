@@ -7,8 +7,9 @@ const edit_commands = require("./../../src/edit_commands.js");
 
 describe('EditHandler', () => {
     vscode.window.showInformationMessage('Started test for EditHandler.');
-    const mode = mode_handler.ModeHandler();
+    const mode = mode_handler.getInstance();
     const editHandler = edit_commands.EditHandler(mode);
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     let textEditor;
     before(async () => {
@@ -461,7 +462,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(4, 0, 4, 0),
                 new vscode.Selection(5, 1, 5, 4)
             ];
-            mode.initialize(textEditor);
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.equal(textEditor.document.lineCount, 7);
             await textEditor.edit(edit => {
                 editHandler.cutAndPush(textEditor, edit);
