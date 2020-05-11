@@ -391,7 +391,7 @@ describe('EditHandler', () => {
             assert.equal(isLineMode, true);
         });
     });
-    describe('cutAndPush', () => {
+    describe('vz.clipboardCut', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -411,9 +411,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await textEditor.edit(edit => {
-                editHandler.cutAndPush(textEditor, edit);
-            });
+            await vscode.commands.executeCommand('vz.clipboardCut');
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(0).text, '123890');
             assert.equal(textEditor.selections.length, 1);
@@ -427,9 +425,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await textEditor.edit(edit => {
-                editHandler.cutAndPush(textEditor, edit);
-            });
+            await vscode.commands.executeCommand('vz.clipboardCut');
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
             assert.equal(textEditor.selections.length, 1);
@@ -444,9 +440,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.equal(textEditor.document.lineCount, 7);
-            await textEditor.edit(edit => {
-                editHandler.cutAndPush(textEditor, edit);
-            });
+            await vscode.commands.executeCommand('vz.clipboardCut');
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, '');
             assert.equal(textEditor.selections.length, 1);
@@ -464,9 +458,7 @@ describe('EditHandler', () => {
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.equal(textEditor.document.lineCount, 7);
-            await textEditor.edit(edit => {
-                editHandler.cutAndPush(textEditor, edit);
-            });
+            await vscode.commands.executeCommand('vz.clipboardCut');
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, 'fj');
             assert.equal(textEditor.document.lineAt(4).text, '');
@@ -486,9 +478,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await textEditor.edit(edit => {
-                editHandler.cutAndPush(textEditor, edit);
-            });
+            await vscode.commands.executeCommand('vz.clipboardCut');
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, '');
             assert.equal(textEditor.document.lineAt(4).text, '');
