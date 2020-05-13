@@ -675,5 +675,34 @@ describe('EditHandler', () => {
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, true);
         });
+        it('should return clipboard text if it does not match the last copied/cut text', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
+            mode.initialize(textEditor);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            await vscode.env.clipboard.writeText('unknown text');
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'unknown text');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+        });
+        it('should return clipboard text if it does not match the last copied/cut text (multi)', async () => {
+            textEditor.selections = [
+                new vscode.Selection(3, 2, 3, 2),
+                new vscode.Selection(4, 0, 4, 0),
+                new vscode.Selection(5, 2, 5, 2)
+            ];
+            mode.initialize(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            await textEditor.edit(edit => {
+                editHandler.copyAndPush(textEditor, edit);
+            });
+            await vscode.env.clipboard.writeText('diff\nerent\ntext');
+            let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, 'diff\nerent\ntext');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+        });
     });
 });
