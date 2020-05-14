@@ -1,5 +1,6 @@
 "use strict";
 const vscode = require("vscode");
+const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
 
 const registerTextEditorCommand = function(context, name, func) {
@@ -219,3 +220,8 @@ const EditHandler = function(modeHandler) {
 };
 
 exports.EditHandler = EditHandler;
+
+const theInstance = EditHandler(mode_handler.getInstance());
+exports.getInstance = function() {
+    return theInstance;
+};
