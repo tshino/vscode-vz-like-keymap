@@ -68,6 +68,9 @@ const EditHandler = function(modeHandler) {
         }
         return [ranges, isLineMode];
     };
+    const clearTextStack = function() {
+        textStack.length = 0;
+    };
     let pasteReentryLock = false;
     const cutAndPush = function(textEditor, edit) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
@@ -212,6 +215,7 @@ const EditHandler = function(modeHandler) {
         readText: readText,
         deleteRanges: deleteRanges,
         makeCutCopyRanges: makeCutCopyRanges,
+        clearTextStack, // for testing purpose
         cutAndPush: cutAndPush,
         copyAndPush: copyAndPush,
         peekTextStack,
