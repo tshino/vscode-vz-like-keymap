@@ -219,6 +219,7 @@ const EditHandler = function(modeHandler) {
         cutAndPush: cutAndPush,
         copyAndPush: copyAndPush,
         peekTextStack,
+        popTextStack,
         registerCommands
     };
 };
