@@ -719,6 +719,24 @@ describe('EditHandler', () => {
             );
             editHandler.clearTextStack();
         });
+        it('should return clipboard text if text stack is empty', async () => {
+            await vscode.env.clipboard.writeText('clipboard');
+            let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
+            assert.equal(text, 'clipboard');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+            [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+        });
+        it('should return empty string if text stack is empty', async () => {
+            await vscode.env.clipboard.writeText('');
+            let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
+        });
         it('should read the last copied/cut part of document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
