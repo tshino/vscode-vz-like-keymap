@@ -741,6 +741,10 @@ describe('EditHandler', () => {
             assert.equal(text, 'abcde\n');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, false);
+            [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
         });
         it('should read the last copied/cut line in box-selection mode', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
@@ -752,6 +756,10 @@ describe('EditHandler', () => {
             assert.equal(text, 'abcde');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, true);
+            [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
         });
         it('should copy multiple selection ranges when in box-selection mode', async () => {
             textEditor.selections = [
@@ -766,6 +774,10 @@ describe('EditHandler', () => {
             assert.equal(text, 'ghi\n\n234\n');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, true);
+            [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
         });
         it('should copy multiple lines when in box-selection mode', async () => {
             textEditor.selections = [
@@ -780,6 +792,10 @@ describe('EditHandler', () => {
             assert.equal(text, 'fghij\n\n12345\n');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, true);
+            [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
+            assert.equal(text, '');
+            assert.equal(isLineMode, false);
+            assert.equal(isBoxMode, false);
         });
         it('should return clipboard text if it does not match the last copied/cut text', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
