@@ -696,6 +696,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'diff\nerent\ntext');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), 'diff\nerent\ntext');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, 'diff\nerent\ntext');
             assert.equal(isLineMode, false);
@@ -725,6 +726,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'clipboard');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -736,6 +738,7 @@ describe('EditHandler', () => {
             assert.equal(text, '');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
         });
         it('should read the last copied/cut part of document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
@@ -745,6 +748,7 @@ describe('EditHandler', () => {
             assert.equal(text, '4567890\n1234567');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -759,6 +763,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'abcde\n');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -774,6 +779,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'abcde');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, true);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -792,6 +798,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'ghi\n\n234\n');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, true);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -810,6 +817,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'fghij\n\n12345\n');
             assert.equal(isLineMode, true);
             assert.equal(isBoxMode, true);
+            assert.equal(await vscode.env.clipboard.readText(), '');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '');
             assert.equal(isLineMode, false);
@@ -824,6 +832,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'unknown text');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), '4567890\n1234567');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, '4567890\n1234567');
             assert.equal(isLineMode, false);
@@ -843,6 +852,7 @@ describe('EditHandler', () => {
             assert.equal(text, 'diff\nerent\ntext');
             assert.equal(isLineMode, false);
             assert.equal(isBoxMode, false);
+            assert.equal(await vscode.env.clipboard.readText(), 'fghij\n\n12345\n');
             [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.equal(text, 'fghij\n\n12345\n');
             assert.equal(isLineMode, true);
