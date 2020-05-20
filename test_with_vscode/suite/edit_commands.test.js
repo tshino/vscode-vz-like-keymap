@@ -859,4 +859,31 @@ describe('EditHandler', () => {
             assert.equal(isBoxMode, true);
         });
     });
+    describe('paseLines', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should insert text lines into the document', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteLines(textEditor, 'Hello, world!\n');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(2).text, 'Hello, world!');
+            assert.equal(textEditor.document.lineAt(3).text, 'abcde');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+        });
+    });
 });

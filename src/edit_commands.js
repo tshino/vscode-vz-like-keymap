@@ -220,6 +220,7 @@ const EditHandler = function(modeHandler) {
         copyAndPush: copyAndPush,
         peekTextStack,
         popTextStack,
+        pasteLines,
         registerCommands
     };
 };
