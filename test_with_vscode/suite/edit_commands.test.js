@@ -876,13 +876,23 @@ describe('EditHandler', () => {
             );
             editHandler.clearTextStack();
         });
-        it('should insert text lines into the document', async () => {
+        it('should insert text lines into the document (single)', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!\n');
             assert.equal(textEditor.document.lineCount, 8);
             assert.equal(textEditor.document.lineAt(2).text, 'Hello, world!');
             assert.equal(textEditor.document.lineAt(3).text, 'abcde');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+        });
+        it('should insert text lines into the document (multi)', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteLines(textEditor, 'Hello, world!\nHave a nice day!\n');
+            assert.equal(textEditor.document.lineCount, 9);
+            assert.equal(textEditor.document.lineAt(2).text, 'Hello, world!');
+            assert.equal(textEditor.document.lineAt(3).text, 'Have a nice day!');
+            assert.equal(textEditor.document.lineAt(4).text, 'abcde');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
         });
     });
