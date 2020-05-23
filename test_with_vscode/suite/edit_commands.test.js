@@ -859,7 +859,7 @@ describe('EditHandler', () => {
             assert.equal(isBoxMode, true);
         });
     });
-    describe('paseLines', () => {
+    describe('pasteLines', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -894,6 +894,14 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'Have a nice day!');
             assert.equal(textEditor.document.lineAt(4).text, 'abcde');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+        });
+        it('should insert text lines into the document (no new line)', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 3, 6, 3) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteLines(textEditor, 'Hello, world!');
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(6).text, 'Hello, world!67890');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 3, 6, 3)), true);
         });
     });
 });
