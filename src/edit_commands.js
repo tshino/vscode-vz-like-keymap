@@ -226,6 +226,7 @@ const EditHandler = function(modeHandler) {
         peekTextStack,
         popTextStack,
         pasteLines,
+        pasteInlineText,
         registerCommands
     };
 };

@@ -925,4 +925,38 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(7, 0, 7, 0)), true);
         });
     });
+    describe('pasteInlineText', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should insert a text inline', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteInlineText('Hello, world!');
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(2).text, 'abcHello, world!de');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 16, 2, 16)), true);
+        });
+        it('should replace the current selection range with a text', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 1, 2, 4) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteInlineText('Hello, world!');
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
+        });
+    });
 });
