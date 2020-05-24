@@ -3,6 +3,8 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
+- Improved:
+  - The behavior of Paste of a text which has been taken from the last line of a document.
 - Added:
   - An integration test with VS Code.
 

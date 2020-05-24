@@ -876,7 +876,7 @@ describe('EditHandler', () => {
             );
             editHandler.clearTextStack();
         });
-        it('should insert text lines into the document (single)', async () => {
+        it('should insert a single line into the document', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!\n');
@@ -885,7 +885,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'abcde');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
         });
-        it('should insert text lines into the document (multi)', async () => {
+        it('should insert multiple lines into the document', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!\nHave a nice day!\n');
@@ -895,13 +895,34 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(4).text, 'abcde');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
         });
-        it('should insert text lines into the document (no new line)', async () => {
+        it('should insert a single line even if it has no new line', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 3, 5, 3) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteLines(textEditor, 'Hello, world!');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(5).text, 'Hello, world!');
+            assert.equal(textEditor.document.lineAt(6).text, '12345');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(5, 3, 5, 3)), true);
+        });
+        it('should insert a single line even if both the text and the current line of the document have no new line', async () => {
             textEditor.selections = [ new vscode.Selection(6, 3, 6, 3) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!');
-            assert.equal(textEditor.document.lineCount, 7);
-            assert.equal(textEditor.document.lineAt(6).text, 'Hello, world!67890');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(6).text, 'Hello, world!');
+            assert.equal(textEditor.document.lineAt(7).text, '67890');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 3, 6, 3)), true);
+        });
+        it('should insert a text without new line into the last line of doc if the text has no new line and the last line is empty', async () => {
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(6, 5), '\n');
+            });
+            textEditor.selections = [ new vscode.Selection(7, 0, 7, 0) ];
+            assert.equal(textEditor.document.lineCount, 8);
+            await editHandler.pasteLines(textEditor, 'Hello, world!');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(7).text, 'Hello, world!');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(7, 0, 7, 0)), true);
         });
     });
 });

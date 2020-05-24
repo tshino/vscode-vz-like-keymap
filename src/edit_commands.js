@@ -142,6 +142,11 @@ const EditHandler = function(modeHandler) {
         let lastPos = textEditor.selection.start;
         let lineStart = new vscode.Position(lastPos.line, 0);
         textEditor.selection = new vscode.Selection(lineStart, lineStart);
+        if (!text.endsWith('\n') &&
+            (lastPos.line != textEditor.document.lineCount - 1 ||
+            '' != textEditor.document.lineAt(lastPos.line).text)) {
+            text += '\n';
+        }
         let res = vscode.commands.executeCommand('paste', { text: text });
         res.then(function() {
             textEditor.selection = new vscode.Selection(lastPos, lastPos);
