@@ -958,5 +958,14 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
         });
+        it('should insert a text inline even if it contain new lines', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteInlineText('Hello,\nworld!');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(1).text, '12345Hello,');
+            assert.equal(textEditor.document.lineAt(2).text, 'world!67890');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
+        });
     });
 });
