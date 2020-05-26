@@ -958,7 +958,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
         });
-        it('should insert a text inline even if it contain new lines', async () => {
+        it('should insert a text inline even if it contains new lines', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteInlineText('Hello,\nworld!');
