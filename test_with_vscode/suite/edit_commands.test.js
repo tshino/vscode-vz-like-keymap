@@ -958,6 +958,16 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
         });
+        it('should replace multiple lines of current selection range with a text', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 0, 4, 0) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteInlineText('Hello, world!\n');
+            assert.equal(textEditor.document.lineCount, 6);
+            assert.equal(textEditor.document.lineAt(2).text, 'Hello, world!');
+            assert.equal(textEditor.document.lineAt(3).text, '');
+            assert.equal(textEditor.document.lineAt(4).text, '12345');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 0, 3, 0)), true);
+        });
         it('should insert a text inline even if it contains new lines', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
             assert.equal(textEditor.document.lineCount, 7);
