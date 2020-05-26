@@ -949,6 +949,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcHello, world!de');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 16, 2, 16)), true);
+            assert.equal(mode.inSelection(), false);
         });
         it('should replace the current selection range with a text', async () => {
             textEditor.selections = [ new vscode.Selection(2, 1, 2, 4) ];
@@ -957,6 +958,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
+            assert.equal(mode.inSelection(), false);
         });
         it('should replace multiple lines of current selection range with a text', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 4, 0) ];
@@ -967,6 +969,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, '');
             assert.equal(textEditor.document.lineAt(4).text, '12345');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 0, 3, 0)), true);
+            assert.equal(mode.inSelection(), false);
         });
         it('should insert a text inline even if it contains new lines', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
@@ -976,6 +979,36 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '12345Hello,');
             assert.equal(textEditor.document.lineAt(2).text, 'world!67890');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
+            assert.equal(mode.inSelection(), false);
+        });
+    });
+    describe('pasteBoxText', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should insert multiple lines of text into existing lines', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(1).text, '12345One,67890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcdeTwo,');
+            assert.equal(textEditor.document.lineAt(3).text, 'fghijThree.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 9, 1, 9)), true);
+            assert.equal(mode.inSelection(), false);
         });
     });
 });
