@@ -1010,5 +1010,27 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 9, 1, 9)), true);
             assert.equal(mode.inSelection(), false);
         });
+        it('should extend the document when inserting a text at the end of doc', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 0, 5, 0) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
+            assert.equal(textEditor.document.lineCount, 8);
+            assert.equal(textEditor.document.lineAt(5).text, 'One,12345');
+            assert.equal(textEditor.document.lineAt(6).text, 'Two,67890');
+            assert.equal(textEditor.document.lineAt(7).text, 'Three.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(5, 4, 5, 4)), true);
+            assert.equal(mode.inSelection(), false);
+        });
+        it('should extend the document when inserting a text at the end of doc', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
+            assert.equal(textEditor.document.lineCount, 9);
+            assert.equal(textEditor.document.lineAt(6).text, 'One,67890');
+            assert.equal(textEditor.document.lineAt(7).text, 'Two,');
+            assert.equal(textEditor.document.lineAt(8).text, 'Three.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
+            assert.equal(mode.inSelection(), false);
+        });
     });
 });
