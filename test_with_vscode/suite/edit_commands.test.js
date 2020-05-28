@@ -1032,5 +1032,16 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
             assert.equal(mode.inSelection(), false);
         });
+        it('should ignore the last new line character of the pasting text', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
+            assert.equal(textEditor.document.lineCount, 9);
+            assert.equal(textEditor.document.lineAt(6).text, 'One,67890');
+            assert.equal(textEditor.document.lineAt(7).text, 'Two,');
+            assert.equal(textEditor.document.lineAt(8).text, 'Three.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
+            assert.equal(mode.inSelection(), false);
+        });
     });
 });
