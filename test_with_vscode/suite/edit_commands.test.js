@@ -1044,4 +1044,32 @@ describe('EditHandler', () => {
             assert.equal(mode.inSelection(), false);
         });
     });
+    describe('popAndPasteImpl', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should pop a text from the text stack and paste it', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            assert.equal(await vscode.env.clipboard.readText(), '23456789');
+            assert.equal(textEditor.document.lineAt(1).text, '10');
+            textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
+            assert.equal(textEditor.document.lineAt(1).text, '1023456789');
+        });
+    });
 });
