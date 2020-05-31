@@ -875,6 +875,8 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
         });
         it('should insert a single line into the document', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
@@ -941,6 +943,8 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
         });
         it('should insert a text inline', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
@@ -998,6 +1002,8 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
         });
         it('should insert multiple lines of text into existing lines', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
@@ -1060,6 +1066,8 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
         });
         it('should pop a text from the text stack and paste it', async () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
@@ -1079,6 +1087,14 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(0).text, '123abcde4567890');
             assert.equal(textEditor.document.lineAt(1).text, '123abcde4567890');
+        });
+        it('should insert a single line if the text is from line mode cut or copy', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
+            assert.equal(textEditor.document.lineAt(2).text, 'fghij');
         });
     });
 });
