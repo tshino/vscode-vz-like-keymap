@@ -985,6 +985,17 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
             assert.equal(mode.inSelection(), false);
         });
+        it('should insert a text into each position of current cursors', async () => {
+            textEditor.selections = [
+                new vscode.Selection(2, 1, 2, 1), new vscode.Selection(3, 1, 3, 1),
+            ];
+            await editHandler.pasteInlineText('_____');
+            assert.equal(textEditor.document.lineAt(2).text, 'a_____bcde');
+            assert.equal(textEditor.document.lineAt(3).text, 'f_____ghij');
+            assert.equal(textEditor.selections.length, 2);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
+            assert.equal(textEditor.selections[1].isEqual(new vscode.Selection(3, 6, 3, 6)), true);
+        });
     });
     describe('pasteBoxText', () => {
         beforeEach(async () => {
