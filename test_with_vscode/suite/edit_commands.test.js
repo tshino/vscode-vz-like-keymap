@@ -1107,5 +1107,20 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
         });
+        it('should insert multiple lines of text into multiple lines', async () => {
+            textEditor.selections = [
+                new vscode.Selection(2, 0, 2, 3),
+                new vscode.Selection(3, 0, 3, 3)
+            ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            textEditor.selections = [
+                new vscode.Selection(2, 2, 2, 2),
+                new vscode.Selection(3, 2, 3, 2)
+            ];
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
+            assert.equal(textEditor.document.lineAt(2).text, 'deabc');
+            assert.equal(textEditor.document.lineAt(3).text, 'ijfgh');
+        });
     });
 });
