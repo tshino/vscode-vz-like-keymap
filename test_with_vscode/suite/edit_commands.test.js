@@ -1112,10 +1112,26 @@ describe('EditHandler', () => {
                 new vscode.Selection(2, 0, 2, 3),
                 new vscode.Selection(3, 0, 3, 3)
             ];
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             await vscode.commands.executeCommand('vz.clipboardCut');
             textEditor.selections = [
                 new vscode.Selection(2, 2, 2, 2),
                 new vscode.Selection(3, 2, 3, 2)
+            ];
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
+            assert.equal(textEditor.document.lineAt(2).text, 'deabc');
+            assert.equal(textEditor.document.lineAt(3).text, 'ijfgh');
+        });
+        it('should insert multiple lines of text into lines below the cursor', async () => {
+            textEditor.selections = [
+                new vscode.Selection(2, 0, 2, 3),
+                new vscode.Selection(3, 0, 3, 3)
+            ];
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            textEditor.selections = [
+                new vscode.Selection(2, 2, 2, 2)
             ];
             await editHandler.popAndPasteImpl(textEditor, false);
             assert.equal(await vscode.env.clipboard.readText(), '');
