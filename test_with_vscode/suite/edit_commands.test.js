@@ -1088,6 +1088,14 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(1).text, '1023456789');
         });
+        it('should retain the text stack if the second argument is true', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
+            await editHandler.popAndPasteImpl(textEditor, true);
+            assert.equal(await vscode.env.clipboard.readText(), '23456789');
+            assert.equal(textEditor.document.lineAt(1).text, '1023456789');
+        });
         it('should paste a single text into each position of multiple cursors', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 5) ];
             await vscode.commands.executeCommand('vz.clipboardCut');
