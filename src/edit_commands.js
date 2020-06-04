@@ -138,7 +138,7 @@ const EditHandler = function(modeHandler) {
         }
         return [text, isLineMode, isBoxMode];
     };
-    const pasteLines = function(textEditor, text) {
+    const pasteLines = async function(textEditor, text) {
         let lastPos = textEditor.selection.start;
         let lineStart = new vscode.Position(lastPos.line, 0);
         textEditor.selection = new vscode.Selection(lineStart, lineStart);
@@ -147,21 +147,15 @@ const EditHandler = function(modeHandler) {
             '' != textEditor.document.lineAt(lastPos.line).text)) {
             text += '\n';
         }
-        let res = vscode.commands.executeCommand('paste', { text: text });
-        res.then(function() {
-            textEditor.selection = new vscode.Selection(lastPos, lastPos);
-            pasteReentryLock = false;
-        });
-        return res;
+        await vscode.commands.executeCommand('paste', { text: text });
+        textEditor.selection = new vscode.Selection(lastPos, lastPos);
+        pasteReentryLock = false;
     };
-    const pasteInlineText = function(text) {
-        let res = vscode.commands.executeCommand('paste', { text: text });
-        res.then(function() {
-            pasteReentryLock = false;
-        });
-        return res;
+    const pasteInlineText = async function(text) {
+        await vscode.commands.executeCommand('paste', { text: text });
+        pasteReentryLock = false;
     };
-    const pasteBoxText = function(textEditor, text) {
+    const pasteBoxText = async function(textEditor, text) {
         let pos = textEditor.selection.active;
         let lines = text.split('\n');
         if (0 < lines.length && lines[lines.length - 1] === '') {
@@ -174,7 +168,7 @@ const EditHandler = function(modeHandler) {
             lines.length = lines.length - overflow;
             lines[lines.length] = '\n' + rest;
         }
-        let res = textEditor.edit((edit) => {
+        await textEditor.edit((edit) => {
             for (let i = 0, n = lines.length; i < n; i++) {
                 edit.insert(
                     pos.with(pos.line + i),
@@ -182,10 +176,7 @@ const EditHandler = function(modeHandler) {
                 );
             }
         });
-        res.then(function() {
-            pasteReentryLock = false;
-        });
-        return res;
+        pasteReentryLock = false;
     };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
         if (pasteReentryLock) {
@@ -194,11 +185,11 @@ const EditHandler = function(modeHandler) {
         pasteReentryLock = true;
         let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isBoxMode) {
-            return pasteBoxText(textEditor, text);
+            await pasteBoxText(textEditor, text);
         } else if (isLineMode && !mode.inBoxSelection()) {
-            return pasteLines(textEditor, text);
+            await pasteLines(textEditor, text);
         } else {
-            return pasteInlineText(text);
+            await pasteInlineText(text);
         }
     };
     const popAndPaste = async function(textEditor, _edit) {
