@@ -1116,6 +1116,20 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
         });
+        it('should repeat inserting a single line', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            assert.equal(textEditor.document.lineCount, 6);
+            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.popAndPasteImpl(textEditor, true);
+            assert.equal(textEditor.document.lineCount, 9);
+            assert.equal(textEditor.document.lineAt(2).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(3).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(4).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(5).text, 'abcde');
+        });
         it('should insert multiple lines of text into at multiple cursors', async () => {
             textEditor.selections = [
                 new vscode.Selection(2, 0, 2, 3),
