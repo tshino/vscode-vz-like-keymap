@@ -1130,7 +1130,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(4).text, 'fghij');
             assert.equal(textEditor.document.lineAt(5).text, 'abcde');
         });
-        it('should insert multiple lines of text into at multiple cursors', async () => {
+        it('should insert multiple lines of inline text into at multiple cursors', async () => {
             textEditor.selections = [
                 new vscode.Selection(2, 0, 2, 3),
                 new vscode.Selection(3, 0, 3, 3)
@@ -1146,7 +1146,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'deabc');
             assert.equal(textEditor.document.lineAt(3).text, 'ijfgh');
         });
-        it('should insert multiple lines of text into lines below the cursor', async () => {
+        it('should insert multiple lines of inline text into lines below the cursor', async () => {
             textEditor.selections = [
                 new vscode.Selection(2, 0, 2, 3),
                 new vscode.Selection(3, 0, 3, 3)
@@ -1160,6 +1160,19 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(2).text, 'deabc');
             assert.equal(textEditor.document.lineAt(3).text, 'ijfgh');
+        });
+        it('should repeat inserting multiple lines of inline text', async () => {
+            textEditor.selections = [
+                new vscode.Selection(2, 0, 2, 3),
+                new vscode.Selection(3, 0, 3, 3)
+            ];
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.popAndPasteImpl(textEditor, true);
+            assert.equal(textEditor.document.lineAt(2).text, 'abcabcabcde');
+            assert.equal(textEditor.document.lineAt(3).text, 'fghfghfghij');
         });
     });
 });
