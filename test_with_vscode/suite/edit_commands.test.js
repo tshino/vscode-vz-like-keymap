@@ -1130,6 +1130,19 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(4).text, 'fghij');
             assert.equal(textEditor.document.lineAt(5).text, 'abcde');
         });
+        it('should insert multiple lines that are from multiple cuts', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.equal(await vscode.env.clipboard.readText(), '');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcde');
+            assert.equal(textEditor.document.lineAt(3).text, 'fghij');
+            assert.equal(textEditor.document.lineAt(4).text, '');
+        });
         it('should insert multiple lines of inline text into at multiple cursors', async () => {
             textEditor.selections = [
                 new vscode.Selection(2, 0, 2, 3),
