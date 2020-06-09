@@ -1132,9 +1132,9 @@ describe('EditHandler', () => {
         });
         it('should insert multiple lines that are from multiple cuts', async () => {
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
-            await vscode.commands.executeCommand('vz.clipboardCut');
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
+            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
+            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
             await editHandler.popAndPasteImpl(textEditor, false);
             await editHandler.popAndPasteImpl(textEditor, false);
             await editHandler.popAndPasteImpl(textEditor, false);

@@ -72,11 +72,10 @@ const EditHandler = function(modeHandler) {
         textStack.length = 0;
     };
     let pasteReentryLock = false;
-    const cutAndPush = function(textEditor, edit) {
+    const cutAndPushImpl = function(textEditor, edit, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
-        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
-        if (!enableTextStack) {
+        if (!useTextStack) {
             textStack.length = 0;
         }
         textStack.push({
@@ -89,11 +88,14 @@ const EditHandler = function(modeHandler) {
         deleteRanges(edit, ranges);
         pasteReentryLock = false;
     };
-    const copyAndPush = function(textEditor, _edit) {
+    const cutAndPush = function(textEditor, edit) {
+        const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+        cutAndPushImpl(textEditor, edit, useTextStack);
+    };
+    const copyAndPushImpl = function(textEditor, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
-        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
-        if (!enableTextStack) {
+        if (!useTextStack) {
             textStack.length = 0;
         }
         textStack.push({
@@ -104,6 +106,10 @@ const EditHandler = function(modeHandler) {
         vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
         pasteReentryLock = false;
+    };
+    const copyAndPush = function(textEditor, _edit) {
+        const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+        copyAndPushImpl(textEditor, useTextStack);
     };
     const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
@@ -212,8 +218,10 @@ const EditHandler = function(modeHandler) {
         deleteRanges: deleteRanges,
         makeCutCopyRanges: makeCutCopyRanges,
         clearTextStack, // for testing purpose
-        cutAndPush: cutAndPush,
-        copyAndPush: copyAndPush,
+        cutAndPushImpl,
+        cutAndPush,
+        copyAndPushImpl,
+        copyAndPush,
         peekTextStack,
         popTextStack,
         pasteLines,
