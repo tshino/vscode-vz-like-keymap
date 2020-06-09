@@ -492,7 +492,7 @@ describe('EditHandler', () => {
             assert.equal(clipboard, 'fghij\n\n12345\n');
         });
     });
-    describe('vz.clipboardCopy', () => {
+    describe('copyAndPushImpl', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -513,7 +513,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCopy');
+            await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890');
             assert.equal(textEditor.selections.length, 1);
@@ -527,7 +527,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCopy');
+            await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcde');
             assert.equal(textEditor.selections.length, 1);
@@ -542,7 +542,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCopy');
+            await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcde');
             assert.equal(textEditor.selections.length, 1);
@@ -558,9 +558,9 @@ describe('EditHandler', () => {
                 new vscode.Selection(4, 0, 4, 0),
                 new vscode.Selection(5, 1, 5, 4)
             ];
-            mode.initialize(textEditor);
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCopy');
+            await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, 'fghij');
             assert.equal(textEditor.document.lineAt(4).text, '');
@@ -578,9 +578,9 @@ describe('EditHandler', () => {
                 new vscode.Selection(4, 0, 4, 0),
                 new vscode.Selection(5, 2, 5, 2)
             ];
-            mode.initialize(textEditor);
+            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCopy');
+            await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, 'fghij');
             assert.equal(textEditor.document.lineAt(4).text, '');

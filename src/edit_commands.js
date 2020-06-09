@@ -96,7 +96,7 @@ const EditHandler = function(modeHandler) {
         const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
         await cutAndPushImpl(textEditor, useTextStack);
     };
-    const copyAndPushImpl = function(textEditor, useTextStack = true) {
+    const copyAndPushImpl = async function(textEditor, useTextStack = true) {
         if (reentryGuard === 'copyAndPush') {
             return;
         }
@@ -111,13 +111,13 @@ const EditHandler = function(modeHandler) {
             isLineMode: isLineMode,
             isBoxMode: mode.inBoxSelection()
         });
-        vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
+        await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
     };
-    const copyAndPush = function(textEditor, _edit) {
+    const copyAndPush = async function(textEditor, _edit) {
         const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
-        copyAndPushImpl(textEditor, useTextStack);
+        await copyAndPushImpl(textEditor, useTextStack);
     };
     const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
