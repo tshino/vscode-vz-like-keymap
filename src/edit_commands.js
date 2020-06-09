@@ -71,8 +71,12 @@ const EditHandler = function(modeHandler) {
     const clearTextStack = function() {
         textStack.length = 0;
     };
-    let pasteReentryLock = false;
-    const cutAndPushImpl = function(textEditor, edit, useTextStack = true) {
+    let reentryGuard = null;
+    const cutAndPushImpl = async function(textEditor, useTextStack = true) {
+        if (reentryGuard === 'cutAndPush') {
+            return;
+        }
+        reentryGuard = 'cutAndPush';
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -83,16 +87,20 @@ const EditHandler = function(modeHandler) {
             isLineMode: isLineMode,
             isBoxMode: mode.inBoxSelection()
         });
-        vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
-        deleteRanges(edit, ranges);
-        pasteReentryLock = false;
+        await textEditor.edit((edit) => deleteRanges(edit, ranges));
+        await vscode.env.clipboard.writeText(text);
+        reentryGuard = null;
     };
-    const cutAndPush = function(textEditor, edit) {
+    const cutAndPush = async function(textEditor, _edit) {
         const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
-        cutAndPushImpl(textEditor, edit, useTextStack);
+        await cutAndPushImpl(textEditor, useTextStack);
     };
     const copyAndPushImpl = function(textEditor, useTextStack = true) {
+        if (reentryGuard === 'copyAndPush') {
+            return;
+        }
+        reentryGuard = 'copyAndPush';
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -105,7 +113,7 @@ const EditHandler = function(modeHandler) {
         });
         vscode.env.clipboard.writeText(text);
         cancelSelection(textEditor);
-        pasteReentryLock = false;
+        reentryGuard = null;
     };
     const copyAndPush = function(textEditor, _edit) {
         const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
@@ -155,11 +163,9 @@ const EditHandler = function(modeHandler) {
         }
         await vscode.commands.executeCommand('paste', { text: text });
         textEditor.selection = new vscode.Selection(lastPos, lastPos);
-        pasteReentryLock = false;
     };
     const pasteInlineText = async function(text) {
         await vscode.commands.executeCommand('paste', { text: text });
-        pasteReentryLock = false;
     };
     const pasteBoxText = async function(textEditor, text) {
         let pos = textEditor.selection.active;
@@ -182,13 +188,12 @@ const EditHandler = function(modeHandler) {
                 );
             }
         });
-        pasteReentryLock = false;
     };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
-        if (pasteReentryLock) {
+        if (reentryGuard === 'popAndPaste') {
             return;
         }
-        pasteReentryLock = true;
+        reentryGuard = 'popAndPaste';
         let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isBoxMode) {
             await pasteBoxText(textEditor, text);
@@ -197,6 +202,7 @@ const EditHandler = function(modeHandler) {
         } else {
             await pasteInlineText(text);
         }
+        reentryGuard = null;
     };
     const popAndPaste = async function(textEditor, _edit) {
         const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');

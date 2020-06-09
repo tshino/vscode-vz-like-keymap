@@ -391,7 +391,7 @@ describe('EditHandler', () => {
             assert.equal(isLineMode, true);
         });
     });
-    describe('vz.clipboardCut', () => {
+    describe('cutAndPushImpl', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -412,7 +412,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(0).text, '123890');
             assert.equal(textEditor.selections.length, 1);
@@ -426,7 +426,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
             assert.equal(textEditor.selections.length, 1);
@@ -441,7 +441,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, '');
             assert.equal(textEditor.selections.length, 1);
@@ -459,7 +459,7 @@ describe('EditHandler', () => {
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, 'fj');
             assert.equal(textEditor.document.lineAt(4).text, '');
@@ -479,7 +479,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(3).text, '');
             assert.equal(textEditor.document.lineAt(4).text, '');
@@ -1082,7 +1082,7 @@ describe('EditHandler', () => {
         });
         it('should pop a text from the text stack and paste it', async () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
             await editHandler.popAndPasteImpl(textEditor, false);
             assert.equal(await vscode.env.clipboard.readText(), '');
@@ -1090,7 +1090,7 @@ describe('EditHandler', () => {
         });
         it('should retain the text stack if the second argument is true', async () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
             await editHandler.popAndPasteImpl(textEditor, true);
             assert.equal(await vscode.env.clipboard.readText(), '23456789');
@@ -1098,7 +1098,7 @@ describe('EditHandler', () => {
         });
         it('should paste a single text into each position of multiple cursors', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 5) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [
                 new vscode.Selection(0, 3, 0, 3),
                 new vscode.Selection(1, 3, 1, 3)
@@ -1110,7 +1110,7 @@ describe('EditHandler', () => {
         });
         it('should insert a single line if the text is from line mode cut or copy', async () => {
             textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
             await editHandler.popAndPasteImpl(textEditor, false);
             assert.equal(await vscode.env.clipboard.readText(), '');
@@ -1118,7 +1118,7 @@ describe('EditHandler', () => {
         });
         it('should repeat inserting a single line', async () => {
             textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
             assert.equal(textEditor.document.lineCount, 6);
             await editHandler.popAndPasteImpl(textEditor, true);
@@ -1132,9 +1132,9 @@ describe('EditHandler', () => {
         });
         it('should insert multiple lines that are from multiple cuts', async () => {
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
-            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
-            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
-            await textEditor.edit((edit) => editHandler.cutAndPushImpl(textEditor, edit));
+            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.cutAndPushImpl(textEditor);
             await editHandler.popAndPasteImpl(textEditor, false);
             await editHandler.popAndPasteImpl(textEditor, false);
             await editHandler.popAndPasteImpl(textEditor, false);
@@ -1149,7 +1149,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(3, 0, 3, 3)
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [
                 new vscode.Selection(2, 2, 2, 2),
                 new vscode.Selection(3, 2, 3, 2)
@@ -1165,7 +1165,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(3, 0, 3, 3)
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [
                 new vscode.Selection(2, 2, 2, 2)
             ];
@@ -1180,7 +1180,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(3, 0, 3, 3)
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
-            await vscode.commands.executeCommand('vz.clipboardCut');
+            await editHandler.cutAndPushImpl(textEditor);
             await editHandler.popAndPasteImpl(textEditor, true);
             await editHandler.popAndPasteImpl(textEditor, true);
             await editHandler.popAndPasteImpl(textEditor, true);
