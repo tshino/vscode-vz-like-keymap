@@ -1088,6 +1088,16 @@ describe('EditHandler', () => {
             assert.equal(await vscode.env.clipboard.readText(), '');
             assert.equal(textEditor.document.lineAt(1).text, '1023456789');
         });
+        it('should prevent reentry', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 1, 1, 1) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.cutAndPushImpl(textEditor);
+            let p1 = editHandler.popAndPasteImpl(textEditor, false);
+            let p2 = editHandler.popAndPasteImpl(textEditor, false);
+            await Promise.all([p1, p2]);
+            assert.equal(textEditor.document.lineCount, 6);
+        });
         it('should retain the text stack if the second argument is true', async () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
             await editHandler.cutAndPushImpl(textEditor);
