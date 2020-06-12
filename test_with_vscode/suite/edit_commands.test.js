@@ -523,6 +523,15 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, '4567890\n1234567');
         });
+        it('should prevent reentry', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
+            mode.initialize(textEditor);
+            let p1 = editHandler.copyAndPushImpl(textEditor);
+            let p2 = editHandler.copyAndPushImpl(textEditor);
+            await Promise.all([p1, p2]);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.equal(clipboard, '4567890\n1234567');
+        });
         it('should copy an entire line when selection is empty', async () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
