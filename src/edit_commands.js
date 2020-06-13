@@ -218,11 +218,11 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardPaste', paste);
     };
     return {
-        singleLineRange: singleLineRange,
-        cancelSelection: cancelSelection,
-        readText: readText,
-        deleteRanges: deleteRanges,
-        makeCutCopyRanges: makeCutCopyRanges,
+        singleLineRange,
+        cancelSelection,
+        readText,
+        deleteRanges,
+        makeCutCopyRanges,
         clearTextStack, // for testing purpose
         cutAndPushImpl,
         cutAndPush,
