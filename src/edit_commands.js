@@ -174,6 +174,14 @@ const EditHandler = function(modeHandler) {
             lines.length = lines.length - 1;
         }
         let lineCount = textEditor.document.lineCount;
+        for (let i = 0, n = lines.length; i < n; i++) {
+            let len = pos.line + i < lineCount ? (
+                textEditor.document.lineAt(pos.line + i).text.length
+            ) : 0;
+            if (len < pos.character) {
+                lines[i] = ' '.repeat(pos.character - len) + lines[i];
+            }
+        }
         let overflow = pos.line + lines.length - lineCount;
         if (0 < overflow) {
             let rest = lines.slice(lines.length - overflow).join('\n');
@@ -188,6 +196,8 @@ const EditHandler = function(modeHandler) {
                 );
             }
         });
+        let newPos = pos.with({character: pos.character + lines[0].length});
+        textEditor.selections = [new vscode.Selection(newPos, newPos)];
     };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
         if (reentryGuard === 'popAndPaste') {

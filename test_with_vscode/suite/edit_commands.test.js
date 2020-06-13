@@ -1045,7 +1045,18 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 9, 1, 9)), true);
             assert.equal(mode.inSelection(), false);
         });
-        it('should extend the document when inserting a text at the end of doc', async () => {
+        it('should insert additional spaces to align the position to paste lines', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.document.lineAt(3).text, 'fghijOne,');
+            assert.equal(textEditor.document.lineAt(4).text, '     Two,');
+            assert.equal(textEditor.document.lineAt(5).text, '12345Three.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 9, 3, 9)), true);
+            assert.equal(mode.inSelection(), false);
+        });
+        it('should extend the document when inserting a text at near the end of doc', async () => {
             textEditor.selections = [ new vscode.Selection(5, 0, 5, 0) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
@@ -1056,7 +1067,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(5, 4, 5, 4)), true);
             assert.equal(mode.inSelection(), false);
         });
-        it('should extend the document when inserting a text at the end of doc', async () => {
+        it('should extend the document when inserting a text at near the end of doc', async () => {
             textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
@@ -1067,7 +1078,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
             assert.equal(mode.inSelection(), false);
         });
-        it('should ignore the last new line character of the pasting text', async () => {
+        it('should ignore the new line character at the end of the pasting text', async () => {
             textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
             assert.equal(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
@@ -1076,6 +1087,17 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(7).text, 'Two,');
             assert.equal(textEditor.document.lineAt(8).text, 'Three.');
             assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
+            assert.equal(mode.inSelection(), false);
+        });
+        it('should insert additional lines and spaces to paste lines of text', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
+            assert.equal(textEditor.document.lineCount, 7);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
+            assert.equal(textEditor.document.lineCount, 9);
+            assert.equal(textEditor.document.lineAt(6).text, '67890One,');
+            assert.equal(textEditor.document.lineAt(7).text, '     Two,');
+            assert.equal(textEditor.document.lineAt(8).text, '     Three.');
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 9, 6, 9)), true);
             assert.equal(mode.inSelection(), false);
         });
     });
