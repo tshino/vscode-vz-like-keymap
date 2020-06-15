@@ -15,6 +15,15 @@ EditUtil.enumVisibleLines = function(textEditor) {
     return lines;
 };
 
+EditUtil.getLowerBoundLineIndex = function(lines, line) {
+    for (var i = 0; i < lines.length; i++) {
+        if (line <= lines[i]) {
+            return i;
+        }
+    }
+    return lines.length;
+};
+
 EditUtil.rangesAllEmpty = function(ranges) {
     return ranges.every((range) => range.isEmpty);
 };

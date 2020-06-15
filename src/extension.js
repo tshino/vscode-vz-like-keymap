@@ -77,14 +77,6 @@ function activate(context) {
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
-    const getLowerBoundLineIndex = function(lines, line) {
-        for (var i = 0; i < lines.length; i++) {
-            if (line <= lines[i]) {
-                return i;
-            }
-        }
-        return lines.length;
-    };
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
@@ -126,7 +118,7 @@ function activate(context) {
     const cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
-        let currIndex = getLowerBoundLineIndex(vlines, curr.line);
+        let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (0 === vlines[0]) {
@@ -135,7 +127,7 @@ function activate(context) {
         } else {
             taskAfterScroll = function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
-                let deltaScroll = getLowerBoundLineIndex(newVlines, vlines[0]);
+                let deltaScroll = EditUtil.getLowerBoundLineIndex(newVlines, vlines[0]);
                 let delta = Math.max(halfPage, deltaScroll);
                 let newLine = (
                     0 === newVlines[0] ? (
@@ -160,7 +152,7 @@ function activate(context) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
-        let currIndex = getLowerBoundLineIndex(vlines, curr.line);
+        let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
