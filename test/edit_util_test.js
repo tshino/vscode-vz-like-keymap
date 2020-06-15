@@ -6,6 +6,23 @@ const SelectionMock = require('./selection_mock.js');
 const RangeMock = SelectionMock;
 
 describe('EditUtil', function() {
+    describe('enumVisibleLines', () => {
+        it('should return array of line numbers in current visible ranges', () => {
+            assert.deepStrictEqual(
+                EditUtil.enumVisibleLines({ visibleRanges: [
+                    SelectionMock(PositionMock(3, 0), PositionMock(20, 10))
+                ] }),
+                [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+            );
+            assert.deepStrictEqual(
+                EditUtil.enumVisibleLines({ visibleRanges: [
+                    SelectionMock(PositionMock(0, 0), PositionMock(5, 0)),
+                    SelectionMock(PositionMock(10, 0), PositionMock(12, 0))
+                ] }),
+                [0, 1, 2, 3, 4, 5, 10, 11, 12]
+            );
+        });
+    });
     describe('rangesAllEmpty', function() {
         it('should return true if all ranges are empty', function() {
             const empty = [
