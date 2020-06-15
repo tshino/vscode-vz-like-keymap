@@ -77,18 +77,6 @@ function activate(context) {
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
-    const enumVisibleLines = function(textEditor) {
-        let vranges = textEditor.visibleRanges;
-        let lines = [];
-        for (let i = 0; i < vranges.length; i++) {
-            let start = vranges[i].start.line;
-            let end = vranges[i].end.line;
-            for (let j = start; j <= end; j++) {
-                lines.push(j);
-            }
-        }
-        return lines;
-    };
     const getLowerBoundLineIndex = function(lines, line) {
         for (var i = 0; i < lines.length; i++) {
             if (line <= lines[i]) {
@@ -137,7 +125,7 @@ function activate(context) {
     registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
     const cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
-        let vlines = enumVisibleLines(textEditor);
+        let vlines = EditUtil.enumVisibleLines(textEditor);
         let currIndex = getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2));
@@ -146,7 +134,7 @@ function activate(context) {
             moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         } else {
             taskAfterScroll = function(textEditor) {
-                let newVlines = enumVisibleLines(textEditor);
+                let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let deltaScroll = getLowerBoundLineIndex(newVlines, vlines[0]);
                 let delta = Math.max(halfPage, deltaScroll);
                 let newLine = (
@@ -170,7 +158,7 @@ function activate(context) {
     };
     const cursorHalfPageDownImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
-        let vlines = enumVisibleLines(textEditor);
+        let vlines = EditUtil.enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
         let currIndex = getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
@@ -180,7 +168,7 @@ function activate(context) {
             moveCursorTo(textEditor, newLine, curr.character, select);
         } else {
             taskAfterScroll = function(textEditor) {
-                let newVlines = enumVisibleLines(textEditor);
+                let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
                 moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
@@ -243,7 +231,7 @@ function activate(context) {
         ['cursorPageDownSelect']
     );
     const isLastLineVisible = function(textEditor) {
-        let vlines = enumVisibleLines(textEditor);
+        let vlines = EditUtil.enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
         return vlines[vlines.length - 1] === lineCount - 1;
     };
@@ -303,7 +291,7 @@ function activate(context) {
         mode.sync(textEditor);
         mode.resetBoxSelection();
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        let vlines = enumVisibleLines(textEditor);
+        let vlines = EditUtil.enumVisibleLines(textEditor);
         let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         let col = textEditor.selection.active.character;
         moveCursorTo(textEditor, line, col, mode.inSelection());
@@ -314,7 +302,7 @@ function activate(context) {
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         margin = Math.max(1, margin);
         let lineCount = textEditor.document.lineCount;
-        let vlines = enumVisibleLines(textEditor);
+        let vlines = EditUtil.enumVisibleLines(textEditor);
         let bottom = vlines.length - 1;
         let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         let col = textEditor.selection.active.character;

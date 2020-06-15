@@ -2,6 +2,19 @@
 
 const EditUtil = {};
 
+EditUtil.enumVisibleLines = function(textEditor) {
+    let vranges = textEditor.visibleRanges;
+    let lines = [];
+    for (let i = 0; i < vranges.length; i++) {
+        let start = vranges[i].start.line;
+        let end = vranges[i].end.line;
+        for (let j = start; j <= end; j++) {
+            lines.push(j);
+        }
+    }
+    return lines;
+};
+
 EditUtil.rangesAllEmpty = function(ranges) {
     return ranges.every((range) => range.isEmpty);
 };
