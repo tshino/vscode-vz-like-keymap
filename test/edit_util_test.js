@@ -23,6 +23,16 @@ describe('EditUtil', function() {
             );
         });
     });
+    describe('getLowerBoundLineIndex', () => {
+        it('should return smallest index of lines which is greater than or equal to line number in query', () => {
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 0), 0);
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 1), 0);
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 2), 1);
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 3), 2);
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 5), 2);
+            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 6), 3);
+        });
+    });
     describe('rangesAllEmpty', function() {
         it('should return true if all ranges are empty', function() {
             const empty = [
