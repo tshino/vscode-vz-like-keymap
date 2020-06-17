@@ -6,6 +6,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Improved:
   - The behavior of Paste of a text which is from box-selection mode.
   - The behavior of Paste of a text which has been taken from the last line of a document.
+  - The behavior of Cut of a single line text by Ctrl+Y with no selection.
 - Added:
   - An integration test with VS Code.
 

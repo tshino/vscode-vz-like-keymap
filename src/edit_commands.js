@@ -82,13 +82,14 @@ const EditHandler = function(modeHandler) {
         if (!useTextStack) {
             textStack.length = 0;
         }
-        textStack.push({
-            text: text,
-            isLineMode: isLineMode,
-            isBoxMode: mode.inBoxSelection()
-        });
+        let lastCursorPos = textEditor.selections[0].active;
+        let isBoxMode = mode.inBoxSelection();
+        textStack.push({ text, isLineMode, isBoxMode });
         cancelSelection(textEditor);
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
+        if (isLineMode && !isBoxMode) {
+            textEditor.selections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
+        }
         await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
     };

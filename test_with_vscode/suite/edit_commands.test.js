@@ -440,7 +440,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
             assert.equal(textEditor.selections.length, 1);
             assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 0, 2, 0)), true);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde\n');
