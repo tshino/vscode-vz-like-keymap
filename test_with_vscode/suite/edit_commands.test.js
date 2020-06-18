@@ -4,6 +4,7 @@ const vscode = require('vscode');
 const testUtils = require("./testUtils.js");
 const mode_handler = require("./../../src/mode_handler.js");
 const edit_commands = require("./../../src/edit_commands.js");
+const EditUtil = require("./../../src/edit_util.js");
 
 describe('EditHandler', () => {
     vscode.window.showInformationMessage('Started test for EditHandler.');
@@ -499,6 +500,23 @@ describe('EditHandler', () => {
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'fghij\n\n12345\n');
+        });
+        it('should reveal the cursor after a cut even if it is a long range', async () => {
+            await textEditor.edit((edit) => {
+                edit.insert(
+                    new vscode.Position(4, 0),
+                    Array(100).fill('xxxxxyyyyyzzzzz').join('\n') + '\n'
+                );
+            });
+            textEditor.selections = [ new vscode.Selection(4, 0, 104, 0) ];
+            mode.initialize(textEditor);
+            textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
+            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
+            assert.equal(textEditor.document.lineCount, 107);
+            await editHandler.cutAndPushImpl(textEditor);
+            assert.equal(textEditor.document.lineCount, 7);
+            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(4, 0, 4, 0)), true);
+            assert.equal(EditUtil.enumVisibleLines(textEditor).includes(4), true);
         });
     });
     describe('copyAndPushImpl', () => {

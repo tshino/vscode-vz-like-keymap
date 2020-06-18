@@ -90,6 +90,13 @@ const EditHandler = function(modeHandler) {
         if (isLineMode && !isBoxMode) {
             textEditor.selections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
         }
+        if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
+            let newCursorPos = textEditor.selections[0].active;
+            textEditor.revealRange(
+                new vscode.Range(newCursorPos, newCursorPos),
+                vscode.TextEditorRevealType.Default
+            );
+        }
         await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
     };
