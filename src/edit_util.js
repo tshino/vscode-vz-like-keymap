@@ -16,7 +16,7 @@ EditUtil.enumVisibleLines = function(textEditor) {
 };
 
 EditUtil.getLowerBoundLineIndex = function(lines, line) {
-    for (var i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
         if (line <= lines[i]) {
             return i;
         }
