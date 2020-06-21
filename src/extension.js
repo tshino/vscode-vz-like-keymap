@@ -5,11 +5,13 @@ const cursor_style = require("./cursor_style.js");
 const tag_jump = require("./tag_jump.js");
 const EditUtil = require("./edit_util.js");
 const edit_commands = require("./edit_commands.js");
+const cursor_commands = require("./cursor_commands.js");
 
 function activate(context) {
     const mode = mode_handler.getInstance();
     const cursor_style_controller = cursor_style.CursorStyleController();
     const editHandler = edit_commands.getInstance();
+    const cursorHandler = cursor_commands.getInstance();
     editHandler.registerCommands(context);
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
@@ -66,11 +68,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    const moveCursorToWithoutScroll = function(textEditor, line, col, select) {
-        let cursor = new vscode.Position(line, col);
-        let anchor = select ? textEditor.selection.anchor : cursor;
-        textEditor.selection = new vscode.Selection(anchor, cursor);
-    };
     const moveCursorTo = function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
@@ -123,7 +120,7 @@ function activate(context) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (0 === vlines[0]) {
             let newLine = vlines[Math.max(0, currIndex - halfPage)];
-            moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            cursorHandler.moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         } else {
             taskAfterScroll = function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
@@ -138,7 +135,7 @@ function activate(context) {
                         newVlines[Math.min(newVlines.length - 1, currIndex)]
                     )
                 );
-                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+                cursorHandler.moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             textEditor.revealRange(
                 new vscode.Range(
@@ -162,7 +159,7 @@ function activate(context) {
             taskAfterScroll = function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
-                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+                cursorHandler.moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             textEditor.revealRange(
                 new vscode.Range(
