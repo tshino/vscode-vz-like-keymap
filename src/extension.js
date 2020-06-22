@@ -68,12 +68,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    const moveCursorTo = function(textEditor, line, col, select) {
-        let cursor = new vscode.Position(line, col);
-        let anchor = select ? textEditor.selection.anchor : cursor;
-        textEditor.selection = new vscode.Selection(anchor, cursor);
-        textEditor.revealRange(new vscode.Range(cursor, cursor));
-    };
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
@@ -99,12 +93,12 @@ function activate(context) {
     };
     registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
-        moveCursorTo(textEditor, line, 0, true);
+        cursorHandler.moveCursorTo(textEditor, line, 0, true);
     });
     registerTextEditorCommand('cursorLineEndSelect', function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         let col = textEditor.document.lineAt(line).range.end.character;
-        moveCursorTo(textEditor, line, col, true);
+        cursorHandler.moveCursorTo(textEditor, line, col, true);
     });
     registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
     registerCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
@@ -154,7 +148,7 @@ function activate(context) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
             let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
-            moveCursorTo(textEditor, newLine, curr.character, select);
+            cursorHandler.moveCursorTo(textEditor, newLine, curr.character, select);
         } else {
             taskAfterScroll = function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
@@ -283,7 +277,7 @@ function activate(context) {
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, mode.inSelection());
+        cursorHandler.moveCursorTo(textEditor, line, col, mode.inSelection());
     });
     registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
         mode.sync(textEditor);
@@ -295,7 +289,7 @@ function activate(context) {
         let bottom = vlines.length - 1;
         let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, mode.inSelection());
+        cursorHandler.moveCursorTo(textEditor, line, col, mode.inSelection());
     });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         // Scroll and cursor are dispatched concurrently to avoid flickering.
@@ -362,7 +356,7 @@ function activate(context) {
         vscode.workspace.openTextDocument(uri).then(function(doc) {
             vscode.window.showTextDocument(doc).then(function(textEditor) {
                 if (line) {
-                    moveCursorTo(textEditor, line - 1, 0, false);
+                    cursorHandler.moveCursorTo(textEditor, line - 1, 0, false);
                 }
             }, function(err) {});
         }, function(err) {});

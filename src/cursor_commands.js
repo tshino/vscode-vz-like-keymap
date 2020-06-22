@@ -7,8 +7,15 @@ const CursorHandler = function() {
         let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
     };
+    const moveCursorTo = function(textEditor, line, col, select) {
+        let cursor = new vscode.Position(line, col);
+        let anchor = select ? textEditor.selection.anchor : cursor;
+        textEditor.selection = new vscode.Selection(anchor, cursor);
+        textEditor.revealRange(new vscode.Range(cursor, cursor));
+    };
     return {
-        moveCursorToWithoutScroll
+        moveCursorToWithoutScroll,
+        moveCursorTo
     }
 };
 
