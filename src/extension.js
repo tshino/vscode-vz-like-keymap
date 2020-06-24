@@ -68,12 +68,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    const registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
-        registerTextEditorCommand(name, cursorHandler.makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
-    };
-    const registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
-        registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
-    };
     registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         cursorHandler.moveCursorTo(textEditor, line, 0, true);
@@ -83,12 +77,12 @@ function activate(context) {
         let col = textEditor.document.lineAt(line).range.end.character;
         cursorHandler.moveCursorTo(textEditor, line, col, true);
     });
-    registerCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
-    registerCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
-    registerCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
-    registerCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
-    registerCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
-    registerCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
+    cursorHandler.registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
+    cursorHandler.registerCursorCommand(context, 'cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
+    cursorHandler.registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
+    cursorHandler.registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
     const cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
@@ -241,18 +235,18 @@ function activate(context) {
             return cursorFullPageDownSelect(textEditor);
         }
     });
-    registerCursorCommand('cursorLineStart', 'vz.cursorLineStartSelect');
-    registerCursorCommand('cursorHome', 'cursorHomeSelect');
-    registerCursorCommand('cursorLineEnd', 'vz.cursorLineEndSelect');
-    registerCursorCommand('cursorEnd', 'cursorEndSelect');
-    registerCursorCommand('cursorTop', 'cursorTopSelect');
-    registerCursorCommand('cursorBottom', 'cursorBottomSelect');
-    registerCursorCommand('cursorLeftSelect', 'cursorLeftSelect');
-    registerCursorCommand('cursorRightSelect', 'cursorRightSelect');
-    registerCursorCommand('cursorUpSelect', 'cursorUpSelect');
-    registerCursorCommand('cursorDownSelect', 'cursorDownSelect');
-    registerCursorCommand('cursorHomeSelect', 'cursorHomeSelect');
-    registerCursorCommand('cursorEndSelect', 'cursorEndSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorLineStart', 'vz.cursorLineStartSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorLineEnd', 'vz.cursorLineEndSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorTop', 'cursorTopSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorBottom', 'cursorBottomSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorDownSelect', 'cursorDownSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
+    cursorHandler.registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         mode.sync(textEditor);
         mode.resetBoxSelection();

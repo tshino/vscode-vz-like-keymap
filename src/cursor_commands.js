@@ -11,6 +11,11 @@ const exec = function(commands, index = 0) {
         res.then(function() { exec(commands, index + 1); });
     }
 };
+const registerTextEditorCommand = function(context, name, func) {
+    context.subscriptions.push(
+        vscode.commands.registerTextEditorCommand('vz.' + name, func)
+    );
+};
 
 const CursorHandler = function(modeHandler) {
     const mode = modeHandler;
@@ -32,6 +37,12 @@ const CursorHandler = function(modeHandler) {
             }
         };
     };
+    const registerCursorCommand3 = function(context, name, basicCmd, selectCmd, boxSelectCmd) {
+        registerTextEditorCommand(context, name, makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
+    };
+    const registerCursorCommand = function(context, name, cmdForSelect, cmdForBoxSelect) {
+        registerCursorCommand3(context, name, name, cmdForSelect, cmdForBoxSelect);
+    };
 
     const moveCursorToWithoutScroll = function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
@@ -46,9 +57,10 @@ const CursorHandler = function(modeHandler) {
     };
     return {
         makeCursorCommand,
+        registerCursorCommand,
         moveCursorToWithoutScroll,
         moveCursorTo
-    }
+    };
 };
 
 const theInstance = CursorHandler(mode_handler.getInstance());
