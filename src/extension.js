@@ -68,25 +68,8 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
-        return function(textEditor, _edit) {
-            mode.sync(textEditor);
-            if (mode.inSelection()) {
-                if (mode.inBoxSelection() && !boxSelectCmd) {
-                    mode.resetBoxSelection();
-                }
-                if (mode.inBoxSelection()) {
-                    exec(boxSelectCmd);
-                } else {
-                    exec(selectCmd);
-                }
-            } else {
-                exec(basicCmd);
-            }
-        };
-    };
     const registerCursorCommand3 = function(name, basicCmd, selectCmd, boxSelectCmd) {
-        registerTextEditorCommand(name, makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
+        registerTextEditorCommand(name, cursorHandler.makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
     };
     const registerCursorCommand = function(name, cmdForSelect, cmdForBoxSelect) {
         registerCursorCommand3(name, name, cmdForSelect, cmdForBoxSelect);
@@ -195,21 +178,21 @@ function activate(context) {
     registerTextEditorCommand('cursorHalfPageDown', cursorHalfPageDown);
     registerTextEditorCommand('cursorHalfPageUpSelect', cursorHalfPageUpSelect);
     registerTextEditorCommand('cursorHalfPageDownSelect', cursorHalfPageDownSelect);
-    const cursorFullPageUp = makeCursorCommand(
+    const cursorFullPageUp = cursorHandler.makeCursorCommand(
         ['scrollPageUp', 'cursorPageUp'],
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
     );
-    const cursorFullPageDownImpl = makeCursorCommand(
+    const cursorFullPageDownImpl = cursorHandler.makeCursorCommand(
         ['cursorPageDown'],
         ['cursorPageDownSelect'],
         ['cursorColumnSelectPageDown']
     );
-    const cursorFullPageUpSelect = makeCursorCommand(
+    const cursorFullPageUpSelect = cursorHandler.makeCursorCommand(
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorPageUpSelect']
     );
-    const cursorFullPageDownSelectImpl = makeCursorCommand(
+    const cursorFullPageDownSelectImpl = cursorHandler.makeCursorCommand(
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
