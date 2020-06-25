@@ -55,11 +55,29 @@ const CursorHandler = function(modeHandler) {
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
+    const registerCommands = function(context) {
+        registerTextEditorCommand(context, 'cursorLineStartSelect', function(textEditor, _edit) {
+            let line = textEditor.selection.active.line;
+            moveCursorTo(textEditor, line, 0, true);
+        });
+        registerTextEditorCommand(context, 'cursorLineEndSelect', function(textEditor, _edit) {
+            let line = textEditor.selection.active.line;
+            let col = textEditor.document.lineAt(line).range.end.character;
+            moveCursorTo(textEditor, line, col, true);
+        });
+        registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
+        registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
+        registerCursorCommand(context, 'cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
+        registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
+        registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
+        registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
+    };
     return {
         makeCursorCommand,
         registerCursorCommand,
         moveCursorToWithoutScroll,
-        moveCursorTo
+        moveCursorTo,
+        registerCommands
     };
 };
 

@@ -13,6 +13,7 @@ function activate(context) {
     const editHandler = edit_commands.getInstance();
     const cursorHandler = cursor_commands.getInstance();
     editHandler.registerCommands(context);
+    cursorHandler.registerCommands(context);
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
         cursor_style_controller.startSelection(textEditor);
@@ -68,21 +69,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    registerTextEditorCommand('cursorLineStartSelect', function(textEditor, _edit) {
-        let line = textEditor.selection.active.line;
-        cursorHandler.moveCursorTo(textEditor, line, 0, true);
-    });
-    registerTextEditorCommand('cursorLineEndSelect', function(textEditor, _edit) {
-        let line = textEditor.selection.active.line;
-        let col = textEditor.document.lineAt(line).range.end.character;
-        cursorHandler.moveCursorTo(textEditor, line, col, true);
-    });
-    cursorHandler.registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
-    cursorHandler.registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
-    cursorHandler.registerCursorCommand(context, 'cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
-    cursorHandler.registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
-    cursorHandler.registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
     const cursorHalfPageUpImpl = function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
