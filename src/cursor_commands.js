@@ -55,16 +55,18 @@ const CursorHandler = function(modeHandler) {
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
+    const cursorLineStartSelect = function(textEditor, _edit) {
+        let line = textEditor.selection.active.line;
+        moveCursorTo(textEditor, line, 0, true);
+    };
+    const cursorLineEndSelect = function(textEditor, _edit) {
+        let line = textEditor.selection.active.line;
+        let col = textEditor.document.lineAt(line).range.end.character;
+        moveCursorTo(textEditor, line, col, true);
+    };
     const registerCommands = function(context) {
-        registerTextEditorCommand(context, 'cursorLineStartSelect', function(textEditor, _edit) {
-            let line = textEditor.selection.active.line;
-            moveCursorTo(textEditor, line, 0, true);
-        });
-        registerTextEditorCommand(context, 'cursorLineEndSelect', function(textEditor, _edit) {
-            let line = textEditor.selection.active.line;
-            let col = textEditor.document.lineAt(line).range.end.character;
-            moveCursorTo(textEditor, line, col, true);
-        });
+        registerTextEditorCommand(context, 'cursorLineStartSelect', cursorLineStartSelect);
+        registerTextEditorCommand(context, 'cursorLineEndSelect', cursorLineEndSelect);
         registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
         registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
         registerCursorCommand(context, 'cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
@@ -77,6 +79,8 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand,
         moveCursorToWithoutScroll,
         moveCursorTo,
+        cursorLineStartSelect,
+        cursorLineEndSelect,
         registerCommands
     };
 };
