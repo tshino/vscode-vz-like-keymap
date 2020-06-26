@@ -24,6 +24,12 @@ EditUtil.getLowerBoundLineIndex = function(lines, line) {
     return lines.length;
 };
 
+EditUtil.isLastLineVisible = function(textEditor) {
+    let vlines = EditUtil.enumVisibleLines(textEditor);
+    let lineCount = textEditor.document.lineCount;
+    return vlines[vlines.length - 1] === lineCount - 1;
+};
+
 EditUtil.rangesAllEmpty = function(ranges) {
     return ranges.every((range) => range.isEmpty);
 };

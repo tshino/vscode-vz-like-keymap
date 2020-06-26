@@ -176,19 +176,14 @@ function activate(context) {
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
-    const isLastLineVisible = function(textEditor) {
-        let vlines = EditUtil.enumVisibleLines(textEditor);
-        let lineCount = textEditor.document.lineCount;
-        return vlines[vlines.length - 1] === lineCount - 1;
-    };
     const cursorFullPageDown = function(textEditor) {
-        if (!isLastLineVisible(textEditor)) {
+        if (!EditUtil.isLastLineVisible(textEditor)) {
             exec('scrollPageDown');
         }
         cursorFullPageDownImpl(textEditor);
     };
     const cursorFullPageDownSelect = function(textEditor) {
-        if (!isLastLineVisible(textEditor)) {
+        if (!EditUtil.isLastLineVisible(textEditor)) {
             exec('scrollPageDown');
         }
         cursorFullPageDownSelectImpl(textEditor);

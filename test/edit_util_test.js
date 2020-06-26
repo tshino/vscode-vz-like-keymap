@@ -24,13 +24,27 @@ describe('EditUtil', function() {
         });
     });
     describe('getLowerBoundLineIndex', () => {
-        it('should return smallest index of lines which is greater than or equal to line number in query', () => {
+        it('should return index of smallest number which is greater than or equal to number in query', () => {
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 0), 0);
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 1), 0);
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 2), 1);
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 3), 2);
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 5), 2);
             assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 6), 3);
+        });
+    });
+    describe('isLastLineVisible', () => {
+        it('should return true if the last line of the document is visible', () => {
+            let textEditorMock = {
+                visibleRanges: [ SelectionMock(PositionMock(3, 0), PositionMock(20, 10)) ],
+                document: { lineCount: 0 }
+            };
+            textEditorMock.document.lineCount = 100;
+            assert.equal(EditUtil.isLastLineVisible(textEditorMock), false);
+            textEditorMock.document.lineCount = 22;
+            assert.equal(EditUtil.isLastLineVisible(textEditorMock), false);
+            textEditorMock.document.lineCount = 21;
+            assert.equal(EditUtil.isLastLineVisible(textEditorMock), true);
         });
     });
     describe('rangesAllEmpty', function() {
