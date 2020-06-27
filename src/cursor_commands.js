@@ -1,5 +1,6 @@
 "use strict";
 const vscode = require("vscode");
+const EditUtil = require("./edit_util.js");
 const mode_handler = require("./mode_handler.js");
 
 const exec = function(commands, index = 0) {
@@ -19,6 +20,29 @@ const registerTextEditorCommand = function(context, name, func) {
 
 const CursorHandler = function(modeHandler) {
     const mode = modeHandler;
+    let taskAfterScroll = null;
+
+    const setupListeners = function(context) {
+        context.subscriptions.push(
+            vscode.window.onDidChangeTextEditorSelection(function(event) {
+                if (event.textEditor === vscode.window.activeTextEditor) {
+                    taskAfterScroll = null;
+                    mode.sync(event.textEditor);
+                }
+            })
+        );
+        context.subscriptions.push(
+            vscode.window.onDidChangeTextEditorVisibleRanges(function(event) {
+                if (event.textEditor === vscode.window.activeTextEditor) {
+                    let task = taskAfterScroll;
+                    if (task) {
+                        taskAfterScroll = null;
+                        task(event.textEditor);
+                    }
+                }
+            })
+        );
+    };
 
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
@@ -52,6 +76,124 @@ const CursorHandler = function(modeHandler) {
         textEditor.selection = new vscode.Selection(anchor, cursor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
+
+    const cursorHalfPageUpImpl = function(textEditor, select) {
+        let curr = textEditor.selection.active;
+        let vlines = EditUtil.enumVisibleLines(textEditor);
+        let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
+        let onePage = Math.max(1, vlines.length);
+        let halfPage = Math.max(1, Math.floor(onePage / 2));
+        if (0 === vlines[0]) {
+            let newLine = vlines[Math.max(0, currIndex - halfPage)];
+            moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+        } else {
+            taskAfterScroll = function(textEditor) {
+                let newVlines = EditUtil.enumVisibleLines(textEditor);
+                let deltaScroll = EditUtil.getLowerBoundLineIndex(newVlines, vlines[0]);
+                let delta = Math.max(halfPage, deltaScroll);
+                let newLine = (
+                    0 === newVlines[0] ? (
+                        delta <= currIndex
+                            ? vlines[currIndex - delta]
+                            : newVlines[Math.max(0, deltaScroll + currIndex - delta)]
+                    ) : (
+                        newVlines[Math.min(newVlines.length - 1, currIndex)]
+                    )
+                );
+                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            };
+            textEditor.revealRange(
+                new vscode.Range(
+                    new vscode.Position(vlines[0], 0),
+                    new vscode.Position(vlines[0], 0)
+                ), vscode.TextEditorRevealType.InCenter
+            );
+        }
+    };
+    const cursorHalfPageDownImpl = function(textEditor, select) {
+        let curr = textEditor.selection.active;
+        let vlines = EditUtil.enumVisibleLines(textEditor);
+        let lineCount = textEditor.document.lineCount;
+        let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
+        let onePage = Math.max(1, vlines.length);
+        let halfPage = Math.max(1, Math.floor(onePage / 2));
+        if (lineCount - 1 === vlines[vlines.length - 1]) {
+            let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
+            moveCursorTo(textEditor, newLine, curr.character, select);
+        } else {
+            taskAfterScroll = function(textEditor) {
+                let newVlines = EditUtil.enumVisibleLines(textEditor);
+                let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
+                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            };
+            textEditor.revealRange(
+                new vscode.Range(
+                    new vscode.Position(vlines[vlines.length - 1], 0),
+                    new vscode.Position(vlines[vlines.length - 1], 0)
+                ), vscode.TextEditorRevealType.InCenter
+            );
+        }
+    };
+    const cursorHalfPageUp = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
+        cursorHalfPageUpImpl(textEditor, mode.inSelection());
+    };
+    const cursorHalfPageDown = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
+        cursorHalfPageDownImpl(textEditor, mode.inSelection());
+    };
+    const cursorHalfPageUpSelect = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
+        cursorHalfPageUpImpl(textEditor, true);
+    };
+    const cursorHalfPageDownSelect = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
+        cursorHalfPageDownImpl(textEditor, true);
+    };
+
+    const cursorFullPageUp = makeCursorCommand(
+        ['scrollPageUp', 'cursorPageUp'],
+        ['scrollPageUp', 'cursorPageUpSelect'],
+        ['scrollPageUp', 'cursorColumnSelectPageUp']
+    );
+    const cursorFullPageDownImpl = makeCursorCommand(
+        ['cursorPageDown'],
+        ['cursorPageDownSelect'],
+        ['cursorColumnSelectPageDown']
+    );
+    const cursorFullPageUpSelect = makeCursorCommand(
+        ['scrollPageUp', 'cursorPageUpSelect'],
+        ['scrollPageUp', 'cursorPageUpSelect']
+    );
+    const cursorFullPageDownSelectImpl = makeCursorCommand(
+        ['cursorPageDownSelect'],
+        ['cursorPageDownSelect']
+    );
+    const cursorFullPageDown = function(textEditor) {
+        if (!EditUtil.isLastLineVisible(textEditor)) {
+            exec('scrollPageDown');
+        }
+        cursorFullPageDownImpl(textEditor);
+    };
+    const cursorFullPageDownSelect = function(textEditor) {
+        if (!EditUtil.isLastLineVisible(textEditor)) {
+            exec('scrollPageDown');
+        }
+        cursorFullPageDownSelectImpl(textEditor);
+    };
+
     const cursorLineStartSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         moveCursorTo(textEditor, line, 0, true);
@@ -62,6 +204,41 @@ const CursorHandler = function(modeHandler) {
         moveCursorTo(textEditor, line, col, true);
     };
     const registerCommands = function(context) {
+        setupListeners(context);
+        registerTextEditorCommand(context, 'cursorHalfPageUp', cursorHalfPageUp);
+        registerTextEditorCommand(context, 'cursorHalfPageDown', cursorHalfPageDown);
+        registerTextEditorCommand(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
+        registerTextEditorCommand(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
+
+        registerTextEditorCommand(context, 'cursorPageUp', function(textEditor) {
+            if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+                return cursorHalfPageUp(textEditor);
+            } else {
+                return cursorFullPageUp(textEditor);
+            }
+        });
+        registerTextEditorCommand(context, 'cursorPageDown', function(textEditor) {
+            if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+                return cursorHalfPageDown(textEditor);
+            } else {
+                return cursorFullPageDown(textEditor);
+            }
+        });
+        registerTextEditorCommand(context, 'cursorPageUpSelect', function(textEditor) {
+            if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+                return cursorHalfPageUpSelect(textEditor);
+            } else {
+                return cursorFullPageUpSelect(textEditor);
+            }
+        });
+        registerTextEditorCommand(context, 'cursorPageDownSelect', function(textEditor) {
+            if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
+                return cursorHalfPageDownSelect(textEditor);
+            } else {
+                return cursorFullPageDownSelect(textEditor);
+            }
+        });
+
         registerTextEditorCommand(context, 'cursorLineStartSelect', cursorLineStartSelect);
         registerTextEditorCommand(context, 'cursorLineEndSelect', cursorLineEndSelect);
         registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
@@ -76,6 +253,18 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand,
         moveCursorToWithoutScroll,
         moveCursorTo,
+        cursorHalfPageUpImpl,
+        cursorHalfPageDownImpl,
+        cursorHalfPageUp,
+        cursorHalfPageDown,
+        cursorHalfPageUpSelect,
+        cursorHalfPageDownSelect,
+        cursorFullPageUp,
+        cursorFullPageDownImpl,
+        cursorFullPageUpSelect,
+        cursorFullPageDownSelectImpl,
+        cursorFullPageDown,
+        cursorFullPageDownSelect,
         cursorLineStartSelect,
         cursorLineEndSelect,
         registerCommands
