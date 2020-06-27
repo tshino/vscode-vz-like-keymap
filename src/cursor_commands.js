@@ -37,11 +37,8 @@ const CursorHandler = function(modeHandler) {
             }
         };
     };
-    const registerCursorCommand3 = function(context, name, basicCmd, selectCmd, boxSelectCmd) {
-        registerTextEditorCommand(context, name, makeCursorCommand(basicCmd, selectCmd, boxSelectCmd));
-    };
     const registerCursorCommand = function(context, name, cmdForSelect, cmdForBoxSelect) {
-        registerCursorCommand3(context, name, name, cmdForSelect, cmdForBoxSelect);
+        registerTextEditorCommand(context, name, makeCursorCommand(name, cmdForSelect, cmdForBoxSelect));
     };
 
     const moveCursorToWithoutScroll = function(textEditor, line, col, select) {
