@@ -93,4 +93,36 @@ describe('CursorHandler', () => {
             assert.notEqual(visibleLines0[0], visibleLines1[0]);
         });
     });
+    describe('moveCursorToWithoutScroll', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '0123456789\n'.repeat(50) +
+                    '01234567890123456789\n'.repeat(100) +
+                    'abcdefghijklmnopqrstuvwxyz\n'.repeat(500) +
+                    'ABCDE\n'.repeat(1000)
+                )
+            );
+        });
+        it('should move the cursor to specified position', async () => {
+            textEditor.selections = [ new vscode.Selection(1234, 0, 1234, 0) ];
+            mode.initialize(textEditor);
+            await revealCursor();
+            let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(visibleLines0.includes(7), false);
+
+            cursorHandler.moveCursorToWithoutScroll(textEditor, 7, 3, false);
+            await sleep(10);
+            await sleep(10);
+            await sleep(10);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections.length, 1);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(7, 3, 7, 3) ));
+            assert.equal(isCursorVisible(), false);
+            let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(visibleLines0[0], visibleLines1[0]);
+        });
+    });
 });
