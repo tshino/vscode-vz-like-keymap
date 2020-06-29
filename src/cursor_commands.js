@@ -247,6 +247,18 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
         registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
         registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
+        registerCursorCommand(context, 'cursorLineStart', 'vz.cursorLineStartSelect');
+        registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
+        registerCursorCommand(context, 'cursorLineEnd', 'vz.cursorLineEndSelect');
+        registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
+        registerCursorCommand(context, 'cursorTop', 'cursorTopSelect');
+        registerCursorCommand(context, 'cursorBottom', 'cursorBottomSelect');
+        registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
+        registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
+        registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
+        registerCursorCommand(context, 'cursorDownSelect', 'cursorDownSelect');
+        registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
+        registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
     };
     return {
         makeCursorCommand,

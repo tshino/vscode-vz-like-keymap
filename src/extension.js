@@ -49,18 +49,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    cursorHandler.registerCursorCommand(context, 'cursorLineStart', 'vz.cursorLineStartSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorLineEnd', 'vz.cursorLineEndSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorTop', 'cursorTopSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorBottom', 'cursorBottomSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorDownSelect', 'cursorDownSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
-    cursorHandler.registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
     registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
         mode.sync(textEditor);
         mode.resetBoxSelection();
