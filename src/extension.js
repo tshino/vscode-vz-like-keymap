@@ -49,27 +49,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    registerTextEditorCommand('cursorViewTop', function(textEditor, _edit) {
-        mode.sync(textEditor);
-        mode.resetBoxSelection();
-        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        let vlines = EditUtil.enumVisibleLines(textEditor);
-        let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
-        let col = textEditor.selection.active.character;
-        cursorHandler.moveCursorTo(textEditor, line, col, mode.inSelection());
-    });
-    registerTextEditorCommand('cursorViewBottom', function(textEditor, _edit) {
-        mode.sync(textEditor);
-        mode.resetBoxSelection();
-        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-        margin = Math.max(1, margin);
-        let lineCount = textEditor.document.lineCount;
-        let vlines = EditUtil.enumVisibleLines(textEditor);
-        let bottom = vlines.length - 1;
-        let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
-        let col = textEditor.selection.active.character;
-        cursorHandler.moveCursorTo(textEditor, line, col, mode.inSelection());
-    });
     registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
         // Scroll and cursor are dispatched concurrently to avoid flickering.
         exec(['scrollLineUp']);
