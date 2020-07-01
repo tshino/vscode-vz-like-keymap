@@ -221,6 +221,27 @@ const CursorHandler = function(modeHandler) {
             return cursorFullPageDownSelect(textEditor);
         }
     };
+    const cursorViewTop = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        mode.resetBoxSelection();
+        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        let vlines = EditUtil.enumVisibleLines(textEditor);
+        let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
+        let col = textEditor.selection.active.character;
+        moveCursorTo(textEditor, line, col, mode.inSelection());
+    };
+    const cursorViewBottom = function(textEditor, _edit) {
+        mode.sync(textEditor);
+        mode.resetBoxSelection();
+        let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
+        margin = Math.max(1, margin);
+        let lineCount = textEditor.document.lineCount;
+        let vlines = EditUtil.enumVisibleLines(textEditor);
+        let bottom = vlines.length - 1;
+        let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
+        let col = textEditor.selection.active.character;
+        moveCursorTo(textEditor, line, col, mode.inSelection());
+    };
 
     const cursorLineStartSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
@@ -241,28 +262,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);
         registerTextEditorCommand(context, 'cursorPageDownSelect', cursorPageDownSelect);
-        registerTextEditorCommand(context, 'cursorViewTop', function(textEditor, _edit) {
-            mode.sync(textEditor);
-            mode.resetBoxSelection();
-            let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-            let vlines = EditUtil.enumVisibleLines(textEditor);
-            let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
-            let col = textEditor.selection.active.character;
-            moveCursorTo(textEditor, line, col, mode.inSelection());
-        });
-        registerTextEditorCommand(context, 'cursorViewBottom', function(textEditor, _edit) {
-            mode.sync(textEditor);
-            mode.resetBoxSelection();
-            let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
-            margin = Math.max(1, margin);
-            let lineCount = textEditor.document.lineCount;
-            let vlines = EditUtil.enumVisibleLines(textEditor);
-            let bottom = vlines.length - 1;
-            let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
-            let col = textEditor.selection.active.character;
-            moveCursorTo(textEditor, line, col, mode.inSelection());
-        });
-
+        registerTextEditorCommand(context, 'cursorViewTop', cursorViewTop);
+        registerTextEditorCommand(context, 'cursorViewBottom', cursorViewBottom);
         registerTextEditorCommand(context, 'cursorLineStartSelect', cursorLineStartSelect);
         registerTextEditorCommand(context, 'cursorLineEndSelect', cursorLineEndSelect);
         registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
@@ -301,6 +302,8 @@ const CursorHandler = function(modeHandler) {
         cursorFullPageDownSelectImpl,
         cursorFullPageDown,
         cursorFullPageDownSelect,
+        cursorViewTop,
+        cursorViewBottom,
         cursorLineStartSelect,
         cursorLineEndSelect,
         registerCommands
