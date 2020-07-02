@@ -284,6 +284,26 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorDownSelect', 'cursorDownSelect');
         registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
         registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
+        registerTextEditorCommand(context, 'scrollLineUp', function(textEditor, _edit) {
+            // Scroll and cursor are dispatched concurrently to avoid flickering.
+            exec(['scrollLineUp']);
+            if (0 < textEditor.selection.active.line) {
+                exec(['vz.cursorUp']);
+            }
+        });
+        registerTextEditorCommand(context, 'scrollLineUpUnselect', function() {
+            exec(['cancelSelection', 'vz.scrollLineUp']);
+        });
+        registerTextEditorCommand(context, 'scrollLineDown', function(textEditor, _edit) {
+            // Scroll and cursor are dispatched concurrently to avoid flickering.
+            if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
+                exec(['scrollLineDown']);
+                exec(['vz.cursorDown']);
+            }
+        });
+        registerTextEditorCommand(context, 'scrollLineDownUnselect', function() {
+            exec(['cancelSelection', 'vz.scrollLineDown']);
+        });
     };
     return {
         makeCursorCommand,

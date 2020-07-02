@@ -49,26 +49,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    registerTextEditorCommand('scrollLineUp', function(textEditor, _edit) {
-        // Scroll and cursor are dispatched concurrently to avoid flickering.
-        exec(['scrollLineUp']);
-        if (0 < textEditor.selection.active.line) {
-            exec(['vz.cursorUp']);
-        }
-    });
-    registerTextEditorCommand('scrollLineUpUnselect', function() {
-        exec(['cancelSelection', 'vz.scrollLineUp']);
-    });
-    registerTextEditorCommand('scrollLineDown', function(textEditor, _edit) {
-        // Scroll and cursor are dispatched concurrently to avoid flickering.
-        if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            exec(['scrollLineDown']);
-            exec(['vz.cursorDown']);
-        }
-    });
-    registerTextEditorCommand('scrollLineDownUnselect', function() {
-        exec(['cancelSelection', 'vz.scrollLineDown']);
-    });
     const registerToggleSelectionCommand = function(name, isBox) {
         registerTextEditorCommand(name, function(textEditor, _edit) {
             mode.sync(textEditor);
