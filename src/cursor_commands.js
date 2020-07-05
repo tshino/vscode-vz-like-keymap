@@ -252,6 +252,26 @@ const CursorHandler = function(modeHandler) {
         let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
     };
+    const scrollLineUp = function(textEditor, _edit) {
+        // Scroll and cursor are dispatched concurrently to avoid flickering.
+        exec(['scrollLineUp']);
+        if (0 < textEditor.selection.active.line) {
+            exec(['vz.cursorUp']);
+        }
+    };
+    const scrollLineUpUnselect = function() {
+        exec(['cancelSelection', 'vz.scrollLineUp']);
+    };
+    const scrollLineDown = function(textEditor, _edit) {
+        // Scroll and cursor are dispatched concurrently to avoid flickering.
+        if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
+            exec(['scrollLineDown']);
+            exec(['vz.cursorDown']);
+        }
+    };
+    const scrollLineDownUnselect = function() {
+        exec(['cancelSelection', 'vz.scrollLineDown']);
+    };
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'cursorHalfPageUp', cursorHalfPageUp);
@@ -284,26 +304,10 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorDownSelect', 'cursorDownSelect');
         registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
         registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
-        registerTextEditorCommand(context, 'scrollLineUp', function(textEditor, _edit) {
-            // Scroll and cursor are dispatched concurrently to avoid flickering.
-            exec(['scrollLineUp']);
-            if (0 < textEditor.selection.active.line) {
-                exec(['vz.cursorUp']);
-            }
-        });
-        registerTextEditorCommand(context, 'scrollLineUpUnselect', function() {
-            exec(['cancelSelection', 'vz.scrollLineUp']);
-        });
-        registerTextEditorCommand(context, 'scrollLineDown', function(textEditor, _edit) {
-            // Scroll and cursor are dispatched concurrently to avoid flickering.
-            if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-                exec(['scrollLineDown']);
-                exec(['vz.cursorDown']);
-            }
-        });
-        registerTextEditorCommand(context, 'scrollLineDownUnselect', function() {
-            exec(['cancelSelection', 'vz.scrollLineDown']);
-        });
+        registerTextEditorCommand(context, 'scrollLineUp', scrollLineUp);
+        registerTextEditorCommand(context, 'scrollLineUpUnselect', scrollLineUpUnselect);
+        registerTextEditorCommand(context, 'scrollLineDown', scrollLineDown);
+        registerTextEditorCommand(context, 'scrollLineDownUnselect', scrollLineDownUnselect);
     };
     return {
         makeCursorCommand,
@@ -326,6 +330,10 @@ const CursorHandler = function(modeHandler) {
         cursorViewBottom,
         cursorLineStartSelect,
         cursorLineEndSelect,
+        scrollLineUp,
+        scrollLineUpUnselect,
+        scrollLineDown,
+        scrollLineDownUnselect,
         registerCommands
     };
 };
