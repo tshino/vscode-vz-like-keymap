@@ -20,6 +20,12 @@ describe('CursorHandler', () => {
     const waitForReveal = async () => {
         while (await sleep(1), !isCursorVisible()) {}
     };
+    const waitForStartSelection = async () => {
+        while (await sleep(1), !mode.inSelection()) {}
+    };
+    const waitForEndSelection = async () => {
+        while (await sleep(1), mode.inSelection()) {}
+    };
     const revealCursor = async () => {
         let cursor = textEditor.selections[0].active;
         textEditor.revealRange(new vscode.Range(cursor, cursor));
@@ -58,7 +64,61 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
         });
-        it('should reveal the location of the cursor after it moved', async () => {
+        it('should start selection if the argument select=true', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 5, 5, 5) ];
+            mode.initialize(textEditor);
+            await waitForReveal();
+            let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(visibleLines0.includes(8), true);
+
+            cursorHandler.moveCursorTo(textEditor, 8, 7, true);
+            await waitForReveal();
+            await waitForStartSelection();
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections.length, 1);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(5, 5, 8, 7) ));
+            assert.equal(isCursorVisible(), true);
+            let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.deepStrictEqual(visibleLines0, visibleLines1);
+        });
+        it('should expand selection range if the argument select=true', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 5, 6, 6) ];
+            mode.initialize(textEditor);
+            await waitForReveal();
+            let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(visibleLines0.includes(8), true);
+
+            cursorHandler.moveCursorTo(textEditor, 8, 7, true);
+            await waitForReveal();
+            await waitForStartSelection();
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections.length, 1);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(5, 5, 8, 7) ));
+            assert.equal(isCursorVisible(), true);
+            let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.deepStrictEqual(visibleLines0, visibleLines1);
+        });
+        it('should cancel selection if the argument select=false', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 5, 6, 6) ];
+            mode.initialize(textEditor);
+            await waitForReveal();
+            let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(visibleLines0.includes(8), true);
+
+            cursorHandler.moveCursorTo(textEditor, 8, 7, false);
+            await waitForReveal();
+            await waitForEndSelection();
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections.length, 1);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(8, 7, 8, 7) ));
+            assert.equal(isCursorVisible(), true);
+            let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.deepStrictEqual(visibleLines0, visibleLines1);
+        });
+        it('should reveal the location of the cursor after it moved (1)', async () => {
             textEditor.selections = [ new vscode.Selection(5, 5, 5, 5) ];
             mode.initialize(textEditor);
             await revealCursor();
@@ -75,7 +135,7 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.notEqual(visibleLines0[0], visibleLines1[0]);
         });
-        it('should reveal the location of the cursor after it moved', async () => {
+        it('should reveal the location of the cursor after it moved (2)', async () => {
             textEditor.selections = [ new vscode.Selection(1234, 0, 1234, 0) ];
             mode.initialize(textEditor);
             await revealCursor();
