@@ -185,4 +185,68 @@ describe('CursorHandler', () => {
             assert.equal(visibleLines0[0], visibleLines1[0]);
         });
     });
+    describe('cursorHalfPageUpImpl', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll up half page (1)', async () => {
+            textEditor.selections = [ new vscode.Selection(500, 5, 500, 5) ];
+            mode.initialize(textEditor);
+            await revealCursor();
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = (vlines0.length - 1) >> 1;
+            let cursor = 500 + (halfPage >> 1);
+            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            await sleep(10);
+            await sleep(10);
+            await sleep(10);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].active.line, cursor - halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines1[0], vlines0[0] - halfPage);
+        });
+        it('should scroll up half page (2)', async () => {
+            textEditor.selections = [ new vscode.Selection(500, 5, 500, 5) ];
+            mode.initialize(textEditor);
+            await revealCursor();
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = (vlines0.length - 1) >> 1;
+            let cursor = 500 - (halfPage >> 1);
+            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            await sleep(10);
+            await sleep(10);
+            await sleep(10);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].active.line, cursor - halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines1[0], vlines0[0] - halfPage);
+        });
+        it('should move cursor only when the screen is already at top of document', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await revealCursor();
+            let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
+            textEditor.selections = [ new vscode.Selection(halfPage, 0, halfPage, 0) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            await sleep(10);
+            await sleep(10);
+            await sleep(10);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(0, 0, 0, 0) ));
+            assert.equal(EditUtil.enumVisibleLines(textEditor)[0], 0);
+        });
+    });
 });
