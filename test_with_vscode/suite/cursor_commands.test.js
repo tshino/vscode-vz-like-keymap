@@ -36,6 +36,11 @@ describe('CursorHandler', () => {
         mode.initialize(textEditor);
         await revealCursor();
     };
+    const selectRange = async (l1, c1, l2, c2) => {
+        textEditor.selections = [ new vscode.Selection(l1, c1, l2, c2) ];
+        mode.initialize(textEditor);
+        await revealCursor();
+    };
     before(async () => {
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
@@ -84,9 +89,7 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(visibleLines0, visibleLines1);
         });
         it('should expand selection range if the argument select=true', async () => {
-            textEditor.selections = [ new vscode.Selection(5, 5, 6, 6) ];
-            mode.initialize(textEditor);
-            await waitForReveal();
+            await selectRange(5, 5, 6, 6);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(visibleLines0.includes(8), true);
 
@@ -102,9 +105,7 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(visibleLines0, visibleLines1);
         });
         it('should cancel selection if the argument select=false', async () => {
-            textEditor.selections = [ new vscode.Selection(5, 5, 6, 6) ];
-            mode.initialize(textEditor);
-            await waitForReveal();
+            await selectRange(5, 5, 6, 6);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(visibleLines0.includes(8), true);
 
