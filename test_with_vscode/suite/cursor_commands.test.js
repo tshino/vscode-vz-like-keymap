@@ -41,6 +41,11 @@ describe('CursorHandler', () => {
         mode.initialize(textEditor);
         await revealCursor();
     };
+    const waitForScroll = async (prevTop) => {
+        while (EditUtil.enumVisibleLines(textEditor)[0] == prevTop) {
+            await sleep(10);
+        }
+    };
     before(async () => {
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
@@ -194,9 +199,7 @@ describe('CursorHandler', () => {
             mode.sync(textEditor);
 
             cursorHandler.cursorHalfPageUpImpl(textEditor, false);
-            await sleep(10);
-            await sleep(10);
-            await sleep(10);
+            await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
             assert(textEditor.selections[0].active.line, cursor - halfPage);
@@ -213,9 +216,7 @@ describe('CursorHandler', () => {
             mode.sync(textEditor);
 
             cursorHandler.cursorHalfPageUpImpl(textEditor, false);
-            await sleep(10);
-            await sleep(10);
-            await sleep(10);
+            await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
             assert(textEditor.selections[0].active.line, cursor - halfPage);
@@ -230,9 +231,9 @@ describe('CursorHandler', () => {
             mode.sync(textEditor);
 
             cursorHandler.cursorHalfPageUpImpl(textEditor, false);
-            await sleep(10);
-            await sleep(10);
-            await sleep(10);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
 
             assert.equal(mode.inSelection(), false);
             assert(textEditor.selections[0].isEqual( new vscode.Selection(0, 0, 0, 0) ));
