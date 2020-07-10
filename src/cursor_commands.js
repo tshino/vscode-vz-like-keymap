@@ -103,10 +103,8 @@ const CursorHandler = function(modeHandler) {
                 moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             textEditor.revealRange(
-                new vscode.Range(
-                    new vscode.Position(vlines[0], 0),
-                    new vscode.Position(vlines[0], 0)
-                ), vscode.TextEditorRevealType.InCenter
+                new vscode.Range(vlines[0], 0, vlines[0], 0),
+                vscode.TextEditorRevealType.InCenter
             );
         }
     };
@@ -127,10 +125,8 @@ const CursorHandler = function(modeHandler) {
                 moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             textEditor.revealRange(
-                new vscode.Range(
-                    new vscode.Position(vlines[vlines.length - 1], 0),
-                    new vscode.Position(vlines[vlines.length - 1], 0)
-                ), vscode.TextEditorRevealType.InCenter
+                new vscode.Range(vlines[vlines.length - 1], 0, vlines[vlines.length - 1], 0),
+                vscode.TextEditorRevealType.InCenter
             );
         }
     };
