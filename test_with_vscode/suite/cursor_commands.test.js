@@ -240,4 +240,43 @@ describe('CursorHandler', () => {
             assert.equal(EditUtil.enumVisibleLines(textEditor)[0], 0);
         });
     });
+    describe('cursorHalfPageDownImpl', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll down half page (1)', async () => {
+            await locateCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = vlines0.length >> 1;
+            let cursor = 500 + (halfPage >> 1);
+            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            await waitForScroll(vlines0[0]);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].active.line, cursor + halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines1[0], vlines0[0] + halfPage);
+        });
+        it('should scroll down half page (2)', async () => {
+            await locateCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = vlines0.length >> 1;
+            let cursor = 500 - (halfPage >> 1);
+            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            await waitForScroll(vlines0[0]);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].active.line, cursor + halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines1[0], vlines0[0] + halfPage);
+        });
+    });
 });
