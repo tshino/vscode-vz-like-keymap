@@ -278,5 +278,20 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(vlines1[0], vlines0[0] + halfPage);
         });
+        it('should move cursor only when the screen is already at bottom of document', async () => {
+            await locateCursor(1000, 0);
+            let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
+            textEditor.selections = [ new vscode.Selection(1000 - halfPage, 0, 10000 - halfPage, 0) ];
+            mode.sync(textEditor);
+
+            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(1000, 0, 1000, 0) ));
+            assert(EditUtil.enumVisibleLines(textEditor).includes(1000));
+        });
     });
 });
