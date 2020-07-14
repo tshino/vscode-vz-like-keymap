@@ -280,7 +280,8 @@ describe('CursorHandler', () => {
         });
         it('should move cursor only when the screen is already at bottom of document', async () => {
             await locateCursor(1000, 0);
-            let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = (vlines0.length - 1) >> 1;
             textEditor.selections = [ new vscode.Selection(1000 - halfPage, 0, 10000 - halfPage, 0) ];
             mode.sync(textEditor);
 
@@ -291,7 +292,9 @@ describe('CursorHandler', () => {
 
             assert.equal(mode.inSelection(), false);
             assert(textEditor.selections[0].isEqual( new vscode.Selection(1000, 0, 1000, 0) ));
-            assert(EditUtil.enumVisibleLines(textEditor).includes(1000));
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert(vlines1.includes(1000));
+            assert(vlines1[0], vlines0[0]);
         });
     });
 });
