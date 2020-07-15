@@ -31,10 +31,12 @@ describe('CursorHandler', () => {
         textEditor.revealRange(new vscode.Range(cursor, cursor));
         await waitForReveal();
     };
-    const locateCursor = async (line, character) => {
+    const locateCursor = async (line, character, reveal=true) => {
         textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
         mode.initialize(textEditor);
-        await revealCursor();
+        if (reveal) {
+            await revealCursor();
+        }
     };
     const selectRange = async (l1, c1, l2, c2) => {
         textEditor.selections = [ new vscode.Selection(l1, c1, l2, c2) ];
@@ -246,7 +248,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = vlines0.length >> 1;
             let cursor = 500 + (halfPage >> 1);
-            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            await locateCursor(cursor, 5, false);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
@@ -262,7 +264,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = vlines0.length >> 1;
             let cursor = 500 - (halfPage >> 1);
-            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            await locateCursor(cursor, 5, false);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
@@ -275,9 +277,9 @@ describe('CursorHandler', () => {
         });
         it('should move cursor only when the screen is already at bottom of document', async () => {
             await locateCursor(1000, 0);
-            let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
-            await locateCursor(1000 - halfPage, 0);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = (vlines0.length - 1) >> 1;
+            await locateCursor(1000 - halfPage, 0, false);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await sleep(20);
