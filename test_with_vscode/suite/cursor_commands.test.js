@@ -186,7 +186,7 @@ describe('CursorHandler', () => {
             assert.equal(visibleLines0[0], visibleLines1[0]);
         });
     });
-    describe('cursorHalfPageUpImpl', () => {
+    describe('cursorHalfPageUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
@@ -196,9 +196,8 @@ describe('CursorHandler', () => {
             let halfPage = (vlines0.length - 1) >> 1;
             let cursor = 500 + (halfPage >> 1);
             textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
-            mode.sync(textEditor);
 
-            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
@@ -213,9 +212,8 @@ describe('CursorHandler', () => {
             let halfPage = (vlines0.length - 1) >> 1;
             let cursor = 500 - (halfPage >> 1);
             textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
-            mode.sync(textEditor);
 
-            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
@@ -227,10 +225,9 @@ describe('CursorHandler', () => {
         it('should move cursor only when the screen is already at top of document', async () => {
             await locateCursor(0, 0);
             let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
-            textEditor.selections = [ new vscode.Selection(halfPage, 0, halfPage, 0) ];
-            mode.sync(textEditor);
+            await locateCursor(halfPage, 0);
 
-            cursorHandler.cursorHalfPageUpImpl(textEditor, false);
+            cursorHandler.cursorHalfPageUp(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -240,7 +237,7 @@ describe('CursorHandler', () => {
             assert.equal(EditUtil.enumVisibleLines(textEditor)[0], 0);
         });
     });
-    describe('cursorHalfPageDownImpl', () => {
+    describe('cursorHalfPageDown', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
@@ -250,9 +247,8 @@ describe('CursorHandler', () => {
             let halfPage = vlines0.length >> 1;
             let cursor = 500 + (halfPage >> 1);
             textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
-            mode.sync(textEditor);
 
-            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
@@ -267,9 +263,8 @@ describe('CursorHandler', () => {
             let halfPage = vlines0.length >> 1;
             let cursor = 500 - (halfPage >> 1);
             textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
-            mode.sync(textEditor);
 
-            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
 
             assert.equal(mode.inSelection(), false);
@@ -280,12 +275,11 @@ describe('CursorHandler', () => {
         });
         it('should move cursor only when the screen is already at bottom of document', async () => {
             await locateCursor(1000, 0);
+            let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
+            await locateCursor(1000 - halfPage, 0);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            let halfPage = (vlines0.length - 1) >> 1;
-            textEditor.selections = [ new vscode.Selection(1000 - halfPage, 0, 10000 - halfPage, 0) ];
-            mode.sync(textEditor);
 
-            cursorHandler.cursorHalfPageDownImpl(textEditor, false);
+            cursorHandler.cursorHalfPageDown(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
