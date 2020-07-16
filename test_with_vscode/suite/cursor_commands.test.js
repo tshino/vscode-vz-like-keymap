@@ -197,7 +197,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = (vlines0.length - 1) >> 1;
             let cursor = 500 + (halfPage >> 1);
-            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            await locateCursor(cursor, 5, false);
 
             cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
@@ -213,7 +213,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = (vlines0.length - 1) >> 1;
             let cursor = 500 - (halfPage >> 1);
-            textEditor.selections = [ new vscode.Selection(cursor, 5, cursor, 5) ];
+            await locateCursor(cursor, 5, false);
 
             cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);

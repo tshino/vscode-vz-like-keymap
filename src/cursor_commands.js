@@ -310,8 +310,6 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand,
         moveCursorToWithoutScroll,
         moveCursorTo,
-        cursorHalfPageUpImpl,
-        cursorHalfPageDownImpl,
         cursorHalfPageUp,
         cursorHalfPageDown,
         cursorHalfPageUpSelect,
