@@ -7,13 +7,13 @@ const edit_commands = require("./../../src/edit_commands.js");
 const EditUtil = require("./../../src/edit_util.js");
 
 describe('EditHandler', () => {
-    vscode.window.showInformationMessage('Started test for EditHandler.');
     const mode = mode_handler.getInstance();
     const editHandler = edit_commands.getInstance();
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     let textEditor;
     before(async () => {
+        vscode.window.showInformationMessage('Started test for EditHandler.');
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
     });

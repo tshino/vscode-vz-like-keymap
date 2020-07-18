@@ -7,7 +7,6 @@ const cursor_commands = require("./../../src/cursor_commands.js");
 const EditUtil = require("./../../src/edit_util.js");
 
 describe('CursorHandler', () => {
-    vscode.window.showInformationMessage('Started test for EditHandler.');
     const mode = mode_handler.getInstance();
     const cursorHandler = cursor_commands.getInstance();
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
@@ -49,6 +48,7 @@ describe('CursorHandler', () => {
         }
     };
     before(async () => {
+        vscode.window.showInformationMessage('Started test for CursorHandler.');
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
     });
