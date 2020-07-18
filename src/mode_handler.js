@@ -8,6 +8,7 @@ const ModeHandler = function() {
     let lastSelectionAnchor = null;
     let onStartSelection = null;
     let onResetSelection = null;
+    let synchronized = false;
     const startSelection = function(textEditor, box) {
         mode = box ? MODE_BOX_SELECTION : MODE_SELECTION;
         lastSelectionAnchor = textEditor.selection.anchor;
@@ -41,10 +42,15 @@ const ModeHandler = function() {
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection(textEditor);
         }
+        synchronized = true;
     };
     const initialize = function(textEditor) {
         resetSelection(textEditor);
         sync(textEditor);
+        synchronized = false;
+    };
+    const expectSync = function() {
+        synchronized = false;
     };
     return {
         inSelection: function() { return mode !== MODE_NORMAL; },
@@ -56,6 +62,8 @@ const ModeHandler = function() {
         resetBoxSelection: resetBoxSelection,
         sync: sync,
         initialize: initialize,
+        expectSync,
+        synchronized: function() { return synchronized; },
     };
 };
 
