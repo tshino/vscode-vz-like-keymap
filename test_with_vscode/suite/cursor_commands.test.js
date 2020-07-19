@@ -270,6 +270,18 @@ describe('CursorHandler', () => {
             assert(textEditor.selections[0].isEqual( new vscode.Selection(0, 0, 0, 0) ));
             assert.equal(EditUtil.enumVisibleLines(textEditor)[0], 0);
         });
+        it('should extend existing selection', async () => {
+            await selectRange(50, 5, 30, 3);
+
+            cursorHandler.cursorHalfPageUp(textEditor);
+            await waitForCursor(30, 3);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 50);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line < 30);
+            assert.equal(textEditor.selections[0].active.character, 3);
+        });
     });
     describe('cursorHalfPageDown', () => {
         before(async () => {
@@ -325,6 +337,18 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert(vlines1.includes(1000));
             assert.equal(vlines1[0], vlines0[0]);
+        });
+        it('should extend existing selection', async () => {
+            await selectRange(50, 5, 70, 3);
+
+            cursorHandler.cursorHalfPageDown(textEditor);
+            await waitForCursor(70, 3);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 50);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line > 70);
+            assert.equal(textEditor.selections[0].active.character, 3);
         });
     });
 });
