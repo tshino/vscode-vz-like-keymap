@@ -659,7 +659,7 @@
         ]
     },
     "devDependencies": {
-        "mocha": "^7.2.0",
+        "mocha": "^8.0.1",
         "vscode-test": "^1.4.0"
     }
 }
