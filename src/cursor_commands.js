@@ -82,7 +82,7 @@ const CursorHandler = function(modeHandler) {
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
         let onePage = Math.max(1, vlines.length);
-        let halfPage = Math.max(1, Math.floor(onePage / 2));
+        let halfPage = Math.max(1, Math.floor(onePage / 2) - 1);
         if (0 === vlines[0]) {
             let newLine = vlines[Math.max(0, currIndex - halfPage)];
             moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
@@ -102,8 +102,9 @@ const CursorHandler = function(modeHandler) {
                 );
                 moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
+            let center = 2 <= vlines.length ? vlines[1] : vlines[0];
             textEditor.revealRange(
-                new vscode.Range(vlines[0], 0, vlines[0], 0),
+                new vscode.Range(center, 0, center, 0),
                 vscode.TextEditorRevealType.InCenter
             );
         }
@@ -124,8 +125,9 @@ const CursorHandler = function(modeHandler) {
                 let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
                 moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
+            let center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
             textEditor.revealRange(
-                new vscode.Range(vlines[vlines.length - 1], 0, vlines[vlines.length - 1], 0),
+                new vscode.Range(center, 0, center, 0),
                 vscode.TextEditorRevealType.InCenter
             );
         }

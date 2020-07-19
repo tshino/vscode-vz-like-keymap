@@ -64,10 +64,10 @@ describe('CursorHandler', () => {
             await sleep(10);
         }
     };
-    const waitForCursorAt = async (line, character) => {
+    const waitForCursor = async (prevLine, prevCharacter) => {
         while (
-            textEditor.selections[0].active.line !== line ||
-            textEditor.selections[0].active.character !== character
+            textEditor.selections[0].active.line === prevLine &&
+            textEditor.selections[0].active.character === prevCharacter
         ) {
             await sleep(1);
         }
@@ -112,6 +112,7 @@ describe('CursorHandler', () => {
             cursorHandler.moveCursorTo(textEditor, 8, 7, true);
             await waitForReveal();
             await waitForStartSelection();
+            await waitForCursor(5, 5);
 
             assert.equal(mode.inSelection(), true);
             assert.equal(textEditor.selections.length, 1);
@@ -128,6 +129,7 @@ describe('CursorHandler', () => {
             cursorHandler.moveCursorTo(textEditor, 8, 7, true);
             await waitForReveal();
             await waitForStartSelection();
+            await waitForCursor(6, 6);
 
             assert.equal(mode.inSelection(), true);
             assert.equal(textEditor.selections.length, 1);
@@ -222,13 +224,13 @@ describe('CursorHandler', () => {
         it('should scroll up half page (1)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            let halfPage = (vlines0.length - 1) >> 1;
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500 + (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
             cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
-            await waitForCursorAt(cursor - halfPage, 5);
+            await waitForCursor(cursor, 5);
 
             assert.equal(mode.inSelection(), false);
             assert.equal(textEditor.selections[0].active.line, cursor - halfPage);
@@ -239,13 +241,13 @@ describe('CursorHandler', () => {
         it('should scroll up half page (2)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            let halfPage = (vlines0.length - 1) >> 1;
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500 - (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
             cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
-            await waitForCursorAt(cursor - halfPage, 5);
+            await waitForCursor(cursor, 5);
 
             mode.sync(textEditor);
             assert.equal(mode.inSelection(), false);
@@ -257,7 +259,7 @@ describe('CursorHandler', () => {
         it('should move cursor only when the screen is already at top of document', async () => {
             await resetCursor(0, 0);
             let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
-            await locateCursor(halfPage, 0);
+            await locateCursor(Math.max(1, halfPage - 2), 0);
 
             cursorHandler.cursorHalfPageUp(textEditor);
             await sleep(20);
@@ -276,13 +278,13 @@ describe('CursorHandler', () => {
         it('should scroll down half page (1)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            let halfPage = vlines0.length >> 1;
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500 + (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
-            await waitForCursorAt(cursor + halfPage, 5);
+            await waitForCursor(cursor, 5);
 
             assert.equal(mode.inSelection(), false);
             assert.equal(textEditor.selections[0].active.line, cursor + halfPage);
@@ -293,13 +295,13 @@ describe('CursorHandler', () => {
         it('should scroll down half page (2)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            let halfPage = vlines0.length >> 1;
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500 - (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await waitForScroll(vlines0[0]);
-            await waitForCursorAt(cursor + halfPage, 5);
+            await waitForCursor(cursor, 5);
 
             assert.equal(mode.inSelection(), false);
             assert.equal(textEditor.selections[0].active.line, cursor + halfPage);
@@ -311,7 +313,7 @@ describe('CursorHandler', () => {
             await resetCursor(1000, 0);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = (vlines0.length - 1) >> 1;
-            await locateCursor(1000 - halfPage, 0, null);
+            await locateCursor(1000 - Math.max(1, halfPage - 2), 0, null);
 
             cursorHandler.cursorHalfPageDown(textEditor);
             await sleep(20);

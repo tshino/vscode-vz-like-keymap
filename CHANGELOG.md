@@ -8,6 +8,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - The behavior of Paste of a text which has been taken from the last line of a document.
   - The behavior of Cut of a single line text by Ctrl+Y with no selection.
   - The behavior of Cut of a long range of text.
+  - The behavior of Half-page scroll up and down to be as symmetric as possible.
 - Added:
   - An integration test with VS Code.
 
