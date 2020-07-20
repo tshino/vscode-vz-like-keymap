@@ -59,6 +59,15 @@ describe('CursorHandler', () => {
         await revealCursor();
         while (await sleep(1), !mode.synchronized()) {}
     };
+    const selectRanges = async (ranges) => {
+        await resetCursor(ranges[0][0], ranges[0][1]);
+        mode.expectSync();
+        textEditor.selections = ranges.map(
+            r => new vscode.Selection(r[0], r[1], r[2], r[3])
+        );
+        await revealCursor();
+        while (await sleep(1), !mode.synchronized()) {}
+    };
     const waitForScroll = async (prevTop) => {
         while (EditUtil.enumVisibleLines(textEditor)[0] === prevTop) {
             await sleep(10);
@@ -281,6 +290,24 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].anchor.character, 5);
             assert(textEditor.selections[0].active.line < 30);
             assert.equal(textEditor.selections[0].active.character, 3);
+        });
+        it('should stop box-selection and retain selection mode', async () => {
+            await selectRanges([
+                [50, 5, 50, 8],
+                [51, 5, 51, 8],
+                [52, 5, 52, 8]
+            ]);
+
+            cursorHandler.cursorHalfPageUp(textEditor);
+            await waitForCursor(50, 8);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), false);
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].anchor.line, 50);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line < 50);
+            assert.equal(textEditor.selections[0].active.character, 8);
         });
     });
     describe('cursorHalfPageDown', () => {
