@@ -291,7 +291,7 @@ describe('CursorHandler', () => {
             assert(textEditor.selections[0].active.line < 30);
             assert.equal(textEditor.selections[0].active.character, 3);
         });
-        it('should stop box-selection and retain selection mode', async () => {
+        it('should stop box-selection and continue selection mode', async () => {
             await selectRanges([
                 [50, 5, 50, 8],
                 [51, 5, 51, 8],
@@ -376,6 +376,24 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].anchor.character, 5);
             assert(textEditor.selections[0].active.line > 70);
             assert.equal(textEditor.selections[0].active.character, 3);
+        });
+        it('should stop box-selection and continue selection mode', async () => {
+            await selectRanges([
+                [50, 5, 50, 8],
+                [51, 5, 51, 8],
+                [52, 5, 52, 8]
+            ]);
+
+            cursorHandler.cursorHalfPageDown(textEditor);
+            await waitForCursor(50, 8);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), false);
+            assert.equal(textEditor.selections.length, 1);
+            assert.equal(textEditor.selections[0].anchor.line, 50);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line > 52);
+            assert.equal(textEditor.selections[0].active.character, 8);
         });
     });
 });
