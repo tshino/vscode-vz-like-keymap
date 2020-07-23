@@ -396,4 +396,50 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.character, 8);
         });
     });
+    describe('cursorHalfPageUpSelect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll up half page and start selection', async () => {
+            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
+            let cursor = 500;
+
+            cursorHandler.cursorHalfPageUpSelect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(cursor, 5);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 500);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, cursor - halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert([halfPage - 1, halfPage, halfPage + 1].includes(vlines0[0] - vlines1[0]));
+        });
+    });
+    describe('cursorHalfPageDownSelect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll down half page and start selection', async () => {
+            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
+            let cursor = 500;
+
+            cursorHandler.cursorHalfPageDownSelect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(cursor, 5);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 500);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, cursor + halfPage);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert([halfPage - 1, halfPage, halfPage + 1].includes(vlines1[0] - vlines0[0]));
+        });
+    });
 });
