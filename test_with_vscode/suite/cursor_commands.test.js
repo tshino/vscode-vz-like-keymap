@@ -466,4 +466,28 @@ describe('CursorHandler', () => {
             assert.equal(pos1, pos0);
         });
     });
+    describe('cursorFullPageDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll down full page', async () => {
+            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let fullPage = vlines0.length - 1;
+            let cursor = 500;
+            let pos0 = EditUtil.getLowerBoundLineIndex(vlines0, cursor);
+
+            cursorHandler.cursorFullPageDown(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(cursor, 5);
+
+            assert.equal(mode.inSelection(), false);
+            let current = textEditor.selections[0].active;
+            assert([fullPage - 1, fullPage, fullPage + 1].includes(current.line - cursor));
+            assert.equal(current.character, 5);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            let pos1 = EditUtil.getLowerBoundLineIndex(vlines1, current.line);
+            assert.equal(pos1, pos0);
+        });
+    });
 });
