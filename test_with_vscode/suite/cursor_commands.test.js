@@ -31,10 +31,10 @@ describe('CursorHandler', () => {
         await waitForReveal();
     };
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
-        let line0 = line === 0 ? 1 : 0;
-        if (textEditor.selections[0].active.line !== line0) {
+        let anotherLine = line === 0 ? 1 : 0;
+        if (textEditor.selections[0].active.line !== anotherLine) {
             mode.expectSync();
-            textEditor.selections = [ new vscode.Selection(line0, 0, line0, 0) ];
+            textEditor.selections = [ new vscode.Selection(anotherLine, 0, anotherLine, 0) ];
             while (await sleep(1), !mode.synchronized()) {}
         }
         textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
@@ -42,7 +42,11 @@ describe('CursorHandler', () => {
         if (revealType !== null) {
             await revealCursor(revealType);
         }
-        while (await sleep(1), !mode.synchronized()) {}
+        while (await sleep(1),
+            !mode.synchronized() ||
+            textEditor.selections[0].active.line !== line ||
+            textEditor.selections[0].active.character !== character
+        ) {}
     };
     const locateCursor = async (line, character, revealType=vscode.TextEditorRevealType.Default) => {
         mode.expectSync();
@@ -409,6 +413,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorHalfPageUpSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
+            while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
             assert.equal(textEditor.selections[0].anchor.line, 500);
@@ -432,6 +437,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorHalfPageDownSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
+            while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
             assert.equal(textEditor.selections[0].anchor.line, 500);
