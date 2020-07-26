@@ -465,6 +465,20 @@ describe('CursorHandler', () => {
             let pos1 = EditUtil.getLowerBoundLineIndex(vlines1, current.line);
             assert.equal(pos1, pos0);
         });
+        it('should extend selection', async () => {
+            await selectRange(500, 5, 503, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.cursorFullPageUp(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(503, 7);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 500);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line < 503);
+            assert.equal(textEditor.selections[0].active.character, 7);
+        });
     });
     describe('cursorFullPageDown', () => {
         before(async () => {
@@ -488,6 +502,20 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             let pos1 = EditUtil.getLowerBoundLineIndex(vlines1, current.line);
             assert.equal(pos1, pos0);
+        });
+        it('should extend selection', async () => {
+            await selectRange(500, 5, 503, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.cursorFullPageDown(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(503, 7);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 500);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert(textEditor.selections[0].active.line > 503);
+            assert.equal(textEditor.selections[0].active.character, 7);
         });
     });
 });
