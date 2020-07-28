@@ -272,9 +272,11 @@ describe('CursorHandler', () => {
         it('should move cursor only when the screen is already at top of document', async () => {
             await resetCursor(0, 0);
             let halfPage = (EditUtil.enumVisibleLines(textEditor).length - 1) >> 1;
-            await locateCursor(Math.max(1, halfPage - 2), 0);
+            let cursor = Math.max(1, halfPage - 2);
+            await locateCursor(cursor, 0);
 
             cursorHandler.cursorHalfPageUp(textEditor);
+            await waitForCursor(cursor, 0);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -356,9 +358,11 @@ describe('CursorHandler', () => {
             await resetCursor(1000, 0);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = (vlines0.length - 1) >> 1;
-            await locateCursor(1000 - Math.max(1, halfPage - 2), 0, null);
+            let cursor = 1000 - Math.max(1, halfPage - 2);
+            await locateCursor(cursor, 0, null);
 
             cursorHandler.cursorHalfPageDown(textEditor);
+            await waitForCursor(cursor, 0);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -522,6 +526,25 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].anchor.character, 5);
             assert(textEditor.selections[0].active.line > 503);
             assert.equal(textEditor.selections[0].active.character, 7);
+        });
+        it('should move cursor only when the screen is already at bottom of document', async () => {
+            await resetCursor(1000, 0);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let halfPage = (vlines0.length - 1) >> 1;
+            let cursor = 1000 - Math.max(1, halfPage - 2);
+            await locateCursor(cursor, 0, null);
+
+            cursorHandler.cursorFullPageDown(textEditor);
+            await waitForCursor(cursor, 0);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert(textEditor.selections[0].isEqual( new vscode.Selection(1000, 0, 1000, 0) ));
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert(vlines1.includes(1000));
+            assert.equal(vlines1[0], vlines0[0]);
         });
     });
     describe('cursorFullPageUpSelect', () => {
