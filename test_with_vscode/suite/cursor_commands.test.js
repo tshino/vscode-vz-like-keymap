@@ -601,7 +601,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should move cursor at top of current visible area', async () => {
+        it('should move cursor to top of current visible area', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
@@ -613,6 +613,19 @@ describe('CursorHandler', () => {
             assert(current.line < 500);
             assert(vlines0[0] <= current.line);
             assert.equal(current.character, 5);
+        });
+        it('should move cursor to top of document if it is already visible', async () => {
+            await resetCursor(0, 5, vscode.TextEditorRevealType.InCenter);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            let cursor = vlines0.length >> 1;
+            await locateCursor(cursor, 5, null);
+
+            cursorHandler.cursorViewTop(textEditor);
+            await waitForCursor(cursor, 5);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 5);
         });
     });
     describe('cursorViewBottom', () => {
