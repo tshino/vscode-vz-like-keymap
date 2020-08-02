@@ -666,6 +666,23 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(vlines0[0], vlines1[0]);
         });
+        it('should extend selection', async () => {
+            await selectRange(500, 5, 500, 10);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.cursorViewBottom(textEditor);
+            await waitForCursor(500, 10);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 500);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            let current = textEditor.selections[0].active;
+            assert(500 < current.line);
+            assert(current.line <= vlines0[vlines0.length - 1]);
+            assert.equal(current.character, 10);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines0[0], vlines1[0]);
+        });
         it('should move cursor to bottom of document if it is already visible', async () => {
             await resetCursor(1000, 0, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
