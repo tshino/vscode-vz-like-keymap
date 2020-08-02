@@ -10,7 +10,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - The behavior of Cut of a long range of text.
   - The behavior of Half-page scroll up and down to be as symmetric as possible.
 - Added:
-  - An integration test with VS Code.
+  - Integration tests for almost all commands using vscode-test.
 
 ### [0.10.1] - 2020-04-29
 - Improved:
