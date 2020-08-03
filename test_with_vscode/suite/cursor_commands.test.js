@@ -715,5 +715,18 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 7);
             assert.equal(textEditor.selections[0].active.character, 0);
         });
+        it('should extend selection', async () => {
+            await selectRange(7, 5, 4, 5);
+
+            cursorHandler.cursorLineStartSelect(textEditor);
+            await waitForCursor(4, 5);
+            while (await sleep(1), !mode.inSelection()) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 7);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, 4);
+            assert.equal(textEditor.selections[0].active.character, 0);
+        });
     });
 });
