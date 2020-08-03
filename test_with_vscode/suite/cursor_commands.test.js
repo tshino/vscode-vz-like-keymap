@@ -698,4 +698,22 @@ describe('CursorHandler', () => {
             assert.equal(vlines0[0], vlines1[0]);
         });
     });
+    describe('cursorLineStartSelect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to beginning of current line and start selection', async () => {
+            await resetCursor(7, 5);
+
+            cursorHandler.cursorLineStartSelect(textEditor);
+            await waitForCursor(7, 5);
+            while (await sleep(1), !mode.inSelection()) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 7);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, 7);
+            assert.equal(textEditor.selections[0].active.character, 0);
+        });
+    });
 });
