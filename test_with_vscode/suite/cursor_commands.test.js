@@ -729,4 +729,35 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.character, 0);
         });
     });
+    describe('cursorLineEndSelect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to end of current line and start selection', async () => {
+            await resetCursor(7, 5);
+
+            cursorHandler.cursorLineEndSelect(textEditor);
+            await waitForCursor(7, 5);
+            while (await sleep(1), !mode.inSelection()) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 7);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, 7);
+            assert.equal(textEditor.selections[0].active.character, 10);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 5, 4, 5);
+
+            cursorHandler.cursorLineEndSelect(textEditor);
+            await waitForCursor(4, 5);
+            while (await sleep(1), !mode.inSelection()) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(textEditor.selections[0].anchor.line, 7);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[0].active.line, 4);
+            assert.equal(textEditor.selections[0].active.character, 10);
+        });
+    });
 });
