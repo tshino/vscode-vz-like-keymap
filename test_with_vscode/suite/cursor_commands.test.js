@@ -778,6 +778,21 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 499);
             assert.equal(textEditor.selections[0].active.character, 5);
         });
+        it('should only move cursor if the top of document is already visible', async () => {
+            await resetCursor(0, 5);
+            await locateCursor(1, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(vlines0[0], 0);
+
+            cursorHandler.scrollLineUp(textEditor);
+            await waitForCursor(1, 5);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0]);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 5);
+        });
         it('should extend selection', async () => {
             await selectRange(500, 5, 500, 7);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
