@@ -780,7 +780,7 @@ describe('CursorHandler', () => {
         });
         it('should only move cursor if the top of document is already visible', async () => {
             await resetCursor(0, 5);
-            await locateCursor(1, 5);
+            await locateCursor(1, 5, null);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(vlines0[0], 0);
 
@@ -826,6 +826,20 @@ describe('CursorHandler', () => {
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] + 1);
             assert.equal(textEditor.selections[0].active.line, 501);
+            assert.equal(textEditor.selections[0].active.character, 5);
+        });
+        it('should scroll down one line even if the last line of document is already visible', async () => {
+            await resetCursor(1000, 0);
+            await locateCursor(995, 5, null);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineDown(textEditor);
+            await waitForCursor(995, 5);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0] + 1);
+            assert.equal(textEditor.selections[0].active.line, 996);
             assert.equal(textEditor.selections[0].active.character, 5);
         });
     });
