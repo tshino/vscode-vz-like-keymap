@@ -834,6 +834,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
             cursorHandler.scrollLineDown(textEditor);
+            await waitForScroll(vlines0[0]);
             await waitForCursor(995, 5);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
@@ -841,6 +842,22 @@ describe('CursorHandler', () => {
             assert.equal(vlines1[0], vlines0[0] + 1);
             assert.equal(textEditor.selections[0].active.line, 996);
             assert.equal(textEditor.selections[0].active.character, 5);
+        });
+        it('should not scroll down if the cursor is at the last line of document', async () => {
+            await resetCursor(999, 0);
+            await locateCursor(1000, 0, null);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineDown(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0]);
+            assert.equal(textEditor.selections[0].active.line, 1000);
+            assert.equal(textEditor.selections[0].active.character, 0);
         });
     });
 });
