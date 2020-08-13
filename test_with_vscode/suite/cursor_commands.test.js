@@ -843,7 +843,7 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 996);
             assert.equal(textEditor.selections[0].active.character, 5);
         });
-        it('should not scroll down if the cursor is at the last line of document', async () => {
+        it('should not scroll down if the cursor is already at the last line of document', async () => {
             await resetCursor(999, 0);
             await locateCursor(1000, 0, null);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
@@ -874,6 +874,44 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].anchor.character, 5);
             assert.equal(textEditor.selections[0].active.line, 501);
             assert.equal(textEditor.selections[0].active.character, 7);
+        });
+    });
+    describe('scrollLineUpUnselect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll up and move cursor up one line', async () => {
+            await resetCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineUpUnselect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(500, 5);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0] - 1);
+            assert.equal(textEditor.selections[0].active.line, 499);
+            assert.equal(textEditor.selections[0].active.character, 5);
+        });
+    });
+    describe('scrollLineDownUnselect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll down and move cursor down one line', async () => {
+            await resetCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineDownUnselect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(500, 5);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0] + 1);
+            assert.equal(textEditor.selections[0].active.line, 501);
+            assert.equal(textEditor.selections[0].active.character, 5);
         });
     });
 });
