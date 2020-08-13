@@ -894,6 +894,21 @@ describe('CursorHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 499);
             assert.equal(textEditor.selections[0].active.character, 5);
         });
+        it('should cancel selection', async () => {
+            await selectRange(500, 5, 500, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineUpUnselect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(500, 7);
+            while (await sleep(1), mode.inSelection()) {}
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0] - 1);
+            assert.equal(textEditor.selections[0].active.line, 499);
+            assert.equal(textEditor.selections[0].active.character, 7);
+        });
     });
     describe('scrollLineDownUnselect', () => {
         before(async () => {
@@ -912,6 +927,21 @@ describe('CursorHandler', () => {
             assert.equal(vlines1[0], vlines0[0] + 1);
             assert.equal(textEditor.selections[0].active.line, 501);
             assert.equal(textEditor.selections[0].active.character, 5);
+        });
+        it('should cancel selection', async () => {
+            await selectRange(500, 5, 500, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.scrollLineDownUnselect(textEditor);
+            await waitForScroll(vlines0[0]);
+            await waitForCursor(500, 7);
+            while (await sleep(1), mode.inSelection()) {}
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.equal(mode.inSelection(), false);
+            assert.equal(vlines1[0], vlines0[0] + 1);
+            assert.equal(textEditor.selections[0].active.line, 501);
+            assert.equal(textEditor.selections[0].active.character, 7);
         });
     });
 });
