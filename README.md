@@ -1,5 +1,7 @@
 # Vz Keymap for VS Code
 
+[![Node.js CI](https://github.com/tshino/vscode-vz-like-keymap/workflows/Node.js%20CI/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions?query=workflow%3A%22Node.js+CI%22)
+
 This is a Visual Studio Code extension which provides a keymap similar to good old Vz Editor.
 
 - More than 40 shortcuts to provide basic experience almost identical to Vz Editor
