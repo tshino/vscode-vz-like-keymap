@@ -27,4 +27,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - run: npm run test_with_vscode
+    - name: Run integration tests
+      uses: GabrielBB/xvfb-action@v1.2
+      with:
+        run: npm run test_with_vscode
