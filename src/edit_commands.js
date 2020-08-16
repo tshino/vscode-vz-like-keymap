@@ -229,11 +229,30 @@ const EditHandler = function(modeHandler) {
     const paste = async function(textEditor, _edit) {
         await popAndPasteImpl(textEditor, true);
     };
+    const runEditCommand = function(command, textEditor, _edit) {
+        if (mode.inSelection() && !mode.inBoxSelection()) {
+            vscode.commands.executeCommand(command);
+            mode.resetSelection(textEditor);
+        } else {
+            vscode.commands.executeCommand(command);
+        }
+    };
+    const makeEditCommand = function(command) {
+        return function(textEditor, edit) {
+            runEditCommand(command, textEditor, edit);
+        };
+    };
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', paste);
+        registerTextEditorCommand(context, 'deleteLeft', makeEditCommand('deleteLeft'));
+        registerTextEditorCommand(context, 'deleteRight', makeEditCommand('deleteRight'));
+        registerTextEditorCommand(context, 'deleteWordLeft', makeEditCommand('deleteWordLeft'));
+        registerTextEditorCommand(context, 'deleteWordRight', makeEditCommand('deleteWordRight'));
+        registerTextEditorCommand(context, 'deleteAllLeft', makeEditCommand('deleteAllLeft'));
+        registerTextEditorCommand(context, 'deleteAllRight', makeEditCommand('deleteAllRight'));
     };
     return {
         singleLineRange,

@@ -164,25 +164,6 @@ function activate(context) {
     };
     registerTextEditorCommand('tagJump', tagJump);
 
-    const runEditCommand = function(command, textEditor, _edit) {
-        if (mode.inSelection() && !mode.inBoxSelection()) {
-            exec([command]);
-            mode.resetSelection(textEditor);
-        } else {
-            exec([command]);
-        }
-    };
-    const makeEditCommand = function(command) {
-        return function(textEditor, edit) {
-            runEditCommand(command, textEditor, edit);
-        };
-    };
-    registerTextEditorCommand('deleteLeft', makeEditCommand('deleteLeft'));
-    registerTextEditorCommand('deleteRight', makeEditCommand('deleteRight'));
-    registerTextEditorCommand('deleteWordLeft', makeEditCommand('deleteWordLeft'));
-    registerTextEditorCommand('deleteWordRight', makeEditCommand('deleteWordRight'));
-    registerTextEditorCommand('deleteAllLeft', makeEditCommand('deleteAllLeft'));
-    registerTextEditorCommand('deleteAllRight', makeEditCommand('deleteAllRight'));
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     });
