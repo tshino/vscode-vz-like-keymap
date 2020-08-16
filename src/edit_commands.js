@@ -242,13 +242,15 @@ const EditHandler = function(modeHandler) {
             runEditCommand(command, textEditor, edit);
         };
     };
+    const deleteLeft = makeEditCommand('deleteLeft');
+    const deleteRight = makeEditCommand('deleteRight');
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', paste);
-        registerTextEditorCommand(context, 'deleteLeft', makeEditCommand('deleteLeft'));
-        registerTextEditorCommand(context, 'deleteRight', makeEditCommand('deleteRight'));
+        registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
+        registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', makeEditCommand('deleteWordLeft'));
         registerTextEditorCommand(context, 'deleteWordRight', makeEditCommand('deleteWordRight'));
         registerTextEditorCommand(context, 'deleteAllLeft', makeEditCommand('deleteAllLeft'));
