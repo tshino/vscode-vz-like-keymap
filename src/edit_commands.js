@@ -273,6 +273,8 @@ const EditHandler = function(modeHandler) {
         pasteInlineText,
         pasteBoxText,
         popAndPasteImpl,
+        deleteLeft,
+        deleteRight,
         registerCommands
     };
 };

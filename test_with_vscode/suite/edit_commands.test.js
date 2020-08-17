@@ -12,6 +12,14 @@ describe('EditHandler', () => {
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     let textEditor;
+    const waitForCursor = async (prevLine, prevCharacter) => {
+        while (
+            textEditor.selections[0].active.line === prevLine &&
+            textEditor.selections[0].active.character === prevCharacter
+        ) {
+            await sleep(1);
+        }
+    };
     before(async () => {
         vscode.window.showInformationMessage('Started test for EditHandler.');
         textEditor = await testUtils.setupTextEditor({ content: '' });
@@ -1254,6 +1262,37 @@ describe('EditHandler', () => {
             await editHandler.popAndPasteImpl(textEditor, true);
             assert.equal(textEditor.document.lineAt(2).text, 'abcabcabcde');
             assert.equal(textEditor.document.lineAt(3).text, 'fghfghfghij');
+        });
+    });
+    describe('deleteLeft', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should delete the character before the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+
+            editHandler.deleteLeft(textEditor);
+            await waitForCursor(1, 5);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 4);
+            assert.equal(textEditor.document.lineAt(1).text, '123467890');
         });
     });
 });
