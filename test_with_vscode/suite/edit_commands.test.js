@@ -1295,4 +1295,35 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '123467890');
         });
     });
+    describe('deleteRight', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should delete the character at the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+
+            editHandler.deleteRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(1).text, '123457890');
+        });
+    });
 });
