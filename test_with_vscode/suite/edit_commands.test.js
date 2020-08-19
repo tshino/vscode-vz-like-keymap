@@ -1294,6 +1294,19 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.character, 4);
             assert.equal(textEditor.document.lineAt(1).text, '123467890');
         });
+        it('should delete the selected range', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
+            while (await sleep(1), !mode.inSelection()) {}
+
+            editHandler.deleteLeft(textEditor);
+            await waitForCursor(1, 7);
+            while (await sleep(1), mode.inSelection()) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.equal(textEditor.document.lineAt(1).text, '123890');
+        });
     });
     describe('deleteRight', () => {
         beforeEach(async () => {
