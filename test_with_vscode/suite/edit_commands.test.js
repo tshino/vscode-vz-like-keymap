@@ -1294,6 +1294,17 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.character, 4);
             assert.equal(textEditor.document.lineAt(1).text, '123467890');
         });
+        it('should remove one new line character', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 0, 2, 0) ];
+
+            editHandler.deleteLeft(textEditor);
+            await waitForCursor(2, 0);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 10);
+            assert.equal(textEditor.document.lineAt(1).text, '1234567890abcde');
+        });
         it('should do nothing if the cursor is at the beginning of the document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
 
@@ -1350,6 +1361,17 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 5);
             assert.equal(textEditor.document.lineAt(1).text, '123457890');
+        });
+        it('should remove one new line character', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 5, 2, 5) ];
+
+            editHandler.deleteRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(2).text.length === 5) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 2);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(2).text, 'abcdefghij');
         });
         it('should do nothing if the cursor is at the end of the document', async () => {
             textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
