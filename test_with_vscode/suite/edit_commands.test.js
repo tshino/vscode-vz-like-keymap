@@ -1351,6 +1351,19 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.character, 5);
             assert.equal(textEditor.document.lineAt(1).text, '123457890');
         });
+        it('should do nothing if the cursor is at the end of the document', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
+
+            editHandler.deleteRight(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 6);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(6).text, '67890');
+        });
         it('should delete the selected range', async () => {
             textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
             while (await sleep(1), !mode.inSelection()) {}
