@@ -1465,5 +1465,27 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '123567890');
             assert.equal(textEditor.document.lineAt(2).text, 'abce');
         });
+        it('should delete the selected multiple ranges', async () => {
+            textEditor.selections = [
+                new vscode.Selection(1, 3, 1, 7),
+                new vscode.Selection(2, 3, 2, 5)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+
+            editHandler.deleteRight(textEditor);
+            await waitForCursor(1, 7);
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.equal(textEditor.selections[0].anchor.character, 3);
+            assert.equal(textEditor.selections[1].active.line, 2);
+            assert.equal(textEditor.selections[1].active.character, 3);
+            assert.equal(textEditor.selections[1].anchor.character, 3);
+            assert.equal(textEditor.document.lineAt(1).text, '123890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abc');
+        });
     });
 });
