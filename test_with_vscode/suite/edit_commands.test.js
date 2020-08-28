@@ -1265,6 +1265,8 @@ describe('EditHandler', () => {
         });
     });
     describe('deleteLeft', () => {
+        const tabSize = vscode.workspace.getConfiguration('editor').get('tabSize');
+        const indent = ' '.repeat(tabSize);
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1274,8 +1276,8 @@ describe('EditHandler', () => {
                     'abcde\n' +
                     'fghij\n' +
                     '\n' +
-                    '12345\n' +
-                    '67890' // <= no new line
+                    indent + '12345\n' +
+                    indent + indent + '67890' // <= no new line
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -1293,6 +1295,17 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 4);
             assert.equal(textEditor.document.lineAt(1).text, '123467890');
+        });
+        it('should delete one level of the indent before the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(6, tabSize * 2, 6, tabSize * 2) ];
+
+            editHandler.deleteLeft(textEditor);
+            await waitForCursor(6, tabSize * 2);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 6);
+            assert.equal(textEditor.selections[0].active.character, tabSize);
+            assert.equal(textEditor.document.lineAt(6).text, indent + '67890');
         });
         it('should remove one new line character', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 0) ];
