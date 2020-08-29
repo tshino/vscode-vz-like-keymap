@@ -94,6 +94,13 @@ const EditHandler = function(modeHandler) {
             return [];
         }
     };
+    const popUndeleteStack = function() {
+        if (0 < undeleteStack.length) {
+            return undeleteStack.pop();
+        } else {
+            return [];
+        }
+    };
     const singleLineRange = function(line) {
         return new vscode.Range(
             new vscode.Position(line, 0),
@@ -360,6 +367,13 @@ const EditHandler = function(modeHandler) {
         prepareDeletingRight(textEditor);
         runEditCommand('deleteRight', textEditor, edit);
     };
+    const undelete = async function(textEditor, _edit) {
+        let deleted = popUndeleteStack();
+        if (0 < deleted.length) {
+            let text = deleted[0].text;
+            await vscode.commands.executeCommand('paste', { text: text });
+        }
+    };
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
@@ -372,6 +386,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteWordRight', makeEditCommand('deleteWordRight'));
         registerTextEditorCommand(context, 'deleteAllLeft', makeEditCommand('deleteAllLeft'));
         registerTextEditorCommand(context, 'deleteAllRight', makeEditCommand('deleteAllRight'));
+        registerTextEditorCommand(context, 'undelete', undelete);
     };
     return {
         clearUndeleteStack, // for testing purpose
@@ -394,6 +409,7 @@ const EditHandler = function(modeHandler) {
         popAndPasteImpl,
         deleteLeft,
         deleteRight,
+        undelete,
         registerCommands
     };
 };

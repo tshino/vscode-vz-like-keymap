@@ -449,6 +449,11 @@
                 "when": "editorTextFocus && !editorReadonly"
             },
             {
+                "key": "ctrl+u",
+                "command": "vz.undelete",
+                "when": "editorTextFocus && !editorReadonly"
+            },
+            {
                 "key": "ctrl+i",
                 "command": "tab",
                 "when": "editorTextFocus && !editorReadonly"

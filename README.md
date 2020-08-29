@@ -40,6 +40,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+H, Ctrl+G | Delete left/right charactor |
 | Ctrl+Q H, Ctrl+T | Delete left/right word |
 | Ctrl+Q T, Ctrl+Q Y | Delete left/right half of a line |
+| Ctrl+U | Restore deleted characters |
 | Ctrl+I | Tab |
 | Ctrl+M | Insert line break |
 | Ctrl+N | Insert new line above |
