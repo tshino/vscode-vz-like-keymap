@@ -1282,6 +1282,7 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
         });
@@ -1295,6 +1296,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 4);
             assert.equal(textEditor.document.lineAt(1).text, '123467890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '5' }
+            ]);
         });
         it('should delete one level of the indent before the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(6, tabSize * 2, 6, tabSize * 2) ];
@@ -1306,6 +1310,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 6);
             assert.equal(textEditor.selections[0].active.character, tabSize);
             assert.equal(textEditor.document.lineAt(6).text, indent + '67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: indent }
+            ]);
         });
         it('should remove one new line character', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 0) ];
@@ -1317,6 +1324,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 10);
             assert.equal(textEditor.document.lineAt(1).text, '1234567890abcde');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '\n' }
+            ]);
         });
         it('should do nothing if the cursor is at the beginning of the document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
@@ -1330,6 +1340,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 0);
             assert.equal(textEditor.selections[0].active.character, 0);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should delete the selected range', async () => {
             textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
@@ -1343,6 +1354,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 3);
             assert.equal(textEditor.document.lineAt(1).text, '123890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '4567' }
+            ]);
         });
         it('should delete one character for each of multiple curosrs', async () => {
             textEditor.selections = [
@@ -1365,6 +1379,10 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[1].anchor.character, 2);
             assert.equal(textEditor.document.lineAt(1).text, '124567890');
             assert.equal(textEditor.document.lineAt(2).text, 'abde');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '3' },
+                { isLeftward: true, text: 'c' }
+            ]);
         });
         it('should delete the selected multiple ranges', async () => {
             textEditor.selections = [
@@ -1387,6 +1405,10 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[1].anchor.character, 3);
             assert.equal(textEditor.document.lineAt(1).text, '123890');
             assert.equal(textEditor.document.lineAt(2).text, 'abc');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '4567' },
+                { isLeftward: true, text: 'de' }
+            ]);
         });
     });
     describe('deleteRight', () => {
@@ -1405,6 +1427,7 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.CRLF
             );
             editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
         });
@@ -1418,6 +1441,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 5);
             assert.equal(textEditor.document.lineAt(1).text, '123457890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '6' }
+            ]);
         });
         it('should remove one new line character', async () => {
             textEditor.selections = [ new vscode.Selection(2, 5, 2, 5) ];
@@ -1429,6 +1455,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 2);
             assert.equal(textEditor.selections[0].active.character, 5);
             assert.equal(textEditor.document.lineAt(2).text, 'abcdefghij');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '\n' }
+            ]);
         });
         it('should do nothing if the cursor is at the end of the document', async () => {
             textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
@@ -1442,6 +1471,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 6);
             assert.equal(textEditor.selections[0].active.character, 5);
             assert.equal(textEditor.document.lineAt(6).text, '67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should delete the selected range', async () => {
             textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
@@ -1455,6 +1485,9 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[0].active.line, 1);
             assert.equal(textEditor.selections[0].active.character, 3);
             assert.equal(textEditor.document.lineAt(1).text, '123890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '4567' }
+            ]);
         });
         it('should delete one character for each of multiple curosrs', async () => {
             textEditor.selections = [
@@ -1477,6 +1510,10 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[1].anchor.character, 3);
             assert.equal(textEditor.document.lineAt(1).text, '123567890');
             assert.equal(textEditor.document.lineAt(2).text, 'abce');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '4' },
+                { isLeftward: false, text: 'd' }
+            ]);
         });
         it('should delete the selected multiple ranges', async () => {
             textEditor.selections = [
@@ -1499,6 +1536,10 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[1].anchor.character, 3);
             assert.equal(textEditor.document.lineAt(1).text, '123890');
             assert.equal(textEditor.document.lineAt(2).text, 'abc');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '4567' },
+                { isLeftward: true, text: 'de' }
+            ]);
         });
     });
 });

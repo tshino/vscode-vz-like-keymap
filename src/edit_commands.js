@@ -12,7 +12,88 @@ const registerTextEditorCommand = function(context, name, func) {
 const EditHandler = function(modeHandler) {
     const mode = modeHandler;
     const textStack = [];
+    const undeleteStack = [];
 
+    const deletedTextDetector = (function() {
+        let possibleDeletingInfo = [];
+        let onExpectedDelete = null;
+        const reset = function() {
+            possibleDeletingInfo.length = 0;
+        };
+        const setPossibleDeletingInfo = function(deletingInfo) {
+            possibleDeletingInfo = deletingInfo;
+        };
+        const onDelete = function(changes) {
+            if (!onExpectedDelete) {
+                return;
+            }
+            if (changes.length !== possibleDeletingInfo.length) {
+                // not matched
+                return;
+            }
+            let deleted = [];
+            for (let i = 0, n = changes.length; i < n; i++) {
+                let c = changes[i];
+                let p = possibleDeletingInfo[i];
+                if (c.range.start.isEqual(p[0])) {
+                    deleted.push({
+                        isLeftward: false,
+                        text: p[1].slice(0, c.rangeLength)
+                    });
+                } else if (c.range.end.isEqual(p[0])) {
+                    deleted.push({
+                        isLeftward: true,
+                        text: p[1].slice(p[1].length - c.rangeLength)
+                    });
+                } else {
+                    // not matched
+                    return;
+                }
+            }
+            onExpectedDelete(deleted);
+        };
+        return {
+            reset,
+            setPossibleDeletingInfo,
+            onDelete,
+            setOnExpectedDelete: function(f) { onExpectedDelete = f; }
+        };
+    })();
+    const setupListeners = function(context) {
+        context.subscriptions.push(
+            vscode.workspace.onDidChangeTextDocument(function(event) {
+                if (event.document === vscode.window.activeTextEditor.document) {
+                    let changes = Array.from(event.contentChanges);
+                    if (changes.length === 0) {
+                        return;
+                    }
+                    if (changes.every(c => c.text.length === 0)) {
+                        // pure deleting
+                        changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
+                        deletedTextDetector.onDelete(changes);
+                    }
+                }
+                deletedTextDetector.reset();
+            })
+        );
+        deletedTextDetector.setOnExpectedDelete(function(deleted) {
+            undeleteStack.push(deleted);
+            /*for (let i = 0, n = deleted.length; i < n; i++) {
+                let d = deleted[i];
+                console.log(d.isLeftward ? 'deleted leftward: ' : 'deleted rightward: ', '"' + d.text + '"');
+            }*/
+        });
+    };
+    const clearUndeleteStack = function() {
+        undeleteStack.length = 0;
+    };
+    const readUndeleteStack = function() {
+        if (0 < undeleteStack.length) {
+            return undeleteStack[undeleteStack.length - 1];
+        } else {
+            return [];
+        }
+    };
     const singleLineRange = function(line) {
         return new vscode.Range(
             new vscode.Position(line, 0),
@@ -242,9 +323,45 @@ const EditHandler = function(modeHandler) {
             runEditCommand(command, textEditor, edit);
         };
     };
-    const deleteLeft = makeEditCommand('deleteLeft');
-    const deleteRight = makeEditCommand('deleteRight');
+    const prepareDeleting = function(textEditor, isLeftward) {
+        let deletingInfo = [];
+        for (let i = 0; i < textEditor.selections.length; i++) {
+            let selection = textEditor.selections[i];
+            let position = selection.active;
+            if (selection.isEmpty) {
+                let text = (
+                    isLeftward
+                    ? '\n' + textEditor.document.lineAt(position.line).text.slice(0, position.character)
+                    : textEditor.document.lineAt(position.line).text.slice(position.character) + '\n'
+                );
+                deletingInfo.push([position, text]);
+            } else {
+                let range = new vscode.Range(selection.start, selection.end);
+                deletingInfo.push([
+                    position,
+                    textEditor.document.getText(range)
+                ]);
+            }
+        }
+        deletingInfo.sort((a, b) => a[0].compareTo(b[0]));
+        deletedTextDetector.setPossibleDeletingInfo(deletingInfo);
+    };
+    const prepareDeletingLeft = function(textEditor) {
+        prepareDeleting(textEditor, true);
+    };
+    const prepareDeletingRight = function(textEditor) {
+        prepareDeleting(textEditor, false);
+    };
+    const deleteLeft = function(textEditor, edit) {
+        prepareDeletingLeft(textEditor);
+        runEditCommand('deleteLeft', textEditor, edit);
+    };
+    const deleteRight = function(textEditor, edit) {
+        prepareDeletingRight(textEditor);
+        runEditCommand('deleteRight', textEditor, edit);
+    };
     const registerCommands = function(context) {
+        setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
@@ -257,6 +374,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllRight', makeEditCommand('deleteAllRight'));
     };
     return {
+        clearUndeleteStack, // for testing purpose
+        readUndeleteStack,
         singleLineRange,
         cancelSelection,
         readText,
