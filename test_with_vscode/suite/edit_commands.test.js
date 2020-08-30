@@ -1300,7 +1300,7 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '5' }
             ]);
         });
-        it('should delete one level of the indent before the cursor', async () => {
+        it('should delete one level of indent before the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(6, tabSize * 2, 6, tabSize * 2) ];
 
             editHandler.deleteLeft(textEditor);
@@ -1358,7 +1358,7 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '4567' }
             ]);
         });
-        it('should delete one character for each of multiple curosrs', async () => {
+        it('should delete one character for each of multiple cursors', async () => {
             textEditor.selections = [
                 new vscode.Selection(1, 3, 1, 3),
                 new vscode.Selection(2, 3, 2, 3)
@@ -1382,6 +1382,31 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: '3' },
                 { isLeftward: true, text: 'c' }
+            ]);
+        });
+        it('should delete one for each of multiple cursors excluding the beginning of the document', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 0, 0, 0),
+                new vscode.Selection(1, 0, 1, 0)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+
+            editHandler.deleteLeft(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.equal(textEditor.selections[0].anchor.character, 0);
+            assert.equal(textEditor.selections[1].active.line, 0);
+            assert.equal(textEditor.selections[1].active.character, 10);
+            assert.equal(textEditor.selections[1].anchor.character, 10);
+            assert.equal(textEditor.document.lineAt(0).text, '12345678901234567890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '' },
+                { isLeftward: true, text: '\n' }
             ]);
         });
         it('should delete the selected multiple ranges', async () => {
@@ -1489,7 +1514,7 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '4567' }
             ]);
         });
-        it('should delete one character for each of multiple curosrs', async () => {
+        it('should delete one character for each of multiple cursors', async () => {
             textEditor.selections = [
                 new vscode.Selection(1, 3, 1, 3),
                 new vscode.Selection(2, 3, 2, 3)
@@ -1513,6 +1538,31 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: '4' },
                 { isLeftward: false, text: 'd' }
+            ]);
+        });
+        it('should delete one for each of multiple cursors excluding the end of the document', async () => {
+            textEditor.selections = [
+                new vscode.Selection(5, 5, 5, 5),
+                new vscode.Selection(6, 5, 6, 5) // end of document
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+
+            editHandler.deleteRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(5).text.length === 5) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 5);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[1].active.line, 5);
+            assert.equal(textEditor.selections[1].active.character, 10);
+            assert.equal(textEditor.selections[1].anchor.character, 10);
+            assert.equal(textEditor.document.lineAt(5).text, '1234567890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '\n' },
+                { isLeftward: true, text: '' }
             ]);
         });
         it('should delete the selected multiple ranges', async () => {

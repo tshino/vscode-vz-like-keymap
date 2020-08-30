@@ -16,25 +16,31 @@ const EditHandler = function(modeHandler) {
 
     const deletedTextDetector = (function() {
         let possibleDeletingInfo = [];
+        let numExpectedChanges = 0;
         let onExpectedDelete = null;
         const reset = function() {
             possibleDeletingInfo.length = 0;
         };
         const setPossibleDeletingInfo = function(deletingInfo) {
             possibleDeletingInfo = deletingInfo;
+            numExpectedChanges = deletingInfo.filter(x => x[1].length !== 0).length;
         };
         const onDelete = function(changes) {
             if (!onExpectedDelete) {
                 return;
             }
-            if (changes.length !== possibleDeletingInfo.length) {
+            if (changes.length !== numExpectedChanges) {
                 // not matched
                 return;
             }
             let deleted = [];
-            for (let i = 0, n = changes.length; i < n; i++) {
-                let c = changes[i];
+            for (let i = 0, j = 0, n = possibleDeletingInfo.length; i < n; i++) {
                 let p = possibleDeletingInfo[i];
+                if (p[1].length === 0) {
+                    deleted.push({ isLeftward: true, text: '' });
+                    continue;
+                }
+                let c = changes[j++];
                 if (c.range.start.isEqual(p[0])) {
                     deleted.push({
                         isLeftward: false,
@@ -339,11 +345,18 @@ const EditHandler = function(modeHandler) {
             let selection = textEditor.selections[i];
             let position = selection.active;
             if (selection.isEmpty) {
-                let text = (
-                    isLeftward
-                    ? '\n' + textEditor.document.lineAt(position.line).text.slice(0, position.character)
-                    : textEditor.document.lineAt(position.line).text.slice(position.character) + '\n'
-                );
+                let text = textEditor.document.lineAt(position.line).text;
+                if (isLeftward) {
+                    text = text.slice(0, position.character);
+                    if (0 < position.line) {
+                        text = '\n' + text;
+                    }
+                } else {
+                    text = text.slice(position.character);
+                    if (position.line < textEditor.document.lineCount - 1) {
+                        text += '\n';
+                    }
+                }
                 deletingInfo.push([position, text]);
             } else {
                 let range = new vscode.Range(selection.start, selection.end);
@@ -375,7 +388,7 @@ const EditHandler = function(modeHandler) {
         if (0 < deleted.length) {
             let n = textEditor.selections.length;
             if (deleted.length > n) {
-                let overflowed = deleted.slice(n - 1).map(d => d.text).join('\n');
+                let overflowed = deleted.slice(n - 1).map(d => d.text).join('');
                 deleted[n - 1].text = overflowed;
                 deleted.length = n;
             }
