@@ -1642,5 +1642,37 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should insert a line break to the left of the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: '\n' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 2);
+            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.equal(textEditor.document.lineAt(1).text, '12345');
+            assert.equal(textEditor.document.lineAt(2).text, '67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert a line break to the right of the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: '\n' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(1).text, '12345');
+            assert.equal(textEditor.document.lineAt(2).text, '67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
 });
