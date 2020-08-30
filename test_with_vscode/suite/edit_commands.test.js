@@ -1674,5 +1674,59 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, '67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should insert multiple-texts to the left of multiple-cursors', async () => {
+            textEditor.selections = [
+                new vscode.Selection(1, 5, 1, 5),
+                new vscode.Selection(2, 5, 2, 5)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'abc' },
+                { isLeftward: true, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 8);
+            assert.equal(textEditor.selections[0].anchor.character, 8);
+            assert.equal(textEditor.selections[1].active.line, 2);
+            assert.equal(textEditor.selections[1].active.character, 8);
+            assert.equal(textEditor.selections[1].anchor.character, 8);
+            assert.equal(textEditor.document.lineAt(1).text, '12345abc67890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcdefgh');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert multiple-texts to the right of multiple-cursors', async () => {
+            textEditor.selections = [
+                new vscode.Selection(1, 5, 1, 5),
+                new vscode.Selection(2, 5, 2, 5)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'abc' },
+                { isLeftward: false, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[1].active.line, 2);
+            assert.equal(textEditor.selections[1].active.character, 5);
+            assert.equal(textEditor.selections[1].anchor.character, 5);
+            assert.equal(textEditor.document.lineAt(1).text, '12345abc67890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcdefgh');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
 });
