@@ -101,6 +101,9 @@ const EditHandler = function(modeHandler) {
             return [];
         }
     };
+    const pushUndeleteStack = function(deleted) {
+        undeleteStack.push(deleted);
+    };
     const singleLineRange = function(line) {
         return new vscode.Range(
             new vscode.Position(line, 0),
@@ -370,8 +373,41 @@ const EditHandler = function(modeHandler) {
     const undelete = async function(textEditor, _edit) {
         let deleted = popUndeleteStack();
         if (0 < deleted.length) {
-            let text = deleted[0].text;
-            await vscode.commands.executeCommand('paste', { text: text });
+            let n = textEditor.selections.length;
+            if (deleted.length > n) {
+                let overflowed = deleted.slice(n - 1).map(d => d.text).join('\n');
+                deleted[n - 1].text = overflowed;
+                deleted.length = n;
+            }
+            while (deleted.length < n) {
+                deleted.push({ isLeftward: true, text: '' });
+            }
+            await textEditor.edit(function(edit) {
+                for (let i = 0; i < n; i++) {
+                    if (deleted[i].isLeftward) {
+                        edit.insert(textEditor.selections[i].active, deleted[i].text);
+                    } else {
+                        edit.replace(textEditor.selections[i].active, deleted[i].text);
+                    }
+                }
+            });
+            let selections = Array.from(textEditor.selections);
+            let updateSelections = false;
+            for (let i = 0; i < n; i++) {
+                if (!deleted[i].isLeftward) {
+                    selections[i] = new vscode.Selection(
+                        selections[i].anchor,
+                        selections[i].anchor
+                    );
+                    updateSelections = true;
+                };
+            }
+            if (updateSelections) {
+                textEditor.selections = selections;
+                if (n === 1) {
+                    mode.resetSelection(textEditor);
+                }
+            }
         }
     };
     const registerCommands = function(context) {
@@ -390,7 +426,8 @@ const EditHandler = function(modeHandler) {
     };
     return {
         clearUndeleteStack, // for testing purpose
-        readUndeleteStack,
+        readUndeleteStack, // for testing purpose
+        pushUndeleteStack, // for testing purpose
         singleLineRange,
         cancelSelection,
         readText,

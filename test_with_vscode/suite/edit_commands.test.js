@@ -1542,4 +1542,55 @@ describe('EditHandler', () => {
             ]);
         });
     });
+    describe('undelete', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should insert the deleted characters to the left of the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'a' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 6);
+            assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert the deleted characters to the right of the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'a' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+    });
 });
