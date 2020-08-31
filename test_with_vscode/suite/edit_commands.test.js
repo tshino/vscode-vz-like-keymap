@@ -1592,6 +1592,39 @@ describe('EditHandler', () => {
             ]);
         });
     });
+    describe('deleteWordLeft', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123 456 789\n' +
+                    'hello world\n' +
+                    'foo()\n' +
+                    '\n' +
+                    '    1234' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should delete one word to the left of the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 8, 0, 8) ];
+
+            editHandler.deleteWordLeft(textEditor);
+            await waitForCursor(0, 8);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 4);
+            assert.equal(textEditor.document.lineAt(0).text, '123 789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '456 ' }
+            ]);
+        });
+    });
     describe('undelete', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
