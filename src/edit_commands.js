@@ -383,6 +383,14 @@ const EditHandler = function(modeHandler) {
         prepareDeletingRight(textEditor);
         runEditCommand('deleteRight', textEditor, edit);
     };
+    const deleteWordLeft = function(textEditor, edit) {
+        prepareDeletingLeft(textEditor);
+        runEditCommand('deleteWordLeft', textEditor, edit);
+    };
+    const deleteWordRight = function(textEditor, edit) {
+        prepareDeletingRight(textEditor);
+        runEditCommand('deleteWordRight', textEditor, edit);
+    };
     const undelete = async function(textEditor, _edit) {
         let deleted = popUndeleteStack();
         if (0 < deleted.length) {
@@ -431,8 +439,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardPaste', paste);
         registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
-        registerTextEditorCommand(context, 'deleteWordLeft', makeEditCommand('deleteWordLeft'));
-        registerTextEditorCommand(context, 'deleteWordRight', makeEditCommand('deleteWordRight'));
+        registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
+        registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
         registerTextEditorCommand(context, 'deleteAllLeft', makeEditCommand('deleteAllLeft'));
         registerTextEditorCommand(context, 'deleteAllRight', makeEditCommand('deleteAllRight'));
         registerTextEditorCommand(context, 'undelete', undelete);
@@ -459,6 +467,8 @@ const EditHandler = function(modeHandler) {
         popAndPasteImpl,
         deleteLeft,
         deleteRight,
+        deleteWordLeft,
+        deleteWordRight,
         undelete,
         registerCommands
     };
