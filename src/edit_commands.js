@@ -391,6 +391,14 @@ const EditHandler = function(modeHandler) {
         prepareDeletingRight(textEditor);
         runEditCommand('deleteWordRight', textEditor, edit);
     };
+    const deleteAllLeft = function(textEditor, edit) {
+        prepareDeletingLeft(textEditor);
+        runEditCommand('deleteAllLeft', textEditor, edit);
+    };
+    const deleteAllRight = function(textEditor, edit) {
+        prepareDeletingRight(textEditor);
+        runEditCommand('deleteAllRight', textEditor, edit);
+    };
     const undelete = async function(textEditor, _edit) {
         let deleted = popUndeleteStack();
         if (0 < deleted.length) {
@@ -441,8 +449,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
         registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
-        registerTextEditorCommand(context, 'deleteAllLeft', makeEditCommand('deleteAllLeft'));
-        registerTextEditorCommand(context, 'deleteAllRight', makeEditCommand('deleteAllRight'));
+        registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
+        registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
     };
     return {
@@ -469,6 +477,8 @@ const EditHandler = function(modeHandler) {
         deleteRight,
         deleteWordLeft,
         deleteWordRight,
+        deleteAllLeft,
+        deleteAllRight,
         undelete,
         registerCommands
     };
