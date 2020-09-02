@@ -1624,6 +1624,32 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '456 ' }
             ]);
         });
+        it('should delete one word to the left of each cursors', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 11, 0, 11),
+                new vscode.Selection(1, 11, 1, 11)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+
+            editHandler.deleteWordLeft(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 11) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 8);
+            assert.equal(textEditor.selections[0].anchor.character, 8);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 6);
+            assert.equal(textEditor.selections[1].anchor.character, 6);
+            assert.equal(textEditor.document.lineAt(0).text, '123 456 ');
+            assert.equal(textEditor.document.lineAt(1).text, 'hello ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '789' },
+                { isLeftward: true, text: 'world' }
+            ]);
+        });
     });
     describe('deleteWordRight', () => {
         beforeEach(async () => {
