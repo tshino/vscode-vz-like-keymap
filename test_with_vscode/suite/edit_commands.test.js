@@ -1846,5 +1846,19 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'abcdefgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should do nothing if the stack is empty', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+
+            await editHandler.undelete(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.document.lineAt(1).text, '1234567890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
 });
