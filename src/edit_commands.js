@@ -352,8 +352,8 @@ const EditHandler = function(modeHandler) {
                 if (isLeftward) {
                     start = new vscode.Position(Math.max(0, position.line - 1), 0);
                 } else {
-                    let line = Math.min(textEditor.document.lineCount - 1, position.line + 1);
-                    end = new vscode.Position(line, textEditor.document.lineAt(line).text.length);
+                    let nextLine = Math.min(textEditor.document.lineCount - 1, position.line + 1);
+                    end = new vscode.Position(nextLine, textEditor.document.lineAt(nextLine).text.length);
                 }
                 let text = textEditor.document.getText(new vscode.Range(start, end));
                 deletingInfo.push([position, text]);
