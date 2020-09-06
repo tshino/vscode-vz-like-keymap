@@ -2,9 +2,9 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.11.0] - 2020-09-06
 - Added:
-  - Added undelete command (Ctrl+U) which restores deleted characters.
+  - The undelete stack which allows Ctrl+U to restore previously deleted characters.
 
 ### [0.10.2] - 2020-08-02
 - Improved:
