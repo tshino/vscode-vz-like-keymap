@@ -1769,6 +1769,65 @@ describe('EditHandler', () => {
             ]);
         });
     });
+    describe('deleteAllRight', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123 456 789\n' +
+                    'hello world\n' +
+                    'foo()\n' +
+                    '\n' +
+                    '    1234' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should delete the right half of the line', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 6, 1, 6) ];
+
+            editHandler.deleteAllRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 11) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 6);
+            assert.equal(textEditor.document.lineAt(1).text, 'hello ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: 'world' }
+            ]);
+        });
+        it('should delete the right half of each line', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 6, 0, 6),
+                new vscode.Selection(1, 6, 1, 6)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+
+            editHandler.deleteAllRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 11) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 6);
+            assert.equal(textEditor.selections[0].anchor.character, 6);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 6);
+            assert.equal(textEditor.selections[1].anchor.character, 6);
+            assert.equal(textEditor.document.lineAt(0).text, '123 45');
+            assert.equal(textEditor.document.lineAt(1).text, 'hello ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '6 789' },
+                { isLeftward: false, text: 'world' }
+            ]);
+        });
+    });
     describe('undelete', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
