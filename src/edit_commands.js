@@ -56,6 +56,9 @@ const EditHandler = function(modeHandler) {
                     return;
                 }
             }
+            for (let i = 0; i < deleted.length; i++) {
+                deleted[i].text = EditUtil.normalizeEOL(deleted[i].text);
+            }
             onExpectedDelete(deleted);
         };
         return {
@@ -345,18 +348,14 @@ const EditHandler = function(modeHandler) {
             let selection = textEditor.selections[i];
             let position = selection.active;
             if (selection.isEmpty) {
-                let text = textEditor.document.lineAt(position.line).text;
+                let start = position, end = position;
                 if (isLeftward) {
-                    text = text.slice(0, position.character);
-                    if (0 < position.line) {
-                        text = '\n' + text;
-                    }
+                    start = new vscode.Position(Math.max(0, position.line - 1), 0);
                 } else {
-                    text = text.slice(position.character);
-                    if (position.line < textEditor.document.lineCount - 1) {
-                        text += '\n';
-                    }
+                    let line = Math.min(textEditor.document.lineCount - 1, position.line + 1);
+                    end = new vscode.Position(line, textEditor.document.lineAt(line).text.length);
                 }
+                let text = textEditor.document.getText(new vscode.Range(start, end));
                 deletingInfo.push([position, text]);
             } else {
                 let range = new vscode.Range(selection.start, selection.end);

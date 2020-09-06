@@ -1599,7 +1599,7 @@ describe('EditHandler', () => {
                 (
                     '123 456 789\n' +
                     'hello world\n' +
-                    'foo()\n' +
+                    '   foo()   \n' +
                     '\n' +
                     '    1234' // <= no new line
                 ),
@@ -1650,6 +1650,20 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'world' }
             ]);
         });
+        it('should remove one new line character', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 0, 3, 0) ];
+
+            editHandler.deleteWordLeft(textEditor);
+            await waitForCursor(3, 0);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 2);
+            assert.equal(textEditor.selections[0].active.character, 11);
+            assert.equal(textEditor.document.lineAt(2).text, '   foo()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '\n' }
+            ]);
+        });
     });
     describe('deleteWordRight', () => {
         beforeEach(async () => {
@@ -1658,7 +1672,7 @@ describe('EditHandler', () => {
                 (
                     '123 456 789\n' +
                     'hello world\n' +
-                    'foo()\n' +
+                    '   foo()   \n' +
                     '\n' +
                     '    1234' // <= no new line
                 ),
@@ -1685,28 +1699,42 @@ describe('EditHandler', () => {
         });
         it('should delete one word to the right of each cursors', async () => {
             textEditor.selections = [
-                new vscode.Selection(1, 0, 1, 0),
-                new vscode.Selection(2, 0, 2, 0)
+                new vscode.Selection(0, 0, 0, 0),
+                new vscode.Selection(1, 0, 1, 0)
             ];
             while (await sleep(1), !mode.inSelection()) {}
             while (await sleep(1), !mode.inBoxSelection()) {}
 
             editHandler.deleteWordRight(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 11) {}
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 11) {}
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.line, 0);
             assert.equal(textEditor.selections[0].active.character, 0);
             assert.equal(textEditor.selections[0].anchor.character, 0);
-            assert.equal(textEditor.selections[1].active.line, 2);
+            assert.equal(textEditor.selections[1].active.line, 1);
             assert.equal(textEditor.selections[1].active.character, 0);
             assert.equal(textEditor.selections[1].anchor.character, 0);
+            assert.equal(textEditor.document.lineAt(0).text, ' 456 789');
             assert.equal(textEditor.document.lineAt(1).text, ' world');
-            assert.equal(textEditor.document.lineAt(2).text, '()');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: false, text: 'hello' },
-                { isLeftward: false, text: 'foo' }
+                { isLeftward: false, text: '123' },
+                { isLeftward: false, text: 'hello' }
+            ]);
+        });
+        it('should remove one new line character plus indent', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 11, 1, 11) ];
+
+            editHandler.deleteWordRight(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 11) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 11);
+            assert.equal(textEditor.document.lineAt(1).text, 'hello worldfoo()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '\n   ' }
             ]);
         });
     });
