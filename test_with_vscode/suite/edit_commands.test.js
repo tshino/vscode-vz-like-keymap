@@ -1798,6 +1798,20 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'hello ' }
             ]);
         });
+        it('should remove one new line character', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 0, 1, 0) ];
+
+            editHandler.deleteAllLeft(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 11) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 11);
+            assert.equal(textEditor.document.lineAt(0).text, '123 456 789hello world');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '\n' }
+            ]);
+        });
         it('should delete the left half of each line', async () => {
             textEditor.selections = [
                 new vscode.Selection(0, 6, 0, 6),
