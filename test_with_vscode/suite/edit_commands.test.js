@@ -1838,6 +1838,20 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'hello ' }
             ]);
         });
+        it('should do nothing if the cursor is at the beginning of the document', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+
+            editHandler.deleteAllLeft(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.equal(textEditor.document.lineAt(0).text, '123 456 789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
     describe('deleteAllRight', () => {
         beforeEach(async () => {
@@ -1910,6 +1924,20 @@ describe('EditHandler', () => {
                 { isLeftward: false, text: '6 789' },
                 { isLeftward: false, text: 'world' }
             ]);
+        });
+        it('should do nothing if the cursor is at the end of the document', async () => {
+            textEditor.selections = [ new vscode.Selection(4, 8, 4, 8) ];
+
+            editHandler.deleteAllRight(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 4);
+            assert.equal(textEditor.selections[0].active.character, 8);
+            assert.equal(textEditor.document.lineAt(4).text, '    1234');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
     });
     describe('undelete', () => {
