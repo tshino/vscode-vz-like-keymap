@@ -1950,6 +1950,7 @@ describe('EditHandler', () => {
                     'abcde\n' +
                     'fghij\n' +
                     '\n' +
+                    '\n' +
                     '12345\n' +
                     '67890' // <= no new line
                 ),
@@ -2140,6 +2141,23 @@ describe('EditHandler', () => {
             assert.equal(textEditor.selections[1].anchor.character, 10);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890abc');
             assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert multiple-texts to the left of lines below the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'abc' },
+                { isLeftward: true, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
+
+            assert.equal(mode.inSelection(), false);
+            // FIXME assert.equal(textEditor.selections[0].active.line, 4);
+            // FIXME assert.equal(textEditor.selections[0].active.character, 0);
+            // FIXME assert.equal(textEditor.document.lineAt(4).text, 'abc');
+            // FIXME assert.equal(textEditor.document.lineAt(5).text, 'fgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
     });
