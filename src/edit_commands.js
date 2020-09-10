@@ -407,8 +407,14 @@ const EditHandler = function(modeHandler) {
                 deleted[n - 1].text = overflowed;
                 deleted.length = n;
             }
-            while (deleted.length < n) {
-                deleted.push({ isLeftward: true, text: '' });
+            if (deleted.length === 1) {
+                while (deleted.length < n) {
+                    deleted.push(deleted[0]);
+                }
+            } else {
+                while (deleted.length < n) {
+                    deleted.push({ isLeftward: true, text: '' });
+                }
             }
             await textEditor.edit(function(edit) {
                 for (let i = 0; i < n; i++) {

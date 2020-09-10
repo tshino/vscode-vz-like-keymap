@@ -2090,5 +2090,57 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '1234567890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should insert deleted single line to the left of each cursor repeatedly', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 10, 0, 10),
+                new vscode.Selection(1, 10, 1, 10)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'abc' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 13);
+            assert.equal(textEditor.selections[0].anchor.character, 13);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 13);
+            assert.equal(textEditor.selections[1].anchor.character, 13);
+            assert.equal(textEditor.document.lineAt(0).text, '1234567890abc');
+            assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert deleted single line to the right of each cursor repeatedly', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 10, 0, 10),
+                new vscode.Selection(1, 10, 1, 10)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'abc' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 10);
+            assert.equal(textEditor.selections[0].anchor.character, 10);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 10);
+            assert.equal(textEditor.selections[1].anchor.character, 10);
+            assert.equal(textEditor.document.lineAt(0).text, '1234567890abc');
+            assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
 });
