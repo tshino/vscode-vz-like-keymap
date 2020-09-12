@@ -337,11 +337,6 @@ const EditHandler = function(modeHandler) {
             vscode.commands.executeCommand(command);
         }
     };
-    const makeEditCommand = function(command) {
-        return function(textEditor, edit) {
-            runEditCommand(command, textEditor, edit);
-        };
-    };
     const prepareDeleting = function(textEditor, isLeftward) {
         let deletingInfo = [];
         for (let i = 0; i < textEditor.selections.length; i++) {
@@ -398,6 +393,35 @@ const EditHandler = function(modeHandler) {
         prepareDeletingRight(textEditor);
         runEditCommand('deleteAllRight', textEditor, edit);
     };
+    const insertDeletedTexts = async function(textEditor, deleted) {
+        let n = textEditor.selections.length;
+        await textEditor.edit(function(edit) {
+            for (let i = 0; i < n; i++) {
+                if (deleted[i].isLeftward) {
+                    edit.insert(textEditor.selections[i].active, deleted[i].text);
+                } else {
+                    edit.replace(textEditor.selections[i].active, deleted[i].text);
+                }
+            }
+        });
+        let selections = Array.from(textEditor.selections);
+        let updateSelections = false;
+        for (let i = 0; i < n; i++) {
+            if (!deleted[i].isLeftward) {
+                selections[i] = new vscode.Selection(
+                    selections[i].anchor,
+                    selections[i].anchor
+                );
+                updateSelections = true;
+            };
+        }
+        if (updateSelections) {
+            textEditor.selections = selections;
+            if (n === 1) {
+                mode.resetSelection(textEditor);
+            }
+        }
+    };
     const undelete = async function(textEditor, _edit) {
         let deleted = popUndeleteStack();
         if (0 < deleted.length) {
@@ -416,32 +440,7 @@ const EditHandler = function(modeHandler) {
                     deleted.push({ isLeftward: true, text: '' });
                 }
             }
-            await textEditor.edit(function(edit) {
-                for (let i = 0; i < n; i++) {
-                    if (deleted[i].isLeftward) {
-                        edit.insert(textEditor.selections[i].active, deleted[i].text);
-                    } else {
-                        edit.replace(textEditor.selections[i].active, deleted[i].text);
-                    }
-                }
-            });
-            let selections = Array.from(textEditor.selections);
-            let updateSelections = false;
-            for (let i = 0; i < n; i++) {
-                if (!deleted[i].isLeftward) {
-                    selections[i] = new vscode.Selection(
-                        selections[i].anchor,
-                        selections[i].anchor
-                    );
-                    updateSelections = true;
-                };
-            }
-            if (updateSelections) {
-                textEditor.selections = selections;
-                if (n === 1) {
-                    mode.resetSelection(textEditor);
-                }
-            }
+            await insertDeletedTexts(textEditor, deleted);
         }
     };
     const registerCommands = function(context) {
