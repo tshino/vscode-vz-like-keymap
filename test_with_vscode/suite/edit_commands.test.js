@@ -1991,6 +1991,38 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should remove selected range and insert characters to the left of it', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 2, 1, 7) ];
+            while (await sleep(1), !mode.inSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'a' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.equal(textEditor.document.lineAt(1).text, '12a890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should remove selected range and insert characters to the right of it', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 2, 1, 7) ];
+            while (await sleep(1), !mode.inSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'a' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), false);
+            assert.equal(textEditor.selections[0].active.line, 1);
+            assert.equal(textEditor.selections[0].active.character, 2);
+            assert.equal(textEditor.document.lineAt(1).text, '12a890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
         it('should insert a line break to the left of the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
             editHandler.pushUndeleteStack([
