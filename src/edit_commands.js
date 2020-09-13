@@ -398,12 +398,8 @@ const EditHandler = function(modeHandler) {
         await textEditor.edit(function(edit) {
             for (let i = 0; i < n; i++) {
                 let selection = textEditor.selections[i];
-                if (deleted[i].isLeftward) {
-                    if (selection.isEmpty) {
-                        edit.insert(selection.active, deleted[i].text);
-                    } else {
-                        edit.replace(selection, deleted[i].text);
-                    }
+                if (deleted[i].isLeftward && selection.isEmpty) {
+                    edit.insert(selection.active, deleted[i].text);
                 } else {
                     edit.replace(selection, deleted[i].text);
                 }
@@ -412,17 +408,14 @@ const EditHandler = function(modeHandler) {
         let selections = Array.from(textEditor.selections);
         let updateSelections = false;
         for (let i = 0; i < n; i++) {
+            let newCursor = null;
             if (!deleted[i].isLeftward) {
-                selections[i] = new vscode.Selection(
-                    selections[i].anchor,
-                    selections[i].anchor
-                );
-                updateSelections = true;
+                newCursor = selections[i].anchor;
             } else if (!selections[i].isEmpty) {
-                selections[i] = new vscode.Selection(
-                    selections[i].active,
-                    selections[i].active
-                );
+                newCursor = selections[i].active;
+            }
+            if (newCursor) {
+                selections[i] = new vscode.Selection(newCursor, newCursor);
                 updateSelections = true;
             }
         }
