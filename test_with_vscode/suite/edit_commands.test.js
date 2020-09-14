@@ -442,9 +442,7 @@ describe('EditHandler', () => {
             await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(0).text, '123890');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(0, 3, 0, 3)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, '4567890\n1234567');
@@ -465,9 +463,7 @@ describe('EditHandler', () => {
             await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 6);
             assert.equal(textEditor.document.lineAt(2).text, 'fghij');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde\n');
@@ -480,9 +476,7 @@ describe('EditHandler', () => {
             await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, '');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 0, 2, 0)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde');
@@ -500,9 +494,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'fj');
             assert.equal(textEditor.document.lineAt(4).text, '');
             assert.equal(textEditor.document.lineAt(5).text, '15');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 1, 3, 1)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'ghi\n\n234\n');
@@ -520,9 +512,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, '');
             assert.equal(textEditor.document.lineAt(4).text, '');
             assert.equal(textEditor.document.lineAt(5).text, '');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 0, 3, 0)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'fghij\n\n12345\n');
@@ -541,7 +531,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineCount, 107);
             await editHandler.cutAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(4, 0, 4, 0)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
             assert.equal(EditUtil.enumVisibleLines(textEditor).includes(4), true);
         });
     });
