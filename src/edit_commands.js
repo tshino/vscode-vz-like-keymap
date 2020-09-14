@@ -434,14 +434,12 @@ const EditHandler = function(modeHandler) {
                 let overflowed = deleted.slice(n - 1).map(d => d.text).join('');
                 deleted[n - 1].text = overflowed;
                 deleted.length = n;
-            }
-            if (deleted.length === 1) {
+            } else if (deleted.length < n) {
+                let fill_value = (
+                    deleted.length === 1 ? deleted[0] : { isLeftward: true, text: '' }
+                );
                 while (deleted.length < n) {
-                    deleted.push(deleted[0]);
-                }
-            } else {
-                while (deleted.length < n) {
-                    deleted.push({ isLeftward: true, text: '' });
+                    deleted.push(fill_value);
                 }
             }
             await insertDeletedTexts(textEditor, deleted);
