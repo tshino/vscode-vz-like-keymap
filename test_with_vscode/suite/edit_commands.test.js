@@ -2249,11 +2249,40 @@ describe('EditHandler', () => {
             await editHandler.undelete(textEditor);
             while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
 
-            assert.equal(mode.inSelection(), false);
-            // FIXME assert.equal(textEditor.selections[0].active.line, 4);
-            // FIXME assert.equal(textEditor.selections[0].active.character, 0);
-            // FIXME assert.equal(textEditor.document.lineAt(4).text, 'abc');
-            // FIXME assert.equal(textEditor.document.lineAt(5).text, 'fgh');
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 4);
+            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.equal(textEditor.selections[0].anchor.character, 3);
+            assert.equal(textEditor.selections[1].active.line, 5);
+            assert.equal(textEditor.selections[1].active.character, 3);
+            assert.equal(textEditor.selections[1].anchor.character, 3);
+            assert.equal(textEditor.document.lineAt(4).text, 'abc');
+            assert.equal(textEditor.document.lineAt(5).text, 'fgh');
+            assert.equal(textEditor.document.lineAt(6).text, '12345');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert multiple-texts to the right of lines below the cursor', async () => {
+            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'abc' },
+                { isLeftward: false, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 4);
+            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.equal(textEditor.selections[0].anchor.character, 0);
+            assert.equal(textEditor.selections[1].active.line, 5);
+            assert.equal(textEditor.selections[1].active.character, 0);
+            assert.equal(textEditor.selections[1].anchor.character, 0);
+            assert.equal(textEditor.document.lineAt(4).text, 'abc');
+            assert.equal(textEditor.document.lineAt(5).text, 'fgh');
+            assert.equal(textEditor.document.lineAt(6).text, '12345');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
     });

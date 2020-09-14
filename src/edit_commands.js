@@ -407,6 +407,7 @@ const EditHandler = function(modeHandler) {
         });
         let selections = Array.from(textEditor.selections);
         let updateSelections = false;
+        n = Math.min(selections.length, deleted.length);
         for (let i = 0; i < n; i++) {
             let newCursor = null;
             if (!deleted[i].isLeftward) {
@@ -431,9 +432,32 @@ const EditHandler = function(modeHandler) {
         if (0 < deleted.length) {
             let n = textEditor.selections.length;
             if (deleted.length > n) {
-                let overflowed = deleted.slice(n - 1).map(d => d.text).join('');
-                deleted[n - 1].text = overflowed;
-                deleted.length = n;
+                if (n === 1) {
+                    let selections = [textEditor.selections[0]];
+                    let pos = textEditor.selections[0].start;
+                    let lineCount = textEditor.document.lineCount;
+                    for (let i = 1; i < deleted.length; i++) {
+                        let x = pos.character, y = pos.line + i;
+                        if (y < lineCount) {
+                            let len = textEditor.document.lineAt(y).text.length;
+                            if (x <= len) {
+                                selections.push(new vscode.Selection(y, x, y, x));
+                            } else {
+                                selections.push(new vscode.Selection(y, 0, y, 0));
+                            }
+                        } else {
+                            let overflowed = deleted.slice(i - 1).map(d => d.text).join('');
+                            deleted[i - 1].text = overflowed;
+                            deleted.length = i;
+                            break;
+                        }
+                    }
+                    textEditor.selections = selections;
+                } else {
+                    let overflowed = deleted.slice(n - 1).map(d => d.text).join('');
+                    deleted[n - 1].text = overflowed;
+                    deleted.length = n;
+                }
             } else if (deleted.length < n) {
                 let fill_value = (
                     deleted.length === 1 ? deleted[0] : { isLeftward: true, text: '' }

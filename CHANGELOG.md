@@ -5,6 +5,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Improved:
   - The behavior of Undelete (Utrl+U) of a single text inserting into multiple locations with multiple cursors.
+  - The behavior of Undelete (Utrl+U) of multiple lines pasting with a single cursor.
   - The behavior of Undelete (Utrl+U) when the selection range is not empty.
 
 ### [0.11.0] - 2020-09-06
