@@ -2175,6 +2175,70 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should leave the rest empty if the number of deleted lines is less than cursors (left)', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 5, 0, 5),
+                new vscode.Selection(1, 5, 1, 5),
+                new vscode.Selection(2, 5, 2, 5)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'abc' },
+                { isLeftward: true, text: 'def' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 8);
+            assert.equal(textEditor.selections[0].anchor.character, 8);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 8);
+            assert.equal(textEditor.selections[1].anchor.character, 8);
+            assert.equal(textEditor.selections[2].active.line, 2);
+            assert.equal(textEditor.selections[2].active.character, 5);
+            assert.equal(textEditor.selections[2].anchor.character, 5);
+            assert.equal(textEditor.document.lineAt(0).text, '12345abc67890');
+            assert.equal(textEditor.document.lineAt(1).text, '12345def67890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcde');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should leave the rest empty if the number of deleted lines is less than cursors (right)', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 5, 0, 5),
+                new vscode.Selection(1, 5, 1, 5),
+                new vscode.Selection(2, 5, 2, 5)
+            ];
+            while (await sleep(1), !mode.inSelection()) {}
+            while (await sleep(1), !mode.inBoxSelection()) {}
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'abc' },
+                { isLeftward: false, text: 'def' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.equal(textEditor.selections[0].active.line, 0);
+            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.equal(textEditor.selections[0].anchor.character, 5);
+            assert.equal(textEditor.selections[1].active.line, 1);
+            assert.equal(textEditor.selections[1].active.character, 5);
+            assert.equal(textEditor.selections[1].anchor.character, 5);
+            assert.equal(textEditor.selections[2].active.line, 2);
+            assert.equal(textEditor.selections[2].active.character, 5);
+            assert.equal(textEditor.selections[2].anchor.character, 5);
+            assert.equal(textEditor.document.lineAt(0).text, '12345abc67890');
+            assert.equal(textEditor.document.lineAt(1).text, '12345def67890');
+            assert.equal(textEditor.document.lineAt(2).text, 'abcde');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
         it('should insert multiple-texts to the left of lines below the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
             editHandler.pushUndeleteStack([
