@@ -559,9 +559,7 @@ describe('EditHandler', () => {
             await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 7, 1, 7)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, '4567890\n1234567');
@@ -582,9 +580,7 @@ describe('EditHandler', () => {
             await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcde');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde\n');
@@ -597,9 +593,7 @@ describe('EditHandler', () => {
             await editHandler.copyAndPushImpl(textEditor);
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcde');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 3, 2, 3)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'abcde');
@@ -617,9 +611,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'fghij');
             assert.equal(textEditor.document.lineAt(4).text, '');
             assert.equal(textEditor.document.lineAt(5).text, '12345');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 1, 3, 1)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'ghi\n\n234\n');
@@ -637,9 +629,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'fghij');
             assert.equal(textEditor.document.lineAt(4).text, '');
             assert.equal(textEditor.document.lineAt(5).text, '12345');
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].isEmpty, true);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 2, 3, 2)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 2]]);
             assert.equal(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.equal(clipboard, 'fghij\n\n12345\n');
