@@ -994,7 +994,7 @@ describe('EditHandler', () => {
             await editHandler.pasteInlineText('Hello, world!');
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'abcHello, world!de');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 16, 2, 16)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 16]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should replace the current selection range with a text', async () => {
@@ -1003,7 +1003,7 @@ describe('EditHandler', () => {
             await editHandler.pasteInlineText('Hello, world!');
             assert.equal(textEditor.document.lineCount, 7);
             assert.equal(textEditor.document.lineAt(2).text, 'aHello, world!e');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 14, 2, 14)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 14]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should replace multiple lines of current selection range with a text', async () => {
@@ -1014,7 +1014,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'Hello, world!');
             assert.equal(textEditor.document.lineAt(3).text, '');
             assert.equal(textEditor.document.lineAt(4).text, '12345');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 0, 3, 0)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should insert a text inline even if it contains new lines', async () => {
@@ -1024,7 +1024,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineCount, 8);
             assert.equal(textEditor.document.lineAt(1).text, '12345Hello,');
             assert.equal(textEditor.document.lineAt(2).text, 'world!67890');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 6]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should insert a text into each position of current cursors', async () => {
@@ -1035,8 +1035,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(2).text, 'a_____bcde');
             assert.equal(textEditor.document.lineAt(3).text, 'f_____ghij');
             assert.equal(textEditor.selections.length, 2);
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(2, 6, 2, 6)), true);
-            assert.equal(textEditor.selections[1].isEqual(new vscode.Selection(3, 6, 3, 6)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 6], [3, 6]]);
         });
     });
     describe('pasteBoxText', () => {
