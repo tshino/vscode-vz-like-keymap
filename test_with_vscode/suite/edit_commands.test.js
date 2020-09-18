@@ -1065,7 +1065,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(1).text, '12345One,67890');
             assert.equal(textEditor.document.lineAt(2).text, 'abcdeTwo,');
             assert.equal(textEditor.document.lineAt(3).text, 'fghijThree.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(1, 9, 1, 9)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 9]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should insert additional spaces to align the position to paste lines', async () => {
@@ -1076,7 +1076,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'fghijOne,');
             assert.equal(textEditor.document.lineAt(4).text, '     Two,');
             assert.equal(textEditor.document.lineAt(5).text, '12345Three.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(3, 9, 3, 9)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 9]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should extend the document when inserting a text at near the end of doc', async () => {
@@ -1087,7 +1087,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(5).text, 'One,12345');
             assert.equal(textEditor.document.lineAt(6).text, 'Two,67890');
             assert.equal(textEditor.document.lineAt(7).text, 'Three.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(5, 4, 5, 4)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should extend the document when inserting a text at near the end of doc', async () => {
@@ -1098,7 +1098,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(6).text, 'One,67890');
             assert.equal(textEditor.document.lineAt(7).text, 'Two,');
             assert.equal(textEditor.document.lineAt(8).text, 'Three.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should ignore the new line character at the end of the pasting text', async () => {
@@ -1109,7 +1109,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(6).text, 'One,67890');
             assert.equal(textEditor.document.lineAt(7).text, 'Two,');
             assert.equal(textEditor.document.lineAt(8).text, 'Three.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 4, 6, 4)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
             assert.equal(mode.inSelection(), false);
         });
         it('should insert additional lines and spaces to paste lines of text', async () => {
@@ -1120,7 +1120,7 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(6).text, '67890One,');
             assert.equal(textEditor.document.lineAt(7).text, '     Two,');
             assert.equal(textEditor.document.lineAt(8).text, '     Three.');
-            assert.equal(textEditor.selections[0].isEqual(new vscode.Selection(6, 9, 6, 9)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 9]]);
             assert.equal(mode.inSelection(), false);
         });
     });
