@@ -1575,8 +1575,7 @@ describe('EditHandler', () => {
             await waitForCursor(0, 8);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 4);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
             assert.equal(textEditor.document.lineAt(0).text, '123 789');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: '456 ' }
@@ -1595,12 +1594,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 8);
-            assert.equal(textEditor.selections[0].anchor.character, 8);
-            assert.equal(textEditor.selections[1].active.line, 1);
-            assert.equal(textEditor.selections[1].active.character, 6);
-            assert.equal(textEditor.selections[1].anchor.character, 6);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 8], [1, 6]]);
             assert.equal(textEditor.document.lineAt(0).text, '123 456 ');
             assert.equal(textEditor.document.lineAt(1).text, 'hello ');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
@@ -1615,8 +1609,7 @@ describe('EditHandler', () => {
             await waitForCursor(3, 0);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 2);
-            assert.equal(textEditor.selections[0].active.character, 11);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
             assert.equal(textEditor.document.lineAt(2).text, '   foo()   ');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: '\n' }
@@ -1631,8 +1624,7 @@ describe('EditHandler', () => {
             await sleep(20);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
             assert.equal(textEditor.document.lineAt(0).text, '123 456 789');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -1662,8 +1654,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(0).text.length === 11) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
             assert.equal(textEditor.document.lineAt(0).text, '123 789');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: ' 456' }
@@ -1682,12 +1673,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 0);
-            assert.equal(textEditor.selections[0].anchor.character, 0);
-            assert.equal(textEditor.selections[1].active.line, 1);
-            assert.equal(textEditor.selections[1].active.character, 0);
-            assert.equal(textEditor.selections[1].anchor.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0], [1, 0]]);
             assert.equal(textEditor.document.lineAt(0).text, ' 456 789');
             assert.equal(textEditor.document.lineAt(1).text, ' world');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
@@ -1702,8 +1688,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 11) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 11);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 11]]);
             assert.equal(textEditor.document.lineAt(1).text, 'hello worldfoo()   ');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: '\n   ' }
@@ -1718,8 +1703,7 @@ describe('EditHandler', () => {
             await sleep(20);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 4);
-            assert.equal(textEditor.selections[0].active.character, 8);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 8]]);
             assert.equal(textEditor.document.lineAt(4).text, '    1234');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
