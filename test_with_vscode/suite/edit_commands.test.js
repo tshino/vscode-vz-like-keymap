@@ -1897,8 +1897,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 6);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 6]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -1912,8 +1911,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345a67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -1928,8 +1926,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 3);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
             assert.equal(textEditor.document.lineAt(1).text, '12a890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -1944,8 +1941,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 2);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
             assert.equal(textEditor.document.lineAt(1).text, '12a890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -1959,8 +1955,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 2);
-            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345');
             assert.equal(textEditor.document.lineAt(2).text, '67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
@@ -1975,8 +1970,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345');
             assert.equal(textEditor.document.lineAt(2).text, '67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
@@ -1998,12 +1992,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 8);
-            assert.equal(textEditor.selections[0].anchor.character, 8);
-            assert.equal(textEditor.selections[1].active.line, 2);
-            assert.equal(textEditor.selections[1].active.character, 8);
-            assert.equal(textEditor.selections[1].anchor.character, 8);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 8], [2, 8]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345abc67890');
             assert.equal(textEditor.document.lineAt(2).text, 'abcdefgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
@@ -2025,12 +2014,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 5);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[1].active.line, 2);
-            assert.equal(textEditor.selections[1].active.character, 5);
-            assert.equal(textEditor.selections[1].anchor.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5], [2, 5]]);
             assert.equal(textEditor.document.lineAt(1).text, '12345abc67890');
             assert.equal(textEditor.document.lineAt(2).text, 'abcdefgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
@@ -2044,8 +2028,7 @@ describe('EditHandler', () => {
             await sleep(20);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
             assert.equal(textEditor.document.lineAt(1).text, '1234567890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
@@ -2065,12 +2048,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 13);
-            assert.equal(textEditor.selections[0].anchor.character, 13);
-            assert.equal(textEditor.selections[1].active.line, 1);
-            assert.equal(textEditor.selections[1].active.character, 13);
-            assert.equal(textEditor.selections[1].anchor.character, 13);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 13], [1, 13]]);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890abc');
             assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
@@ -2091,12 +2069,7 @@ describe('EditHandler', () => {
 
             assert.equal(mode.inSelection(), true);
             assert.equal(mode.inBoxSelection(), true);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 10);
-            assert.equal(textEditor.selections[0].anchor.character, 10);
-            assert.equal(textEditor.selections[1].active.line, 1);
-            assert.equal(textEditor.selections[1].active.character, 10);
-            assert.equal(textEditor.selections[1].anchor.character, 10);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 10], [1, 10]]);
             assert.equal(textEditor.document.lineAt(0).text, '1234567890abc');
             assert.equal(textEditor.document.lineAt(1).text, '1234567890abc');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
