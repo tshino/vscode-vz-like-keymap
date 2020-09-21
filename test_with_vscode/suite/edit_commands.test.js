@@ -72,15 +72,13 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             editHandler.cancelSelection(textEditor);
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(1, 10, 1, 10) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
 
             textEditor.selections = [ new vscode.Selection(1, 0, 2, 5) ];
             mode.initialize(textEditor);
             editHandler.cancelSelection(textEditor);
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(2, 5, 2, 5) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
         it('should cancel multiple selection range and locate cursor at the start of the topmost selection', () => {
             textEditor.selections = [
@@ -91,8 +89,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             editHandler.cancelSelection(textEditor);
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(1, 0, 1, 0) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
             textEditor.selections = [
                 new vscode.Selection(3, 0, 3, 5),
@@ -102,8 +99,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             editHandler.cancelSelection(textEditor);
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(1, 0, 1, 0) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
             textEditor.selections = [
                 new vscode.Selection(3, 5, 3, 0),
@@ -113,8 +109,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             editHandler.cancelSelection(textEditor);
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(1, 0, 1, 0) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
         });
     });
     describe('readText', () => {
