@@ -21,22 +21,7 @@ describe('EditHandler', () => {
         }
     };
     const selectionsAsArray = function() {
-        let array = [];
-        let selections = textEditor.selections;
-        for (let i = 0; i < selections.length; i++) {
-            let s = selections[i];
-            if (s.anchor.isEqual(s.active)) {
-                array.push([
-                    s.active.line, s.active.character
-                ]);
-            } else {
-                array.push([
-                    s.anchor.line, s.anchor.character,
-                    s.active.line, s.active.character
-                ]);
-            }
-        }
-        return array;
+        return testUtils.selectionsToArray(textEditor.selections);
     };
     before(async () => {
         vscode.window.showInformationMessage('Started test for EditHandler.');
