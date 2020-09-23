@@ -85,6 +85,9 @@ describe('CursorHandler', () => {
             await sleep(1);
         }
     };
+    const selectionsAsArray = function() {
+        return testUtils.selectionsToArray(textEditor.selections);
+    };
     before(async () => {
         vscode.window.showInformationMessage('Started test for CursorHandler.');
         textEditor = await testUtils.setupTextEditor({ content: '' });
@@ -111,8 +114,7 @@ describe('CursorHandler', () => {
             await waitForReveal();
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(8, 7, 8, 7) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 7]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
@@ -128,8 +130,7 @@ describe('CursorHandler', () => {
             await waitForCursor(5, 5);
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(5, 5, 8, 7) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
@@ -145,8 +146,7 @@ describe('CursorHandler', () => {
             await waitForCursor(6, 6);
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(5, 5, 8, 7) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
@@ -161,8 +161,7 @@ describe('CursorHandler', () => {
             await waitForEndSelection();
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(8, 7, 8, 7) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 7]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
@@ -176,9 +175,7 @@ describe('CursorHandler', () => {
             await waitForReveal();
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].active.line, 999);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(999, 0, 999, 0) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[999, 0]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.notEqual(visibleLines0[0], visibleLines1[0]);
@@ -192,9 +189,7 @@ describe('CursorHandler', () => {
             await waitForReveal();
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert.equal(textEditor.selections[0].active.line, 7);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(7, 3, 7, 3) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
             assert.equal(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.notEqual(visibleLines0[0], visibleLines1[0]);
@@ -223,8 +218,7 @@ describe('CursorHandler', () => {
             await sleep(10);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections.length, 1);
-            assert(textEditor.selections[0].isEqual( new vscode.Selection(7, 3, 7, 3) ));
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
             assert.equal(isCursorVisible(), false);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(visibleLines0[0], visibleLines1[0]);
