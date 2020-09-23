@@ -629,8 +629,7 @@ describe('CursorHandler', () => {
             await waitForCursor(cursor, 5);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 5]]);
         });
     });
     describe('cursorViewBottom', () => {
@@ -679,7 +678,7 @@ describe('CursorHandler', () => {
             await waitForCursor(cursor, 5);
 
             assert.equal(mode.inSelection(), false);
-            assert.equal(textEditor.selections[0].active.line, 1000);
+            assert.deepStrictEqual(selectionsAsArray(), [[1000, 5]]);
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(vlines0[0], vlines1[0]);
         });
