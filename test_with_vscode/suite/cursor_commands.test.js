@@ -695,10 +695,7 @@ describe('CursorHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections[0].anchor.line, 7);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 7);
-            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 0]]);
         });
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
@@ -708,10 +705,7 @@ describe('CursorHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections[0].anchor.line, 7);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 4);
-            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
         });
     });
     describe('cursorLineEndSelect', () => {
@@ -726,10 +720,7 @@ describe('CursorHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections[0].anchor.line, 7);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 7);
-            assert.equal(textEditor.selections[0].active.character, 10);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 10]]);
         });
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
@@ -739,10 +730,7 @@ describe('CursorHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
 
             assert.equal(mode.inSelection(), true);
-            assert.equal(textEditor.selections[0].anchor.line, 7);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 4);
-            assert.equal(textEditor.selections[0].active.character, 10);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
         });
     });
     describe('scrollLineUp', () => {
