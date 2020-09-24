@@ -748,8 +748,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] - 1);
-            assert.equal(textEditor.selections[0].active.line, 499);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[499, 5]]);
         });
         it('should only move cursor if the top of document is already visible', async () => {
             await resetCursor(0, 5);
@@ -763,8 +762,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0]);
-            assert.equal(textEditor.selections[0].active.line, 0);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 5]]);
         });
         it('should extend selection', async () => {
             await selectRange(500, 5, 500, 7);
@@ -777,10 +775,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), true);
             assert.equal(vlines1[0], vlines0[0] - 1);
-            assert.equal(textEditor.selections[0].anchor.line, 500);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 499);
-            assert.equal(textEditor.selections[0].active.character, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[500, 5, 499, 7]]);
         });
     });
     describe('scrollLineDown', () => {
@@ -798,8 +793,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] + 1);
-            assert.equal(textEditor.selections[0].active.line, 501);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[501, 5]]);
         });
         it('should scroll down one line even if the last line of document is already visible', async () => {
             await resetCursor(1000, 0);
@@ -813,8 +807,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] + 1);
-            assert.equal(textEditor.selections[0].active.line, 996);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[996, 5]]);
         });
         it('should not scroll down if the cursor is already at the last line of document', async () => {
             await resetCursor(999, 0);
@@ -829,8 +822,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0]);
-            assert.equal(textEditor.selections[0].active.line, 1000);
-            assert.equal(textEditor.selections[0].active.character, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[1000, 0]]);
         });
         it('should extend selection', async () => {
             await selectRange(500, 5, 500, 7);
@@ -843,10 +835,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), true);
             assert.equal(vlines1[0], vlines0[0] + 1);
-            assert.equal(textEditor.selections[0].anchor.line, 500);
-            assert.equal(textEditor.selections[0].anchor.character, 5);
-            assert.equal(textEditor.selections[0].active.line, 501);
-            assert.equal(textEditor.selections[0].active.character, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[500, 5, 501, 7]]);
         });
     });
     describe('scrollLineUpUnselect', () => {
@@ -864,8 +853,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] - 1);
-            assert.equal(textEditor.selections[0].active.line, 499);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[499, 5]]);
         });
         it('should cancel selection', async () => {
             await selectRange(500, 5, 500, 7);
@@ -879,8 +867,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] - 1);
-            assert.equal(textEditor.selections[0].active.line, 499);
-            assert.equal(textEditor.selections[0].active.character, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[499, 7]]);
         });
     });
     describe('scrollLineDownUnselect', () => {
@@ -898,8 +885,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] + 1);
-            assert.equal(textEditor.selections[0].active.line, 501);
-            assert.equal(textEditor.selections[0].active.character, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[501, 5]]);
         });
         it('should cancel selection', async () => {
             await selectRange(500, 5, 500, 7);
@@ -913,8 +899,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.equal(mode.inSelection(), false);
             assert.equal(vlines1[0], vlines0[0] + 1);
-            assert.equal(textEditor.selections[0].active.line, 501);
-            assert.equal(textEditor.selections[0].active.character, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[501, 7]]);
         });
     });
 });
