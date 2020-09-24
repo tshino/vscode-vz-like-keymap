@@ -2138,5 +2138,39 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(6).text, '12345');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should insert multiple-texts to the left of lines below the cursor with aligned indent', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: true, text: 'abc' },
+                { isLeftward: true, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 8], [4, 8]]);
+            assert.equal(textEditor.document.lineAt(3).text, 'fghijabc');
+            assert.equal(textEditor.document.lineAt(4).text, '     fgh');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should insert multiple-texts to the right of lines below the cursor with aligned indent', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            editHandler.pushUndeleteStack([
+                { isLeftward: false, text: 'abc' },
+                { isLeftward: false, text: 'fgh' }
+            ]);
+
+            await editHandler.undelete(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
+
+            assert.equal(mode.inSelection(), true);
+            assert.equal(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 5], [4, 5]]);
+            assert.equal(textEditor.document.lineAt(3).text, 'fghijabc');
+            assert.equal(textEditor.document.lineAt(4).text, '     fgh');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
     });
 });

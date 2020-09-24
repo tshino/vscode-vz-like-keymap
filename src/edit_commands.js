@@ -412,6 +412,9 @@ const EditHandler = function(modeHandler) {
             let newCursor = null;
             if (!deleted[i].isLeftward) {
                 newCursor = selections[i].anchor;
+                if (deleted[i].offset !== undefined) {
+                    newCursor = selections[i].anchor.translate({characterDelta: deleted[i].offset});
+                }
             } else if (!selections[i].isEmpty) {
                 newCursor = selections[i].active;
             }
@@ -444,6 +447,8 @@ const EditHandler = function(modeHandler) {
                                 selections.push(new vscode.Selection(y, x, y, x));
                             } else {
                                 selections.push(new vscode.Selection(y, 0, y, 0));
+                                deleted[i].text = ' '.repeat(x) + deleted[i].text;
+                                deleted[i].offset = x;
                             }
                         } else {
                             let overflowed = deleted.slice(i - 1).map(d => d.text).join('');
