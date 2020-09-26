@@ -5,6 +5,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Added:
   - Ctrl+Q O for Replace one match.
+  - Shift+PageUp, Shift+PageDown for Scroll up/down one line (same as Ctrl+W, Ctrl+Z).
 
 ### [0.11.1] - 2020-09-26
 - Improved:

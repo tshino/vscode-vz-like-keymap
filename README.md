@@ -22,7 +22,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+S, Ctrl+D, Ctrl+E, Ctrl+X  | Move cursor left/right/up/down |
 | Ctrl+A, Ctrl+F | Move cursor to left/right start of a word |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Scroll up/down one/half page |
-| Ctrl+W, Ctrl+Z | Scroll up/down one line |
+| Ctrl+W, Shift+PageUp, Ctrl+Z, Shift+PageDown | Scroll up/down one line |
 | Ctrl+Q S, Ctrl+Q D | Move cursor to start/end of a logical line |
 | Ctrl+Q [, Ctrl+Q ] | Move cursor to start/end of a wrapped line |
 | Ctrl+Q E, Ctrl+Q X | Move cursor to top/bottom of a view |

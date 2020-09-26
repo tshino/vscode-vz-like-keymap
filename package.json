@@ -139,11 +139,6 @@
                 "when": "editorTextFocus && !suggestWidgetVisible"
             },
             {
-                "key": "shift+pageup",
-                "command": "vz.cursorPageUpSelect",
-                "when": "editorTextFocus"
-            },
-            {
                 "key": "ctrl+c",
                 "command": "vz.cursorPageDown",
                 "when": "editorTextFocus"
@@ -152,11 +147,6 @@
                 "key": "pagedown",
                 "command": "vz.cursorPageDown",
                 "when": "editorTextFocus && !suggestWidgetVisible"
-            },
-            {
-                "key": "shift+pagedown",
-                "command": "vz.cursorPageDownSelect",
-                "when": "editorTextFocus"
             },
             {
                 "key": "ctrl+w",
@@ -169,12 +159,32 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "shift+pageup",
+                "command": "vz.scrollLineUp",
+                "when": "editorFocus"
+            },
+            {
+                "key": "shift+pageup",
+                "command": "vz.scrollLineUpUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
                 "key": "ctrl+z",
                 "command": "vz.scrollLineDown",
                 "when": "editorFocus"
             },
             {
                 "key": "ctrl+z",
+                "command": "vz.scrollLineDownUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "shift+pagedown",
+                "command": "vz.scrollLineDown",
+                "when": "editorFocus"
+            },
+            {
+                "key": "shift+pagedown",
                 "command": "vz.scrollLineDownUnselect",
                 "when": "editorFocus && findWidgetVisible"
             },
