@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Added:
+  - Ctrl+Q O for Replace one match.
+
 ### [0.11.1] - 2020-09-26
 - Improved:
   - The behavior of Undelete (Utrl+U) of a single text inserting into multiple locations with multiple cursors.

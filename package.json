@@ -617,6 +617,16 @@
                 "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
+                "key": "ctrl+q ctrl+o",
+                "command": "editor.action.replaceOne",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q o",
+                "command": "editor.action.replaceOne",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
                 "key": "ctrl+f",
                 "command": "editor.action.startFindReplaceAction",
                 "when": "editorFocus && findWidgetVisible && findInputFocussed"

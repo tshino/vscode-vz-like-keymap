@@ -66,7 +66,8 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+Q A | Replace |
 | Ctrl+L | Select word to find |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous/next match |
-| Ctrl+M | Find next match/Replace one |
+| Ctrl+M | Find next match/Replace one match |
+| Ctrl+Q O | Replace one match |
 
 ### Alternatives for conflicts
 
