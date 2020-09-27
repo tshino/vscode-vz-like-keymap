@@ -2208,15 +2208,31 @@ describe('EditHandler', () => {
 
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
         });
-        it('should do nothing if cursor is on a non-alphabet character', async () => {
+        it('should check the character immediately before the cursor if non-alphabet character', async () => {
             textEditor.selections = [ new vscode.Selection(1, 7, 1, 7) ];
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text === 'Abcdefg Hijklmn Opqrstu Vwxyz') {}
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'ABCDEFG Hijklmn Opqrstu Vwxyz');
+        });
+        it('should check the character immediately before the cursor if at EOL', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 29, 1, 29) ];
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text === 'Abcdefg Hijklmn Opqrstu Vwxyz') {}
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu VWXYZ');
+        });
+        it('should do nothing if no alphabet character', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 0, 3, 0) ];
 
             await editHandler.transformCase(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
 
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '12345');
         });
     });
 });
