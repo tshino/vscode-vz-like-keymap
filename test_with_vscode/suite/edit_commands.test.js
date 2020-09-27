@@ -2173,4 +2173,50 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
     });
+    describe('transformCase', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdefg hijklmn opqrstu vwxyz\n' +
+                    'Abcdefg Hijklmn Opqrstu Vwxyz\n' +
+                    'ABCDEFG HIJKLMN OPQRSTU VWXYZ\n' +
+                    '12345\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should switch case of a word between lower, upper and title case', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 8, 0, 8) ];
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg hijklmn opqrstu vwxyz') {}
+
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg HIJKLMN opqrstu vwxyz') {}
+
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn opqrstu vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn opqrstu vwxyz') {}
+
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+        });
+        it('should do nothing if cursor is on a non-alphabet character', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 7, 1, 7) ];
+
+            await editHandler.transformCase(textEditor);
+            await sleep(20);
+            await sleep(20);
+            await sleep(20);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+        });
+    });
 });

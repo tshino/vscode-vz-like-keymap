@@ -474,6 +474,40 @@ const EditHandler = function(modeHandler) {
             await insertDeletedTexts(textEditor, deleted);
         }
     };
+    let isLastTransformTitlecase = false;
+    let lastCaseTransformContext = { ch: 0, pos: null };
+    const transformCase = async function(textEditor, _edit) {
+        let pos = textEditor.selections[0].active;
+        let text = textEditor.document.lineAt(pos.line).text;
+        if (pos.character < text.length) {
+            let ch = text.charCodeAt(pos.character);
+            let isLower = 97 <= ch && ch < 97 + 26;
+            let isUpper = 65 <= ch && ch < 65 + 26;
+            if (isLower || isUpper) {
+                if (lastCaseTransformContext.pos !== null) {
+                    if (!lastCaseTransformContext.pos.isEqual(pos) ||
+                        (lastCaseTransformContext.ch % 32) !== (ch % 32)) {
+                        isLastTransformTitlecase = false;
+                    }
+                }
+                if (isLastTransformTitlecase) {
+                    // titlecase -> lowercase
+                    await vscode.commands.executeCommand('editor.action.transformToLowercase');
+                    isLastTransformTitlecase = false;
+                } else if (isLower) {
+                    // lowercase -> uppercase
+                    await vscode.commands.executeCommand('editor.action.transformToUppercase');
+                    isLastTransformTitlecase = false;
+                } else {
+                    // uppercase -> titlecase
+                    await vscode.commands.executeCommand('editor.action.transformToTitlecase');
+                    isLastTransformTitlecase = true;
+                }
+                lastCaseTransformContext.ch = ch;
+                lastCaseTransformContext.pos = pos;
+            }
+        }
+    };
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
@@ -487,6 +521,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
+        registerTextEditorCommand(context, 'transformCase', transformCase);
     };
     return {
         clearUndeleteStack, // for testing purpose
@@ -515,6 +550,7 @@ const EditHandler = function(modeHandler) {
         deleteAllLeft,
         deleteAllRight,
         undelete,
+        transformCase,
         registerCommands
     };
 };

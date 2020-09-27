@@ -34,7 +34,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+Q J | Jump by line number |
 | Shift+F10 | Tag jump |
 
-### Delete, Insert, Clipboard
+### Delete, Insert, Edit, Clipboard
 
 | Key | Function |
 | --- | -------- |
@@ -46,6 +46,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+M | Insert line break |
 | Ctrl+N | Insert new line above |
 | Ctrl+K D | Duplicate lines |
+| Ctrl+Q U | Transform case |
 | Ctrl+Y | Cut (push to text stack) |
 | Ctrl+J | Paste (pop from text stack) |
 | Ctrl+K K | Copy (push to text stack) |
