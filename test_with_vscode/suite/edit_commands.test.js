@@ -2220,6 +2220,21 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn opqrstu vwxyz') {}
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
         });
+        it('should switch case of words in the selected range', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg hijklmn opqrstu vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg HIJKLMN OPQRSTU  vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn Opqrstu vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn Opqrstu vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+        });
         it('should check the character immediately before the cursor if non-alphabet character', async () => {
             textEditor.selections = [ new vscode.Selection(1, 7, 1, 7) ];
 

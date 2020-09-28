@@ -474,6 +474,9 @@ const EditHandler = function(modeHandler) {
             await insertDeletedTexts(textEditor, deleted);
         }
     };
+    const LOWERCASE = 0;
+    const UPPERCASE = 1;
+    const TITLECASE = 2;
     let isLastTransformTitlecase = false;
     let lastCaseTransformPosition = null;
     const isLowercaseAlphabet = function(code) {
@@ -485,36 +488,52 @@ const EditHandler = function(modeHandler) {
     const isAlphabet = function(code) {
         return isLowercaseAlphabet(code) || isUppercaseAlphabet(code);
     };
-    const transformCase = async function(textEditor, _edit) {
-        let pos = textEditor.selections[0].active;
+    const detectCurrentCase = function(textEditor) {
+        let current = undefined;
+        let code = 0;
+        let pos = textEditor.selections[0].start;
         let text = textEditor.document.lineAt(pos.line).text;
         if (0 < text.length) {
             let col = pos.character;
             if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
                 --col;
             }
-            let code = text.charCodeAt(col);
-            if (isAlphabet(code)) {
-                if (isLastTransformTitlecase &&
-                    lastCaseTransformPosition !== null &&
-                    !lastCaseTransformPosition.isEqual(pos)) {
-                    isLastTransformTitlecase = false;
-                }
-                if (isLastTransformTitlecase) {
-                    // titlecase -> lowercase
-                    await vscode.commands.executeCommand('editor.action.transformToLowercase');
-                    isLastTransformTitlecase = false;
-                } else if (isLowercaseAlphabet(code)) {
-                    // lowercase -> uppercase
-                    await vscode.commands.executeCommand('editor.action.transformToUppercase');
-                    isLastTransformTitlecase = false;
-                } else {
-                    // uppercase -> titlecase
-                    await vscode.commands.executeCommand('editor.action.transformToTitlecase');
-                    isLastTransformTitlecase = true;
-                }
-                lastCaseTransformPosition = pos;
+            code = text.charCodeAt(col);
+        }
+        if (isAlphabet(code)) {
+            if (isLastTransformTitlecase &&
+                lastCaseTransformPosition !== null &&
+                !lastCaseTransformPosition.isEqual(pos)) {
+                isLastTransformTitlecase = false;
             }
+            if (isLastTransformTitlecase) {
+                current = TITLECASE;
+                isLastTransformTitlecase = false;
+            } else if (isLowercaseAlphabet(code)) {
+                current = LOWERCASE;
+                isLastTransformTitlecase = false;
+            } else {
+                current = UPPERCASE;
+                isLastTransformTitlecase = true;
+            }
+            lastCaseTransformPosition = pos;
+        }
+        return current;
+    };
+    const transformCase = async function(textEditor, _edit) {
+        let currentCase = detectCurrentCase(textEditor);
+        switch (currentCase) {
+            case TITLECASE: // titlecase -> lowercase
+                await vscode.commands.executeCommand('editor.action.transformToLowercase');
+                break;
+            case LOWERCASE: // lowercase -> uppercase
+                await vscode.commands.executeCommand('editor.action.transformToUppercase');
+                break;
+            case UPPERCASE: // uppercase -> titlecase
+                await vscode.commands.executeCommand('editor.action.transformToTitlecase');
+                break;
+            default:
+                break;
         }
     };
     const registerCommands = function(context) {
