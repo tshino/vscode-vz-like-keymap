@@ -2180,7 +2180,7 @@ describe('EditHandler', () => {
                 (
                     'abcdefg hijklmn opqrstu vwxyz\n' +
                     'Abcdefg Hijklmn Opqrstu Vwxyz\n' +
-                    'ABCDEFG HIJKLMN OPQRSTU VWXYZ\n' +
+                    '    abcd efgh ijkl\n' +
                     '12345\n'
                 ),
                 vscode.EndOfLine.CRLF
@@ -2220,7 +2220,7 @@ describe('EditHandler', () => {
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn opqrstu vwxyz') {}
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
         });
-        it('should switch case of words in the selected range', async () => {
+        it('should switch case of words in the selection range', async () => {
             textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
 
             await editHandler.transformCase(textEditor);
@@ -2234,6 +2234,16 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn Opqrstu vwxyz') {}
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+        });
+        it('should work even if the selection range starts with non-alphabet characters', async () => {
+            textEditor.selections = [ new vscode.Selection(2, 0, 2, 14) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    ABCD EFGH ijkl');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    Abcd Efgh ijkl');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
         });
         it('should check the character immediately before the cursor if non-alphabet character', async () => {
             textEditor.selections = [ new vscode.Selection(1, 7, 1, 7) ];

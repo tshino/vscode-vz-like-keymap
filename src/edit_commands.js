@@ -478,7 +478,7 @@ const EditHandler = function(modeHandler) {
     const UPPERCASE = 1;
     const TITLECASE = 2;
     let isLastTransformTitlecase = false;
-    let lastCaseTransformPosition = null;
+    let lastCaseTransformRange = null;
     const isLowercaseAlphabet = function(code) {
         return 97 <= code && code < 97 + 26;
     };
@@ -491,19 +491,29 @@ const EditHandler = function(modeHandler) {
     const detectCurrentCase = function(textEditor) {
         let current = undefined;
         let code = 0;
-        let pos = textEditor.selections[0].start;
-        let text = textEditor.document.lineAt(pos.line).text;
-        if (0 < text.length) {
-            let col = pos.character;
-            if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
-                --col;
+        let range = textEditor.selections[0];
+        if (range.isEmpty) {
+            let text = textEditor.document.lineAt(range.start.line).text;
+            if (0 < text.length) {
+                let col = range.start.character;
+                if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
+                    --col;
+                }
+                code = text.charCodeAt(col);
             }
-            code = text.charCodeAt(col);
+        } else {
+            let text = textEditor.document.getText(range);
+            for (let i = 0; i < text.length; i++) {
+                code = text.charCodeAt(i);
+                if (isAlphabet(code)) {
+                    break;
+                }
+            }
         }
         if (isAlphabet(code)) {
             if (isLastTransformTitlecase &&
-                lastCaseTransformPosition !== null &&
-                !lastCaseTransformPosition.isEqual(pos)) {
+                lastCaseTransformRange !== null &&
+                !lastCaseTransformRange.isEqual(range)) {
                 isLastTransformTitlecase = false;
             }
             if (isLastTransformTitlecase) {
@@ -516,7 +526,7 @@ const EditHandler = function(modeHandler) {
                 current = UPPERCASE;
                 isLastTransformTitlecase = true;
             }
-            lastCaseTransformPosition = pos;
+            lastCaseTransformRange = range;
         }
         return current;
     };
