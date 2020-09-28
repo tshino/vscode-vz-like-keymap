@@ -2195,17 +2195,29 @@ describe('EditHandler', () => {
 
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg hijklmn opqrstu vwxyz') {}
-
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
 
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg HIJKLMN opqrstu vwxyz') {}
-
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn opqrstu vwxyz');
 
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn opqrstu vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+        });
+        it('should work even if the cursor is at middle of a word', async () => {
+            textEditor.selections = [ new vscode.Selection(0, 10, 0, 10) ];
 
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg hijklmn opqrstu vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg HIJKLMN opqrstu vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn opqrstu vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(0).text === 'abcdefg Hijklmn opqrstu vwxyz') {}
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
         });
         it('should check the character immediately before the cursor if non-alphabet character', async () => {
@@ -2213,15 +2225,21 @@ describe('EditHandler', () => {
 
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(1).text === 'Abcdefg Hijklmn Opqrstu Vwxyz') {}
-
             assert.strictEqual(textEditor.document.lineAt(1).text, 'ABCDEFG Hijklmn Opqrstu Vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text === 'ABCDEFG Hijklmn Opqrstu Vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+
+            await editHandler.transformCase(textEditor);
+            while (await sleep(1), textEditor.document.lineAt(1).text === 'Abcdefg Hijklmn Opqrstu Vwxyz') {}
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'abcdefg Hijklmn Opqrstu Vwxyz');
         });
         it('should check the character immediately before the cursor if at EOL', async () => {
             textEditor.selections = [ new vscode.Selection(1, 29, 1, 29) ];
 
             await editHandler.transformCase(textEditor);
             while (await sleep(1), textEditor.document.lineAt(1).text === 'Abcdefg Hijklmn Opqrstu Vwxyz') {}
-
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu VWXYZ');
         });
         it('should do nothing if no alphabet character', async () => {
