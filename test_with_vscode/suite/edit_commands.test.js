@@ -2181,7 +2181,7 @@ describe('EditHandler', () => {
                     'abcdefg hijklmn opqrstu vwxyz\n' +
                     'Abcdefg Hijklmn Opqrstu Vwxyz\n' +
                     '    abcd efgh ijkl\n' +
-                    '12345\n'
+                    '123 abc def\n'
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -2221,6 +2221,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
         });
         it('should work even if the selection range starts with non-alphabet characters', async () => {
+            textEditor.selections = [ new vscode.Selection(3, 0, 3, 8) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 Abc def');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 abc def');
+        });
+        it('should work even if the selection range starts with multiple spaces', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 14) ];
 
             await editHandler.transformCase(textEditor);
@@ -2254,7 +2264,7 @@ describe('EditHandler', () => {
             await sleep(20);
             await sleep(20);
 
-            assert.strictEqual(textEditor.document.lineAt(3).text, '12345');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 abc def');
         });
     });
 });
