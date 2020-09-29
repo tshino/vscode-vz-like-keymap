@@ -2282,5 +2282,21 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
         });
+        it('should work with multiple selection ranges even if the first one contains no alphabets', async () => {
+            textEditor.selections = [
+                new vscode.Selection(2, 0, 2, 4),
+                new vscode.Selection(3, 0, 3, 7)
+            ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 Abc def');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '123 abc def');
+        });
     });
 });

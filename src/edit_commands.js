@@ -478,7 +478,7 @@ const EditHandler = function(modeHandler) {
     const UPPERCASE = 1;
     const TITLECASE = 2;
     let isLastTransformTitlecase = false;
-    let lastCaseTransformRange = null;
+    let lastCaseTransformPos = null;
     const isLowercaseAlphabet = function(code) {
         return 97 <= code && code < 97 + 26;
     };
@@ -489,33 +489,39 @@ const EditHandler = function(modeHandler) {
         return isLowercaseAlphabet(code) || isUppercaseAlphabet(code);
     };
     const detectCurrentCase = function(textEditor) {
-        let current = undefined;
+        if (isLastTransformTitlecase &&
+            lastCaseTransformPos !== null &&
+            !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
+            isLastTransformTitlecase = false;
+        }
+        lastCaseTransformPos = textEditor.selections[0].start;
         let code = 0;
-        let range = textEditor.selections[0];
-        if (range.isEmpty) {
-            let text = textEditor.document.lineAt(range.start.line).text;
-            if (0 < text.length) {
-                let col = range.start.character;
-                if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
-                    --col;
+        for (let i = 0; i < textEditor.selections.length; i++) {
+            let range = textEditor.selections[i];
+            if (range.isEmpty) {
+                let text = textEditor.document.lineAt(range.start.line).text;
+                if (0 < text.length) {
+                    let col = range.start.character;
+                    if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
+                        --col;
+                    }
+                    code = text.charCodeAt(col);
                 }
-                code = text.charCodeAt(col);
+            } else {
+                let text = textEditor.document.getText(range);
+                for (let i = 0; i < text.length; i++) {
+                    code = text.charCodeAt(i);
+                    if (isAlphabet(code)) {
+                        break;
+                    }
+                }
             }
-        } else {
-            let text = textEditor.document.getText(range);
-            for (let i = 0; i < text.length; i++) {
-                code = text.charCodeAt(i);
-                if (isAlphabet(code)) {
-                    break;
-                }
+            if (isAlphabet(code)) {
+                break;
             }
         }
+        let current = undefined;
         if (isAlphabet(code)) {
-            if (isLastTransformTitlecase &&
-                lastCaseTransformRange !== null &&
-                !lastCaseTransformRange.isEqual(range)) {
-                isLastTransformTitlecase = false;
-            }
             if (isLastTransformTitlecase) {
                 current = TITLECASE;
                 isLastTransformTitlecase = false;
@@ -526,7 +532,6 @@ const EditHandler = function(modeHandler) {
                 current = UPPERCASE;
                 isLastTransformTitlecase = true;
             }
-            lastCaseTransformRange = range;
         }
         return current;
     };
