@@ -2266,5 +2266,21 @@ describe('EditHandler', () => {
 
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 abc def');
         });
+        it('should work with multiple selection ranges', async () => {
+            textEditor.selections = [
+                new vscode.Selection(0, 8, 0, 24),
+                new vscode.Selection(1, 8, 1, 24)
+            ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg HIJKLMN OPQRSTU Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn Opqrstu vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
+        });
     });
 });
