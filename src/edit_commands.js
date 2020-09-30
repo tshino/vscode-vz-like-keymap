@@ -517,22 +517,17 @@ const EditHandler = function(modeHandler) {
         return code;
     };
     const getNextCaseTransformTo = function(textEditor) {
-        if (lastCaseTransformTo !== null &&
-            lastCaseTransformPos !== null &&
+        if (lastCaseTransformPos !== null &&
             !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
             lastCaseTransformTo = null;
         }
         lastCaseTransformPos = textEditor.selections[0].start;
-        let code = findAlphabetInSelection(textEditor);
-        let next = undefined;
-        if (isAlphabet(code)) {
-            if (lastCaseTransformTo !== null) {
-                next = (lastCaseTransformTo + 1) % 3;
-            } else if (isLowercaseAlphabet(code)) {
-                next = UPPERCASE;
-            } else {
-                next = TITLECASE;
-            }
+        let next = null;
+        if (lastCaseTransformTo !== null) {
+            next = (lastCaseTransformTo + 1) % 3;
+        } else {
+            let code = findAlphabetInSelection(textEditor);
+            next = isUppercaseAlphabet(code) ? TITLECASE : UPPERCASE;
         }
         lastCaseTransformTo = next;
         return next;

@@ -2181,7 +2181,8 @@ describe('EditHandler', () => {
                     'abcdefg hijklmn opqrstu vwxyz\n' +
                     'Abcdefg Hijklmn Opqrstu Vwxyz\n' +
                     '    abcd efgh ijkl\n' +
-                    '123 abc def\n'
+                    '123 abc def\n' +
+                    'αβγδ ΑΒΓΔ\n'
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -2213,6 +2214,18 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+        });
+        it('should work with non-ASCII alphabets', async () => {
+            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ΑΒΓΔ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'Αβγδ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'αβγδ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ΑΒΓΔ ΑΒΓΔ');
         });
         it('should switch case of words in the selection range', async () => {
             textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
