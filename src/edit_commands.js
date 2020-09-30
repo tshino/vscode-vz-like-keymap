@@ -477,7 +477,7 @@ const EditHandler = function(modeHandler) {
     const LOWERCASE = 0;
     const UPPERCASE = 1;
     const TITLECASE = 2;
-    let isLastTransformTitlecase = false;
+    let lastCaseTransformTo = null;
     let lastCaseTransformPos = null;
     const isLowercaseAlphabet = function(code) {
         return 97 <= code && code < 97 + 26;
@@ -516,39 +516,37 @@ const EditHandler = function(modeHandler) {
         }
         return code;
     };
-    const detectCurrentCase = function(textEditor) {
-        if (isLastTransformTitlecase &&
+    const getNextCaseTransformTo = function(textEditor) {
+        if (lastCaseTransformTo !== null &&
             lastCaseTransformPos !== null &&
             !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
-            isLastTransformTitlecase = false;
+            lastCaseTransformTo = null;
         }
         lastCaseTransformPos = textEditor.selections[0].start;
         let code = findAlphabetInSelection(textEditor);
-        let current = undefined;
+        let next = undefined;
         if (isAlphabet(code)) {
-            if (isLastTransformTitlecase) {
-                current = TITLECASE;
-                isLastTransformTitlecase = false;
+            if (lastCaseTransformTo !== null) {
+                next = (lastCaseTransformTo + 1) % 3;
             } else if (isLowercaseAlphabet(code)) {
-                current = LOWERCASE;
-                isLastTransformTitlecase = false;
+                next = UPPERCASE;
             } else {
-                current = UPPERCASE;
-                isLastTransformTitlecase = true;
+                next = TITLECASE;
             }
         }
-        return current;
+        lastCaseTransformTo = next;
+        return next;
     };
     const transformCase = async function(textEditor, _edit) {
-        let currentCase = detectCurrentCase(textEditor);
-        switch (currentCase) {
-            case TITLECASE: // titlecase -> lowercase
+        let nextCase = getNextCaseTransformTo(textEditor);
+        switch (nextCase) {
+            case LOWERCASE:
                 await vscode.commands.executeCommand('editor.action.transformToLowercase');
                 break;
-            case LOWERCASE: // lowercase -> uppercase
+            case UPPERCASE:
                 await vscode.commands.executeCommand('editor.action.transformToUppercase');
                 break;
-            case UPPERCASE: // uppercase -> titlecase
+            case TITLECASE:
                 await vscode.commands.executeCommand('editor.action.transformToTitlecase');
                 break;
             default:
