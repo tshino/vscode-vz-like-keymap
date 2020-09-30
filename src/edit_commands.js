@@ -488,13 +488,7 @@ const EditHandler = function(modeHandler) {
     const isAlphabet = function(code) {
         return isLowercaseAlphabet(code) || isUppercaseAlphabet(code);
     };
-    const detectCurrentCase = function(textEditor) {
-        if (isLastTransformTitlecase &&
-            lastCaseTransformPos !== null &&
-            !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
-            isLastTransformTitlecase = false;
-        }
-        lastCaseTransformPos = textEditor.selections[0].start;
+    const findAlphabetInSelection = function(textEditor) {
         let code = 0;
         for (let i = 0; i < textEditor.selections.length; i++) {
             let range = textEditor.selections[i];
@@ -520,6 +514,16 @@ const EditHandler = function(modeHandler) {
                 break;
             }
         }
+        return code;
+    };
+    const detectCurrentCase = function(textEditor) {
+        if (isLastTransformTitlecase &&
+            lastCaseTransformPos !== null &&
+            !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
+            isLastTransformTitlecase = false;
+        }
+        lastCaseTransformPos = textEditor.selections[0].start;
+        let code = findAlphabetInSelection(textEditor);
         let current = undefined;
         if (isAlphabet(code)) {
             if (isLastTransformTitlecase) {
