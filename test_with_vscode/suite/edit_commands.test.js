@@ -2182,6 +2182,7 @@ describe('EditHandler', () => {
                     'Abcdefg Hijklmn Opqrstu Vwxyz\n' +
                     '    abcd efgh ijkl\n' +
                     '123 abc def\n' +
+                    'ａｂｃｄ ＡＢＣＤ\n' +
                     'αβγδ ΑΒΓΔ\n'
                 ),
                 vscode.EndOfLine.CRLF
@@ -2219,13 +2220,25 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
 
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(4).text, 'ΑΒΓΔ ΑΒΓΔ');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ＡＢＣＤ ＡＢＣＤ');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(4).text, 'Αβγδ ΑΒΓΔ');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'Ａｂｃｄ ＡＢＣＤ');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(4).text, 'αβγδ ΑΒΓΔ');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ａｂｃｄ ＡＢＣＤ');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(4).text, 'ΑΒΓΔ ΑΒΓΔ');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ＡＢＣＤ ＡＢＣＤ');
+        });
+        it('should work with non-English alphabets', async () => {
+            textEditor.selections = [ new vscode.Selection(5, 0, 5, 0) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'Αβγδ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'αβγδ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
         });
         it('should switch case of words in the selection range', async () => {
             textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
