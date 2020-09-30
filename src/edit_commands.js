@@ -479,42 +479,42 @@ const EditHandler = function(modeHandler) {
     const TITLECASE = 2;
     let lastCaseTransformTo = null;
     let lastCaseTransformPos = null;
-    const isLowercaseAlphabet = function(code) {
-        return 97 <= code && code < 97 + 26;
+    const isLowercaseAlphabet = function(char) {
+        return char.toUpperCase() !== char;
     };
-    const isUppercaseAlphabet = function(code) {
-        return 65 <= code && code < 65 + 26;
+    const isUppercaseAlphabet = function(char) {
+        return char.toLowerCase() !== char;
     };
-    const isAlphabet = function(code) {
-        return isLowercaseAlphabet(code) || isUppercaseAlphabet(code);
+    const isAlphabet = function(char) {
+        return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
     const findAlphabetInSelection = function(textEditor) {
-        let code = 0;
+        let char = '';
         for (let i = 0; i < textEditor.selections.length; i++) {
             let range = textEditor.selections[i];
             if (range.isEmpty) {
                 let text = textEditor.document.lineAt(range.start.line).text;
                 if (0 < text.length) {
                     let col = range.start.character;
-                    if (col === text.length || !isAlphabet(text.charCodeAt(col))) {
+                    if (col === text.length || !isAlphabet(text.charAt(col))) {
                         --col;
                     }
-                    code = text.charCodeAt(col);
+                    char = text.charAt(col);
                 }
             } else {
                 let text = textEditor.document.getText(range);
                 for (let i = 0; i < text.length; i++) {
-                    code = text.charCodeAt(i);
-                    if (isAlphabet(code)) {
+                    char = text.charAt(i);
+                    if (isAlphabet(char)) {
                         break;
                     }
                 }
             }
-            if (isAlphabet(code)) {
+            if (isAlphabet(char)) {
                 break;
             }
         }
-        return code;
+        return char;
     };
     const getNextCaseTransformTo = function(textEditor) {
         if (lastCaseTransformPos !== null &&
@@ -526,8 +526,8 @@ const EditHandler = function(modeHandler) {
         if (lastCaseTransformTo !== null) {
             next = (lastCaseTransformTo + 1) % 3;
         } else {
-            let code = findAlphabetInSelection(textEditor);
-            next = isUppercaseAlphabet(code) ? TITLECASE : UPPERCASE;
+            let char = findAlphabetInSelection(textEditor);
+            next = isUppercaseAlphabet(char) ? TITLECASE : UPPERCASE;
         }
         lastCaseTransformTo = next;
         return next;

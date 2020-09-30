@@ -2239,6 +2239,17 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(5).text, 'αβγδ ΑΒΓΔ');
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
+
+            textEditor.selections = [ new vscode.Selection(5, 5, 5, 5) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ Αβγδ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ αβγδ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ Αβγδ');
         });
         it('should switch case of words in the selection range', async () => {
             textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
