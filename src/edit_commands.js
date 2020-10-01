@@ -548,6 +548,10 @@ const EditHandler = function(modeHandler) {
                 break;
         }
     };
+    const insertPath = async function(textEditor, _edit) {
+        let path = textEditor.document.fileName;
+        await vscode.commands.executeCommand('paste', { text: path });
+    };
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
@@ -562,6 +566,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
         registerTextEditorCommand(context, 'transformCase', transformCase);
+        registerTextEditorCommand(context, 'insertPath', insertPath);
     };
     return {
         clearUndeleteStack, // for testing purpose

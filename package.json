@@ -502,6 +502,16 @@
                 "when": "editorTextFocus && !editorReadonly"
             },
             {
+                "key": "ctrl+q ctrl+n",
+                "command": "vz.insertPath",
+                "when": "editorTextFocus && !editorReadonly"
+            },
+            {
+                "key": "ctrl+q n",
+                "command": "vz.insertPath",
+                "when": "editorTextFocus && !editorReadonly"
+            },
+            {
                 "key": "ctrl+q ctrl+u",
                 "command": "vz.transformCase",
                 "when": "editorTextFocus && !editorReadonly"

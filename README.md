@@ -46,6 +46,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+M | Insert line break |
 | Ctrl+N | Insert new line above |
 | Ctrl+K D | Duplicate lines |
+| Ctrl+Q N | Insert file path |
 | Ctrl+Q U | Transform case |
 | Ctrl+Y | Cut (push to text stack) |
 | Ctrl+J | Paste (pop from text stack) |
