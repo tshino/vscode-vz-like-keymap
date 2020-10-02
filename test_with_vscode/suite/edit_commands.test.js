@@ -2354,4 +2354,35 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
         });
     });
+    describe('insertPath', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdefg\n' +
+                    '\n' +
+                    '0123456\n' +
+                    'ABCDEFG'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should insert the file path of current document', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 0, 1, 0) ];
+
+            await editHandler.insertPath(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+        });
+        it('should replace selection range with the file path of current document', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 0, 2, 7) ];
+
+            await editHandler.insertPath(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'ABCDEFG');
+        });
+    });
 });

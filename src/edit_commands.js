@@ -596,6 +596,7 @@ const EditHandler = function(modeHandler) {
         deleteAllRight,
         undelete,
         transformCase,
+        insertPath,
         registerCommands
     };
 };
