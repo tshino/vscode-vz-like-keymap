@@ -497,10 +497,10 @@ const EditHandler = function(modeHandler) {
         }
         return '';
     };
-    const findAlphabetInSelection = function(textEditor) {
-        let char = '';
+    const detectCurrentCaseOfSelection = function(textEditor) {
         for (let i = 0; i < textEditor.selections.length; i++) {
             let range = textEditor.selections[i];
+            let char = '';
             if (range.isEmpty) {
                 let text = textEditor.document.lineAt(range.start.line).text;
                 if (0 < text.length) {
@@ -514,11 +514,13 @@ const EditHandler = function(modeHandler) {
                 let text = textEditor.document.getText(range);
                 char = findAlphabet(text);
             }
-            if (isAlphabet(char)) {
-                break;
+            if (isLowercaseAlphabet(char)) {
+                return LOWERCASE;
+            } else if (isUppercaseAlphabet(char)) {
+                return UPPERCASE;
             }
         }
-        return char;
+        return null;
     };
     const getNextCaseTransformTo = function(textEditor) {
         if (lastCaseTransformPos !== null &&
@@ -530,8 +532,8 @@ const EditHandler = function(modeHandler) {
         if (lastCaseTransformTo !== null) {
             next = (lastCaseTransformTo + 1) % 3;
         } else {
-            let char = findAlphabetInSelection(textEditor);
-            next = isUppercaseAlphabet(char) ? TITLECASE : UPPERCASE;
+            let current = detectCurrentCaseOfSelection(textEditor);
+            next = current === UPPERCASE ? TITLECASE : UPPERCASE;
         }
         lastCaseTransformTo = next;
         return next;
