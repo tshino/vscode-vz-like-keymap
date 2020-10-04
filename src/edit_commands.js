@@ -488,6 +488,15 @@ const EditHandler = function(modeHandler) {
     const isAlphabet = function(char) {
         return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
+    const findAlphabet = function(text) {
+        for (let i = 0; i < text.length; i++) {
+            let char = text.charAt(i);
+            if (isAlphabet(char)) {
+                return char;
+            }
+        }
+        return '';
+    };
     const findAlphabetInSelection = function(textEditor) {
         let char = '';
         for (let i = 0; i < textEditor.selections.length; i++) {
@@ -503,12 +512,7 @@ const EditHandler = function(modeHandler) {
                 }
             } else {
                 let text = textEditor.document.getText(range);
-                for (let i = 0; i < text.length; i++) {
-                    char = text.charAt(i);
-                    if (isAlphabet(char)) {
-                        break;
-                    }
-                }
+                char = findAlphabet(text);
             }
             if (isAlphabet(char)) {
                 break;
