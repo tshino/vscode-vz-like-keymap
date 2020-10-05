@@ -488,19 +488,20 @@ const EditHandler = function(modeHandler) {
     const isAlphabet = function(char) {
         return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
-    const findAlphabet = function(text) {
+    const detectCurrentCase = function(text) {
         for (let i = 0; i < text.length; i++) {
             let char = text.charAt(i);
-            if (isAlphabet(char)) {
-                return char;
+            if (isLowercaseAlphabet(char)) {
+                return LOWERCASE;
+            } else if (isUppercaseAlphabet(char)) {
+                return UPPERCASE;
             }
         }
-        return '';
+        return null;
     };
     const detectCurrentCaseOfSelection = function(textEditor) {
         for (let i = 0; i < textEditor.selections.length; i++) {
             let range = textEditor.selections[i];
-            let char = '';
             if (range.isEmpty) {
                 let text = textEditor.document.lineAt(range.start.line).text;
                 if (0 < text.length) {
@@ -508,16 +509,19 @@ const EditHandler = function(modeHandler) {
                     if (col === text.length || !isAlphabet(text.charAt(col))) {
                         --col;
                     }
-                    char = text.charAt(col);
+                    let char = text.charAt(col);
+                    if (isLowercaseAlphabet(char)) {
+                        return LOWERCASE;
+                    } else if (isUppercaseAlphabet(char)) {
+                        return UPPERCASE;
+                    }
                 }
             } else {
                 let text = textEditor.document.getText(range);
-                char = findAlphabet(text);
-            }
-            if (isLowercaseAlphabet(char)) {
-                return LOWERCASE;
-            } else if (isUppercaseAlphabet(char)) {
-                return UPPERCASE;
+                let current = detectCurrentCase(text);
+                if (current !== null) {
+                    return current;
+                }
             }
         }
         return null;
