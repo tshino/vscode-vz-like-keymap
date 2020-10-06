@@ -2263,6 +2263,18 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
         });
+        it('should detect existing title case in the selection range', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 8, 1, 24) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg HIJKLMN OPQRSTU Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
+        });
         it('should work even if the selection range starts with non-alphabet characters', async () => {
             textEditor.selections = [ new vscode.Selection(3, 0, 3, 8) ];
 
@@ -2288,16 +2300,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, '    ABCD EFGH ijkl');
         });
         it('should check the character immediately before the cursor if non-alphabet character', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 7, 1, 7) ];
+            textEditor.selections = [ new vscode.Selection(0, 7, 0, 7) ];
 
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'ABCDEFG Hijklmn Opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'Abcdefg hijklmn opqrstu vwxyz');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'abcdefg Hijklmn Opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'ABCDEFG Hijklmn Opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
         });
         it('should check the character immediately before the cursor if at EOL', async () => {
             textEditor.selections = [ new vscode.Selection(1, 29, 1, 29) ];

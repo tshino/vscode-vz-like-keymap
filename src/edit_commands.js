@@ -494,7 +494,11 @@ const EditHandler = function(modeHandler) {
             if (isLowercaseAlphabet(char)) {
                 return LOWERCASE;
             } else if (isUppercaseAlphabet(char)) {
-                return UPPERCASE;
+                if (i + 1 < text.length && isLowercaseAlphabet(text.charAt(i + 1))) {
+                    return TITLECASE;
+                } else {
+                    return UPPERCASE;
+                }
             }
         }
         return null;
@@ -537,7 +541,9 @@ const EditHandler = function(modeHandler) {
             next = (lastCaseTransformTo + 1) % 3;
         } else {
             let current = detectCurrentCaseOfSelection(textEditor);
-            next = current === UPPERCASE ? TITLECASE : UPPERCASE;
+            next =
+                current === UPPERCASE ? TITLECASE :
+                current === TITLECASE ? LOWERCASE : UPPERCASE;
         }
         lastCaseTransformTo = next;
         return next;
