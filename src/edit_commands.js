@@ -493,7 +493,11 @@ const EditHandler = function(modeHandler) {
         if (isLowercaseAlphabet(char)) {
             return LOWERCASE;
         } else if (isUppercaseAlphabet(char)) {
-            return UPPERCASE;
+            if (col + 1 < text.length && isLowercaseAlphabet(text.charAt(col + 1))) {
+                return TITLECASE;
+            } else {
+                return UPPERCASE;
+            }
         }
         return null;
     };

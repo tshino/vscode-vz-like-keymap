@@ -2216,6 +2216,18 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
         });
+        it('should detect existing title case word that starts at the cursor position', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 8, 1, 8) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg HIJKLMN Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
+        });
         it('should work with non-ASCII alphabets', async () => {
             textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
 
