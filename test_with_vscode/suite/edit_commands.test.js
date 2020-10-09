@@ -2216,8 +2216,20 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
         });
-        it('should detect existing title case word that starts at the cursor position', async () => {
+        it('should detect an existing title case word that starts at the cursor position', async () => {
             textEditor.selections = [ new vscode.Selection(1, 8, 1, 8) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg HIJKLMN Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
+        });
+        it('should detect title case words also when the cursor is at middle of the word', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 10, 1, 10) ];
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
@@ -2324,10 +2336,10 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
         });
         it('should check the character immediately before the cursor if at EOL', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 29, 1, 29) ];
+            textEditor.selections = [ new vscode.Selection(0, 29, 0, 29) ];
 
             await editHandler.transformCase(textEditor);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu VWXYZ');
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu VWXYZ');
         });
         it('should do nothing if no alphabet character', async () => {
             textEditor.selections = [ new vscode.Selection(3, 0, 3, 0) ];

@@ -489,6 +489,11 @@ const EditHandler = function(modeHandler) {
         return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
     const detectCurrentCaseAt = function(text, col) {
+        if (isAlphabet(text.charAt(col))) {
+            while (0 < col && isAlphabet(text.charAt(col - 1))) {
+                col -= 1;
+            }
+        }
         let char = text.charAt(col);
         if (isLowercaseAlphabet(char)) {
             return LOWERCASE;
