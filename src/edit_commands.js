@@ -489,16 +489,17 @@ const EditHandler = function(modeHandler) {
         return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
     const detectCurrentCaseAt = function(text, col) {
-        if (isAlphabet(text.charAt(col))) {
-            while (0 < col && isAlphabet(text.charAt(col - 1))) {
-                col -= 1;
-            }
+        if (col === text.length || !isAlphabet(text.charAt(col))) {
+            --col;
         }
-        let char = text.charAt(col);
-        if (isLowercaseAlphabet(char)) {
-            return LOWERCASE;
-        } else if (isUppercaseAlphabet(char)) {
-            if (col + 1 < text.length && isLowercaseAlphabet(text.charAt(col + 1))) {
+        if (0 <= col && isAlphabet(text.charAt(col))) {
+            while (0 < col && isAlphabet(text.charAt(col - 1))) {
+                --col;
+            }
+            let char = text.charAt(col);
+            if (isLowercaseAlphabet(char)) {
+                return LOWERCASE;
+            } else if (col + 1 < text.length && isLowercaseAlphabet(text.charAt(col + 1))) {
                 return TITLECASE;
             } else {
                 return UPPERCASE;
@@ -527,13 +528,7 @@ const EditHandler = function(modeHandler) {
             let current = null;
             if (range.isEmpty) {
                 let text = textEditor.document.lineAt(range.start.line).text;
-                if (0 < text.length) {
-                    let col = range.start.character;
-                    if (col === text.length || !isAlphabet(text.charAt(col))) {
-                        --col;
-                    }
-                    current = detectCurrentCaseAt(text, col);
-                }
+                current = detectCurrentCaseAt(text, range.start.character);
             } else {
                 let text = textEditor.document.getText(range);
                 current = detectCurrentCaseFront(text);
