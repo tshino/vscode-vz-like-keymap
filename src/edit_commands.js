@@ -477,8 +477,7 @@ const EditHandler = function(modeHandler) {
     const LOWERCASE = 0;
     const UPPERCASE = 1;
     const TITLECASE = 2;
-    let lastCaseTransformTo = null;
-    let lastCaseTransformPos = null;
+    const SINGLEUPPERCASELETTER = 3;
     const isLowercaseAlphabet = function(char) {
         return char.toUpperCase() !== char;
     };
@@ -499,10 +498,17 @@ const EditHandler = function(modeHandler) {
             let char = text.charAt(col);
             if (isLowercaseAlphabet(char)) {
                 return LOWERCASE;
-            } else if (col + 1 < text.length && isLowercaseAlphabet(text.charAt(col + 1))) {
-                return TITLECASE;
+            } else if (col + 1 < text.length) {
+                let char2 = text.charAt(col + 1);
+                if (isLowercaseAlphabet(char2)) {
+                    return TITLECASE;
+                } else if (isUppercaseAlphabet(char2)) {
+                    return UPPERCASE;
+                } else {
+                    return SINGLEUPPERCASELETTER;
+                }
             } else {
-                return UPPERCASE;
+                return SINGLEUPPERCASELETTER;
             }
         }
         return null;
@@ -513,10 +519,17 @@ const EditHandler = function(modeHandler) {
             if (isLowercaseAlphabet(char)) {
                 return LOWERCASE;
             } else if (isUppercaseAlphabet(char)) {
-                if (i + 1 < text.length && isLowercaseAlphabet(text.charAt(i + 1))) {
-                    return TITLECASE;
+                if (i + 1 < text.length) {
+                    let char2 = text.charAt(i + 1);
+                    if (isLowercaseAlphabet(char2)) {
+                        return TITLECASE;
+                    } else if (isUppercaseAlphabet(char2)) {
+                        return UPPERCASE;
+                    } else {
+                        return SINGLEUPPERCASELETTER;
+                    }
                 } else {
-                    return UPPERCASE;
+                    return SINGLEUPPERCASELETTER;
                 }
             }
         }
@@ -539,6 +552,8 @@ const EditHandler = function(modeHandler) {
         }
         return null;
     };
+    let lastCaseTransformTo = null;
+    let lastCaseTransformPos = null;
     const getNextCaseTransformTo = function(textEditor) {
         if (lastCaseTransformPos !== null &&
             !lastCaseTransformPos.isEqual(textEditor.selections[0].start)) {
@@ -546,13 +561,15 @@ const EditHandler = function(modeHandler) {
         }
         lastCaseTransformPos = textEditor.selections[0].start;
         let next = null;
-        if (lastCaseTransformTo !== null) {
+        let current = detectCurrentCaseOfSelection(textEditor);
+        if (current === null && lastCaseTransformTo !== null) {
             next = (lastCaseTransformTo + 1) % 3;
         } else {
-            let current = detectCurrentCaseOfSelection(textEditor);
             next =
                 current === UPPERCASE ? TITLECASE :
-                current === TITLECASE ? LOWERCASE : UPPERCASE;
+                current === TITLECASE ? LOWERCASE :
+                current === SINGLEUPPERCASELETTER ? LOWERCASE :
+                UPPERCASE;
         }
         lastCaseTransformTo = next;
         return next;

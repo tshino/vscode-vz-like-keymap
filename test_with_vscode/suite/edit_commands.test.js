@@ -2183,7 +2183,8 @@ describe('EditHandler', () => {
                     '    abcd efgh ijkl\n' +
                     '123 abc def\n' +
                     'ａｂｃｄ ＡＢＣＤ\n' +
-                    'αβγδ ΑΒΓΔ\n'
+                    'αβγδ ΑΒΓΔ\n' +
+                    'I have a pen\n'
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -2239,6 +2240,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
+        });
+        it('should toggle case of single-letter words', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 7, 6, 7) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I have A pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I have a pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I have A pen');
         });
         it('should work with non-ASCII alphabets', async () => {
             textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
@@ -2298,6 +2309,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn Opqrstu Vwxyz');
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
+        });
+        it('should toggle case of single-letter words in selection range', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 0, 6, 2) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I have a pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
         });
         it('should work even if the selection range starts with non-alphabet characters', async () => {
             textEditor.selections = [ new vscode.Selection(3, 0, 3, 8) ];
