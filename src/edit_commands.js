@@ -487,19 +487,13 @@ const EditHandler = function(modeHandler) {
     const isAlphabet = function(char) {
         return isLowercaseAlphabet(char) || isUppercaseAlphabet(char);
     };
-    const detectCurrentCaseAt = function(text, col) {
-        if (col === text.length || !isAlphabet(text.charAt(col))) {
-            --col;
-        }
-        if (0 <= col && isAlphabet(text.charAt(col))) {
-            while (0 < col && isAlphabet(text.charAt(col - 1))) {
-                --col;
-            }
-            let char = text.charAt(col);
-            if (isLowercaseAlphabet(char)) {
-                return LOWERCASE;
-            } else if (col + 1 < text.length) {
-                let char2 = text.charAt(col + 1);
+    const getCase = function(text) {
+        let char = text.charAt(0);
+        if (isLowercaseAlphabet(char)) {
+            return LOWERCASE;
+        } else if (isUppercaseAlphabet(char)) {
+            if (1 < text.length) {
+                let char2 = text.charAt(1);
                 if (isLowercaseAlphabet(char2)) {
                     return TITLECASE;
                 } else if (isUppercaseAlphabet(char2)) {
@@ -510,28 +504,29 @@ const EditHandler = function(modeHandler) {
             } else {
                 return SINGLEUPPERCASELETTER;
             }
+        } else {
+            return null;
+        }
+    };
+    const detectCurrentCaseAt = function(text, col) {
+        if (col === text.length || !isAlphabet(text.charAt(col))) {
+            --col;
+        }
+        if (0 <= col && isAlphabet(text.charAt(col))) {
+            while (0 < col && isAlphabet(text.charAt(col - 1))) {
+                --col;
+            }
+            return getCase(text.slice(col));
         }
         return null;
     };
     const detectCurrentCaseFront = function(text) {
-        for (let i = 0; i < text.length; i++) {
-            let char = text.charAt(i);
-            if (isLowercaseAlphabet(char)) {
-                return LOWERCASE;
-            } else if (isUppercaseAlphabet(char)) {
-                if (i + 1 < text.length) {
-                    let char2 = text.charAt(i + 1);
-                    if (isLowercaseAlphabet(char2)) {
-                        return TITLECASE;
-                    } else if (isUppercaseAlphabet(char2)) {
-                        return UPPERCASE;
-                    } else {
-                        return SINGLEUPPERCASELETTER;
-                    }
-                } else {
-                    return SINGLEUPPERCASELETTER;
-                }
-            }
+        let col = 0;
+        while (col < text.length && !isAlphabet(text.charAt(col))) {
+            ++col;
+        }
+        if (col < text.length) {
+            return getCase(text.slice(col));
         }
         return null;
     };
