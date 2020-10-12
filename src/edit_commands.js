@@ -555,6 +555,9 @@ const EditHandler = function(modeHandler) {
         }
         return null;
     };
+    // State transition:
+    //      1.lowercase --> 2.uppercase --> 3.titlecase --> (return to 1)
+    //      1.single-lowercase-letter --> 2.single-uppercase-letter --> (return to 1)
     let lastCaseTransformTo = null;
     let lastCaseTransformPos = null;
     const getNextCaseTransformTo = function(textEditor) {
