@@ -4,6 +4,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
+  - New option 'Insert Tab' to the Settings, with which you can enable/disable Ctrl+I for inserting tabs so that you can choose to use Ctrl+I for the default behavior (IntelliSense) by turning off this option.
   - Ctrl+Q O for Replace one match.
   - Ctrl+Q U for Transform case.
   - Ctrl+Q N for Insert file path.
