@@ -491,22 +491,20 @@ const EditHandler = function(modeHandler) {
         let char = text.charAt(0);
         if (isLowercaseAlphabet(char)) {
             return LOWERCASE;
-        } else if (isUppercaseAlphabet(char)) {
+        }
+        if (isUppercaseAlphabet(char)) {
             if (1 < text.length) {
                 let char2 = text.charAt(1);
                 if (isLowercaseAlphabet(char2)) {
                     return TITLECASE;
-                } else if (isUppercaseAlphabet(char2)) {
-                    return UPPERCASE;
-                } else {
-                    return SINGLEUPPERCASELETTER;
                 }
-            } else {
-                return SINGLEUPPERCASELETTER;
+                if (isUppercaseAlphabet(char2)) {
+                    return UPPERCASE;
+                }
             }
-        } else {
-            return null;
+            return SINGLEUPPERCASELETTER;
         }
+        return null;
     };
     const detectCurrentCaseAt = function(text, col) {
         if (col === text.length || !isAlphabet(text.charAt(col))) {
