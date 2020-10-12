@@ -2310,7 +2310,7 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
         });
-        it('should toggle case of single-letter words in selection range', async () => {
+        it('should toggle case of a single-letter word in selection range', async () => {
             textEditor.selections = [ new vscode.Selection(6, 0, 6, 2) ];
 
             await editHandler.transformCase(textEditor);
@@ -2319,6 +2319,18 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(6).text, 'I have a pen');
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
+        });
+        it('should switch case of words in selection range even if it starts with a single-letter word', async () => {
+            textEditor.selections = [ new vscode.Selection(6, 0, 6, 12) ];
+
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I HAVE A PEN');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I Have A Pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
+            await editHandler.transformCase(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(6).text, 'I HAVE A PEN');
         });
         it('should work even if the selection range starts with non-alphabet characters', async () => {
             textEditor.selections = [ new vscode.Selection(3, 0, 3, 8) ];

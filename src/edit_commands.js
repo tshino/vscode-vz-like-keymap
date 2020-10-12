@@ -520,15 +520,25 @@ const EditHandler = function(modeHandler) {
         }
         return null;
     };
-    const detectCurrentCaseFront = function(text) {
+    const detectCurrentCaseInSelection = function(text) {
         let col = 0;
-        while (col < text.length && !isAlphabet(text.charAt(col))) {
-            ++col;
+        let current = null;
+        for (;;) {
+            while (col < text.length && !isAlphabet(text.charAt(col))) {
+                ++col;
+            }
+            if (col === text.length) {
+                break;
+            }
+            current =  getCase(text.slice(col));
+            if (current !== null && current !== SINGLEUPPERCASELETTER) {
+                return current;
+            }
+            while (col < text.length && isAlphabet(text.charAt(col))) {
+                ++col;
+            }
         }
-        if (col < text.length) {
-            return getCase(text.slice(col));
-        }
-        return null;
+        return current;
     };
     const detectCurrentCaseOfSelection = function(textEditor) {
         for (let i = 0; i < textEditor.selections.length; i++) {
@@ -539,7 +549,7 @@ const EditHandler = function(modeHandler) {
                 current = detectCurrentCaseAt(text, range.start.character);
             } else {
                 let text = textEditor.document.getText(range);
-                current = detectCurrentCaseFront(text);
+                current = detectCurrentCaseInSelection(text);
             }
             if (current !== null) {
                 return current;
