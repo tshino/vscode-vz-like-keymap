@@ -87,6 +87,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+N | Alt+F N (File > New File) | New untitled file |
 | Ctrl+S | Alt+F S (File > Save) | Save file |
 | Ctrl+W | Ctrl+F4 | Close editor tab |
+| Ctrl+I | Ctrl+Space | Trigger suggest (IntelliSense) |
 | Ctrl+K Ctrl+C | Ctrl+/ | Single line comment |
 
 ## Compatibility in detail
