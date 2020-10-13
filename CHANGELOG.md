@@ -5,6 +5,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Added:
   - New option 'Vz Keymap: Ctrl+I' to the Settings. Ctrl+I is mapped to inserting tabs only if this option is on (default). By turning this option off you can use the original function (IntelliSense) with the key.
+  - New option 'Vz Keymap: Ctrl+L' to the Settings. Ctrl+L is mapped to selecting words to find only if this option is on (default). By turning this option off you can use the original function (expanding line selection) with the key.
   - Ctrl+Q O for Replace one match.
   - Ctrl+Q U for Transform case.
   - Ctrl+Q N for Insert file path.

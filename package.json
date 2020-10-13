@@ -54,6 +54,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables Ctrl+I for Insert tab, otherwise, keeps the default (IntelliSense)"
+                },
+                "vzKeymap.ctrl+L": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables Ctrl+L for Select word to find, otherwise, keeps the default (Expand line selection)"
                 }
             }
         },
@@ -594,12 +599,12 @@
             {
                 "key": "ctrl+l",
                 "command": "vz.selectWordToFind",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && config.vzKeymap.ctrl+L"
             },
             {
                 "key": "ctrl+l",
                 "command": "vz.expandWordToFind",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findInputFocussed && config.vzKeymap.ctrl+L"
             },
             {
                 "key": "ctrl+q ctrl+a",
