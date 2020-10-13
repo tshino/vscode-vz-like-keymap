@@ -59,6 +59,16 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables Ctrl+L for Select word to find, otherwise, keeps the default (Expand line selection)"
+                },
+                "vzKeymap.ctrl+W": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables Ctrl+W for Scroll up, otherwise, keeps the default (Close editor)"
+                },
+                "vzKeymap.ctrl+Z": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables Ctrl+Z for Scroll down, otherwise, keeps the default (Undo)"
                 }
             }
         },
@@ -161,12 +171,12 @@
             {
                 "key": "ctrl+w",
                 "command": "vz.scrollLineUp",
-                "when": "editorFocus"
+                "when": "editorFocus && config.vzKeymap.ctrl+W"
             },
             {
                 "key": "ctrl+w",
                 "command": "vz.scrollLineUpUnselect",
-                "when": "editorFocus && findWidgetVisible"
+                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+W"
             },
             {
                 "key": "shift+pageup",
@@ -181,12 +191,12 @@
             {
                 "key": "ctrl+z",
                 "command": "vz.scrollLineDown",
-                "when": "editorFocus"
+                "when": "editorFocus && config.vzKeymap.ctrl+Z"
             },
             {
                 "key": "ctrl+z",
                 "command": "vz.scrollLineDownUnselect",
-                "when": "editorFocus && findWidgetVisible"
+                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+Z"
             },
             {
                 "key": "shift+pagedown",

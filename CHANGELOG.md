@@ -4,8 +4,13 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
-  - New option 'Vz Keymap: Ctrl+I' to the Settings. Ctrl+I is mapped to inserting tabs only if this option is on (default). By turning this option off you can use the original function (IntelliSense) with the key.
-  - New option 'Vz Keymap: Ctrl+L' to the Settings. Ctrl+L is mapped to selecting words to find only if this option is on (default). By turning this option off you can use the original function (expanding line selection) with the key.
+  - New set of options to the Settings to enable/disable some key bindings of Vz Keymap.
+    - By turning some of these options off you can choose to use the specific keys for the original function of VS Code instead of Vz Keymap's functionality.
+    - The full list of new key binding options:
+    - `Vz Keymap: Ctrl+I` - on: Insert tab (Vz Keymap) off: IntelliSense (VS Code)
+    - `Vz Keymap: Ctrl+L` - on: Select word for find (Vz Keymap) off: Expand line selection (VS Code)
+    - `Vz Keymap: Ctrl+W` - on: Scroll up (Vz Keymap) off: Close editor (VS Code)
+    - `Vz Keymap: Ctrl+Z` - on: Scroll down (Vz Keymap) off: Undo (VS Code)
   - Ctrl+Q O for Replace one match.
   - Ctrl+Q U for Transform case.
   - Ctrl+Q N for Insert file path.
