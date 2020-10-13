@@ -50,7 +50,7 @@
                         "Scroll up/down by half a page"
                     ]
                 },
-                "vzKeymap.insertTab": {
+                "vzKeymap.ctrl+I": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enables Ctrl+I for Insert tab, otherwise, keeps the default (IntelliSense)"
@@ -471,7 +471,7 @@
             {
                 "key": "ctrl+i",
                 "command": "tab",
-                "when": "editorTextFocus && !editorReadonly && config.vzKeymap.insertTab"
+                "when": "editorTextFocus && !editorReadonly && config.vzKeymap.ctrl+I"
             },
             {
                 "key": "ctrl+m",

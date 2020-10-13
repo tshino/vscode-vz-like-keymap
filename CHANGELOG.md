@@ -4,7 +4,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
-  - New option 'Insert Tab' to the Settings, with which you can enable/disable Ctrl+I for inserting tabs so that you can choose to use Ctrl+I for the default behavior (IntelliSense) by turning off this option.
+  - New option 'Vz Keymap: Ctrl+I' to the Settings. Ctrl+I is mapped to inserting tabs only if this option is on (default). By turning this option off you can use the original function (IntelliSense) with the key.
   - Ctrl+Q O for Replace one match.
   - Ctrl+Q U for Transform case.
   - Ctrl+Q N for Insert file path.
@@ -41,7 +41,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Added:
   - Added text stack finally! Cut (Ctrl+Y), Copy (Ctrl+K K) and Paste (Ctrl+J) perform now push/pop to the text stack as well as write/read to the clipboard.
   - Added Ctrl+K C for Paste without pop, which is just a repeatable normal paste behavior.
-  - Added new option 'Text Stack' to the Settings which you can enable/disable the text stack.
+  - Added new option 'Vz Keymap: Text Stack' to the Settings which you can enable/disable the text stack.
   - Added changing the cursor style according to the selection mode status.
 - Improved:
   - The behavior of box-selection mode in terms of compatibility with Column Selection Mode.
@@ -60,7 +60,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [0.9.0] - 2020-02-25
 - Added:
   - Half-page scroll as optional scroll behavior of PageUp/PageDown (and its shortcut Ctrl+R/Ctrl+C).
-  - New option 'Scroll Page Size' which you can choose from Full and Half.
+  - New option 'Vz Keymap: Scroll Page Size' which you can choose from Full and Half.
 - Improved:
   - The behavior of page scroll to preserve the vertical position of the cursor in the view.
 
