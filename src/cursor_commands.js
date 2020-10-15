@@ -270,6 +270,13 @@ const CursorHandler = function(modeHandler) {
     const scrollLineDownUnselect = function() {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     };
+    let markedPosition = null;
+    const getMarkedPosition = function() {
+        return markedPosition;
+    };
+    const markPosition = function(textEditor, _edit) {
+        markedPosition = textEditor.selections[0].active;
+    };
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'cursorHalfPageUp', cursorHalfPageUp);
@@ -328,6 +335,8 @@ const CursorHandler = function(modeHandler) {
         scrollLineUpUnselect,
         scrollLineDown,
         scrollLineDownUnselect,
+        getMarkedPosition,  // for testing
+        markPosition,
         registerCommands
     };
 };

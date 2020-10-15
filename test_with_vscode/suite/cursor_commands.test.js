@@ -902,4 +902,18 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[501, 7]]);
         });
     });
+    describe('markPosition', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+        });
+        it('should mark cursor position', async () => {
+            await resetCursor(3, 7);
+            cursorHandler.markPosition(textEditor);
+            let pos = cursorHandler.getMarkedPosition();
+            assert(pos !== null);
+            assert(pos.isEqual(new vscode.Position(3, 7)));
+        });
+    });
 });
