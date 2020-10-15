@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.12.0] - 2020-10-15
 - Added:
   - New set of options to the Settings to enable/disable some key bindings of Vz Keymap.
     - By turning some of these options off you can choose to use the specific keys for the original function of VS Code instead of Vz Keymap's functionality.

@@ -2,10 +2,10 @@
     "name": "vz-like-keymap",
     "displayName": "Vz Keymap",
     "description": "A keymap similar to Vz Editor",
-    "version": "0.11.1",
+    "version": "0.12.0",
     "publisher": "tshino",
     "engines": {
-        "vscode": "^1.48.0"
+        "vscode": "^1.49.0"
     },
     "license": "SEE LICENSE IN LICENSE.txt",
     "categories": [
