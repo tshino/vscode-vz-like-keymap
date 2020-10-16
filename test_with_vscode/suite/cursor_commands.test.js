@@ -911,14 +911,14 @@ describe('CursorHandler', () => {
         beforeEach(async () => {
             cursorHandler.setMarkedPosition(null);
         });
-        it('should mark cursor position', async () => {
+        it('should mark current cursor position', async () => {
             await resetCursor(3, 7);
 
             cursorHandler.markPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition();
-            assert(pos !== null);
-            assert(pos.isEqual(new vscode.Position(3, 7)));
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(3, 7)), true);
         });
         it('should overwrite the last mark', async () => {
             cursorHandler.setMarkedPosition(new vscode.Position(5, 6));
@@ -927,8 +927,8 @@ describe('CursorHandler', () => {
             cursorHandler.markPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition();
-            assert(pos !== null);
-            assert(pos.isEqual(new vscode.Position(7, 2)));
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(7, 2)), true);
         });
     });
     describe('cursorLastPosition', () => {
@@ -940,19 +940,25 @@ describe('CursorHandler', () => {
         beforeEach(async () => {
             cursorHandler.setMarkedPosition(null);
         });
-        it('should move the cursor to the last position', async () => {
-            await resetCursor(3, 7);
+        it('should mark current cursor position and move the cursor back to the last marked position', async () => {
             cursorHandler.setMarkedPosition(new vscode.Position(4, 5));
+            await resetCursor(3, 7);
 
             cursorHandler.cursorLastPosition(textEditor);
 
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(3, 7)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
         });
-        it('should do nothing if no position was marked', async () => {
+        it('should not move cursor if no position marked but should mark current position', async () => {
             await resetCursor(2, 9);
 
             cursorHandler.cursorLastPosition(textEditor);
 
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(2, 9)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
         });
     });

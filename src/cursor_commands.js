@@ -281,11 +281,13 @@ const CursorHandler = function(modeHandler) {
         markedPosition = textEditor.selections[0].active;
     };
     const cursorLastPosition = function(textEditor, _edit) {
+        let current = textEditor.selections[0].active;
         if (markedPosition) {
             textEditor.selections = [
                 new vscode.Selection(markedPosition, markedPosition)
             ];
         }
+        markedPosition = current;
     };
     const registerCommands = function(context) {
         setupListeners(context);
