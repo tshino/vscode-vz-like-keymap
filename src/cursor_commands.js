@@ -274,8 +274,18 @@ const CursorHandler = function(modeHandler) {
     const getMarkedPosition = function() {
         return markedPosition;
     };
+    const setMarkedPosition = function(pos) {
+        markedPosition = pos;
+    };
     const markPosition = function(textEditor, _edit) {
         markedPosition = textEditor.selections[0].active;
+    };
+    const cursorLastPosition = function(textEditor, _edit) {
+        if (markedPosition) {
+            textEditor.selections = [
+                new vscode.Selection(markedPosition, markedPosition)
+            ];
+        }
     };
     const registerCommands = function(context) {
         setupListeners(context);
@@ -313,6 +323,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'scrollLineUpUnselect', scrollLineUpUnselect);
         registerTextEditorCommand(context, 'scrollLineDown', scrollLineDown);
         registerTextEditorCommand(context, 'scrollLineDownUnselect', scrollLineDownUnselect);
+        registerTextEditorCommand(context, 'markPosition', markPosition);
+        registerTextEditorCommand(context, 'cursorLastPosition', cursorLastPosition);
     };
     return {
         makeCursorCommand,
@@ -336,7 +348,9 @@ const CursorHandler = function(modeHandler) {
         scrollLineDown,
         scrollLineDownUnselect,
         getMarkedPosition,  // for testing
+        setMarkedPosition,  // for testing
         markPosition,
+        cursorLastPosition,
         registerCommands
     };
 };

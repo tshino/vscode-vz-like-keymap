@@ -908,12 +908,52 @@ describe('CursorHandler', () => {
                 '0123456789\n'.repeat(10)
             );
         });
+        beforeEach(async () => {
+            cursorHandler.setMarkedPosition(null);
+        });
         it('should mark cursor position', async () => {
             await resetCursor(3, 7);
+
             cursorHandler.markPosition(textEditor);
+
             let pos = cursorHandler.getMarkedPosition();
             assert(pos !== null);
             assert(pos.isEqual(new vscode.Position(3, 7)));
+        });
+        it('should overwrite the last mark', async () => {
+            cursorHandler.setMarkedPosition(new vscode.Position(5, 6));
+
+            await resetCursor(7, 2);
+            cursorHandler.markPosition(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition();
+            assert(pos !== null);
+            assert(pos.isEqual(new vscode.Position(7, 2)));
+        });
+    });
+    describe('cursorLastPosition', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+        });
+        beforeEach(async () => {
+            cursorHandler.setMarkedPosition(null);
+        });
+        it('should move the cursor to the last position', async () => {
+            await resetCursor(3, 7);
+            cursorHandler.setMarkedPosition(new vscode.Position(4, 5));
+
+            cursorHandler.cursorLastPosition(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+        });
+        it('should do nothing if no position was marked', async () => {
+            await resetCursor(2, 9);
+
+            cursorHandler.cursorLastPosition(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
         });
     });
 });
