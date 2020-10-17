@@ -951,7 +951,7 @@ describe('CursorHandler', () => {
             assert.strictEqual(pos.isEqual(new vscode.Position(3, 7)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
         });
-        it('should not move cursor if no position marked but should mark current position', async () => {
+        it('should not move cursor and should mark current position if no position marked', async () => {
             await resetCursor(2, 9);
 
             cursorHandler.cursorLastPosition(textEditor);
@@ -960,6 +960,17 @@ describe('CursorHandler', () => {
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(2, 9)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
+        });
+        it('should work if current selection range is not empty', async () => {
+            cursorHandler.setMarkedPosition(new vscode.Position(7, 9));
+            await selectRange(2, 3, 4, 8);
+
+            cursorHandler.cursorLastPosition(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(4, 8)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
         });
     });
 });

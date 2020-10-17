@@ -283,9 +283,21 @@ const CursorHandler = function(modeHandler) {
     const cursorLastPosition = function(textEditor, _edit) {
         let current = textEditor.selections[0].active;
         if (markedPosition) {
-            textEditor.selections = [
-                new vscode.Selection(markedPosition, markedPosition)
-            ];
+            if (mode.inSelection() && !mode.inBoxSelection()) {
+                textEditor.selections = [
+                    new vscode.Selection(
+                        textEditor.selections[0].anchor,
+                        markedPosition
+                    )
+                ];
+            } else {
+                textEditor.selections = [
+                    new vscode.Selection(
+                        markedPosition,
+                        markedPosition
+                    )
+                ];
+            }
         }
         markedPosition = current;
     };
