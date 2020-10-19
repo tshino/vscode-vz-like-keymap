@@ -985,6 +985,18 @@ describe('CursorHandler', () => {
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 8)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
         });
+        it('should work if in selection mode', async () => {
+            cursorHandler.setMarkedPosition(new vscode.Position(7, 9));
+            await resetCursor(3, 6);
+            mode.startSelection(textEditor, false);
+
+            cursorHandler.cursorLastPosition(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(3, 6)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 6, 7, 9]]);
+        });
         it('should work if there are multiple selections', async () => {
             cursorHandler.setMarkedPosition(new vscode.Position(7, 9));
             await selectRanges([
