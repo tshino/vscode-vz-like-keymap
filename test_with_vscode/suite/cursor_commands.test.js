@@ -930,6 +930,19 @@ describe('CursorHandler', () => {
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(7, 2)), true);
         });
+        it('should mark the active position of the last selection if multiple selections', async () => {
+            await selectRanges([
+                [2, 3, 2, 5],
+                [3, 3, 3, 5],
+                [4, 3, 4, 5]
+            ]);
+
+            cursorHandler.markPosition(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(4, 5)), true);
+        });
     });
     describe('cursorLastPosition', () => {
         before(async () => {
@@ -970,6 +983,22 @@ describe('CursorHandler', () => {
             let pos = cursorHandler.getMarkedPosition();
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 8)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
+        });
+        it('should work if there are multiple selections', async () => {
+            cursorHandler.setMarkedPosition(new vscode.Position(7, 9));
+            await selectRanges([
+                [2, 3, 2, 5],
+                [3, 3, 3, 5],
+                [4, 3, 4, 5]
+            ]);
+
+            cursorHandler.cursorLastPosition(textEditor);
+
+            assert.strictEqual(mode.inBoxSelection(), false);
+            let pos = cursorHandler.getMarkedPosition();
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(4, 5)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
         });
     });
