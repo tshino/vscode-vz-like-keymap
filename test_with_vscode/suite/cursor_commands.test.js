@@ -943,6 +943,30 @@ describe('CursorHandler', () => {
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 5)), true);
         });
+        it('should move marked position if some text inserted before it', async () => {
+            await resetCursor(3, 7);
+            cursorHandler.markPosition(textEditor);
+
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(2, 9), "222\n333\n");
+            });
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(5, 7)), true);
+        });
+        it('should move marked position if some text deleted at before it', async () => {
+            await resetCursor(6, 1);
+            cursorHandler.markPosition(textEditor);
+
+            await textEditor.edit((edit) => {
+                edit.delete(new vscode.Range(3, 2, 4, 3));
+            });
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(5, 1)), true);
+        });
     });
     describe('cursorLastPosition', () => {
         before(async () => {

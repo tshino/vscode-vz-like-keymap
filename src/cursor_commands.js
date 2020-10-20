@@ -53,6 +53,11 @@ const CursorHandler = function(modeHandler) {
                 }
             })
         );
+        context.subscriptions.push(
+            vscode.workspace.onDidChangeTextDocument(function(event) {
+                updateMarkListOnChangeDocument(event.document, event.contentChanges);
+            })
+        );
     };
 
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
@@ -284,11 +289,21 @@ const CursorHandler = function(modeHandler) {
     let markedPositionMap = new Map();
     const getMarkedPosition = function(textEditor) {
         let key = textEditor.document.uri.toString();
-        return markedPositionMap.get(key);
+        if (markedPositionMap.has(key)) {
+            let offset = markedPositionMap.get(key);
+            return textEditor.document.positionAt(offset);
+        } else {
+            return undefined;
+        }
     };
     const setMarkedPosition = function(textEditor, pos) {
         let key = textEditor.document.uri.toString();
-        markedPositionMap.set(key, pos);
+        if (pos) {
+            let offset = textEditor.document.offsetAt(pos);
+            markedPositionMap.set(key, offset);
+        } else {
+            markedPositionMap.delete(key);
+        }
     };
     const updateMarkListOnRename = function(oldUri, newUri) {
         let oldKey = oldUri.toString();
@@ -296,6 +311,20 @@ const CursorHandler = function(modeHandler) {
         if (markedPositionMap.has(oldKey)) {
             markedPositionMap.set(newKey, markedPositionMap.get(oldKey));
             markedPositionMap.delete(oldKey);
+        }
+    };
+    const updateMarkListOnChangeDocument = function(document, changes) {
+        let key = document.uri.toString();
+        if (markedPositionMap.has(key)) {
+            let offset = markedPositionMap.get(key);
+            let delta = 0;
+            for (let i = 0; i < changes.length; i++) {
+                let chg = changes[i];
+                if (chg.rangeOffset <= offset) {
+                    delta += chg.text.length - Math.min(chg.rangeLength, offset - chg.rangeOffset);
+                }
+            }
+            markedPositionMap.set(key, offset + delta);
         }
     };
     const currentCursorPosition = function(textEditor) {
