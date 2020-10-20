@@ -271,10 +271,10 @@ const CursorHandler = function(modeHandler) {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     };
     let markedPosition = null;
-    const getMarkedPosition = function() {
+    const getMarkedPosition = function(textEditor) {
         return markedPosition;
     };
-    const setMarkedPosition = function(pos) {
+    const setMarkedPosition = function(textEditor, pos) {
         markedPosition = pos;
     };
     const currentCursorPosition = function(textEditor) {
@@ -282,31 +282,27 @@ const CursorHandler = function(modeHandler) {
         return textEditor.selections[last].active;
     }
     const markPosition = function(textEditor, _edit) {
-        markedPosition = currentCursorPosition(textEditor);
+        let current = currentCursorPosition(textEditor);
+        setMarkedPosition(textEditor, current);
     };
     const cursorLastPosition = function(textEditor, _edit) {
         let current = currentCursorPosition(textEditor);
-        if (markedPosition) {
+        let pos = getMarkedPosition(textEditor);
+        if (pos) {
             if (mode.inSelection()) {
                 if (mode.inBoxSelection()) {
                     mode.resetBoxSelection();
                 }
                 textEditor.selections = [
-                    new vscode.Selection(
-                        textEditor.selections[0].anchor,
-                        markedPosition
-                    )
+                    new vscode.Selection(textEditor.selections[0].anchor, pos)
                 ];
             } else {
                 textEditor.selections = [
-                    new vscode.Selection(
-                        markedPosition,
-                        markedPosition
-                    )
+                    new vscode.Selection(pos, pos)
                 ];
             }
         }
-        markedPosition = current;
+        setMarkedPosition(textEditor, current);
     };
     const registerCommands = function(context) {
         setupListeners(context);
