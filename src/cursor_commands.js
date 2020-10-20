@@ -42,6 +42,17 @@ const CursorHandler = function(modeHandler) {
                 }
             })
         );
+        context.subscriptions.push(
+            vscode.workspace.onDidRenameFiles(function(renameEvent) {
+                let files = renameEvent.files;
+                for (let i = 0; i < files.length; i++) {
+                    updateMarkListOnRename(
+                        files[i].oldUri,
+                        files[i].newUri
+                    );
+                }
+            })
+        );
     };
 
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
@@ -270,12 +281,22 @@ const CursorHandler = function(modeHandler) {
     const scrollLineDownUnselect = function() {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     };
-    let markedPosition = null;
+    let markedPositionMap = new Map();
     const getMarkedPosition = function(textEditor) {
-        return markedPosition;
+        let key = textEditor.document.uri.toString();
+        return markedPositionMap.get(key);
     };
     const setMarkedPosition = function(textEditor, pos) {
-        markedPosition = pos;
+        let key = textEditor.document.uri.toString();
+        markedPositionMap.set(key, pos);
+    };
+    const updateMarkListOnRename = function(oldUri, newUri) {
+        let oldKey = oldUri.toString();
+        let newKey = newUri.toString();
+        if (markedPositionMap.has(oldKey)) {
+            markedPositionMap.set(newKey, markedPositionMap.get(oldKey));
+            markedPositionMap.delete(oldKey);
+        }
     };
     const currentCursorPosition = function(textEditor) {
         let last = textEditor.selections.length - 1;
