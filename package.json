@@ -399,6 +399,26 @@
                 "when": "editorTextFocus"
             },
             {
+                "key": "ctrl+q ctrl+m",
+                "command": "vz.markPosition",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+q m",
+                "command": "vz.markPosition",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+q ctrl+p",
+                "command": "vz.cursorLastPosition",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+q p",
+                "command": "vz.cursorLastPosition",
+                "when": "editorTextFocus"
+            },
+            {
                 "key": "shift+f10",
                 "command": "vz.tagJump",
                 "when": "editorTextFocus"

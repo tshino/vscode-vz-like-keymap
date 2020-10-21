@@ -32,6 +32,8 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+Q B | Jump to opposite side of selection range |
 | Ctrl+Q K | Jump to bracket |
 | Ctrl+Q J | Jump by line number |
+| Ctrl+Q M | Mark current position |
+| Ctrl+Q P | Jump to last marked position |
 | Shift+F10 | Tag jump |
 
 ### Delete, Insert, Edit, Clipboard
