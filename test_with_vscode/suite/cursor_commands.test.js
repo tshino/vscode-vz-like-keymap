@@ -1037,5 +1037,41 @@ describe('CursorHandler', () => {
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 5)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
         });
+        it('should scroll to reveal the cursor when it jumped to out of visible area', async () => {
+            await resetCursor(3, 0);
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
+            });
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 9));
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.cursorLastPosition(textEditor);
+            await waitForScroll(vlines0[0]);
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(3, 0)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[555, 9]]);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(vlines1.includes(555), true);
+        });
+        it('should scroll and extend selection when it jumped to out of visible area in selection mode', async () => {
+            await selectRange(3, 4, 3, 7);
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
+            });
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 8));
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            cursorHandler.cursorLastPosition(textEditor);
+            await waitForScroll(vlines0[0]);
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(3, 7)), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 555, 8]]);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(vlines1.includes(555), true);
+        });
     });
 });

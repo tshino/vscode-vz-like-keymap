@@ -343,13 +343,9 @@ const CursorHandler = function(modeHandler) {
                 if (mode.inBoxSelection()) {
                     mode.resetBoxSelection();
                 }
-                textEditor.selections = [
-                    new vscode.Selection(textEditor.selections[0].anchor, pos)
-                ];
+                moveCursorTo(textEditor, pos.line, pos.character, true);
             } else {
-                textEditor.selections = [
-                    new vscode.Selection(pos, pos)
-                ];
+                moveCursorTo(textEditor, pos.line, pos.character, false);
             }
         }
         setMarkedPosition(textEditor, current);
