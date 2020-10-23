@@ -336,19 +336,15 @@ const CursorHandler = function(modeHandler) {
         setMarkedPosition(textEditor, current);
     };
     const cursorLastPosition = function(textEditor, _edit) {
-        let current = currentCursorPosition(textEditor);
         let pos = getMarkedPosition(textEditor);
-        if (pos) {
-            if (mode.inSelection()) {
-                if (mode.inBoxSelection()) {
-                    mode.resetBoxSelection();
-                }
-                moveCursorTo(textEditor, pos.line, pos.character, true);
-            } else {
-                moveCursorTo(textEditor, pos.line, pos.character, false);
-            }
-        }
+        let current = currentCursorPosition(textEditor);
         setMarkedPosition(textEditor, current);
+        if (pos) {
+            if (mode.inSelection() && mode.inBoxSelection()) {
+                mode.resetBoxSelection();
+            }
+            moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection());
+        }
     };
     const registerCommands = function(context) {
         setupListeners(context);
