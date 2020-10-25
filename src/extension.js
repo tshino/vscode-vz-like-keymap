@@ -12,14 +12,18 @@ function activate(context) {
     const cursor_style_controller = cursor_style.CursorStyleController();
     const editHandler = edit_commands.getInstance();
     const cursorHandler = cursor_commands.getInstance();
+    const modeIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 90);
     editHandler.registerCommands(context);
     cursorHandler.registerCommands(context);
     mode.onStartSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', true);
+        modeIndicator.text = "[B]";
+        modeIndicator.show();
         cursor_style_controller.startSelection(textEditor);
     });
     mode.onResetSelection(function(textEditor) {
         vscode.commands.executeCommand('setContext', 'vz.inSelectionMode', false);
+        modeIndicator.hide();
         cursor_style_controller.resetSelection(textEditor);
     });
     if (vscode.window.activeTextEditor) {
