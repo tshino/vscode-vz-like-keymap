@@ -334,6 +334,7 @@ const CursorHandler = function(modeHandler) {
     const markPosition = function(textEditor, _edit) {
         let current = currentCursorPosition(textEditor);
         setMarkedPosition(textEditor, current);
+        vscode.window.setStatusBarMessage('Mark has been set.', 3000);
     };
     const cursorLastPosition = function(textEditor, _edit) {
         let pos = getMarkedPosition(textEditor);
@@ -345,6 +346,7 @@ const CursorHandler = function(modeHandler) {
             }
             moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection());
         }
+        vscode.window.setStatusBarMessage('Here is the marked position.', 3000);
     };
     const registerCommands = function(context) {
         setupListeners(context);
