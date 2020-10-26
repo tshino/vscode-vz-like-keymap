@@ -1241,6 +1241,40 @@ describe('EditHandler', () => {
             assert.equal(textEditor.document.lineAt(3).text, 'fghfghfghij');
         });
     });
+    describe('clearStack', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should clear text stack and clipboard', async () => {
+            textEditor.selections = [ new vscode.Selection(1, 1, 1, 1) ];
+            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.cutAndPushImpl(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+
+            await editHandler.clearStack(textEditor);
+
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '');
+
+            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+    });
     describe('deleteLeft', () => {
         const tabSize = vscode.workspace.getConfiguration('editor').get('tabSize');
         const indent = ' '.repeat(tabSize);

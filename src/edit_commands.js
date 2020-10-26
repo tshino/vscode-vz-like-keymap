@@ -171,6 +171,9 @@ const EditHandler = function(modeHandler) {
     const clearTextStack = function() {
         textStack.length = 0;
     };
+    const getTextStackLength = function() {
+        return textStack.length;
+    };
     let reentryGuard = null;
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
         if (reentryGuard === 'cutAndPush') {
@@ -328,6 +331,11 @@ const EditHandler = function(modeHandler) {
     };
     const paste = async function(textEditor, _edit) {
         await popAndPasteImpl(textEditor, true);
+    };
+    const clearStack = async function(_textEditor, _edit) {
+        clearTextStack();
+        await vscode.env.clipboard.writeText('');
+        vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
     };
     const runEditCommand = function(command, textEditor, _edit) {
         if (mode.inSelection() && !mode.inBoxSelection()) {
@@ -606,6 +614,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', paste);
+        registerTextEditorCommand(context, 'clipboardClearStack', clearStack);
         registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
@@ -626,6 +635,7 @@ const EditHandler = function(modeHandler) {
         deleteRanges,
         makeCutCopyRanges,
         clearTextStack, // for testing purpose
+        getTextStackLength, // for testing purpose
         cutAndPushImpl,
         cutAndPush,
         copyAndPushImpl,
@@ -636,6 +646,7 @@ const EditHandler = function(modeHandler) {
         pasteInlineText,
         pasteBoxText,
         popAndPasteImpl,
+        clearStack,
         deleteLeft,
         deleteRight,
         deleteWordLeft,
