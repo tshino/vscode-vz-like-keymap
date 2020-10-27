@@ -4,7 +4,7 @@
 
 This is a Visual Studio Code extension which provides a keymap similar to good old Vz Editor.
 
-- More than 40 shortcuts to provide basic experience almost identical to Vz Editor
+- More than 50 shortcuts to provide basic experience which is almost identical to Vz Editor
 - Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 - Text stack (push/pop to the clibboard) is supported for actions Cut, Copy and Paste
 - Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
@@ -53,7 +53,8 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+Y | Cut (push to text stack) |
 | Ctrl+J | Paste (pop from text stack) |
 | Ctrl+K K | Copy (push to text stack) |
-| Ctrl+K C | Paste |
+| Ctrl+K C | Paste (keep text stack) |
+| Ctrl+K Y | Clear clipboard and text stack |
 
 ### Undo, Redo
 

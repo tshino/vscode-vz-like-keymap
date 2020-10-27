@@ -597,6 +597,16 @@
                 "when": "editorTextFocus && !editorReadonly"
             },
             {
+                "key": "ctrl+k ctrl+y",
+                "command": "vz.clipboardClearStack",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+k y",
+                "command": "vz.clipboardClearStack",
+                "when": "editorTextFocus"
+            },
+            {
                 "key": "ctrl+k ctrl+u",
                 "command": "undo",
                 "when": "editorTextFocus && !editorReadonly"
