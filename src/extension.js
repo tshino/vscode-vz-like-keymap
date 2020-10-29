@@ -2,7 +2,6 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const cursor_style = require("./cursor_style.js");
-const tag_jump = require("./tag_jump.js");
 const EditUtil = require("./edit_util.js");
 const edit_commands = require("./edit_commands.js");
 const cursor_commands = require("./cursor_commands.js");
@@ -94,79 +93,6 @@ function activate(context) {
             ));
         }
     });
-    const openTextDocument = function(uri, line) {
-        vscode.workspace.openTextDocument(uri).then(function(doc) {
-            vscode.window.showTextDocument(doc).then(function(textEditor) {
-                if (line) {
-                    cursorHandler.moveCursorTo(textEditor, line - 1, 0, false);
-                }
-            }, function(err) {});
-        }, function(err) {});
-    };
-    const getCurrentLineText = function(textEditor) {
-        let line = textEditor.selection.active.line;
-        return textEditor.document.lineAt(line).text;
-    };
-    const getBaseFolders = function(textEditor) {
-        let docUri = textEditor.document.uri;
-        let wsFolders = vscode.workspace.workspaceFolders;
-        let wsFoldersUris = wsFolders ? wsFolders.map(f => f.uri) : [];
-        let folders = tag_jump.enumFolderUris(docUri, wsFoldersUris);
-        return folders;
-    };
-    const getFileNames = function(textEditor) {
-        let text = getCurrentLineText(textEditor);
-        let names = tag_jump.extractFileNames(text);
-        return names;
-    };
-    const makeTagCandidates = function(folders, fileNames) {
-        let candidates = [];
-        for (let i = 0; i < fileNames.length; i++) {
-            let line = 0;
-            if (i + 1 < fileNames.length) {
-                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0');
-            }
-            for (let j = 0; j < folders.length; j++) {
-                candidates.push({
-                    folder: folders[j],
-                    name: fileNames[i],
-                    line: line
-                });
-            }
-        }
-        return candidates;
-    };
-    const tagJump = function(textEditor) {
-        let folders = getBaseFolders(textEditor);
-        let names = getFileNames(textEditor);
-        let candidates = makeTagCandidates(folders, names);
-        let index = 0;
-        let tryNext = function() {
-            if (index >= candidates.length) {
-                return;
-            }
-            let cand = candidates[index++];
-            let line = cand.line;
-            let uri = tag_jump.makeFileUri(cand.folder, cand.name);
-            if (!uri) {
-                tryNext();
-                return;
-            }
-            //console.log(uri.toString());
-            vscode.workspace.fs.stat(uri).then(function(stat) {
-                if (stat.type === vscode.FileType.File ||
-                    stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
-                    openTextDocument(uri, line);
-                } else {
-                    tryNext();
-                }
-            }, function(e) { // No entry
-                tryNext();
-            });
-        };
-        tryNext();
-    };
-    registerTextEditorCommand('tagJump', tagJump);
 
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
