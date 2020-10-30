@@ -52,47 +52,6 @@ function activate(context) {
             res.then(function() { exec(commands, index + 1); });
         }
     };
-    const registerToggleSelectionCommand = function(name, isBox) {
-        registerTextEditorCommand(name, function(textEditor, _edit) {
-            mode.sync(textEditor);
-            if (mode.inSelection()) {
-                if (!textEditor.selection.isEmpty) {
-                    vscode.commands.executeCommand('cancelSelection');
-                } else {
-                    vscode.commands.executeCommand('removeSecondaryCursors');
-                }
-                mode.resetSelection(textEditor);
-            } else {
-                mode.startSelection(textEditor, isBox);
-            }
-        });
-    };
-    registerTextEditorCommand('reverseSelection', function(textEditor, _edit) {
-        if (mode.inSelection()) {
-            let box = mode.inBoxSelection();
-            mode.resetSelection(textEditor);
-            textEditor.selections = textEditor.selections.map((sel) => (
-                new vscode.Selection(sel.active, sel.anchor)
-            )).reverse();
-            let pos = textEditor.selections[textEditor.selections.length - 1].active;
-            textEditor.revealRange(new vscode.Range(pos, pos));
-            mode.startSelection(textEditor, box);
-        }
-    });
-    registerToggleSelectionCommand('toggleSelection', false);
-    registerToggleSelectionCommand('toggleBoxSelection', true);
-    registerTextEditorCommand('stopBoxSelection', function(textEditor, _edit) {
-        if (EditUtil.rangesAllEmpty(textEditor.selections)) {
-            vscode.commands.executeCommand('removeSecondaryCursors');
-            if (mode.inSelection()) {
-                mode.resetSelection(textEditor);
-            }
-        } else {
-            textEditor.selections = textEditor.selections.map((sel) => (
-                new vscode.Selection(sel.active, sel.active)
-            ));
-        }
-    });
 
     registerTextEditorCommand('find', function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);

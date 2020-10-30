@@ -288,6 +288,46 @@ const CursorHandler = function(modeHandler) {
         exec(['cancelSelection', 'vz.scrollLineDown']);
     };
 
+    const registerToggleSelectionCommand = function(context, name, isBox) {
+        registerTextEditorCommand(context, name, function(textEditor, _edit) {
+            mode.sync(textEditor);
+            if (mode.inSelection()) {
+                if (!textEditor.selection.isEmpty) {
+                    vscode.commands.executeCommand('cancelSelection');
+                } else {
+                    vscode.commands.executeCommand('removeSecondaryCursors');
+                }
+                mode.resetSelection(textEditor);
+            } else {
+                mode.startSelection(textEditor, isBox);
+            }
+        });
+    };
+    const stopBoxSelection = function(textEditor, _edit) {
+        if (EditUtil.rangesAllEmpty(textEditor.selections)) {
+            vscode.commands.executeCommand('removeSecondaryCursors');
+            if (mode.inSelection()) {
+                mode.resetSelection(textEditor);
+            }
+        } else {
+            textEditor.selections = textEditor.selections.map((sel) => (
+                new vscode.Selection(sel.active, sel.active)
+            ));
+        }
+    };
+    const reverseSelection = function(textEditor, _edit) {
+        if (mode.inSelection()) {
+            let box = mode.inBoxSelection();
+            mode.resetSelection(textEditor);
+            textEditor.selections = textEditor.selections.map((sel) => (
+                new vscode.Selection(sel.active, sel.anchor)
+            )).reverse();
+            let pos = textEditor.selections[textEditor.selections.length - 1].active;
+            textEditor.revealRange(new vscode.Range(pos, pos));
+            mode.startSelection(textEditor, box);
+        }
+    };
+
     let markedPositionMap = new Map();
     const getMarkedPosition = function(textEditor) {
         let key = textEditor.document.uri.toString();
@@ -459,6 +499,10 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'scrollLineUpUnselect', scrollLineUpUnselect);
         registerTextEditorCommand(context, 'scrollLineDown', scrollLineDown);
         registerTextEditorCommand(context, 'scrollLineDownUnselect', scrollLineDownUnselect);
+        registerToggleSelectionCommand(context, 'toggleSelection', false);
+        registerToggleSelectionCommand(context, 'toggleBoxSelection', true);
+        registerTextEditorCommand(context, 'stopBoxSelection', stopBoxSelection);
+        registerTextEditorCommand(context, 'reverseSelection', reverseSelection);
         registerTextEditorCommand(context, 'markPosition', markPosition);
         registerTextEditorCommand(context, 'cursorLastPosition', cursorLastPosition);
         registerTextEditorCommand(context, 'tagJump', tagJump);
