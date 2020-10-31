@@ -2,7 +2,6 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const cursor_style = require("./cursor_style.js");
-const EditUtil = require("./edit_util.js");
 const edit_commands = require("./edit_commands.js");
 const cursor_commands = require("./cursor_commands.js");
 

@@ -397,8 +397,8 @@ const CursorHandler = function(modeHandler) {
                 if (line) {
                     moveCursorTo(textEditor, line - 1, 0, false);
                 }
-            }, function(err) {});
-        }, function(err) {});
+            }, function(_err) {});
+        }, function(_err) {});
     };
     const getCurrentLineText = function(textEditor) {
         let line = textEditor.selection.active.line;
@@ -456,7 +456,7 @@ const CursorHandler = function(modeHandler) {
                 } else {
                     tryNext();
                 }
-            }, function(e) { // No entry
+            }, function(_e) { // No entry
                 tryNext();
             });
         };
