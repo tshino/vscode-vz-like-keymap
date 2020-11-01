@@ -1074,4 +1074,27 @@ describe('CursorHandler', () => {
             assert.strictEqual(vlines1.includes(555), true);
         });
     });
+    describe('getFileNames', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'hello.txt\n' +
+                'include "abc.hpp"'
+            );
+        });
+        it('should extact path-like strings from the cursor line of the document', async () => {
+            await resetCursor(0, 3);
+
+            let files = cursorHandler.getFileNames(textEditor);
+
+            assert.deepStrictEqual(files, ['hello.txt']);
+        });
+        it('should ignore symbols which is unlikely part of a path', async () => {
+            await resetCursor(1, 3);
+
+            let files = cursorHandler.getFileNames(textEditor);
+
+            assert.deepStrictEqual(files, ['include', 'abc.hpp']);
+        });
+    });
 });

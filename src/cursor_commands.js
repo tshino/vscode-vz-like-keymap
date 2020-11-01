@@ -532,6 +532,7 @@ const CursorHandler = function(modeHandler) {
         setMarkedPosition,  // for testing
         markPosition,
         cursorLastPosition,
+        getFileNames,
         registerCommands
     };
 };
