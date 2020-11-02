@@ -360,13 +360,25 @@ const CursorHandler = function(modeHandler) {
         if (markedPositionMap.has(key)) {
             let offset = markedPositionMap.get(key);
             let delta = 0;
+            let approximation = false;
             for (let i = 0; i < changes.length; i++) {
                 let chg = changes[i];
-                if (chg.rangeOffset <= offset) {
-                    delta += chg.text.length - Math.min(chg.rangeLength, offset - chg.rangeOffset);
+                if (chg.rangeOffset + chg.rangeLength <= offset) {
+                    delta += chg.text.length - chg.rangeLength;
+                } else if (chg.rangeOffset <= offset) {
+                    if (chg.rangeOffset + chg.text.length < offset) {
+                        delta += chg.rangeOffset + chg.text.length - offset;
+                    } else {
+                        approximation = true;
+                    }
                 }
             }
-            markedPositionMap.set(key, offset + delta);
+            offset += delta;
+            if (approximation) {
+                let pos = document.positionAt(offset).with({ character: 0 });
+                offset = document.offsetAt(pos);
+            }
+            markedPositionMap.set(key, offset);
         }
     };
     const currentCursorPosition = function(textEditor) {

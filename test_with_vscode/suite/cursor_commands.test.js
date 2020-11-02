@@ -903,12 +903,10 @@ describe('CursorHandler', () => {
         });
     });
     describe('markPosition', () => {
-        before(async () => {
+        beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
                 '0123456789\n'.repeat(10)
             );
-        });
-        beforeEach(async () => {
             cursorHandler.setMarkedPosition(textEditor, null);
         });
         it('should mark current cursor position', async () => {
@@ -966,6 +964,22 @@ describe('CursorHandler', () => {
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(5, 1)), true);
+        });
+        it('should move marked position approximately if some text around the position replaced', async () => {
+            await resetCursor(4, 4);
+            cursorHandler.markPosition(textEditor);
+
+            await textEditor.edit((edit) => {
+                edit.replace(
+                    new vscode.Range(3, 0, 5, 10),
+                    '3333333333\n4444444444\n5555555555\n6666666666\n7777777777'
+                );
+            });
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            console.log(pos);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(4, 0)), true);
         });
     });
     describe('cursorLastPosition', () => {
