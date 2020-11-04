@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.13.0] - 2020-11-04
 - Added:
   - Ctrl+Q M for Mark current position.
   - Ctrl+Q P for Jump to last marked position.
