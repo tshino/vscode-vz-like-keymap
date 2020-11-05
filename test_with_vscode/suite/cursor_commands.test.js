@@ -977,7 +977,6 @@ describe('CursorHandler', () => {
             });
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
-            console.log(pos);
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 0)), true);
         });
