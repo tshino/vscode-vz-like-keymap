@@ -1111,4 +1111,26 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(files, ['include', 'abc.hpp']);
         });
     });
+    describe('makeTagCandidates', () => {
+        it('should make a list of every possible combinations of folders and paths', () => {
+            let folders = [
+                new vscode.Uri('file', '', '/path/to/folder1', '', ''),
+                new vscode.Uri('file', '', '/path/to/folder2', '', '')
+            ];
+            let files = [
+                'hello.txt',
+                'world.txt'
+            ];
+            let list = cursorHandler.makeTagCandidates(folders, files);
+            assert.deepStrictEqual(
+                list,
+                [
+                    { folder: folders[0], name: files[0], line: 0 },
+                    { folder: folders[1], name: files[0], line: 0 },
+                    { folder: folders[0], name: files[1], line: 0 },
+                    { folder: folders[1], name: files[1], line: 0 }
+                ]
+            );
+        });
+    });
 });

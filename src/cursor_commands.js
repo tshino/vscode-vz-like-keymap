@@ -545,6 +545,7 @@ const CursorHandler = function(modeHandler) {
         markPosition,
         cursorLastPosition,
         getFileNames,
+        makeTagCandidates,
         registerCommands
     };
 };
