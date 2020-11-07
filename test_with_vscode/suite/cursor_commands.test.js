@@ -1116,10 +1116,7 @@ describe('CursorHandler', () => {
                 new vscode.Uri('file', '', '/path/to/folder1', '', ''),
                 new vscode.Uri('file', '', '/path/to/folder2', '', '')
             ];
-            let files = [
-                'hello.txt',
-                'world.txt'
-            ];
+            let files = [ 'hello', 'world' ];
             let list = cursorHandler.makeTagCandidates(folders, files);
             assert.deepStrictEqual(
                 list,
@@ -1128,6 +1125,21 @@ describe('CursorHandler', () => {
                     { folder: folders[1], name: files[0], line: 0 },
                     { folder: folders[0], name: files[1], line: 0 },
                     { folder: folders[1], name: files[1], line: 0 }
+                ]
+            );
+        });
+        it('should detect line numbers appear right after file names', () => {
+            let folders = [
+                new vscode.Uri('file', '', '/path/to/folder1', '', ''),
+            ];
+            let files = [ 'hello', 'world.txt', '777' ];
+            let list = cursorHandler.makeTagCandidates(folders, files);
+            assert.deepStrictEqual(
+                list,
+                [
+                    { folder: folders[0], name: files[0], line: 0 },
+                    { folder: folders[0], name: files[1], line: 777 },
+                    { folder: folders[0], name: files[2], line: 0 }
                 ]
             );
         });
