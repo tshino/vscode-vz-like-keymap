@@ -53,5 +53,9 @@ testUtils.isCursorVisible = function(textEditor) {
     return EditUtil.enumVisibleLines(textEditor).includes(cursorLine);
 };
 
+testUtils.waitForReveal = async function(textEditor) {
+    while (await testUtils.sleep(1), !testUtils.isCursorVisible(textEditor)) {}
+};
+
 
 module.exports = testUtils;

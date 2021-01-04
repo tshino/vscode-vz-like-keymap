@@ -13,9 +13,7 @@ describe('CursorHandler', () => {
     let textEditor;
     const sleep = testUtils.sleep;
     const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
-    const waitForReveal = async () => {
-        while (await sleep(1), !isCursorVisible()) {}
-    };
+    const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
     const waitForStartSelection = async () => {
         while (await sleep(1), !mode.inSelection()) {}
     };
