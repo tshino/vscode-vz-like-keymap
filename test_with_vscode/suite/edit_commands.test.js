@@ -9,9 +9,9 @@ const EditUtil = require("./../../src/edit_util.js");
 describe('EditHandler', () => {
     const mode = mode_handler.getInstance();
     const editHandler = edit_commands.getInstance();
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     let textEditor;
+    const sleep = testUtils.sleep;
     const waitForCursor = async (prevLine, prevCharacter) => {
         while (
             textEditor.selections[0].active.line === prevLine &&

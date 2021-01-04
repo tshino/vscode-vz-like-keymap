@@ -1,6 +1,7 @@
 'use strict';
 const assert = require('assert');
 const vscode = require("vscode");
+const EditUtil = require("./../../src/edit_util.js");
 
 const testUtils = {};
 
@@ -44,5 +45,13 @@ testUtils.selectionsToArray = function(selections) {
     }
     return array;
 };
+
+testUtils.sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+
+testUtils.isCursorVisible = function(textEditor) {
+    let cursorLine = textEditor.selections[0].active.line;
+    return EditUtil.enumVisibleLines(textEditor).includes(cursorLine);
+};
+
 
 module.exports = testUtils;

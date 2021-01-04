@@ -9,13 +9,10 @@ const EditUtil = require("./../../src/edit_util.js");
 describe('CursorHandler', () => {
     const mode = mode_handler.getInstance();
     const cursorHandler = cursor_commands.getInstance();
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     let textEditor;
-    const isCursorVisible = () => {
-        let cursorLine = textEditor.selections[0].active.line;
-        return EditUtil.enumVisibleLines(textEditor).includes(cursorLine);
-    };
+    const sleep = testUtils.sleep;
+    const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
     const waitForReveal = async () => {
         while (await sleep(1), !isCursorVisible()) {}
     };
