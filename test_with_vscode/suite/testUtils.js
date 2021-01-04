@@ -49,6 +49,12 @@ const testUtils = (function() {
     const waitForReveal = async function(textEditor) {
         while (await sleep(1), !isCursorVisible(textEditor)) {}
     };
+    const waitForStartSelection = async (mode) => {
+        while (await sleep(1), !mode.inSelection()) {}
+    };
+    const waitForEndSelection = async (mode) => {
+        while (await sleep(1), mode.inSelection()) {}
+    };
 
     return {
         setupTextEditor,
@@ -57,7 +63,9 @@ const testUtils = (function() {
         selectionsToArray,
         sleep,
         isCursorVisible,
-        waitForReveal
+        waitForReveal,
+        waitForStartSelection,
+        waitForEndSelection
     };
 })();
 

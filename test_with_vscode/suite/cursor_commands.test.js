@@ -14,12 +14,8 @@ describe('CursorHandler', () => {
     const sleep = testUtils.sleep;
     const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
     const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
-    const waitForStartSelection = async () => {
-        while (await sleep(1), !mode.inSelection()) {}
-    };
-    const waitForEndSelection = async () => {
-        while (await sleep(1), mode.inSelection()) {}
-    };
+    const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
+    const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const revealCursor = async (revealType=undefined) => {
         let cursor = textEditor.selections[0].active;
         textEditor.revealRange(new vscode.Range(cursor, cursor), revealType);
