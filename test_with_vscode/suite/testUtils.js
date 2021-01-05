@@ -86,6 +86,22 @@ const testUtils = (function() {
         }
         while (await sleep(1), !mode.synchronized()) {}
     };
+    const selectRange = async (textEditor, mode, l1, c1, l2, c2) => {
+        await resetCursor(textEditor, mode, l1, c1);
+        mode.expectSync();
+        textEditor.selections = [ new vscode.Selection(l1, c1, l2, c2) ];
+        await revealCursor(textEditor);
+        while (await sleep(1), !mode.synchronized()) {}
+    };
+    const selectRanges = async (textEditor, mode, ranges) => {
+        await resetCursor(textEditor, mode, ranges[0][0], ranges[0][1]);
+        mode.expectSync();
+        textEditor.selections = ranges.map(
+            r => new vscode.Selection(r[0], r[1], r[2], r[3])
+        );
+        await revealCursor(textEditor);
+        while (await sleep(1), !mode.synchronized()) {}
+    };
 
     return {
         setupTextEditor,
@@ -97,9 +113,10 @@ const testUtils = (function() {
         waitForReveal,
         waitForStartSelection,
         waitForEndSelection,
-        revealCursor,
         resetCursor,
-        locateCursor
+        locateCursor,
+        selectRange,
+        selectRanges
     };
 })();
 

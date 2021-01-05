@@ -16,9 +16,6 @@ describe('CursorHandler', () => {
     const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
     const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
     const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
-    const revealCursor = async (revealType=undefined) => {
-        await testUtils.revealCursor(textEditor, revealType);
-    };
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
@@ -26,20 +23,10 @@ describe('CursorHandler', () => {
         await testUtils.locateCursor(textEditor, mode, line, character, revealType);
     };
     const selectRange = async (l1, c1, l2, c2) => {
-        await resetCursor(l1, c1);
-        mode.expectSync();
-        textEditor.selections = [ new vscode.Selection(l1, c1, l2, c2) ];
-        await revealCursor();
-        while (await sleep(1), !mode.synchronized()) {}
+        await testUtils.selectRange(textEditor, mode, l1, c1, l2, c2);
     };
     const selectRanges = async (ranges) => {
-        await resetCursor(ranges[0][0], ranges[0][1]);
-        mode.expectSync();
-        textEditor.selections = ranges.map(
-            r => new vscode.Selection(r[0], r[1], r[2], r[3])
-        );
-        await revealCursor();
-        while (await sleep(1), !mode.synchronized()) {}
+        await testUtils.selectRanges(textEditor, mode, ranges);
     };
     const waitForScroll = async (prevTop) => {
         while (EditUtil.enumVisibleLines(textEditor)[0] === prevTop) {
