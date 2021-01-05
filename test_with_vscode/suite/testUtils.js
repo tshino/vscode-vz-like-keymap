@@ -55,6 +55,37 @@ const testUtils = (function() {
     const waitForEndSelection = async (mode) => {
         while (await sleep(1), mode.inSelection()) {}
     };
+    const revealCursor = async (textEditor, revealType=undefined) => {
+        let cursor = textEditor.selections[0].active;
+        textEditor.revealRange(new vscode.Range(cursor, cursor), revealType);
+        await waitForReveal(textEditor);
+    };
+    const resetCursor = async (textEditor, mode, line, character,  revealType=vscode.TextEditorRevealType.Default) => {
+        let anotherLine = line === 0 ? 1 : 0;
+        if (textEditor.selections[0].active.line !== anotherLine) {
+            mode.expectSync();
+            textEditor.selections = [ new vscode.Selection(anotherLine, 0, anotherLine, 0) ];
+            while (await sleep(1), !mode.synchronized()) {}
+        }
+        textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
+        mode.initialize(textEditor);
+        if (revealType !== null) {
+            await revealCursor(textEditor, revealType);
+        }
+        while (await sleep(1),
+            !mode.synchronized() ||
+            textEditor.selections[0].active.line !== line ||
+            textEditor.selections[0].active.character !== character
+        ) {}
+    };
+    const locateCursor = async (textEditor, mode, line, character, revealType=vscode.TextEditorRevealType.Default) => {
+        mode.expectSync();
+        textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
+        if (revealType !== null) {
+            await revealCursor(textEditor, revealType);
+        }
+        while (await sleep(1), !mode.synchronized()) {}
+    };
 
     return {
         setupTextEditor,
@@ -65,7 +96,10 @@ const testUtils = (function() {
         isCursorVisible,
         waitForReveal,
         waitForStartSelection,
-        waitForEndSelection
+        waitForEndSelection,
+        revealCursor,
+        resetCursor,
+        locateCursor
     };
 })();
 

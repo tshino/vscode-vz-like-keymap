@@ -17,35 +17,13 @@ describe('CursorHandler', () => {
     const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
     const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const revealCursor = async (revealType=undefined) => {
-        let cursor = textEditor.selections[0].active;
-        textEditor.revealRange(new vscode.Range(cursor, cursor), revealType);
-        await waitForReveal();
+        await testUtils.revealCursor(textEditor, revealType);
     };
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
-        let anotherLine = line === 0 ? 1 : 0;
-        if (textEditor.selections[0].active.line !== anotherLine) {
-            mode.expectSync();
-            textEditor.selections = [ new vscode.Selection(anotherLine, 0, anotherLine, 0) ];
-            while (await sleep(1), !mode.synchronized()) {}
-        }
-        textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
-        mode.initialize(textEditor);
-        if (revealType !== null) {
-            await revealCursor(revealType);
-        }
-        while (await sleep(1),
-            !mode.synchronized() ||
-            textEditor.selections[0].active.line !== line ||
-            textEditor.selections[0].active.character !== character
-        ) {}
+        await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
     const locateCursor = async (line, character, revealType=vscode.TextEditorRevealType.Default) => {
-        mode.expectSync();
-        textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
-        if (revealType !== null) {
-            await revealCursor(revealType);
-        }
-        while (await sleep(1), !mode.synchronized()) {}
+        await testUtils.locateCursor(textEditor, mode, line, character, revealType);
     };
     const selectRange = async (l1, c1, l2, c2) => {
         await resetCursor(l1, c1);
