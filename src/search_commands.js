@@ -1,6 +1,7 @@
 "use strict";
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
+const EditUtil = require("./edit_util.js");
 
 const exec = function(commands, index = 0) {
     if (typeof commands === 'string') {
@@ -23,13 +24,8 @@ const SearchHandler = function(modeHandler) {
     const find = function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     };
-    const isCursorAtEndOfLine = function(textEditor) {
-        let cursor = textEditor.selection.active;
-        let lineLen = textEditor.document.lineAt(cursor.line).range.end.character;
-        return lineLen <= cursor.character;
-    };
     const selectWordToFind = function(textEditor, _edit) {
-        if (textEditor.selection.isEmpty && !isCursorAtEndOfLine(textEditor)) {
+        if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
             exec(['cursorWordEndRightSelect', 'actions.find']);
         } else {
             exec(['actions.find']);
@@ -44,7 +40,7 @@ const SearchHandler = function(modeHandler) {
             sel = new vscode.Selection(sel.active, sel.anchor);
             textEditor.selection = sel;
         }
-        if (isCursorAtEndOfLine(textEditor)) {
+        if (EditUtil.isCursorAtEndOfLine(textEditor)) {
             return;
         }
         exec(['cursorWordEndRightSelect', 'actions.find']);

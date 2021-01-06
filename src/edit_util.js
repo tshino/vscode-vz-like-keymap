@@ -30,6 +30,12 @@ EditUtil.isLastLineVisible = function(textEditor) {
     return vlines[vlines.length - 1] === lineCount - 1;
 };
 
+EditUtil.isCursorAtEndOfLine = function(textEditor) {
+    let cursor = textEditor.selection.active;
+    let lineLen = textEditor.document.lineAt(cursor.line).range.end.character;
+    return lineLen <= cursor.character;
+};
+
 EditUtil.rangesAllEmpty = function(ranges) {
     return ranges.every((range) => range.isEmpty);
 };
