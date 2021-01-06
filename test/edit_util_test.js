@@ -47,6 +47,30 @@ describe('EditUtil', function() {
             assert.equal(EditUtil.isLastLineVisible(textEditorMock), true);
         });
     });
+    describe('isCursorAtEndOfLine', () => {
+        it('should return true if the cursor is at the end of a line', () => {
+            let textEditorMock = {
+                document: {
+                    lineAt: (line) => ({
+                        range: RangeMock(
+                            PositionMock(line, 0),
+                            PositionMock(line, line <= 4 ? 5 : 0)
+                        )
+                    })
+                }
+            };
+            textEditorMock.selection = SelectionMock(PositionMock(3, 0), PositionMock(3, 0));
+            assert.strictEqual(EditUtil.isCursorAtEndOfLine(textEditorMock), false);
+            textEditorMock.selection = SelectionMock(PositionMock(3, 5), PositionMock(3, 5));
+            assert.strictEqual(EditUtil.isCursorAtEndOfLine(textEditorMock), true);
+            textEditorMock.selection = SelectionMock(PositionMock(2, 3), PositionMock(2, 5));
+            assert.strictEqual(EditUtil.isCursorAtEndOfLine(textEditorMock), true);
+            textEditorMock.selection = SelectionMock(PositionMock(2, 5), PositionMock(2, 2));
+            assert.strictEqual(EditUtil.isCursorAtEndOfLine(textEditorMock), false);
+            textEditorMock.selection = SelectionMock(PositionMock(10, 0), PositionMock(10, 0));
+            assert.strictEqual(EditUtil.isCursorAtEndOfLine(textEditorMock), true);
+        });
+    });
     describe('rangesAllEmpty', function() {
         it('should return true if all ranges are empty', function() {
             const empty = [
