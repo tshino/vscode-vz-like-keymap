@@ -25,12 +25,12 @@ describe('EditUtil', function() {
     });
     describe('getLowerBoundLineIndex', () => {
         it('should return index of smallest number which is greater than or equal to number in query', () => {
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 0), 0);
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 1), 0);
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 2), 1);
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 3), 2);
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 5), 2);
-            assert.equal(EditUtil.getLowerBoundLineIndex([1, 2, 5], 6), 3);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 0), 0);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 1), 0);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 2), 1);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 3), 2);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 5), 2);
+            assert.strictEqual(EditUtil.getLowerBoundLineIndex([1, 2, 5], 6), 3);
         });
     });
     describe('isLastLineVisible', () => {
@@ -40,11 +40,11 @@ describe('EditUtil', function() {
                 document: { lineCount: 0 }
             };
             textEditorMock.document.lineCount = 100;
-            assert.equal(EditUtil.isLastLineVisible(textEditorMock), false);
+            assert.strictEqual(EditUtil.isLastLineVisible(textEditorMock), false);
             textEditorMock.document.lineCount = 22;
-            assert.equal(EditUtil.isLastLineVisible(textEditorMock), false);
+            assert.strictEqual(EditUtil.isLastLineVisible(textEditorMock), false);
             textEditorMock.document.lineCount = 21;
-            assert.equal(EditUtil.isLastLineVisible(textEditorMock), true);
+            assert.strictEqual(EditUtil.isLastLineVisible(textEditorMock), true);
         });
     });
     describe('isCursorAtEndOfLine', () => {
@@ -87,10 +87,10 @@ describe('EditUtil', function() {
                 RangeMock(PositionMock(5, 0)),
                 RangeMock(PositionMock(6, 0), PositionMock(6, 10))
             ];
-            assert.equal(EditUtil.rangesAllEmpty(empty), true);
-            assert.equal(EditUtil.rangesAllEmpty(singleLine), false);
-            assert.equal(EditUtil.rangesAllEmpty(multi1), true);
-            assert.equal(EditUtil.rangesAllEmpty(multi2), false);
+            assert.strictEqual(EditUtil.rangesAllEmpty(empty), true);
+            assert.strictEqual(EditUtil.rangesAllEmpty(singleLine), false);
+            assert.strictEqual(EditUtil.rangesAllEmpty(multi1), true);
+            assert.strictEqual(EditUtil.rangesAllEmpty(multi2), false);
         });
     });
     describe('sortRangesInAscending', function() {
@@ -153,23 +153,23 @@ describe('EditUtil', function() {
     });
     describe('normalizeEOL', function() {
         it('should replace every CRLF to LF', function() {
-            assert.equal(
+            assert.strictEqual(
                 EditUtil.normalizeEOL('hogehoge\r\n'),
                 'hogehoge\n'
             );
-            assert.equal(
+            assert.strictEqual(
                 EditUtil.normalizeEOL('hogehoge'),
                 'hogehoge'
             );
-            assert.equal(
+            assert.strictEqual(
                 EditUtil.normalizeEOL('\r\nhogehoge'),
                 '\nhogehoge'
             );
-            assert.equal(
+            assert.strictEqual(
                 EditUtil.normalizeEOL('hoge\r\nhoge\r\n'),
                 'hoge\nhoge\n'
             );
-            assert.equal(
+            assert.strictEqual(
                 EditUtil.normalizeEOL('hoge\nhoge\n'),
                 'hoge\nhoge\n'
             );
