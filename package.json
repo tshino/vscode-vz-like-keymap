@@ -74,6 +74,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables Ctrl+Z for Scroll down, otherwise, keeps the default (Undo)"
+                },
+                "vzKeymap.shift+F10": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables Shift+F10 for Tag jump, otherwise, keeps the default (Show editor context menu)"
                 }
             }
         },
@@ -426,7 +431,7 @@
             {
                 "key": "shift+f10",
                 "command": "vz.tagJump",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && config.vzKeymap.shift+F10"
             },
             {
                 "key": "ctrl+h",

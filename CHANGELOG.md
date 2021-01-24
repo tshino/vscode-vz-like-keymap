@@ -6,6 +6,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Added:
   - New options to the Settings.
     - `Vz Keymap: Ctrl+N` - on: Insert new line above (Vz Keymap) / off: New File (VS Code)
+    - `Vz Keymap: Shift+F10` - on: Tag jump (Vz Keymap) / off: Show Editor Context Menu (VS Code)
 
 ### [0.13.0] - 2020-11-04
 - Added:
