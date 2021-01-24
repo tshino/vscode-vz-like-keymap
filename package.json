@@ -747,6 +747,21 @@
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
+                "key": "alt+y",
+                "command": "workbench.action.moveEditorToNextGroup",
+                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus"
+            },
+            {
+                "key": "alt+y",
+                "command": "workbench.action.focusSecondEditorGroup",
+                "when": "!multipleEditorGroups && groupEditorsCount == 1 && !sideBarFocus && !panelFocus"
+            },
+            {
+                "key": "alt+y",
+                "command": "workbench.action.joinTwoGroups",
+                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus"
+            },
+            {
                 "key": "ctrl+q ctrl+q",
                 "command": "workbench.action.quickOpenView",
                 "when": "editorFocus"

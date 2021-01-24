@@ -74,6 +74,12 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+M | Find next match/Replace one match |
 | Ctrl+Q O | Replace one match |
 
+### Window
+
+| Key | Function |
+| --- | -------- |
+| Alt+Y | Split editor window |
+
 ### Alternatives for conflicts
 
 | Key with conflict | Alternative key provided by Vz Keymap | Function |

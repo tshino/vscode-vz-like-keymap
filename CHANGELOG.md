@@ -4,6 +4,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - Added:
+  - Alt+Y for Split editor window.
   - New options to the Settings.
     - `Vz Keymap: Ctrl+N` - on: Insert New Line Above (Vz Keymap) / off: New File (VS Code)
     - `Vz Keymap: Shift+F10` - on: Tag Jump (Vz Keymap) / off: Show Editor Context Menu (VS Code)
