@@ -60,6 +60,11 @@
                     "default": true,
                     "description": "Enables Ctrl+L for Select word to find, otherwise, keeps the default (Expand line selection)"
                 },
+                "vzKeymap.ctrl+N": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables Ctrl+N for Insert new line above, otherwise, keeps the default (New file)"
+                },
                 "vzKeymap.ctrl+W": {
                     "type": "boolean",
                     "default": true,
@@ -524,12 +529,12 @@
             {
                 "key": "ctrl+n",
                 "command": "",
-                "when": "editorFocus"
+                "when": "editorFocus && config.vzKeymap.ctrl+N"
             },
             {
                 "key": "ctrl+n",
                 "command": "editor.action.insertLineBefore",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && config.vzKeymap.ctrl+N"
             },
             {
                 "key": "ctrl+k ctrl+d",

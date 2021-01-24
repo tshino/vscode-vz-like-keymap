@@ -2,6 +2,11 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- Added:
+  - New options to the Settings.
+    - `Vz Keymap: Ctrl+N` - on: Insert new line above (Vz Keymap) / off: New File (VS Code)
+
 ### [0.13.0] - 2020-11-04
 - Added:
   - Ctrl+Q M for Mark current position.
