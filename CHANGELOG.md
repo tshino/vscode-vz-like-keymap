@@ -5,8 +5,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Added:
   - New options to the Settings.
-    - `Vz Keymap: Ctrl+N` - on: Insert new line above (Vz Keymap) / off: New File (VS Code)
-    - `Vz Keymap: Shift+F10` - on: Tag jump (Vz Keymap) / off: Show Editor Context Menu (VS Code)
+    - `Vz Keymap: Ctrl+N` - on: Insert New Line Above (Vz Keymap) / off: New File (VS Code)
+    - `Vz Keymap: Shift+F10` - on: Tag Jump (Vz Keymap) / off: Show Editor Context Menu (VS Code)
 
 ### [0.13.0] - 2020-11-04
 - Added:
@@ -20,10 +20,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - New set of options to the Settings to enable/disable some key bindings of Vz Keymap.
     - By turning some of these options off you can choose to use the specific keys for the original function of VS Code instead of Vz Keymap's functionality.
     - Here is the full list of key binding options:
-    - `Vz Keymap: Ctrl+I` - on: Insert tab (Vz Keymap) / off: IntelliSense (VS Code)
-    - `Vz Keymap: Ctrl+L` - on: Select word for find (Vz Keymap) / off: Expand line selection (VS Code)
-    - `Vz Keymap: Ctrl+W` - on: Scroll up (Vz Keymap) / off: Close editor (VS Code)
-    - `Vz Keymap: Ctrl+Z` - on: Scroll down (Vz Keymap) / off: Undo (VS Code)
+    - `Vz Keymap: Ctrl+I` - on: Insert Tab (Vz Keymap) / off: IntelliSense (VS Code)
+    - `Vz Keymap: Ctrl+L` - on: Select Word for Find (Vz Keymap) / off: Expand Line Selection (VS Code)
+    - `Vz Keymap: Ctrl+W` - on: Scroll Up (Vz Keymap) / off: Close Window (VS Code)
+    - `Vz Keymap: Ctrl+Z` - on: Scroll Down (Vz Keymap) / off: Undo (VS Code)
   - Ctrl+Q O for Replace one match.
   - Ctrl+Q U for Transform case.
   - Ctrl+Q N for Insert file path.

@@ -53,32 +53,32 @@
                 "vzKeymap.ctrl+I": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Ctrl+I for Insert tab, otherwise, keeps the default (IntelliSense)"
+                    "description": "On: Insert Tab / Off: IntelliSense (VS Code default)"
                 },
                 "vzKeymap.ctrl+L": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Ctrl+L for Select word to find, otherwise, keeps the default (Expand line selection)"
+                    "description": "On: Select Word to Find / Off: Expand Line Selection (VS Code default)"
                 },
                 "vzKeymap.ctrl+N": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Ctrl+N for Insert new line above, otherwise, keeps the default (New file)"
+                    "description": "On: Insert New Line Above / Off: New File (VS Code default)"
                 },
                 "vzKeymap.ctrl+W": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Ctrl+W for Scroll up, otherwise, keeps the default (Close editor)"
+                    "description": "On: Scroll Up / Off: Close Window (VS Code default)"
                 },
                 "vzKeymap.ctrl+Z": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Ctrl+Z for Scroll down, otherwise, keeps the default (Undo)"
+                    "description": "On: Scroll Down / Off: Undo (VS Code default)"
                 },
                 "vzKeymap.shift+F10": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables Shift+F10 for Tag jump, otherwise, keeps the default (Show editor context menu)"
+                    "description": "On: Tag Jump / Off: Show Editor Context Menu (VS Code default)"
                 }
             }
         },
