@@ -50,6 +50,11 @@
                         "Scroll up/down by half a page"
                     ]
                 },
+                "vzKeymap.alt+Y": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "On: Split Editor Window / Off: unassigned (VS Code default)"
+                },
                 "vzKeymap.ctrl+I": {
                     "type": "boolean",
                     "default": true,
@@ -749,17 +754,17 @@
             {
                 "key": "alt+y",
                 "command": "workbench.action.moveEditorToNextGroup",
-                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus"
+                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus && config.vzKeymap.alt+Y"
             },
             {
                 "key": "alt+y",
                 "command": "workbench.action.focusSecondEditorGroup",
-                "when": "!multipleEditorGroups && groupEditorsCount == 1 && !sideBarFocus && !panelFocus"
+                "when": "!multipleEditorGroups && groupEditorsCount == 1 && !sideBarFocus && !panelFocus && config.vzKeymap.alt+Y"
             },
             {
                 "key": "alt+y",
                 "command": "workbench.action.joinTwoGroups",
-                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus"
+                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && config.vzKeymap.alt+Y"
             },
             {
                 "key": "ctrl+q ctrl+q",
