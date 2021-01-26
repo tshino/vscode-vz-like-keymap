@@ -50,6 +50,11 @@
                         "Scroll up/down by half a page"
                     ]
                 },
+                "vzKeymap.alt+W": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "On: Switch Editor Window / Off: Toggle Find Whole Word (VS Code default)"
+                },
                 "vzKeymap.alt+Y": {
                     "type": "boolean",
                     "default": true,
@@ -769,12 +774,12 @@
             {
                 "key": "alt+w",
                 "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
-                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible"
+                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible && config.vzKeymap.alt+W"
             },
             {
                 "key": "alt+w",
                 "command": "workbench.action.focusNextGroup",
-                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible"
+                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible && config.vzKeymap.alt+W"
             },
             {
                 "key": "ctrl+q ctrl+q",

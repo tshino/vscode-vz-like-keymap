@@ -8,6 +8,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Alt+W for Switch editor window.
   - New options to the Settings.
     - `Vz Keymap: Alt+Y` - on: Split Editor Window (Vz Keymap) / off: unassigned (VS Code)
+    - `Vz Keymap: Alt+W` - on: Switch Editor Window (Vz Keymap) / off: Toggle Find Whole Word (VS Code)
     - `Vz Keymap: Ctrl+N` - on: Insert New Line Above (Vz Keymap) / off: New File (VS Code)
     - `Vz Keymap: Shift+F10` - on: Tag Jump (Vz Keymap) / off: Show Editor Context Menu (VS Code)
 
