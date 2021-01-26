@@ -767,6 +767,16 @@
                 "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && config.vzKeymap.alt+Y"
             },
             {
+                "key": "alt+w",
+                "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+                "when": "!multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible"
+            },
+            {
+                "key": "alt+w",
+                "command": "workbench.action.focusNextGroup",
+                "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible"
+            },
+            {
                 "key": "ctrl+q ctrl+q",
                 "command": "workbench.action.quickOpenView",
                 "when": "editorFocus"

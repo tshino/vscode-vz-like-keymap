@@ -79,6 +79,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Key | Function |
 | --- | -------- |
 | Alt+Y | Split editor window |
+| Alt+W | Switch editor window |
 
 ### Alternatives for conflicts
 
