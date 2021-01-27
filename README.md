@@ -74,7 +74,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+M | Find next match/Replace one match |
 | Ctrl+Q O | Replace one match |
 
-### Window
+### Window Management
 
 | Key | Function |
 | --- | -------- |
