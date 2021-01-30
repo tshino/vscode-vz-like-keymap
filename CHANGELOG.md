@@ -2,7 +2,8 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [0.14.0] - 2021-01-29
+### [0.14.0] - 2021-01-30
+- Added the Japanese version of README.
 - Added:
   - Window management shortcuts:
     - Alt+Y for Split editor window.

@@ -1,6 +1,124 @@
+([The English version](#English) is below the Japanese version)
+
 # Vz Keymap for VS Code
 
 [![Node.js CI](https://github.com/tshino/vscode-vz-like-keymap/workflows/Node.js%20CI/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions?query=workflow%3A%22Node.js+CI%22)
+
+Vz KeymapはVzエディタのキーバインドを再現するVisual Studio Code拡張です。
+
+- 50以上のショートカットキーに対応し、Vzとほぼ同等の基本操作を実現。
+- 2ストロークキーの2文字目はCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
+- テキストスタック機能に対応。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
+- 選択モード（CTRL+B）と矩形選択モード（CTRL+K B）も対応。
+- 削除文字スタック機能で、DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
+- 半画面スクロールも可能（設定で切り替え）。
+- タグジャンプ機能（SHIFT+F10）。
+- いくつか設定オプションあり。設定で "vz" を検索してみてください。
+
+## 対応キー一覧
+
+### カーソル移動、スクロール、選択、ジャンプ
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+S, CTRL+D, CTRL+E, CTRL+X | カーソルを左（右,上,下）へ一文字移動 |
+| CTRL+A, CTRL+F | カーソルを左（右）の単語へ移動 |
+| CTRL+R, PageUp, CTRL+C, PageDown | 上（下）へ1画面または半画面スクロール |
+| CTRL+W, SHIFT+PageUp, CTRL+Z, SHIFT+PageDown | 上（下）へ1行スクロール |
+| CTRL+Q S, CTRL+Q D | 論理行の先頭（末尾）へ移動 |
+| CTRL+Q [, CTRL+Q ] | 表示行の先頭（末尾）へ移動 |
+| CTRL+Q E, CTRL+Q X | 画面内の上端（下端）へ移動 |
+| CTRL+Q R, CTRL+Q C | ファイルの先頭（末尾）へ移動 |
+| CTRL+B | 選択モード切り替え |
+| CTRL+K B | 矩形選択モード切り替え |
+| CTRL+Q B | 選択範囲の反対側へジャンプ |
+| CTRL+Q K | 対応括弧へジャンプ |
+| CTRL+Q J | 行番号指定でジャンプ |
+| CTRL+Q M | 現在位置をマーク |
+| CTRL+Q P | マークした位置へジャンプ |
+| SHIFT+F10 | タグジャンプ |
+
+### 削除、挿入、編集、クリップボード
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+H, CTRL+G | 左（右）の文字を削除 |
+| CTRL+Q H, CTRL+T | 左（右）の単語を削除 |
+| CTRL+Q T, CTRL+Q Y | カーソルより左側（右側）を削除 |
+| CTRL+U | 削除した文字を復元 |
+| CTRL+I | タブ挿入 |
+| CTRL+M | 改行 |
+| CTRL+N | 上に空行を挿入 |
+| CTRL+K D | 行または選択範囲を複製 |
+| CTRL+Q N | ファイルパスを挿入 |
+| CTRL+Q U | 大文字小文字変換 |
+| CTRL+Y | カット（テキストスタックにPUSH） |
+| CTRL+J | ペースト（テキストスタックからPOP） |
+| CTRL+K K | コピー（テキストスタックにPUSH） |
+| CTRL+K C | ペースト（テキストスタックを保持） |
+| CTRL+K Y | クリップボードとテキストスタックをクリア |
+
+### 履歴操作
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+K U, ALT+Backspace | 取り消し（Undo） |
+| SHIFT+ALT+Backspace | やり直し（Redo） |
+
+### 検索、置換
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+Q F | 検索 |
+| CTRL+Q A | 置換 |
+| CTRL+L | 選択して検索 |
+| CTRL+R, PageUp, CTRL+C, PageDown | 前方（後方）の検索結果へ移動 |
+| CTRL+M | 次の検索結果へ移動、または置換を1つ実行 |
+| CTRL+Q O | 置換を1つ実行 |
+
+### ウィンドウ操作
+
+| キー | 機能 |
+| ---- | ---- |
+| ALT+Y | ウィンドウを分割 |
+| ALT+W | ウィンドウを切り替え |
+
+### 被ったキーの代替
+
+| 被ったキー | Vz Keymapが提供する代替キー | 機能 |
+| ---------- | --------------------------- | ---- |
+| CTRL+Q | CTRL+Q CTRL+Q | Quick Open View |
+| CTRL+B | CTRL+ALT+B | Toggle Side Bar Visibility |
+| CTRL+J | CTRL+ALT+J | Toggle Panel Visibility |
+
+### 被ったキーの元からある代替操作（ご参考）
+
+| 被ったキー | VS Codeに元からある代替操作 | 機能 |
+| ---------- | ------------------------- | ---- |
+| CTRL+A | 4回クリック | 全選択 |
+| CTRL+N | ALT+F N (File > New File) | 新規ファイル |
+| CTRL+S | ALT+F S (File > Save) | ファイルを保存 |
+| CTRL+W | CTRL+F4 | タブを閉じる |
+| CTRL+I | CTRL+Space | 補完候補を表示（IntelliSense） |
+| CTRL+K CTRL+C | CTRL+/ | 行コメントの切り替え |
+
+## 再現性の詳細
+
+Vz KeymapではVzエディタと同様に2ストロークキーの2文字目でCTRLキーを押すか離すかを区別しません。VS Codeのキー定義ではこれが区別されるため、Vz Keymapはすべての2ストロークキーを2通りずつ登録しています。
+
+Vzエディタの選択モードはちょっと特殊な機能で、単純なキー割り当てでは実現できません。CTRL+Bで選択モードを開始したあとは、SHIFTキーなしのカーソルキーで範囲選択ができます。
+keybindings.json の'when'節では、Vz Keymapが選択モード中かどうかを判定する 'vz.inSelectionMode' という変数が使えるようにしてあります。
+元からある変数 'editorHasSelection' と 'vz.inSelectionMode' は、選択範囲が空（選択モードを開始した直後）でも真になるかどうか、という違いがあります。
+
+いくつかのショートカットキーはVS Codeの対応する機能に直接割り当てられますが、その挙動はVzエディタと異なる場合があります。
+例えば次の単語へカーソルを移動するCTRL+Fは、VS CodeとVzエディタで単語境界の判定が異なるため、動きも異なります。
+
+このVS Code拡張では、VzエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
+代わりに、ALT+F Sで保存（メインメニューのFile > Save）のようにアクセラレータキーで代用することをお薦めします。
+
+
+#### English
+# Vz Keymap for VS Code
 
 This is a Visual Studio Code extension which provides a keymap similar to good old Vz Editor.
 
