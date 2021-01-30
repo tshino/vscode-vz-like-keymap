@@ -3,5 +3,6 @@
 test/**
 test_with_vscode/**
 **/.eslintrc.json
+.github/**
 .gitignore
 vsc-extension-quickstart.md
