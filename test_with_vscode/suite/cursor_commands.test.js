@@ -134,7 +134,7 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[999, 0]]);
             assert.strictEqual(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.notEqual(visibleLines0[0], visibleLines1[0]);
+            assert.notStrictEqual(visibleLines0[0], visibleLines1[0]);
         });
         it('should reveal the location of the cursor after it moved (2)', async () => {
             await resetCursor(1234, 0);
@@ -148,7 +148,7 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
             assert.strictEqual(isCursorVisible(), true);
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.notEqual(visibleLines0[0], visibleLines1[0]);
+            assert.notStrictEqual(visibleLines0[0], visibleLines1[0]);
         });
     });
     describe('moveCursorToWithoutScroll', () => {

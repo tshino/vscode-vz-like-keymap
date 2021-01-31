@@ -29,27 +29,27 @@ module.exports = PositionMock;
 describe('PositionMock', function() {
     it('should have properties line and character', function() {
         let pos = PositionMock(3, 4);
-        assert.equal(pos.line, 3);
-        assert.equal(pos.character, 4);
+        assert.strictEqual(pos.line, 3);
+        assert.strictEqual(pos.character, 4);
     });
     describe('isEqual', function() {
         it('should return true iff two positions are equal', function() {
-            assert.equal(PositionMock(3, 4).isEqual(PositionMock(3, 4)), true);
-            assert.equal(PositionMock(3, 4).isEqual(PositionMock(1, 2)), false);
-            assert.equal(PositionMock(3, 4).isEqual(PositionMock(3, 0)), false);
-            assert.equal(PositionMock(3, 4).isEqual(PositionMock(0, 4)), false);
+            assert.strictEqual(PositionMock(3, 4).isEqual(PositionMock(3, 4)), true);
+            assert.strictEqual(PositionMock(3, 4).isEqual(PositionMock(1, 2)), false);
+            assert.strictEqual(PositionMock(3, 4).isEqual(PositionMock(3, 0)), false);
+            assert.strictEqual(PositionMock(3, 4).isEqual(PositionMock(0, 4)), false);
         });
     });
     describe('isAfter', function() {
         it('should return true iff this position is on a greater line or on the same line on a greater character', function() {
-            assert.equal(PositionMock(0, 0).isAfter(PositionMock(0, 0)), false);
-            assert.equal(PositionMock(1, 0).isAfter(PositionMock(0, 0)), true);
-            assert.equal(PositionMock(0, 1).isAfter(PositionMock(0, 0)), true);
-            assert.equal(PositionMock(5, 5).isAfter(PositionMock(5, 10)), false);
-            assert.equal(PositionMock(5, 5).isAfter(PositionMock(5, 5)), false);
-            assert.equal(PositionMock(5, 5).isAfter(PositionMock(5, 3)), true);
-            assert.equal(PositionMock(4, 7).isAfter(PositionMock(5, 5)), false);
-            assert.equal(PositionMock(6, 3).isAfter(PositionMock(5, 5)), true);
+            assert.strictEqual(PositionMock(0, 0).isAfter(PositionMock(0, 0)), false);
+            assert.strictEqual(PositionMock(1, 0).isAfter(PositionMock(0, 0)), true);
+            assert.strictEqual(PositionMock(0, 1).isAfter(PositionMock(0, 0)), true);
+            assert.strictEqual(PositionMock(5, 5).isAfter(PositionMock(5, 10)), false);
+            assert.strictEqual(PositionMock(5, 5).isAfter(PositionMock(5, 5)), false);
+            assert.strictEqual(PositionMock(5, 5).isAfter(PositionMock(5, 3)), true);
+            assert.strictEqual(PositionMock(4, 7).isAfter(PositionMock(5, 5)), false);
+            assert.strictEqual(PositionMock(6, 3).isAfter(PositionMock(5, 5)), true);
         });
     });
 });

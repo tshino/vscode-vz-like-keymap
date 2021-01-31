@@ -46,18 +46,18 @@ describe('UriMock', function() {
     });
     it('should be able to be constructed with property values', function() {
         let uri = UriMock('s', 'a', 'p', 'q', 'f');
-        assert.equal(uri.scheme, 's');
-        assert.equal(uri.authority, 'a');
-        assert.equal(uri.path, '/p');
-        assert.equal(uri.query, 'q');
-        assert.equal(uri.fragment, 'f');
+        assert.strictEqual(uri.scheme, 's');
+        assert.strictEqual(uri.authority, 'a');
+        assert.strictEqual(uri.path, '/p');
+        assert.strictEqual(uri.query, 'q');
+        assert.strictEqual(uri.fragment, 'f');
     });
     it('should maintain path property to be absolute', function() {
-        assert.equal(UriMock('s', 'a', '/p', 'q', 'f').path, '/p');
-        assert.equal(UriMock('s', 'a', 'p', 'q', 'f').path, '/p');
-        assert.equal(UriMock('', '', '', '', '').path, '/');
-        assert.equal(UriMock().path, '/');
-        assert.equal(UriMock().with({ path: 'p' }).path, '/p');
+        assert.strictEqual(UriMock('s', 'a', '/p', 'q', 'f').path, '/p');
+        assert.strictEqual(UriMock('s', 'a', 'p', 'q', 'f').path, '/p');
+        assert.strictEqual(UriMock('', '', '', '', '').path, '/');
+        assert.strictEqual(UriMock().path, '/');
+        assert.strictEqual(UriMock().with({ path: 'p' }).path, '/p');
     });
     it('should throw exception when making invalid URI', function() {
         assert.throws(() => UriMock('s', '', '//path', '', ''));
@@ -68,9 +68,9 @@ describe('UriMock', function() {
         let uri1 = UriMock('s', 'a', 'p', 'q', 'f');
         let uri2 = UriMock('s', 'a', 'p', 'q', 'f');
         let uri3 = UriMock();
-        assert.equal(uri1, uri1);
-        assert.notEqual(uri1, uri2);
-        assert.notEqual(uri1, uri3);
+        assert.strictEqual(uri1, uri1);
+        assert.notStrictEqual(uri1, uri2);
+        assert.notStrictEqual(uri1, uri3);
         assert.deepStrictEqual(uri1, uri1);
         assert.deepStrictEqual(uri1, uri2);
         assert.notDeepStrictEqual(uri1, uri3);
@@ -79,7 +79,7 @@ describe('UriMock', function() {
         it('should return clone', function() {
             let uri1 = UriMock('s', 'a', 'p', 'q', 'f');
             let uri2 = uri1.with({});
-            assert.notEqual(uri2, uri1);
+            assert.notStrictEqual(uri2, uri1);
             assert.deepStrictEqual(uri2, uri1);
         });
         it('should replace specified property', function() {
