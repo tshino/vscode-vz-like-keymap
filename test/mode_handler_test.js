@@ -24,17 +24,17 @@ describe('TextEditorMock', function() {
     });
     it('should have an empty selection if it is constructed with no argument', function() {
         let te = TextEditorMock();
-        assert.equal(te.selections.length, 1);
-        assert.equal(te.selection.isEmpty, true);
-        assert.equal(te.selections[0].isEmpty, true);
+        assert.strictEqual(te.selections.length, 1);
+        assert.strictEqual(te.selection.isEmpty, true);
+        assert.strictEqual(te.selections[0].isEmpty, true);
     });
     it('should have selections if it is constructed with selections argument', function() {
         let te = TextEditorMock([
             SelectionMock(PositionMock(0, 0), PositionMock(3, 4))
         ]);
-        assert.equal(te.selections.length, 1);
-        assert.equal(te.selection.isEmpty, false);
-        assert.equal(te.selections[0].isEmpty, false);
+        assert.strictEqual(te.selections.length, 1);
+        assert.strictEqual(te.selection.isEmpty, false);
+        assert.strictEqual(te.selections[0].isEmpty, false);
     });
 });
 
@@ -56,21 +56,21 @@ describe('mode_handler', function() {
         */
        it('should be non-selection mode just after constrution', function() {
             let mode = mode_handler.ModeHandler();
-            assert.equal(mode.inSelection(), false);
-            assert.equal(mode.inBoxSelection(), false);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
         });
         describe('startSelection', function() {
             it('should turn on selection mode', function() {
                 let mode = mode_handler.ModeHandler();
                 let te = TextEditorMock();
                 mode.startSelection(te, false);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 mode = mode_handler.ModeHandler();
                 mode.startSelection(te, true);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should invoke event handler if set', function() {
                 let mode = mode_handler.ModeHandler();
@@ -80,7 +80,7 @@ describe('mode_handler', function() {
                     count++;
                 });
                 mode.startSelection(te, false);
-                assert.equal(count, 1);
+                assert.strictEqual(count, 1);
             });
         });
         describe('resetSelection', function() {
@@ -89,14 +89,14 @@ describe('mode_handler', function() {
                 let te = TextEditorMock();
                 mode.startSelection(te, false);
                 mode.resetSelection(te);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 mode = mode_handler.ModeHandler();
                 mode.startSelection(te, true);
                 mode.resetSelection(te);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should invoke event handler if set', function() {
                 let mode = mode_handler.ModeHandler();
@@ -106,7 +106,7 @@ describe('mode_handler', function() {
                     count++;
                 });
                 mode.resetSelection(te);
-                assert.equal(count, 1);
+                assert.strictEqual(count, 1);
             });
         });
         describe('resetBoxSelection', function() {
@@ -115,8 +115,8 @@ describe('mode_handler', function() {
                 let te = TextEditorMock();
                 mode.startSelection(te, true);
                 mode.resetBoxSelection();
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should do nothing if not in box selection mode', function() {
                 let mode = mode_handler.ModeHandler();
@@ -124,13 +124,13 @@ describe('mode_handler', function() {
 
                 mode.startSelection(te, false);
                 mode.resetBoxSelection();
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 mode.resetSelection(te);
                 mode.resetBoxSelection();
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
         });
         describe('initialize', function() {
@@ -139,30 +139,30 @@ describe('mode_handler', function() {
 
                 // A --> [1]
                 mode.initialize(TextEditorMock());
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // A --> [1]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0))
                 ]));
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // B --> [2]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0), PositionMock(5, 10))
                 ]));
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // C --> [3]
                 mode.initialize(TextEditorMock([
                     SelectionMock(PositionMock(5, 0), PositionMock(5, 10)),
                     SelectionMock(PositionMock(6, 0), PositionMock(6, 10))
                 ]));
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should invoke at least one callback function', function() {
                 let mode = mode_handler.ModeHandler();
@@ -212,40 +212,40 @@ describe('mode_handler', function() {
                 mode.initialize(TextEditorMock());
                 countStart = countReset = 0;
                 mode.sync(TextEditorMock());
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A1]
                 const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(empty);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A2]
                 mode.initialize(empty);
                 mode.startSelection(empty, false);
                 countStart = countReset = 0;
                 mode.sync(empty);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A3]
                 mode.initialize(empty);
                 mode.startSelection(empty, true);
                 countStart = countReset = 0;
                 mode.sync(empty);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B2]
                 const single = TextEditorMock([
@@ -254,20 +254,20 @@ describe('mode_handler', function() {
                 mode.initialize(single);
                 countStart = countReset = 0;
                 mode.sync(single);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B3]
                 mode.initialize(empty);
                 mode.startSelection(single, true);
                 countStart = countReset = 0;
                 mode.sync(single);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3]
                 const multi = TextEditorMock([
@@ -277,10 +277,10 @@ describe('mode_handler', function() {
                 mode.initialize(multi);
                 countStart = countReset = 0;
                 mode.sync(multi);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should do nothing if cursor moved in non-selection mode', function() {
                 const cursor_pos1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -291,19 +291,19 @@ describe('mode_handler', function() {
                 mode.initialize(cursor_pos1);
                 countStart = countReset = 0;
                 mode.sync(cursor_pos2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A1'] -> [A1'']
                 mode.initialize(cursor_pos2);
                 countStart = countReset = 0;
                 mode.sync(cursor_pos3);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should do nothing when cursor moved in selection mode', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -316,34 +316,34 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, false);
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B2] -> [B2']
                 countStart = countReset = 0;
                 mode.sync(single2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B2'] -> [B2'']
                 countStart = countReset = 0;
                 mode.sync(single3);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B2''] -> [A2]
                 countStart = countReset = 0;
                 mode.sync(empty1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should do nothing when cursor moved in box-selection mode', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -363,66 +363,66 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, true);
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B3] -> [B3']
                 countStart = countReset = 0;
                 mode.sync(single2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B3'] -> [C3]
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3] -> [C3']
                 countStart = countReset = 0;
                 mode.sync(multi2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3'] -> [B3]
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B3] -> [A3]
                 countStart = countReset = 0;
                 mode.sync(empty1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [A3] -> [C3]
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3] -> [A3]
                 countStart = countReset = 0;
                 mode.sync(empty1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should keep selection mode even when anchor moved unless selection is empty', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
@@ -434,20 +434,20 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, false);
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B2] -> [B2']
                 mode.initialize(single1);
                 mode.startSelection(single1, false);
                 countStart = countReset = 0;
                 mode.sync(single2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should keep box-selection mode even when anchor moved unless selection is empty', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 10))]);
@@ -471,60 +471,60 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, true);
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B3] -> [B3']
                 countStart = countReset = 0;
                 mode.sync(single2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B3'] -> [C3]
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3] -> [C3']
                 countStart = countReset = 0;
                 mode.sync(multi2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3'] -> [C3'']
                 countStart = countReset = 0;
                 mode.sync(multi3);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [C3''] -> [B3]
                 countStart = countReset = 0;
                 mode.sync(single1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [A3] -> [C3]
                 mode.initialize(empty1);
                 mode.startSelection(empty1, true);
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should keep box-selection mode when anchor moved and then selection became empty', function() {
                 const multi1 = TextEditorMock([
@@ -542,17 +542,17 @@ describe('mode_handler', function() {
                 mode.startSelection(multi1, true);
                 countStart = countReset = 0;
                 mode.sync(multi2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 countStart = countReset = 0;
                 mode.sync(empty1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should stop selection mode when anchor moved and new selection is empty', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -568,50 +568,50 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, false);
                 countStart = countReset = 0;
                 mode.sync(empty2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 1);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A3] -> [A1]
                 mode.initialize(empty1);
                 mode.startSelection(empty1, true);
                 countStart = countReset = 0;
                 mode.sync(empty2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 1);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B2] -> [A1]
                 mode.initialize(single1);
                 mode.startSelection(single1, false);
                 countStart = countReset = 0;
                 mode.sync(empty2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 1);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [B3] -> [A1]
                 mode.initialize(single1);
                 mode.startSelection(single1, true);
                 countStart = countReset = 0;
                 mode.sync(empty2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 1);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [C3] -> [A1]
                 mode.initialize(multi1);
                 mode.startSelection(multi1, true);
                 countStart = countReset = 0;
                 mode.sync(empty1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 1);
-                assert.equal(mode.inSelection(), false);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 1);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.strictEqual(mode.inBoxSelection(), false);
             });
             it('should start selection mode if selection became non-empty', function() {
                 const empty = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -629,28 +629,28 @@ describe('mode_handler', function() {
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(single);
-                assert.equal(countStart, 1);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), false);
+                assert.strictEqual(countStart, 1);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), false);
 
                 // [A1] -> [C3]
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 1);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 1);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [A1] -> [C3']
                 mode.initialize(empty);
                 countStart = countReset = 0;
                 mode.sync(multi2);
-                assert.equal(countStart, 1);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 1);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
             it('should promote to box-selection mode if multi-line selection turns out', function() {
                 const empty1 = TextEditorMock([SelectionMock(PositionMock(5, 5))]);
@@ -669,20 +669,20 @@ describe('mode_handler', function() {
                 mode.startSelection(empty1, false);
                 countStart = countReset = 0;
                 mode.sync(multi1);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
 
                 // [B2] -> [C3]
                 mode.initialize(single1);
                 mode.startSelection(single1, false);
                 countStart = countReset = 0;
                 mode.sync(multi2);
-                assert.equal(countStart, 0);
-                assert.equal(countReset, 0);
-                assert.equal(mode.inSelection(), true);
-                assert.equal(mode.inBoxSelection(), true);
+                assert.strictEqual(countStart, 0);
+                assert.strictEqual(countReset, 0);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
             });
         });
     });
@@ -692,7 +692,7 @@ describe('mode_handler', function() {
             assert('inSelection' in mode1);
             assert('inBoxSelection' in mode1);
             let mode2 = mode_handler.getInstance();
-            assert.equal(mode1 === mode2, true);
+            assert.strictEqual(mode1 === mode2, true);
         });
     });
 });

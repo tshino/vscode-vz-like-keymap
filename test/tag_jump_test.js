@@ -26,29 +26,29 @@ describe('tag_jump', function() {
             restoreEnv('HOMEPATH', HOMEPATH);
         });
         it('should return empty string if no HOME/HOMEDRIVE/HOMEPATH env var present', function() {
-            assert.equal(tag_jump.getHomePath(), '');
+            assert.strictEqual(tag_jump.getHomePath(), '');
         });
         it('should return empty string if only HOMEDRIVE/HOMEPATH present', function() {
             process.env.HOMEDRIVE = 'c:';
-            assert.equal(tag_jump.getHomePath(), '');
+            assert.strictEqual(tag_jump.getHomePath(), '');
             delete process.env.HOMEDRIVE;
             process.env.HOMEPATH = '\\path\\to\\home';
-            assert.equal(tag_jump.getHomePath(), '');
+            assert.strictEqual(tag_jump.getHomePath(), '');
         });
         it('should return HOME env var if present', function() {
             process.env.HOME = '/path/to/home';
-            assert.equal(tag_jump.getHomePath(), '/path/to/home');
+            assert.strictEqual(tag_jump.getHomePath(), '/path/to/home');
         });
         it('should return HOMEDRIVE+HOMEPATH env var if both present', function() {
             process.env.HOMEDRIVE = 'c:';
             process.env.HOMEPATH = '\\path\\to\\home';
-            assert.equal(tag_jump.getHomePath(), 'c:\\path\\to\\home');
+            assert.strictEqual(tag_jump.getHomePath(), 'c:\\path\\to\\home');
         });
         it('should return HOME env var if present even if HOMEDRIVE and HOMEPATH present', function() {
             process.env.HOME = '/path/to/home';
             process.env.HOMEDRIVE = 'c:';
             process.env.HOMEPATH = '\\path\\to\\home';
-            assert.equal(tag_jump.getHomePath(), '/path/to/home');
+            assert.strictEqual(tag_jump.getHomePath(), '/path/to/home');
         });
     });
     describe('expandTildePrefix', function() {
@@ -68,59 +68,59 @@ describe('tag_jump', function() {
         });
         it('should replace tilde prefix with HOME env var', function() {
             process.env.HOME = '/HOME/PATH';
-            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
-            assert.equal(expandTildePrefix('/some/where'), '/some/where');
-            assert.equal(expandTildePrefix('some/where'), 'some/where');
+            assert.strictEqual(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            assert.strictEqual(expandTildePrefix('/some/where'), '/some/where');
+            assert.strictEqual(expandTildePrefix('some/where'), 'some/where');
         });
         it('should do nothing if HOME env var is empty or not present', function() {
             process.env.HOME = '/HOME/PATH';
-            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            assert.strictEqual(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
             process.env.HOME = '';
-            assert.equal(expandTildePrefix('~/some/where'), '~/some/where');
+            assert.strictEqual(expandTildePrefix('~/some/where'), '~/some/where');
             delete process.env.HOME;
-            assert.equal(expandTildePrefix('~/some/where'), '~/some/where');
+            assert.strictEqual(expandTildePrefix('~/some/where'), '~/some/where');
         });
         it('should treat backslashes same as slashes considering cross platform situations', function() {
             process.env.HOME = '/HOME/PATH';
-            assert.equal(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
-            assert.equal(expandTildePrefix('~\\some\\where'), '/HOME/PATH/some\\where');
+            assert.strictEqual(expandTildePrefix('~/some/where'), '/HOME/PATH/some/where');
+            assert.strictEqual(expandTildePrefix('~\\some\\where'), '/HOME/PATH/some\\where');
             process.env.HOME = 'C:\\HOME\\PATH';
-            assert.equal(expandTildePrefix('~\\some\\where'), 'C:\\HOME\\PATH/some\\where');
+            assert.strictEqual(expandTildePrefix('~\\some\\where'), 'C:\\HOME\\PATH/some\\where');
         });
     });
     describe('isUNCPath', function() {
         // Note: every backslash is replaced to slash before calling this function.
         it('should return true for UNC path, false otherwise', function() {
             const isUNCPath = tag_jump.isUNCPath;
-            assert.equal(isUNCPath('//example.com/path/to/doc.txt'), true);
-            assert.equal(isUNCPath('//hostname/path/to/doc.txt'), true);
-            assert.equal(isUNCPath('//192.168.9.9/path/to/doc.txt'), true);
-            assert.equal(isUNCPath('//example.com/some/where'), true);
-            assert.equal(isUNCPath('//example.com/some'), true);
-            assert.equal(isUNCPath('//example.com/'), true);
-            assert.equal(isUNCPath('//example.com'), false);
-            assert.equal(isUNCPath('/example.com/path/to/doc.txt'), false);
-            assert.equal(isUNCPath('example.com/path/to/doc.txt'), false);
-            assert.equal(isUNCPath('c:/path/to/doc.txt'), false);
-            assert.equal(isUNCPath('/path/to/doc.txt'), false);
-            assert.equal(isUNCPath('path/to/doc.txt'), false);
-            assert.equal(isUNCPath('./doc.txt'), false);
-            assert.equal(isUNCPath('../doc.txt'), false);
+            assert.strictEqual(isUNCPath('//example.com/path/to/doc.txt'), true);
+            assert.strictEqual(isUNCPath('//hostname/path/to/doc.txt'), true);
+            assert.strictEqual(isUNCPath('//192.168.9.9/path/to/doc.txt'), true);
+            assert.strictEqual(isUNCPath('//example.com/some/where'), true);
+            assert.strictEqual(isUNCPath('//example.com/some'), true);
+            assert.strictEqual(isUNCPath('//example.com/'), true);
+            assert.strictEqual(isUNCPath('//example.com'), false);
+            assert.strictEqual(isUNCPath('/example.com/path/to/doc.txt'), false);
+            assert.strictEqual(isUNCPath('example.com/path/to/doc.txt'), false);
+            assert.strictEqual(isUNCPath('c:/path/to/doc.txt'), false);
+            assert.strictEqual(isUNCPath('/path/to/doc.txt'), false);
+            assert.strictEqual(isUNCPath('path/to/doc.txt'), false);
+            assert.strictEqual(isUNCPath('./doc.txt'), false);
+            assert.strictEqual(isUNCPath('../doc.txt'), false);
         });
     });
     describe('isAbsolutePath', function() {
         // Note: every backslash is replaced to slash before calling this function.
         it('should return true for absolute path, false otherwise', function() {
             const isAbsolutePath = tag_jump.isAbsolutePath;
-            assert.equal(isAbsolutePath('//example.com/path/to/doc.txt'), true);
-            assert.equal(isAbsolutePath('//example.com'), true);
-            assert.equal(isAbsolutePath('/example.com/path/to/doc.txt'), true);
-            assert.equal(isAbsolutePath('example.com/path/to/doc.txt'), false);
-            assert.equal(isAbsolutePath('c:/path/to/doc.txt'), true);
-            assert.equal(isAbsolutePath('/path/to/doc.txt'), true);
-            assert.equal(isAbsolutePath('path/to/doc.txt'), false);
-            assert.equal(isAbsolutePath('./doc.txt'), false);
-            assert.equal(isAbsolutePath('../doc.txt'), false);
+            assert.strictEqual(isAbsolutePath('//example.com/path/to/doc.txt'), true);
+            assert.strictEqual(isAbsolutePath('//example.com'), true);
+            assert.strictEqual(isAbsolutePath('/example.com/path/to/doc.txt'), true);
+            assert.strictEqual(isAbsolutePath('example.com/path/to/doc.txt'), false);
+            assert.strictEqual(isAbsolutePath('c:/path/to/doc.txt'), true);
+            assert.strictEqual(isAbsolutePath('/path/to/doc.txt'), true);
+            assert.strictEqual(isAbsolutePath('path/to/doc.txt'), false);
+            assert.strictEqual(isAbsolutePath('./doc.txt'), false);
+            assert.strictEqual(isAbsolutePath('../doc.txt'), false);
         });
     });
     describe('enumFolderUris', function() {
@@ -275,13 +275,13 @@ describe('tag_jump', function() {
             );
         });
         it('should return null if specified path is evaluated as empty string', function() {
-            assert.equal(makeFileUri(baseUri, ''), null);
-            assert.equal(makeFileUri(baseUri, './'), null);
-            assert.equal(makeFileUri(baseUri, './/'), null);
+            assert.strictEqual(makeFileUri(baseUri, ''), null);
+            assert.strictEqual(makeFileUri(baseUri, './'), null);
+            assert.strictEqual(makeFileUri(baseUri, './/'), null);
         });
         it('should return null if it is resulting ill-formed URI', function() {
-            assert.equal(makeFileUri(baseUri, '///too/many/leading/slash'), null);
-            assert.equal(makeFileUri(baseUri, '////too/many/leading/slash'), null);
+            assert.strictEqual(makeFileUri(baseUri, '///too/many/leading/slash'), null);
+            assert.strictEqual(makeFileUri(baseUri, '////too/many/leading/slash'), null);
         });
     });
 });
