@@ -1,4 +1,4 @@
-([The English version](#English) is below the Japanese version)
+([The English version](#english) is below the Japanese version)
 
 # Vz Keymap for VS Code
 
