@@ -49,7 +49,7 @@ describe('CursorHandler', () => {
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
     });
-    describe('makeCursorTo', () => {
+    describe('moveCursorTo', () => {
         before(async () => {
             await testUtils.resetDocument(
                 textEditor,
