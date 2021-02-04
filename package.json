@@ -89,6 +89,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "On: Tag Jump / Off: Show Editor Context Menu (VS Code default)"
+                },
+                "vzKeymap.experimentalListViewControl": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+M as Move Focus/Select Item in list views like Explorer pain"
                 }
             }
         },
@@ -795,6 +800,21 @@
                 "key": "ctrl+alt+j",
                 "command": "workbench.action.togglePanel",
                 "when": ""
+            },
+            {
+                "key": "ctrl+e",
+                "command": "list.focusUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "list.focusDown",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "list.select",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
             }
         ]
     },
