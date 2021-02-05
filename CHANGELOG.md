@@ -6,6 +6,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Added out-of-editor shoftcut keys (Experimental):
   - Ctrl+E/Ctrl+X/Ctrl+M for focus control in list views (like Explorer pain in the side bar).
     - This is enabled by turning on the 'Vz Keymap: Experimental List View Control' in the Settings.
+  - Ctrl+E/Ctrl+X/Ctrl+M for focus control in suggestion widget (IntelliSense).
+    - This is enabled by turning on the 'Vz Keymap: Experimental Suggestion Widget Control' in the Settings.
 
 ### [0.14.0] - 2021-01-30
 - Added the Japanese version of README.
