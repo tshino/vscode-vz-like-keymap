@@ -93,7 +93,7 @@
                 "vzKeymap.experimentalListViewControl": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+M as Move Focus/Select Item in list views like Explorer pain"
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+M to manipulate list views like Explorer pane"
                 },
                 "vzKeymap.experimentalSuggestWidgetControl": {
                     "type": "boolean",
@@ -814,6 +814,16 @@
             {
                 "key": "ctrl+x",
                 "command": "list.focusDown",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "list.collapse",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "list.expand",
                 "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
             },
             {
