@@ -865,6 +865,11 @@
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingsList",
                 "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "settings.action.focusSettingControl",
+                "when": "settingRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
             }
         ]
     },
