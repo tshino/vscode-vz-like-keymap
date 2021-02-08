@@ -62,7 +62,7 @@ Vz KeymapはVzエディタのキーバインドを再現するVisual Studio Code
 
 | キー | 機能 |
 | ---- | ---- |
-| CTRL+K U, ALT+Backspace | 取り消し（Undo） |
+| CTRL+K U, ALT+Backspace | 元に戻す（Undo） |
 | SHIFT+ALT+Backspace | やり直し（Redo） |
 
 ### 検索、置換
