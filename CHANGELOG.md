@@ -13,6 +13,11 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - Ctrl+E/Ctrl+X for Move focus and
     - Ctrl+M for Select item.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental Suggestion Widget Control' in the Settings.
+  - For settings page:
+    - Ctrl+X to move focus from search input to settings list,
+    - Ctrl+S to move focus from settings list to table of content, and
+    - Ctrl+M to move focus from table of content to settings list.
+    - These keys are enabled by turning on the 'Vz Keymap: Experimental Settings Focus Control' in the Settings.
 
 ### [0.14.0] - 2021-01-30
 - Added the Japanese version of README.

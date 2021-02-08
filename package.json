@@ -99,6 +99,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enables Ctrl+E/Ctrl+X/Ctrl+M as Move Focus/Select Item in suggestion widget (IntelliSense)"
+                },
+                "vzKeymap.experimentalSettingsFocusControl": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enables Ctrl+X/Ctrl+S/Ctrl+M to move focus between panes in the Settings page"
                 }
             }
         },
@@ -845,6 +850,21 @@
                 "key": "ctrl+m",
                 "command": "acceptSelectedSuggestion",
                 "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "settings.action.focusSettingsFromSearch",
+                "when": "inSettingsSearch && !suggestWidgetVisible && config.vzKeymap.experimentalSettingsFocusControl"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "settings.action.focusTOC",
+                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "settings.action.focusSettingsList",
+                "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
             }
         ]
     },
