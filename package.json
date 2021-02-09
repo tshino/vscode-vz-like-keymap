@@ -104,6 +104,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enables Ctrl+X/Ctrl+S/Ctrl+M to move focus between panes in the Settings page"
+                },
+                "vzKeymap.experimentalParameterHintControl": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enables Ctrl+E/Ctrl+X to select Parameter hints"
                 }
             }
         },
@@ -870,6 +875,16 @@
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingControl",
                 "when": "settingRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "showPrevParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.experimentalParameterHintControl"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "showNextParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.experimentalParameterHintControl"
             }
         ]
     },

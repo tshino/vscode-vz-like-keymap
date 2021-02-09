@@ -18,6 +18,9 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - Ctrl+S to move focus from settings list to table of content, and
     - Ctrl+M to move focus from table of content to settings list.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental Settings Focus Control' in the Settings.
+  - For parameter hints:
+    - Ctrl+E/Ctrl+X to select parameter hints.
+    - These keys are enabled by turning on the 'Vz Keymap: Experimental Parameter Hint Control' in the Settings.
 
 ### [0.14.0] - 2021-01-30
 - Added the Japanese version of README.
