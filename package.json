@@ -401,12 +401,12 @@
             {
                 "key": "escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             },
             {
                 "key": "escape",

@@ -21,6 +21,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - For parameter hints:
     - Ctrl+E/Ctrl+X to select parameter hints.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental Parameter Hint Control' in the Settings.
+- Improved:
+  - The 'when' clause of Escape to cancel selection mode.
 
 ### [0.14.0] - 2021-01-30
 - Added the Japanese version of README.
