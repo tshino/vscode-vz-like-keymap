@@ -45,6 +45,7 @@ const enumFolderUris = function(documentUri, folderUris) {
 };
 
 const extractFileNames = function(text) {
+    let codeql_test = /(a|b)+/;
     let names = text.split(/(?:[\s;,"'<>(){}|[\]@=+*]|:(?![/\\]))+/);
     names = names.map(name => name.trim());
     names = names.filter(name => name !== '');
