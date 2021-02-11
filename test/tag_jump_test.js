@@ -178,6 +178,7 @@ describe('tag_jump', function() {
             assert.deepStrictEqual(extractFileNames('README.txt'), ['README.txt']);
             assert.deepStrictEqual(extractFileNames('hello.txt world.txt'), ['hello.txt', 'world.txt']);
             assert.deepStrictEqual(extractFileNames('abc def hijklmn.'), ['abc', 'def', 'hijklmn.']);
+            assert.deepStrictEqual(extractFileNames('000\t111\t222.333'), ['000', '111', '222.333']);
         });
         it('should split text with delimiters which unlikely are part of a filename', function() {
             assert.deepStrictEqual(extractFileNames('FOO.txt(100): BAR'), ['FOO.txt', '100', 'BAR']);
