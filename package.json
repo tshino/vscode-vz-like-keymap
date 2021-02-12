@@ -93,7 +93,7 @@
                 "vzKeymap.experimentalListViewControl": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+M to manipulate list views like Explorer pane"
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+R/Ctrl+C/Ctrl+M to manipulate list views like Explorer pane"
                 },
                 "vzKeymap.experimentalSuggestWidgetControl": {
                     "type": "boolean",
@@ -834,6 +834,16 @@
             {
                 "key": "ctrl+d",
                 "command": "list.expand",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "list.focusPageUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "list.focusPageDown",
                 "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
             },
             {
