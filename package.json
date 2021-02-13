@@ -93,12 +93,12 @@
                 "vzKeymap.experimentalListViewControl": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+R/Ctrl+C/Ctrl+M to manipulate list views like Explorer pane"
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+R/Ctrl+C/Ctrl+M to move focus and select on list views like Explorer pane"
                 },
                 "vzKeymap.experimentalSuggestWidgetControl": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+M as Move Focus/Select Item in suggestion widget (IntelliSense)"
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C/Ctrl+M to move focus and select on suggestion widget (IntelliSense)"
                 },
                 "vzKeymap.experimentalSettingsFocusControl": {
                     "type": "boolean",
@@ -859,6 +859,16 @@
             {
                 "key": "ctrl+x",
                 "command": "selectNextSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "selectPrevPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "selectNextPageSuggestion",
                 "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
             },
             {
