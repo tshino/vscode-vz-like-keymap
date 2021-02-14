@@ -5,9 +5,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - Added out-of-editor shoftcut keys (Experimental):
   - For list views (e.g. selecting file in the Explorer pane):
-    - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C for Move focus,
-    - Ctrl+S/Ctrl+D for Collapse/Expand, and
-    - Ctrl+M for Select item.
+    - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C to move focus,
+    - Ctrl+Q R, Ctrl+Q C to move focus to the first/last item,
+    - Ctrl+S/Ctrl+D to collapse/expand tree, and
+    - Ctrl+M to select item.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental List View Control' in the Settings.
   - For suggestion widget (IntelliSense):
     - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C for to select items,

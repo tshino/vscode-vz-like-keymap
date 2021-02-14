@@ -847,6 +847,26 @@
                 "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
             },
             {
+                "key": "ctrl+q ctrl+r",
+                "command": "list.focusFirst",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "list.focusFirst",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "list.focusLast",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "list.focusLast",
+                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+            },
+            {
                 "key": "ctrl+m",
                 "command": "list.select",
                 "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
