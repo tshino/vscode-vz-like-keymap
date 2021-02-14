@@ -98,7 +98,7 @@
                 "vzKeymap.experimentalSuggestWidgetControl": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C/Ctrl+M to move focus and select on suggestion widget (IntelliSense)"
+                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C/Ctrl+M to select/accept items on Suggestion widget (IntelliSense)"
                 },
                 "vzKeymap.experimentalSettingsFocusControl": {
                     "type": "boolean",
@@ -869,6 +869,26 @@
             {
                 "key": "ctrl+c",
                 "command": "selectNextPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "selectLastSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "selectLastSuggestion",
                 "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
             },
             {

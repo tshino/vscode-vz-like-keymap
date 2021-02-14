@@ -10,8 +10,9 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - Ctrl+M for Select item.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental List View Control' in the Settings.
   - For suggestion widget (IntelliSense):
-    - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C for Move focus and
-    - Ctrl+M for Select item.
+    - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C for to select items,
+    - Ctrl+Q R, Ctrl+Q C to select the first/last item, and
+    - Ctrl+M to accept selected item.
     - These keys are enabled by turning on the 'Vz Keymap: Experimental Suggestion Widget Control' in the Settings.
   - For settings page:
     - Ctrl+X to move focus from search input to settings list,
