@@ -90,25 +90,25 @@
                     "default": true,
                     "description": "On: Tag Jump / Off: Show Editor Context Menu (VS Code default)"
                 },
-                "vzKeymap.experimentalListViewControl": {
+                "vzKeymap.listViewKeys": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+S/Ctrl+D/Ctrl+R/Ctrl+C/Ctrl+M to move focus and select on list views like Explorer pane"
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus and select on list views like Explorer pane\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C, Ctrl+M)"
                 },
-                "vzKeymap.experimentalSuggestWidgetControl": {
+                "vzKeymap.suggestionWidgetKeys": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C/Ctrl+M to select/accept items on Suggestion widget (IntelliSense)"
+                    "default": true,
+                    "description": "Enables vz-style keys to select/accept items on Suggestion widget (IntelliSense)\n(Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C, Ctrl+M)"
                 },
-                "vzKeymap.experimentalSettingsFocusControl": {
+                "vzKeymap.settingsPageKeys": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Enables Ctrl+X/Ctrl+S/Ctrl+M to move focus between panes in the Settings page"
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus between panes in the Settings page\n(Ctrl+X, Ctrl+S, Ctrl+M)"
                 },
-                "vzKeymap.experimentalParameterHintControl": {
+                "vzKeymap.parameterHintKeys": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Enables Ctrl+E/Ctrl+X to select Parameter hints"
+                    "default": true,
+                    "description": "Enables vz-style keys to select Parameter hints\n(Ctrl+E, Ctrl+X)"
                 }
             }
         },
@@ -819,132 +819,132 @@
             {
                 "key": "ctrl+e",
                 "command": "list.focusUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "list.focusDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+s",
                 "command": "list.collapse",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+d",
                 "command": "list.expand",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+r",
                 "command": "list.focusPageUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+c",
                 "command": "list.focusPageDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+q ctrl+r",
                 "command": "list.focusFirst",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+q r",
                 "command": "list.focusFirst",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+q ctrl+c",
                 "command": "list.focusLast",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+q c",
                 "command": "list.focusLast",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+m",
                 "command": "list.select",
-                "when": "listFocus && !inputFocus && config.vzKeymap.experimentalListViewControl"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+e",
                 "command": "selectPrevSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "selectNextSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+r",
                 "command": "selectPrevPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+c",
                 "command": "selectNextPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+q ctrl+r",
                 "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+q r",
                 "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+q ctrl+c",
                 "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+q c",
                 "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+m",
                 "command": "acceptSelectedSuggestion",
-                "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.experimentalSuggestWidgetControl"
+                "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "settings.action.focusSettingsFromSearch",
-                "when": "inSettingsSearch && !suggestWidgetVisible && config.vzKeymap.experimentalSettingsFocusControl"
+                "when": "inSettingsSearch && !suggestWidgetVisible && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+s",
                 "command": "settings.action.focusTOC",
-                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingsList",
-                "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+                "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingControl",
-                "when": "settingRowFocus && config.vzKeymap.experimentalSettingsFocusControl"
+                "when": "settingRowFocus && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+e",
                 "command": "showPrevParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.experimentalParameterHintControl"
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "showNextParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.experimentalParameterHintControl"
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             }
         ]
     },

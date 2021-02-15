@@ -9,20 +9,20 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - Ctrl+Q R, Ctrl+Q C to move focus to the first/last item,
     - Ctrl+S/Ctrl+D to collapse/expand tree, and
     - Ctrl+M to select item.
-    - These keys are enabled by turning on the 'Vz Keymap: Experimental List View Control' in the Settings.
+    - These keys are enabled by turning on the 'Vz Keymap: List View Keys' in the Settings.
   - For suggestion widget (IntelliSense):
     - Ctrl+E/Ctrl+X/Ctrl+R/Ctrl+C for to select items,
     - Ctrl+Q R, Ctrl+Q C to select the first/last item, and
     - Ctrl+M to accept selected item.
-    - These keys are enabled by turning on the 'Vz Keymap: Experimental Suggestion Widget Control' in the Settings.
+    - These keys are enabled by turning on the 'Vz Keymap: Suggestion Widget Keys' in the Settings.
   - For settings page:
     - Ctrl+X to move focus from search input to settings list,
     - Ctrl+S to move focus from settings list to table of content, and
     - Ctrl+M to move focus from table of content to settings list.
-    - These keys are enabled by turning on the 'Vz Keymap: Experimental Settings Focus Control' in the Settings.
+    - These keys are enabled by turning on the 'Vz Keymap: Settings Page Keys' in the Settings.
   - For parameter hints:
     - Ctrl+E/Ctrl+X to select parameter hints.
-    - These keys are enabled by turning on the 'Vz Keymap: Experimental Parameter Hint Control' in the Settings.
+    - These keys are enabled by turning on the 'Vz Keymap: Parameter Hint Keys' in the Settings.
 - Improved:
   - The 'when' clause of Escape to cancel selection mode.
 
