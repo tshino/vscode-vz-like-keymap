@@ -14,6 +14,7 @@ Vz KeymapはVzエディタのキーバインドを再現するVisual Studio Code
 - 削除文字スタック機能で、DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
 - 半画面スクロールも可能（設定で切り替え）。
 - タグジャンプ機能（SHIFT+F10）。
+- リスト操作でもVz風のキーが使用可能（EXPLORERのファイル選択、推測入力の候補リストなど）。
 - いくつか設定オプションあり。設定で "vz" を検索してみてください。
 
 ## 対応キー一覧
@@ -130,6 +131,7 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 - Undelete stack (Ctrl+U to restore deleted characters)
 - Half-page scroll as an option
 - Tag jump (Shift+F10)
+- List view operation with Vz-style cursor keys (e.g. selecting files on Explorer, selecting Suggestion)
 - Some options are available (search for 'vz' in the Settings)
 
 ## Supported keys
