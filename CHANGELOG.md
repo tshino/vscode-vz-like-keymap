@@ -3,7 +3,7 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [0.15.0] - 2021-02-18
-- Added out-of-editor shoftcut keys:
+- Added out-of-editor shortcut keys:
   - For list views (e.g. selecting file in the Explorer):
     - Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C to move focus,
     - Ctrl+Q R, Ctrl+Q C to move focus to the first/last item,
