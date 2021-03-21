@@ -13,9 +13,17 @@ const exec = function(commands, index = 0) {
         res.then(function() { exec(commands, index + 1); });
     }
 };
+// EXPERIMENTAL: keyboard macro recording
+let recording = false;
+let recordedCommands = [];
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.' + name, func)
+        vscode.commands.registerTextEditorCommand('vz.' + name, function(textEditor, edit) {
+            if (recording && name !== 'replay') {
+                recordedCommands.push('vz.' + name);
+            }
+            func(textEditor, edit);
+        })
     );
 };
 
@@ -475,6 +483,28 @@ const CursorHandler = function(modeHandler) {
         tryNext();
     };
 
+    // EXPERIMENTAL: keyboard macro recording
+    const record = function() {
+        if (!recording) {
+            recording = true;
+            recordedCommands = [];
+            // console.log('recording started');
+        } else {
+            recording = false;
+            recordedCommands = [];
+            // console.log('recording canceled');
+        }
+    };
+    const replay = function() {
+        if (recording) {
+            recording = false;
+            // console.log('recording finished');
+        } else {
+            // console.log(recordedCommands);
+            exec(recordedCommands);
+        }
+    };
+
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'cursorHalfPageUp', cursorHalfPageUp);
@@ -518,6 +548,9 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'markPosition', markPosition);
         registerTextEditorCommand(context, 'cursorLastPosition', cursorLastPosition);
         registerTextEditorCommand(context, 'tagJump', tagJump);
+
+        registerTextEditorCommand(context, 'record', record);
+        registerTextEditorCommand(context, 'replay', replay);
     };
     return {
         makeCursorCommand,
