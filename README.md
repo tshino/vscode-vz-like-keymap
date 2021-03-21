@@ -5,16 +5,16 @@
 [![Node.js CI](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml)
 [![CodeQL](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml)
 
-Vz KeymapはVzエディタのキーバインドを再現するVisual Studio Code拡張です。
+Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code拡張です。
 
-- 50以上のショートカットキーに対応し、Vzとほぼ同等の基本操作を実現。
-- 寛容な2ストロークキー。Vzと同様に2文字目でCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
+- 50以上のショートカットキーに対応し、VZとほぼ同等の基本操作を実現。
+- 寛容な2ストロークキー。VZと同様に2文字目でCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
 - テキストスタック機能に対応。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
 - 選択モード（CTRL+B）と矩形選択モード（CTRL+K B）も再現。
-- 削除文字スタック機能で、DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
+- 削除文字スタック機能もあり、DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
 - 半画面スクロールも可能（設定で切り替え）。
 - タグジャンプ機能（SHIFT+F10）。
-- リスト操作でもVz風のキーが使用可能（EXPLORERのファイル選択、推測入力の候補リストなど）。
+- リスト操作でもVZ風のキーが使用可能（EXPLORERのファイル選択、推測入力の候補リストなど）。
 - いくつか設定オプションあり。設定で "vz" を検索してみてください。
 
 ## 対応キー一覧
@@ -106,32 +106,33 @@ Vz KeymapはVzエディタのキーバインドを再現するVisual Studio Code
 
 ## 再現性の詳細
 
-Vz KeymapではVzエディタと同様に2ストロークキーの2文字目でCTRLキーを押すか離すかを区別しません。VS Codeのキー定義ではこれが区別されるため、Vz Keymapはすべての2ストロークキーを2通りずつ登録しています。
+Vz KeymapではVZエディタと同様に2ストロークキーの2文字目でCTRLキーを押すか離すかを区別しません。VS Codeのキー定義ではこれが区別されるため、Vz Keymapはすべての2ストロークキーを2通りずつ登録しています。
 
-Vzエディタの選択モードはちょっと特殊な機能で、単純なキー割り当てでは実現できません。CTRL+Bで選択モードを開始したあとは、SHIFTキーなしのカーソルキーで範囲選択ができます。
-keybindings.json の'when'節では、Vz Keymapが選択モード中かどうかを判定する 'vz.inSelectionMode' という変数が使えるようにしてあります。
+VZエディタの選択モードはちょっと特殊な機能で、単純なキー割り当てでは実現できません。CTRL+Bで選択モードを開始したあとは、普通の（SHIFTキーなしの）カーソルキーで範囲選択ができる必要があるからです。
+このため、Vz Keymapでは内部で選択モード状態を保持してカーソルキーの動作を変えています。
+また、keybindings.json の'when'節では、Vz Keymapが選択モード中かどうかを判定する 'vz.inSelectionMode' という変数が使えるようにしてあります。
 元からある変数 'editorHasSelection' と 'vz.inSelectionMode' は、選択範囲が空（選択モードを開始した直後）でも真になるかどうか、という違いがあります。
 
-いくつかのショートカットキーはVS Codeの対応する機能に直接割り当てられますが、その挙動はVzエディタと異なる場合があります。
-例えば次の単語へカーソルを移動するCTRL+Fは、VS CodeとVzエディタで単語境界の判定が異なるため、動きも異なります。
+いくつかのショートカットキーはVS Codeの対応する機能に直接割り当てられますが、その挙動はVZエディタと異なる場合があります。
+例えば次の単語へカーソルを移動するCTRL+Fは、VS CodeとVZエディタで単語境界の判定が異なるため、動きも異なります。
 
-このVS Code拡張では、VzエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
+このVS Code拡張では、VZエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
 代わりに、ALT+F Sで保存（メインメニューのFile > Save）のようにアクセラレータキーで代用することをお薦めします。
 
 
 #### English
 # Vz Keymap for VS Code
 
-This is a Visual Studio Code extension which provides a keymap similar to good old Vz Editor.
+This is a Visual Studio Code extension which provides a keymap similar to good old VZ Editor.
 
-- More than 50 shortcuts to provide basic experience which is almost identical to Vz Editor
+- More than 50 shortcuts to provide basic experience which is almost identical to VZ Editor
 - Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 - Text stack (push/pop to the clibboard) is supported for actions Cut, Copy and Paste
 - Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
 - Undelete stack (Ctrl+U to restore deleted characters)
 - Half-page scroll as an option
 - Tag jump (Shift+F10)
-- List view operation with Vz-style cursor keys (e.g. selecting files on Explorer, selecting Suggestion)
+- List view operation with VZ-style cursor keys (e.g. selecting files on Explorer, selecting Suggestion)
 - Some options are available (search for 'vz' in the Settings)
 
 ## Supported keys
@@ -226,12 +227,13 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 For basic compatibility, every two-stroke shortcuts provided by this extension allow you either to press the Ctrl key or not when pressing the second stroke.
 (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 
-The selection mode of Vz Editor is something a little unique feature. Once you start it by Ctrl+B, you can make a selection range using cursor keys without the Shift key.
+The selection mode of VZ Editor is something a little unique feature. Once you start it by Ctrl+B, you can make a selection range using cursor keys without the Shift key.
+To emulate that behavior on VS Code, this extension holds the selection mode status internally.
 You can use a context variable 'vz.inSelectionMode' in the 'when' clause in your keybindings.json to determine whether it is in selection mode or not.
 The difference between standard 'editorHasSelection' and 'vz.inSelectionMode' is whether it includes the state in which the selection range is empty.
 
-Note that, since some shortcut keys are mapped to the corresponding functionality of the VS Code directly, the behavior may be different than on Vz Editor.
-For example, the result of Ctrl+F which moves the cursor to the next word may differ since word borders are defined differently in VS Code and Vz Editor.
+Note that, since some shortcut keys are mapped to the corresponding functionality of the VS Code directly, the behavior may be different than on VZ Editor.
+For example, the result of Ctrl+F which moves the cursor to the next word may differ since word borders are defined differently in VS Code and VZ Editor.
 
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
