@@ -22,7 +22,7 @@ const KeyboardMacro = function() {
     let recording = false;
     let recordedCommands = [];
 
-    const push = function(command) {
+    const pushIfRecording = function(command) {
         if (recording) {
             recordedCommands.push(command);
         }
@@ -54,7 +54,7 @@ const KeyboardMacro = function() {
     };
 
     return {
-        push: push,
+        pushIfRecording: pushIfRecording,
         registerCommands
     };
 };
