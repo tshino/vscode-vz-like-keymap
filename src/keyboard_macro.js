@@ -38,13 +38,15 @@ const KeyboardMacro = function() {
             // console.log('recording canceled');
         }
     };
-    const replay = function() {
+    const replay = async function() {
         if (recording) {
             recording = false;
             // console.log('recording finished');
         } else {
             // console.log(recordedCommands);
-            exec(recordedCommands);
+            for (let i = 0; i < recordedCommands.length; i++) {
+                await vscode.commands.executeCommand(recordedCommands[i]);
+            }
         }
     };
 
@@ -54,7 +56,9 @@ const KeyboardMacro = function() {
     };
 
     return {
-        pushIfRecording: pushIfRecording,
+        pushIfRecording,
+        record,
+        replay,
         registerCommands
     };
 };
