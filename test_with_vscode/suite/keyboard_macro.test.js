@@ -15,10 +15,10 @@ describe('KeyboardMacro', () => {
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
-    const waitForCursor = async (prevLine, prevCharacter) => {
+    const waitForCursorAt = async (line, character) => {
         while (
-            textEditor.selections[0].active.line === prevLine &&
-            textEditor.selections[0].active.character === prevCharacter
+            textEditor.selections[0].active.line !== line ||
+            textEditor.selections[0].active.character !== character
         ) {
             await sleep(1);
         }
@@ -38,16 +38,28 @@ describe('KeyboardMacro', () => {
                 '0123456789\n'.repeat(10)
             );
         });
-        it('should record and replay commands', async () => {
+        it('should record and replay commands (down)', async () => {
             kb_macro.record();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.replay();
 
             await resetCursor(2, 5);
             await kb_macro.replay();
-            await waitForCursor(2, 5);
-
+            await waitForCursorAt(3, 5);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 5]]);
+        });
+        it('should record and replay commands (down x3 left)', async () => {
+            kb_macro.record();
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorLeft');
+            kb_macro.replay();
+
+            await resetCursor(2, 5);
+            await kb_macro.replay();
+            await waitForCursorAt(5, 4);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
         });
     });
 });
