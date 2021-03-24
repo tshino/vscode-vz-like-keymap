@@ -38,7 +38,7 @@ describe('KeyboardMacro', () => {
                 '0123456789\n'.repeat(10)
             );
         });
-        it('should record and replay commands (down)', async () => {
+        it('should record and replay a single command', async () => {
             kb_macro.record();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.replay();
@@ -48,7 +48,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(3, 5);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 5]]);
         });
-        it('should record and replay commands (down x3 left)', async () => {
+        it('should record and replay a series of commands', async () => {
             kb_macro.record();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
@@ -60,6 +60,20 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay();
             await waitForCursorAt(5, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+        });
+        it('should clear previously recorded sequence', async () => {
+            kb_macro.record();
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.replay();
+
+            kb_macro.record();
+            kb_macro.replay();  // clear the above sequence
+
+            await resetCursor(2, 5);
+            await kb_macro.replay();
+            await sleep(30);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
     });
 });
