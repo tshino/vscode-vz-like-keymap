@@ -21,6 +21,8 @@ const registerTextEditorCommand = function(context, name, func) {
 const KeyboardMacro = function() {
     let recording = false;
     let recordedCommands = [];
+    let onStartRecording = null;
+    let onStopRecording = null;
 
     const pushIfRecording = function(command) {
         if (recording) {
@@ -31,16 +33,25 @@ const KeyboardMacro = function() {
         if (!recording) {
             recording = true;
             recordedCommands = [];
+            if (onStartRecording) {
+                onStartRecording();
+            }
             // console.log('recording started');
         } else {
             recording = false;
             recordedCommands = [];
+            if (onStopRecording) {
+                onStopRecording();
+            }
             // console.log('recording canceled');
         }
     };
     const replay = async function() {
         if (recording) {
             recording = false;
+            if (onStopRecording) {
+                onStopRecording();
+            }
             // console.log('recording finished');
         } else {
             // console.log(recordedCommands);
@@ -59,6 +70,8 @@ const KeyboardMacro = function() {
         pushIfRecording,
         record,
         replay,
+        onStartRecording: function(func) { onStartRecording = func; },
+        onStopRecording: function(func) { onStopRecording = func; },
         registerCommands
     };
 };
