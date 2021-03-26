@@ -39,7 +39,7 @@ describe('KeyboardMacro', () => {
             );
         });
         it('should record and replay a single command', async () => {
-            kb_macro.record();
+            kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.replay();
 
@@ -49,7 +49,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 5]]);
         });
         it('should record and replay a series of commands', async () => {
-            kb_macro.record();
+            kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
@@ -62,12 +62,12 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
         });
         it('should clear previously recorded sequence', async () => {
-            kb_macro.record();
+            kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.replay();
 
-            kb_macro.record();
+            kb_macro.startRecording();
             kb_macro.replay();  // clear the above sequence
 
             await resetCursor(2, 5);

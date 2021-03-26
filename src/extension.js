@@ -33,6 +33,7 @@ function activate(context) {
         cursor_style_controller.resetSelection(textEditor);
     });
 
+    vscode.commands.executeCommand('setContext', 'vz.keyboardMacroRecording', false);
     kbMacroHandler.onStartRecording(function() {
         vscode.commands.executeCommand('setContext', 'vz.keyboardMacroRecording', true);
     });
