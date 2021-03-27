@@ -90,4 +90,40 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
     });
+    describe('cursor', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should replay cursor movement', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorUp');
+            kb_macro.pushIfRecording('vz.cursorLeft');
+            kb_macro.pushIfRecording('vz.cursorLeft');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorRight');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForCursorAt(7, 4);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 4]]);
+        });
+        it('should replay cursor movement to left/right word', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorWordStartLeft');
+            kb_macro.pushIfRecording('vz.cursorWordStartRight');
+            kb_macro.pushIfRecording('vz.cursorWordStartRight');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForCursorAt(5, 9);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
+        });
+    });
 });
