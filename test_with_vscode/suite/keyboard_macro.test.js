@@ -41,7 +41,7 @@ describe('KeyboardMacro', () => {
         it('should record and replay a single command', async () => {
             kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.replay();
+            kb_macro.finishRecording();
 
             await resetCursor(2, 5);
             await kb_macro.replay();
@@ -54,7 +54,7 @@ describe('KeyboardMacro', () => {
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorLeft');
-            kb_macro.replay();
+            kb_macro.finishRecording();
 
             await resetCursor(2, 5);
             await kb_macro.replay();
@@ -65,10 +65,10 @@ describe('KeyboardMacro', () => {
             kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.replay();
+            kb_macro.finishRecording();
 
             kb_macro.startRecording();
-            kb_macro.replay();  // clear the above sequence
+            kb_macro.finishRecording();  // clear the above sequence
 
             await resetCursor(2, 5);
             await kb_macro.replay();

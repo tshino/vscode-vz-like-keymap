@@ -49,14 +49,17 @@ const KeyboardMacro = function() {
             // console.log('recording canceled');
         }
     };
-    const replay = async function() {
+    const finishRecording = function() {
         if (recording) {
             recording = false;
             if (onStopRecording) {
                 onStopRecording();
             }
             // console.log('recording finished');
-        } else {
+        }
+    };
+    const replay = async function() {
+        if (!recording) {
             // console.log(recordedCommands);
             for (let i = 0; i < recordedCommands.length; i++) {
                 await vscode.commands.executeCommand(recordedCommands[i]);
@@ -67,6 +70,7 @@ const KeyboardMacro = function() {
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'startRecording', startRecording);
         registerTextEditorCommand(context, 'cancelRecording', cancelRecording);
+        registerTextEditorCommand(context, 'finishRecording', finishRecording);
         registerTextEditorCommand(context, 'replay', replay);
     };
 
@@ -74,6 +78,7 @@ const KeyboardMacro = function() {
         pushIfRecording,
         startRecording,
         cancelRecording,
+        finishRecording,
         replay,
         onStartRecording: function(func) { onStartRecording = func; },
         onStopRecording: function(func) { onStopRecording = func; },
