@@ -75,5 +75,19 @@ describe('KeyboardMacro', () => {
             await sleep(30);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
+        it('should clear previously recorded sequence (another way)', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.finishRecording();
+
+            kb_macro.startRecording();
+            kb_macro.cancelRecording();  // clear the above sequence
+
+            await resetCursor(2, 5);
+            await kb_macro.replay();
+            await sleep(30);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
+        });
     });
 });
