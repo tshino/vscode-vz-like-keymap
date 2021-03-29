@@ -145,5 +145,15 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
+        it('should move cursor to top/bottom of a document', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorTop');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForCursorAt(0, 0);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
     });
 });
