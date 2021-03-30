@@ -167,5 +167,16 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(7, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 7, 4]]);
         });
+        it('should make selection range while moving cursor (home/end)', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorHomeSelect');
+            kb_macro.pushIfRecording('vz.cursorEndSelect');
+            kb_macro.finishRecording();
+
+            await resetCursor(3, 4);
+            await kb_macro.replay();
+            await waitForCursorAt(3, 13);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
+        });
     });
 });
