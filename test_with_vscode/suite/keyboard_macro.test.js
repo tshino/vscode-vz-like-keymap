@@ -222,5 +222,17 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
         });
+        it('should start then cancel selection mode', async () => {
+            kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.toggleSelection');
+            kb_macro.pushIfRecording('vz.toggleSelection');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForEndSelection();
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
+        });
     });
 });
