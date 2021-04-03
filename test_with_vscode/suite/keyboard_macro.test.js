@@ -74,7 +74,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
         });
-        it('should clear previously recorded sequence', async () => {
+        it('should clear previously recorded sequence by finishing recording immediately', async () => {
             kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
@@ -88,13 +88,14 @@ describe('KeyboardMacro', () => {
             await sleep(30);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
-        it('should clear previously recorded sequence (another way)', async () => {
+        it('should clear previously recorded sequence by canceling recording', async () => {
             kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.finishRecording();
 
             kb_macro.startRecording();
+            kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.cancelRecording();  // clear the above sequence
 
             await resetCursor(2, 5);
