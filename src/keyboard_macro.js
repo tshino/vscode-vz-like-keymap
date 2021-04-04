@@ -93,6 +93,7 @@ const KeyboardMacro = function() {
         cancelRecording,
         finishRecording,
         replay,
+        getRecordedCommands: function() { return recordedCommands; }, // for testing
         onStartRecording: function(func) { onStartRecording = func; },
         onStopRecording: function(func) { onStopRecording = func; },
         registerCommands

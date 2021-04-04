@@ -44,7 +44,7 @@ describe('KeyboardMacro', () => {
         textEditor = await testUtils.setupTextEditor({ content: '' });
         mode.initialize(textEditor);
     });
-    describe('basic flows', () => {
+    describe('recording functions', () => {
         before(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -56,10 +56,9 @@ describe('KeyboardMacro', () => {
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.finishRecording();
 
-            await resetCursor(2, 5);
-            await kb_macro.replay();
-            await waitForCursorAt(3, 5);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 5]]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommands(), [
+                'vz.cursorDown'
+            ]);
         });
         it('should record and replay a series of commands', async () => {
             kb_macro.startRecording();
@@ -69,10 +68,9 @@ describe('KeyboardMacro', () => {
             kb_macro.pushIfRecording('vz.cursorLeft');
             kb_macro.finishRecording();
 
-            await resetCursor(2, 5);
-            await kb_macro.replay();
-            await waitForCursorAt(5, 4);
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommands(), [
+                'vz.cursorDown', 'vz.cursorDown', 'vz.cursorDown', 'vz.cursorLeft'
+            ]);
         });
         it('should clear previously recorded sequence by finishing recording immediately', async () => {
             kb_macro.startRecording();
@@ -83,10 +81,7 @@ describe('KeyboardMacro', () => {
             kb_macro.startRecording();
             kb_macro.finishRecording();  // clear the above sequence
 
-            await resetCursor(2, 5);
-            await kb_macro.replay();
-            await sleep(30);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommands(), []);
         });
         it('should clear previously recorded sequence by canceling recording', async () => {
             kb_macro.startRecording();
@@ -98,10 +93,7 @@ describe('KeyboardMacro', () => {
             kb_macro.pushIfRecording('vz.cursorDown');
             kb_macro.cancelRecording();  // clear the above sequence
 
-            await resetCursor(2, 5);
-            await kb_macro.replay();
-            await sleep(30);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommands(), []);
         });
     });
     describe('cursor', () => {
@@ -111,15 +103,27 @@ describe('KeyboardMacro', () => {
                 '0 12 345 6789\n'.repeat(10)
             );
         });
-        it('should move cursor', async () => {
+        it('should move cursor (single command)', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorUp');
-            kb_macro.pushIfRecording('vz.cursorLeft');
-            kb_macro.pushIfRecording('vz.cursorLeft');
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorRight');
+            vscode.commands.executeCommand('vz.cursorRight');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForCursorAt(5, 6);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should move cursor (multiple commands)', async () => {
+            await resetCursor(3, 3);
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.cursorUp');
+            vscode.commands.executeCommand('vz.cursorLeft');
+            vscode.commands.executeCommand('vz.cursorLeft');
+            vscode.commands.executeCommand('vz.cursorDown');
+            vscode.commands.executeCommand('vz.cursorDown');
+            vscode.commands.executeCommand('vz.cursorDown');
+            vscode.commands.executeCommand('vz.cursorRight');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -128,10 +132,11 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 4]]);
         });
         it('should move cursor to left/right word', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorWordStartLeft');
-            kb_macro.pushIfRecording('vz.cursorWordStartRight');
-            kb_macro.pushIfRecording('vz.cursorWordStartRight');
+            vscode.commands.executeCommand('vz.cursorWordStartLeft');
+            vscode.commands.executeCommand('vz.cursorWordStartRight');
+            vscode.commands.executeCommand('vz.cursorWordStartRight');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -140,8 +145,9 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
         it('should move cursor to start/end of a logical line', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorLineStart');
+            vscode.commands.executeCommand('vz.cursorLineStart');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -150,8 +156,9 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should move cursor to start/end of a wrapped line', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorHome');
+            vscode.commands.executeCommand('vz.cursorHome');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -160,8 +167,9 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should move cursor to top/bottom of a document', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorTop');
+            vscode.commands.executeCommand('vz.cursorTop');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -170,10 +178,11 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
         it('should make selection range while moving cursor', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorLeftSelect');
-            kb_macro.pushIfRecording('vz.cursorDownSelect');
-            kb_macro.pushIfRecording('vz.cursorDownSelect');
+            vscode.commands.executeCommand('vz.cursorLeftSelect');
+            vscode.commands.executeCommand('vz.cursorDownSelect');
+            vscode.commands.executeCommand('vz.cursorDownSelect');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -182,9 +191,10 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 7, 4]]);
         });
         it('should make selection range while moving cursor (home/end)', async () => {
+            await resetCursor(3, 3);
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorHomeSelect');
-            kb_macro.pushIfRecording('vz.cursorEndSelect');
+            vscode.commands.executeCommand('vz.cursorHomeSelect');
+            vscode.commands.executeCommand('vz.cursorEndSelect');
             kb_macro.finishRecording();
 
             await resetCursor(3, 4);
