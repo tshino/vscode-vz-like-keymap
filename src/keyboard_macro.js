@@ -58,11 +58,24 @@ const KeyboardMacro = function() {
             // console.log('recording finished');
         }
     };
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     const replay = async function() {
         if (!recording) {
             // console.log(recordedCommands);
             for (let i = 0; i < recordedCommands.length; i++) {
-                await vscode.commands.executeCommand(recordedCommands[i]);
+                const cmd = recordedCommands[i];
+                const needsYield = (
+                    cmd === 'vz.cursorLineStart' ||
+                    cmd === 'vz.cursorLineEnd' ||
+                    cmd === 'vz.toggleSelection'
+                );
+                if (needsYield) {
+                    await sleep(50);
+                }
+                await vscode.commands.executeCommand(cmd);
+                if (needsYield) {
+                    await sleep(50);
+                }
             }
         }
     };
