@@ -365,7 +365,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorHalfPageUpSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[500, 5, cursor - halfPage, 5]]);
@@ -386,7 +386,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorHalfPageDownSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[500, 5, cursor + halfPage, 5]]);
@@ -503,7 +503,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorFullPageUpSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             let current = textEditor.selections[0].active;
@@ -528,7 +528,7 @@ describe('CursorHandler', () => {
             cursorHandler.cursorFullPageDownSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             let current = textEditor.selections[0].active;
@@ -648,7 +648,7 @@ describe('CursorHandler', () => {
 
             cursorHandler.cursorLineStartSelect(textEditor);
             await waitForCursor(7, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 0]]);
@@ -658,7 +658,7 @@ describe('CursorHandler', () => {
 
             cursorHandler.cursorLineStartSelect(textEditor);
             await waitForCursor(4, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
@@ -673,7 +673,7 @@ describe('CursorHandler', () => {
 
             cursorHandler.cursorLineEndSelect(textEditor);
             await waitForCursor(7, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 10]]);
@@ -683,7 +683,7 @@ describe('CursorHandler', () => {
 
             cursorHandler.cursorLineEndSelect(textEditor);
             await waitForCursor(4, 5);
-            while (await sleep(1), !mode.inSelection()) {}
+            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
@@ -818,7 +818,7 @@ describe('CursorHandler', () => {
             cursorHandler.scrollLineUpUnselect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(500, 7);
-            while (await sleep(1), mode.inSelection()) {}
+            await waitForEndSelection();
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -850,7 +850,7 @@ describe('CursorHandler', () => {
             cursorHandler.scrollLineDownUnselect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(500, 7);
-            while (await sleep(1), mode.inSelection()) {}
+            await waitForEndSelection();
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
