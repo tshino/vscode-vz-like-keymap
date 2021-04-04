@@ -639,6 +639,30 @@ describe('CursorHandler', () => {
             assert.strictEqual(vlines0[0], vlines1[0]);
         });
     });
+    describe('cursorLineStart', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to beginning of current line', async () => {
+            await resetCursor(7, 5);
+
+            vscode.commands.executeCommand('vz.cursorLineStart');
+            await waitForCursor(7, 5);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 5, 4, 5);
+
+            vscode.commands.executeCommand('vz.cursorLineStart');
+            await waitForCursor(4, 5);
+            await waitForStartSelection();
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
+        });
+    });
     describe('cursorLineStartSelect', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
