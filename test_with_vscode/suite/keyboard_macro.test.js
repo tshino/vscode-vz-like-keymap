@@ -203,7 +203,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
     });
-    describe('toggleSelection and cursor', () => {
+    describe('toggleSelection', () => {
         before(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -212,7 +212,7 @@ describe('KeyboardMacro', () => {
         });
         it('should start selection mode', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.toggleSelection');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -223,7 +223,7 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection mode', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.toggleSelection');
             kb_macro.finishRecording();
 
             await selectRange(5, 5, 5, 6);
@@ -235,8 +235,8 @@ describe('KeyboardMacro', () => {
         });
         it('should start then cancel selection mode', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.toggleSelection');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -245,12 +245,20 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
+    });
+    describe('toggleSelection and cursor', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
         it('should make a selection range (toggle -> arrow)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorRight');
-            kb_macro.pushIfRecording('vz.cursorRight');
-            kb_macro.pushIfRecording('vz.cursorRight');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorRight');
+            vscode.commands.executeCommand('vz.cursorRight');
+            vscode.commands.executeCommand('vz.cursorRight');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -262,8 +270,8 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> line-start)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorLineStart');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLineStart');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -275,10 +283,10 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (arrow -> toggle -> arrow)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorRight');
-            kb_macro.pushIfRecording('vz.cursorRight');
+            vscode.commands.executeCommand('vz.cursorDown');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorRight');
+            vscode.commands.executeCommand('vz.cursorRight');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -290,9 +298,9 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (line-end -> toggle -> line-start)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorLineEnd');
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorLineStart');
+            vscode.commands.executeCommand('vz.cursorLineEnd');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLineStart');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -304,10 +312,10 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (arrow)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorRight');
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorDown');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorRight');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorDown');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
@@ -319,10 +327,10 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (line-start/end)', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorLineEnd');
-            kb_macro.pushIfRecording('vz.toggleSelection');
-            kb_macro.pushIfRecording('vz.cursorLineStart');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLineEnd');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLineStart');
             kb_macro.finishRecording();
 
             await resetCursor(5, 5);
