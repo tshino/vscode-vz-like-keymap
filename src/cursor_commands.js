@@ -9,13 +9,12 @@ const exec = function(commands, index = 0, textEditor = null) {
     if (typeof commands === 'string' || typeof commands === 'function') {
         commands = [ commands ];
     }
+    const cmd = commands[index];
     let res = null;
-    if (typeof commands[index] === 'function') {
-        res = new Promise(((cmd) => {
-            return (resolve, _reject) => { cmd(textEditor); resolve(); };
-        })(commands[index]));
+    if (typeof cmd === 'function') {
+        res = new Promise((resolve, _reject) => { cmd(textEditor); resolve(); });
     } else {
-        res = vscode.commands.executeCommand(commands[index]);
+        res = vscode.commands.executeCommand(cmd);
     }
     if (index + 1 < commands.length) {
         res.then(function() { exec(commands, index + 1, textEditor); });
