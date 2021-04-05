@@ -5,14 +5,22 @@ const tag_jump = require("./tag_jump.js");
 const mode_handler = require("./mode_handler.js");
 const keyboard_macro = require("./keyboard_macro.js");
 
-const exec = function(commands, index = 0) {
-    if (typeof commands === 'string') {
+const exec = function(commands, index = 0, textEditor = null) {
+    if (typeof commands === 'string' || typeof commands === 'function') {
         commands = [ commands ];
     }
-    let res = vscode.commands.executeCommand(commands[index]);
-    if (index + 1 < commands.length) {
-        res.then(function() { exec(commands, index + 1); });
+    let res = null;
+    if (typeof commands[index] === 'function') {
+        res = new Promise(((cmd) => {
+            return (resolve, _reject) => { cmd(textEditor); resolve(); };
+        })(commands[index]));
+    } else {
+        res = vscode.commands.executeCommand(commands[index]);
     }
+    if (index + 1 < commands.length) {
+        res.then(function() { exec(commands, index + 1, textEditor); });
+    }
+    return res;
 };
 
 const kbMacroHandler = keyboard_macro.getInstance();
@@ -76,12 +84,12 @@ const CursorHandler = function(modeHandler) {
                     mode.resetBoxSelection();
                 }
                 if (mode.inBoxSelection()) {
-                    exec(boxSelectCmd);
+                    return exec(boxSelectCmd, 0, textEditor);
                 } else {
-                    exec(selectCmd);
+                    return exec(selectCmd, 0, textEditor);
                 }
             } else {
-                exec(basicCmd);
+                return exec(basicCmd, 0, textEditor);
             }
         };
     };
@@ -502,9 +510,9 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
         registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
         registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
-        registerCursorCommand(context, 'cursorLineStart', 'vz.cursorLineStartSelect');
+        registerCursorCommand(context, 'cursorLineStart', cursorLineStartSelect);
         registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
-        registerCursorCommand(context, 'cursorLineEnd', 'vz.cursorLineEndSelect');
+        registerCursorCommand(context, 'cursorLineEnd', cursorLineEndSelect);
         registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
         registerCursorCommand(context, 'cursorTop', 'cursorTopSelect');
         registerCursorCommand(context, 'cursorBottom', 'cursorBottomSelect');

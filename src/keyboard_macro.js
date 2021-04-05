@@ -65,8 +65,6 @@ const KeyboardMacro = function() {
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
                 const needsYield = (
-                    cmd === 'vz.cursorLineStart' ||
-                    cmd === 'vz.cursorLineEnd' ||
                     cmd === 'vz.toggleSelection'
                 );
                 if (needsYield) {
