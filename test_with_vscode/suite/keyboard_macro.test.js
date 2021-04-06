@@ -268,6 +268,19 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 8]]);
         });
+        it('should make a selection range (toggle -> word-start-right)', async () => {
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorWordStartRight');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 9);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 9]]);
+        });
         it('should make a selection range (toggle -> line-start)', async () => {
             kb_macro.startRecording();
             vscode.commands.executeCommand('vz.toggleSelection');
@@ -295,6 +308,20 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(6, 7);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5, 6, 7]]);
+        });
+        it('should make a selection range (word-start-left -> toggle -> word-start-right)', async () => {
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.cursorWordStartLeft');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorWordStartRight');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 2, 5, 5]]);
         });
         it('should make a selection range (line-end -> toggle -> line-start)', async () => {
             kb_macro.startRecording();
@@ -324,6 +351,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(6, 6);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 6]]);
+        });
+        it('should make a selection range and cancel it then move cursor (word-start-left/right)', async () => {
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorWordStartRight');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorWordStartLeft');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForEndSelection();
+            await waitForCursorAt(5, 5);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
         it('should make a selection range and cancel it then move cursor (line-start/end)', async () => {
             kb_macro.startRecording();
