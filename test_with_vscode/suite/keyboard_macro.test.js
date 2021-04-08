@@ -246,7 +246,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
     });
-    describe('toggleSelection and cursor', () => {
+    describe('toggleSelection and cursor (toggle -> *)', () => {
         before(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -320,6 +320,29 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 0, 0]]);
         });
+        it('should make a selection range (toggle -> left-select)', async () => {
+            await resetCursor(0, 1);
+            kb_macro.startRecording();
+            await vscode.commands.executeCommand('vz.toggleSelection');
+            await vscode.commands.executeCommand('vz.cursorLeftSelect');
+            kb_macro.finishRecording();
+            await waitForCursorAt(0, 0);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 4);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 4]]);
+        });
+    });
+    describe('toggleSelection and cursor (* -> toggle -> *)', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
         it('should make a selection range (arrow -> toggle -> arrow)', async () => {
             await resetCursor(0, 0);
             kb_macro.startRecording();
@@ -392,6 +415,28 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 10, 0]]);
+        });
+        it('should make a selection range (right-select -> toggle -> left-select)', async () => {
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.cursorRightSelect');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLeftSelect');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6, 5, 5]]);
+        });
+    });
+    describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
         });
         it('should make a selection range and cancel it then move cursor (arrow)', async () => {
             kb_macro.startRecording();
@@ -467,6 +512,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+        });
+        it('should make and cancel a selection range then make another one (left/right-select)', async () => {
+            kb_macro.startRecording();
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorLeftSelect');
+            vscode.commands.executeCommand('vz.toggleSelection');
+            vscode.commands.executeCommand('vz.cursorRightSelect');
+            kb_macro.finishRecording();
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4, 5, 5]]);
         });
     });
 });
