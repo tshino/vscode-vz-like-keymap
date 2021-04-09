@@ -295,10 +295,12 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
         });
         it('should make a selection range (toggle -> home)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorHome'
             ]);
+            await waitForCursorAt(1, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay();
@@ -308,10 +310,12 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
         });
         it('should make a selection range (toggle -> top)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorTop'
             ]);
+            await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay();
