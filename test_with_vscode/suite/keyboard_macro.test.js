@@ -339,6 +339,21 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 4]]);
         });
+        it('should make a selection range (toggle -> home-select)', async () => {
+            await resetCursor(0, 1);
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorHomeSelect'
+            ]);
+            await waitForCursorAt(0, 0);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 0);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
+        });
     });
     describe('toggleSelection and cursor (* -> toggle -> *)', () => {
         before(async () => {
@@ -433,6 +448,20 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6, 5, 5]]);
+        });
+        it('should make a selection range (end-select -> toggle -> home-select)', async () => {
+            await recordThroughExecution([
+                'vz.cursorEndSelect',
+                'vz.toggleSelection',
+                'vz.cursorHomeSelect'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 0);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
     });
     describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
@@ -531,6 +560,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4, 5, 5]]);
+        });
+        it('should make and cancel a selection range then make another one (home/end-select)', async () => {
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorEndSelect',
+                'vz.toggleSelection',
+                'vz.cursorHomeSelect'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 0);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
     });
 });
