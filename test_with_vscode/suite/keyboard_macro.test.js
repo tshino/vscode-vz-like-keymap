@@ -209,6 +209,16 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
+        it('should move cursor (view-top/bottom)', async () => {
+            await resetCursor(0, 3);
+            await recordThroughExecution([
+                'vz.cursorViewTop'
+            ]);
+
+            await resetCursor(3, 4);
+            await kb_macro.replay();
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {
