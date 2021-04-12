@@ -184,7 +184,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
-        it('should make selection range while moving cursor', async () => {
+        it('should make selection range while moving cursor (arrow)', async () => {
             await resetCursor(3, 3);
             await recordThroughExecution([
                 'vz.cursorLeftSelect',
@@ -363,6 +363,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
+        });
+        it('should make a selection range (toggle -> view-top)', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorViewTop'
+            ]);
+            await waitForCursorAt(0, 2);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(0, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 0, 5]]);
         });
     });
     describe('toggleSelection and cursor (* -> toggle -> *)', () => {
