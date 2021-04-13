@@ -488,6 +488,20 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
+        it('should make a selection range (view-top -> toggle -> view-bottom)', async () => {
+            await recordThroughExecution([
+                'vz.cursorViewTop',
+                'vz.toggleSelection',
+                'vz.cursorViewBottom'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(10, 0);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 5, 10, 0]]);
+        });
     });
     describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
         before(async () => {
@@ -600,6 +614,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
+        });
+        it('should make and cancel a selection range then move cursor (view-top/bottom)', async () => {
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorViewTop',
+                'vz.toggleSelection',
+                'vz.cursorViewBottom'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForEndSelection();
+            await waitForCursorAt(10, 0);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
     });
 });
