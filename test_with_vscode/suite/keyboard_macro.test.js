@@ -219,6 +219,18 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay();
             assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
         });
+        it('should make selection range while moving cursor (line-start/end-select)', async () => {
+            await resetCursor(3, 3);
+            await recordThroughExecution([
+                'vz.cursorLineStartSelect',
+                'vz.cursorLineEndSelect'
+            ]);
+
+            await resetCursor(3, 4);
+            await kb_macro.replay();
+            await waitForCursorAt(3, 13);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {
