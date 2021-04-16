@@ -391,6 +391,21 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 0, 5]]);
         });
+        it('should make a selection range (toggle -> line-start-select)', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorLineStartSelect'
+            ]);
+            await waitForCursorAt(1, 0);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 0);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
+        });
     });
     describe('toggleSelection and cursor (* -> toggle -> *)', () => {
         before(async () => {
@@ -513,6 +528,20 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 5, 10, 0]]);
+        });
+        it('should make a selection range (line-start-select -> toggle -> line-end-select)', async () => {
+            await recordThroughExecution([
+                'vz.cursorLineStartSelect',
+                'vz.toggleSelection',
+                'vz.cursorLineEndSelect'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 13);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
         });
     });
     describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
@@ -641,6 +670,21 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+        });
+        it('should make and cancel a selection range then make another one (line-start/end-select)', async () => {
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.cursorLineStartSelect',
+                'vz.toggleSelection',
+                'vz.cursorLineEndSelect'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 13);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
         });
     });
 });
