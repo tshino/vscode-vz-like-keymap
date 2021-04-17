@@ -234,6 +234,8 @@ describe('KeyboardMacro', () => {
         it('should move cursor one line up/down with scroll', async () => {
             await resetCursor(5, 1);
             await recordThroughExecution([
+                'vz.scrollLineDown',
+                'vz.scrollLineUp',
                 'vz.scrollLineUp'
             ]);
 
