@@ -419,6 +419,21 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 0]]);
         });
+        it('should make a selection range (toggle -> scroll-line-up)', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.scrollLineUp'
+            ]);
+            await waitForCursorAt(0, 2);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(4, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 4, 5]]);
+        });
     });
     describe('toggleSelection and cursor (* -> toggle -> *)', () => {
         before(async () => {
@@ -555,6 +570,20 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 13);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
+        });
+        it('should make a selection range (scroll-line-up -> toggle -> scroll-line-down)', async () => {
+            await recordThroughExecution([
+                'vz.scrollLineUp',
+                'vz.toggleSelection',
+                'vz.scrollLineDown'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForStartSelection();
+            await waitForCursorAt(5, 5);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5, 5, 5]]);
         });
     });
     describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
@@ -698,6 +727,22 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(5, 13);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
+        });
+        it('should make and cancel a selection range then move cursor (scroll-line-up/down)', async () => {
+            await recordThroughExecution([
+                'vz.toggleSelection',
+                'vz.scrollLineUp',
+                'vz.toggleSelection',
+                'vz.scrollLineDown',
+                'vz.scrollLineDown'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay();
+            await waitForEndSelection();
+            await waitForCursorAt(6, 5);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
         });
     });
 });
