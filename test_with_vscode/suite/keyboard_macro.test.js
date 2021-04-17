@@ -231,6 +231,17 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
+        it('should move cursor one line up/down with scroll', async () => {
+            await resetCursor(5, 1);
+            await recordThroughExecution([
+                'vz.scrollLineUp'
+            ]);
+
+            await resetCursor(7, 4);
+            await kb_macro.replay();
+            await waitForCursorAt(6, 4);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {

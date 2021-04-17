@@ -281,11 +281,12 @@ const CursorHandler = function(modeHandler) {
         let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
     };
+    const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const scrollLineUp = function(textEditor, _edit) {
         // Scroll and cursor are dispatched concurrently to avoid flickering.
         exec(['scrollLineUp']);
         if (0 < textEditor.selection.active.line) {
-            exec(['vz.cursorUp']);
+            cursorUp(textEditor);
         }
     };
     const scrollLineUpUnselect = function() {
@@ -505,7 +506,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorLineEndSelect', cursorLineEndSelect);
         registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
         registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
-        registerCursorCommand(context, 'cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
+        registerTextEditorCommand(context, 'cursorUp', cursorUp);
         registerCursorCommand(context, 'cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
         registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
         registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
