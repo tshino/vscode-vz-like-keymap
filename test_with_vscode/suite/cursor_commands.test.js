@@ -35,8 +35,8 @@ describe('CursorHandler', () => {
     };
     const waitForCursor = async (prevLine, prevCharacter) => {
         while (
-            textEditor.selections[0].active.line === prevLine &&
-            textEditor.selections[0].active.character === prevCharacter
+            textEditor.selections[textEditor.selections.length - 1].active.line === prevLine &&
+            textEditor.selections[textEditor.selections.length - 1].active.character === prevCharacter
         ) {
             await sleep(1);
         }
@@ -254,7 +254,7 @@ describe('CursorHandler', () => {
             ]);
 
             cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForCursor(50, 8);
+            await waitForCursor(52, 8);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), false);
@@ -341,7 +341,7 @@ describe('CursorHandler', () => {
             ]);
 
             cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForCursor(50, 8);
+            await waitForCursor(52, 8);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), false);
@@ -734,6 +734,40 @@ describe('CursorHandler', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
         });
+    });
+    // todo: add tests for cursorUp, cursorDown
+    describe('cursorUp', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor up one line', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorUp(textEditor);
+            await waitForCursor(5, 5);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorUp(textEditor);
+            await waitForCursor(7, 10);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 6, 10]]);
+        });
+        /*it('should extend box-selection', async () => {
+            await selectRanges([[3, 3, 3, 5], [4, 3, 4, 5], [5, 3, 5, 5]]);
+
+            await cursorHandler.cursorUp(textEditor);
+            await waitForCursor(5, 5);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
+        });*/
     });
     describe('scrollLineUp', () => {
         before(async () => {
