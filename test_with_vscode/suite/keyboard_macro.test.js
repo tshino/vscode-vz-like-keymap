@@ -51,31 +51,36 @@ describe('KeyboardMacro', () => {
                 '0123456789\n'.repeat(10)
             );
         });
+        const funcA = function() {};
+        const funcB = function() {};
         it('should record and replay a single command', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
             assert.deepStrictEqual(kb_macro.getRecordedCommands(), [
-                'vz.cursorDown'
+                ['vz.cursorDown', funcA]
             ]);
         });
         it('should record and replay a series of commands', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorLeft');
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
+            kb_macro.pushIfRecording('vz.cursorLeft', funcB);
             kb_macro.finishRecording();
 
             assert.deepStrictEqual(kb_macro.getRecordedCommands(), [
-                'vz.cursorDown', 'vz.cursorDown', 'vz.cursorDown', 'vz.cursorLeft'
+                ['vz.cursorDown', funcA],
+                ['vz.cursorDown', funcA],
+                ['vz.cursorDown', funcA],
+                ['vz.cursorLeft', funcB]
             ]);
         });
         it('should clear previously recorded sequence by finishing recording immediately', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
             kb_macro.startRecording();
@@ -85,12 +90,12 @@ describe('KeyboardMacro', () => {
         });
         it('should clear previously recorded sequence by canceling recording', async () => {
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
-            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
             kb_macro.startRecording();
-            kb_macro.pushIfRecording('vz.cursorDown');
+            kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.cancelRecording();  // clear the above sequence
 
             assert.deepStrictEqual(kb_macro.getRecordedCommands(), []);
@@ -117,7 +122,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(5, 6);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
         });
@@ -134,7 +139,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(7, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 4]]);
         });
@@ -147,7 +152,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(5, 9);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
@@ -158,7 +163,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(5, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
@@ -169,7 +174,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(5, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
@@ -180,7 +185,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(0, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
@@ -193,7 +198,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(7, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 7, 4]]);
         });
@@ -205,7 +210,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(3, 4);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
@@ -216,7 +221,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(3, 4);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
         });
         it('should make selection range while moving cursor (line-start/end-select)', async () => {
@@ -227,7 +232,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(3, 4);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
@@ -240,7 +245,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(7, 4);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForCursorAt(6, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
         });
@@ -256,7 +261,7 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(['vz.toggleSelection']);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
@@ -265,7 +270,7 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(['vz.toggleSelection']);
 
             await selectRange(5, 5, 5, 6);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForEmptySelection();
             assert.strictEqual(mode.inSelection(), false);
@@ -275,7 +280,7 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(['vz.toggleSelection', 'vz.toggleSelection']);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
@@ -297,7 +302,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 8);
             assert.strictEqual(mode.inSelection(), true);
@@ -310,7 +315,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 9);
             assert.strictEqual(mode.inSelection(), true);
@@ -323,7 +328,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -338,7 +343,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(1, 0);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -353,7 +358,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(0, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -368,7 +373,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 4);
             assert.strictEqual(mode.inSelection(), true);
@@ -383,7 +388,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -398,7 +403,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 2);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(0, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -413,7 +418,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(1, 0);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -428,7 +433,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(0, 2);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(4, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -453,7 +458,7 @@ describe('KeyboardMacro', () => {
             await waitForCursorAt(1, 2);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(6, 7);
             assert.strictEqual(mode.inSelection(), true);
@@ -467,7 +472,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -481,7 +486,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -495,7 +500,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -509,7 +514,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -523,7 +528,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -537,7 +542,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -551,7 +556,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -565,7 +570,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 13);
             assert.strictEqual(mode.inSelection(), true);
@@ -579,7 +584,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -602,7 +607,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(6, 6);
             assert.strictEqual(mode.inSelection(), false);
@@ -617,7 +622,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), false);
@@ -632,7 +637,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), false);
@@ -647,7 +652,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), false);
@@ -662,7 +667,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
@@ -677,7 +682,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
@@ -692,7 +697,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
@@ -707,7 +712,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
@@ -722,7 +727,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForStartSelection();
             await waitForCursorAt(5, 13);
             assert.strictEqual(mode.inSelection(), true);
@@ -738,7 +743,7 @@ describe('KeyboardMacro', () => {
             ]);
 
             await resetCursor(5, 5);
-            await kb_macro.replay();
+            await kb_macro.replay(textEditor);
             await waitForEndSelection();
             await waitForCursorAt(6, 5);
             assert.strictEqual(mode.inSelection(), false);

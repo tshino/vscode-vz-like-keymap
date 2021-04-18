@@ -27,7 +27,7 @@ const registerTextEditorCommand = function(context, name, func) {
     const command = 'vz.' + name;
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
-            kbMacroHandler.pushIfRecording(command);
+            kbMacroHandler.pushIfRecording(command, func);
             func(textEditor, edit);
         })
     );

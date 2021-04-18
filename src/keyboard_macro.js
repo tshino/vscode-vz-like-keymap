@@ -24,9 +24,9 @@ const KeyboardMacro = function() {
     let onStartRecording = null;
     let onStopRecording = null;
 
-    const pushIfRecording = function(command) {
+    const pushIfRecording = function(command, func) {
         if (recording) {
-            recordedCommands.push(command);
+            recordedCommands.push([command, func]);
         }
     };
     const startRecording = function() {
@@ -59,18 +59,18 @@ const KeyboardMacro = function() {
         }
     };
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-    const replay = async function() {
+    const replay = async function(textEditor) {
         if (!recording) {
             // console.log(recordedCommands);
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
                 const needsYield = (
-                    cmd === 'vz.toggleSelection'
+                    cmd[0] === 'vz.toggleSelection'
                 );
                 if (needsYield) {
                     await sleep(50);
                 }
-                await vscode.commands.executeCommand(cmd);
+                await cmd[1](textEditor);
                 if (needsYield) {
                     await sleep(50);
                 }
