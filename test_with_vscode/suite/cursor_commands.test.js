@@ -766,6 +766,36 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [2, 3, 2, 5]]);
         });
     });
+    describe('cursorDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor down one line', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 8, 10]]);
+        });
+        it('should extend box-selection', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+
+            await cursorHandler.cursorDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
+        });
+    });
     describe('scrollLineUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
