@@ -101,6 +101,8 @@ const testUtils = (function() {
         );
         await revealCursor(textEditor);
         while (await sleep(1), !mode.synchronized()) {}
+        mode.resetSelection(textEditor);
+        mode.startSelection(textEditor, true);
     };
 
     return {

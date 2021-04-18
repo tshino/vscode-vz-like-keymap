@@ -744,7 +744,6 @@ describe('CursorHandler', () => {
             await resetCursor(5, 5);
 
             await cursorHandler.cursorUp(textEditor);
-            await waitForCursor(5, 5);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
@@ -753,21 +752,19 @@ describe('CursorHandler', () => {
             await selectRange(7, 7, 7, 10);
 
             await cursorHandler.cursorUp(textEditor);
-            await waitForCursor(7, 10);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 6, 10]]);
         });
-        /*it('should extend box-selection', async () => {
-            await selectRanges([[3, 3, 3, 5], [4, 3, 4, 5], [5, 3, 5, 5]]);
+        it('should extend box-selection', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
 
             await cursorHandler.cursorUp(textEditor);
-            await waitForCursor(5, 5);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
-        });*/
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [2, 3, 2, 5]]);
+        });
     });
     describe('scrollLineUp', () => {
         before(async () => {
