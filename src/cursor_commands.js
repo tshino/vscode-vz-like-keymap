@@ -284,20 +284,24 @@ const CursorHandler = function(modeHandler) {
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     const scrollLineUp = function(textEditor, _edit) {
-        // Scroll and cursor are dispatched concurrently to avoid flickering.
-        exec(['scrollLineUp']);
+        // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
+        let res1 = exec(['scrollLineUp']);
         if (0 < textEditor.selection.active.line) {
-            cursorUp(textEditor);
+            let res2 = cursorUp(textEditor);
+            return res1.then(() => res2);
+        } else {
+            return res1;
         }
     };
     const scrollLineUpUnselect = function() {
         exec(['cancelSelection', 'vz.scrollLineUp']);
     };
     const scrollLineDown = function(textEditor, _edit) {
-        // Scroll and cursor are dispatched concurrently to avoid flickering.
+        // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            exec(['scrollLineDown']);
-            cursorDown(textEditor);
+            let res1 = exec(['scrollLineDown']);
+            let res2 = cursorDown(textEditor);
+            return res1.then(() => res2);
         }
     };
     const scrollLineDownUnselect = function() {

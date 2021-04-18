@@ -123,7 +123,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(5, 6);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
         });
         it('should move cursor (multiple commands)', async () => {
@@ -140,7 +139,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(7, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 4]]);
         });
         it('should move cursor to left/right word', async () => {
@@ -153,7 +151,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(5, 9);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
         it('should move cursor to start/end of a logical line', async () => {
@@ -164,7 +161,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(5, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should move cursor to start/end of a wrapped line', async () => {
@@ -175,7 +171,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(5, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should move cursor to top/bottom of a document', async () => {
@@ -186,7 +181,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(0, 0);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
         it('should make selection range while moving cursor (arrow)', async () => {
@@ -199,7 +193,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(7, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 7, 4]]);
         });
         it('should make selection range while moving cursor (home/end)', async () => {
@@ -211,7 +204,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(3, 4);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
         it('should move cursor (view-top/bottom)', async () => {
@@ -233,7 +225,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(3, 4);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(3, 13);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
         it('should move cursor one line up/down with scroll', async () => {
@@ -246,7 +237,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(7, 4);
             await kb_macro.replay(textEditor);
-            await waitForCursorAt(6, 4);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
         });
     });
