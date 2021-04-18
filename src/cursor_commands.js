@@ -275,11 +275,13 @@ const CursorHandler = function(modeHandler) {
     const cursorLineStartSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         moveCursorTo(textEditor, line, 0, true);
+        mode.sync(textEditor);
     };
     const cursorLineEndSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
+        mode.sync(textEditor);
     };
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');

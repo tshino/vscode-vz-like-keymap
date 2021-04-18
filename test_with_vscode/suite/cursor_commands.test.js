@@ -692,9 +692,7 @@ describe('CursorHandler', () => {
         it('should move cursor to beginning of current line and start selection', async () => {
             await resetCursor(7, 5);
 
-            cursorHandler.cursorLineStartSelect(textEditor);
-            await waitForCursor(7, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorLineStartSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 0]]);
@@ -702,9 +700,7 @@ describe('CursorHandler', () => {
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
 
-            cursorHandler.cursorLineStartSelect(textEditor);
-            await waitForCursor(4, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorLineStartSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
@@ -717,9 +713,7 @@ describe('CursorHandler', () => {
         it('should move cursor to end of current line and start selection', async () => {
             await resetCursor(7, 5);
 
-            cursorHandler.cursorLineEndSelect(textEditor);
-            await waitForCursor(7, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorLineEndSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 7, 10]]);
@@ -727,9 +721,7 @@ describe('CursorHandler', () => {
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
 
-            cursorHandler.cursorLineEndSelect(textEditor);
-            await waitForCursor(4, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorLineEndSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);

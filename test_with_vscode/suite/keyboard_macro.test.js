@@ -435,6 +435,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5, 6, 7]]);
         });
         it('should make a selection range (word-start-left -> toggle -> word-start-right)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorWordStartLeft',
                 'vz.toggleSelection',
@@ -449,6 +450,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 2, 5, 5]]);
         });
         it('should make a selection range (line-end -> toggle -> line-start)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorLineEnd',
                 'vz.toggleSelection',
@@ -463,6 +465,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
         it('should make a selection range (end -> toggle -> home)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorEnd',
                 'vz.toggleSelection',
@@ -477,6 +480,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
         it('should make a selection range (top -> toggle -> bottom)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorTop',
                 'vz.toggleSelection',
@@ -491,6 +495,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 10, 0]]);
         });
         it('should make a selection range (right-select -> toggle -> left-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorRightSelect',
                 'vz.toggleSelection',
@@ -505,6 +510,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6, 5, 5]]);
         });
         it('should make a selection range (end-select -> toggle -> home-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorEndSelect',
                 'vz.toggleSelection',
@@ -519,6 +525,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
         it('should make a selection range (view-top -> toggle -> view-bottom)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorViewTop',
                 'vz.toggleSelection',
@@ -533,6 +540,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 5, 10, 0]]);
         });
         it('should make a selection range (line-start-select -> toggle -> line-end-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.cursorLineStartSelect',
                 'vz.toggleSelection',
@@ -547,6 +555,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
         });
         it('should make a selection range (scroll-line-up -> toggle -> scroll-line-down)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.scrollLineUp',
                 'vz.toggleSelection',
@@ -569,6 +578,7 @@ describe('KeyboardMacro', () => {
             );
         });
         it('should make a selection range and cancel it then move cursor (arrow)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorRight',
@@ -584,6 +594,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[6, 6]]);
         });
         it('should make a selection range and cancel it then move cursor (word-start-left/right)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorWordStartRight',
@@ -599,6 +610,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
         it('should make a selection range and cancel it then move cursor (line-start/end)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorLineEnd',
@@ -614,6 +626,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should make a selection range and cancel it then move cursor (home/end)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorEnd',
@@ -629,6 +642,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
         it('should make a selection range and cancel it then move cursor (top/bottom)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorTop',
@@ -644,6 +658,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
         it('should make and cancel a selection range then make another one (left/right-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorLeftSelect',
@@ -659,6 +674,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4, 5, 5]]);
         });
         it('should make and cancel a selection range then make another one (home/end-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorEndSelect',
@@ -674,6 +690,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
         it('should make and cancel a selection range then move cursor (view-top/bottom)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorViewTop',
@@ -689,6 +706,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
         it('should make and cancel a selection range then make another one (line-start/end-select)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorLineStartSelect',
@@ -704,6 +722,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
         });
         it('should make and cancel a selection range then move cursor (scroll-line-up/down)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.scrollLineUp',
