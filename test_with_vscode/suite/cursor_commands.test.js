@@ -735,7 +735,6 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
         });
     });
-    // todo: add tests for cursorUp, cursorDown
     describe('cursorUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
@@ -804,9 +803,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 5);
+            await cursorHandler.scrollLineUp(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -819,8 +816,7 @@ describe('CursorHandler', () => {
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(vlines0[0], 0);
 
-            cursorHandler.scrollLineUp(textEditor);
-            await waitForCursor(1, 5);
+            await cursorHandler.scrollLineUp(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -831,9 +827,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 7);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 7);
+            await cursorHandler.scrollLineUp(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), true);
@@ -849,9 +843,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 5);
+            await cursorHandler.scrollLineDown(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -863,9 +855,7 @@ describe('CursorHandler', () => {
             await locateCursor(995, 5, null);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(995, 5);
+            await cursorHandler.scrollLineDown(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -877,7 +867,7 @@ describe('CursorHandler', () => {
             await locateCursor(1000, 0, null);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDown(textEditor);
+            await cursorHandler.scrollLineDown(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -891,9 +881,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 7);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 7);
+            await cursorHandler.scrollLineDown(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), true);
