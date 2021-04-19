@@ -889,9 +889,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineUpUnselect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 5);
+            await cursorHandler.scrollLineUpUnselect(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -902,10 +900,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 7);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineUpUnselect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 7);
-            await waitForEndSelection();
+            await cursorHandler.scrollLineUpUnselect(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -921,9 +916,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDownUnselect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 5);
+            await cursorHandler.scrollLineDownUnselect(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -934,10 +927,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 7);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.scrollLineDownUnselect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(500, 7);
-            await waitForEndSelection();
+            await cursorHandler.scrollLineDownUnselect(textEditor);
 
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(mode.inSelection(), false);

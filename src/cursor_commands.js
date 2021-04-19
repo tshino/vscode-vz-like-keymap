@@ -12,12 +12,12 @@ const exec = function(commands, index = 0, textEditor = null) {
     const cmd = commands[index];
     let res = null;
     if (typeof cmd === 'function') {
-        res = new Promise((resolve, _reject) => { cmd(textEditor); resolve(); });
+        res = new Promise((resolve) => { resolve(cmd(textEditor)); });
     } else {
         res = vscode.commands.executeCommand(cmd);
     }
     if (index + 1 < commands.length) {
-        res.then(function() { exec(commands, index + 1, textEditor); });
+        res = res.then(function() { return exec(commands, index + 1, textEditor); });
     }
     return res;
 };
@@ -28,7 +28,7 @@ const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
             kbMacroHandler.pushIfRecording(command, func);
-            func(textEditor, edit);
+            return func(textEditor, edit);
         })
     );
 };
@@ -295,8 +295,8 @@ const CursorHandler = function(modeHandler) {
             return res1;
         }
     };
-    const scrollLineUpUnselect = function() {
-        exec(['cancelSelection', 'vz.scrollLineUp']);
+    const scrollLineUpUnselect = function(textEditor) {
+        return exec(['cancelSelection', scrollLineUp], 0, textEditor);
     };
     const scrollLineDown = function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
@@ -306,8 +306,8 @@ const CursorHandler = function(modeHandler) {
             return res1.then(() => res2);
         }
     };
-    const scrollLineDownUnselect = function() {
-        exec(['cancelSelection', 'vz.scrollLineDown']);
+    const scrollLineDownUnselect = function(textEditor) {
+        return exec(['cancelSelection', scrollLineDown], 0, textEditor);
     };
 
     const registerToggleSelectionCommand = function(context, name, isBox) {
