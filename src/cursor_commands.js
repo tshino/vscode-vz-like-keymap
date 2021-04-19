@@ -295,8 +295,14 @@ const CursorHandler = function(modeHandler) {
             return res1;
         }
     };
+    const cancelSelection = async function(textEditor) {
+        if (mode.inSelection()) {
+            await exec(['cancelSelection']);
+            mode.resetSelection(textEditor);
+        }
+    };
     const scrollLineUpUnselect = function(textEditor) {
-        return exec(['cancelSelection', scrollLineUp], 0, textEditor);
+        return exec([cancelSelection, scrollLineUp], 0, textEditor);
     };
     const scrollLineDown = function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
@@ -307,7 +313,7 @@ const CursorHandler = function(modeHandler) {
         }
     };
     const scrollLineDownUnselect = function(textEditor) {
-        return exec(['cancelSelection', scrollLineDown], 0, textEditor);
+        return exec([cancelSelection, scrollLineDown], 0, textEditor);
     };
 
     const registerToggleSelectionCommand = function(context, name, isBox) {
