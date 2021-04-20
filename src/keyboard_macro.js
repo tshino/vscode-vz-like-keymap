@@ -1,5 +1,6 @@
 "use strict";
 const vscode = require("vscode");
+const mode_handler = require("./mode_handler.js");
 
 const exec = function(commands, index = 0) {
     if (typeof commands === 'string') {
@@ -18,7 +19,8 @@ const registerTextEditorCommand = function(context, name, func) {
 };
 
 // EXPERIMENTAL: keyboard macro recording and replay
-const KeyboardMacro = function() {
+const KeyboardMacro = function(modeHandler) {
+    const mode = modeHandler;
     let recording = false;
     let recordedCommands = [];
     let onStartRecording = null;
@@ -67,12 +69,15 @@ const KeyboardMacro = function() {
                 const needsYield = (
                     cmd[0] === 'vz.toggleSelection'
                 );
-                if (needsYield) {
-                    await sleep(50);
-                }
                 await cmd[1](textEditor);
                 if (needsYield) {
                     await sleep(50);
+                }
+                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                    await sleep(5);
+                }
+                if (!mode.synchronized()) {
+                    mode.sync(textEditor);
                 }
             }
         }
@@ -98,7 +103,7 @@ const KeyboardMacro = function() {
     };
 };
 
-const theInstance = KeyboardMacro();
+const theInstance = KeyboardMacro(mode_handler.getInstance());
 exports.getInstance = function() {
     return theInstance;
 };

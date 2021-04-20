@@ -104,7 +104,11 @@ const CursorHandler = function(modeHandler) {
     const moveCursorTo = function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
-        textEditor.selection = new vscode.Selection(anchor, cursor);
+        let newSelection = new vscode.Selection(anchor, cursor);
+        if (!textEditor.selection.isEqual(newSelection)) {
+            mode.expectSync();
+        }
+        textEditor.selection = newSelection;
         textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
 
