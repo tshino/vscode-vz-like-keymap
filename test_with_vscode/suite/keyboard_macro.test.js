@@ -317,6 +317,7 @@ describe('KeyboardMacro', () => {
             );
         });
         it('should make a selection range (toggle -> arrow)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorRight',
@@ -330,6 +331,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 8]]);
         });
         it('should make a selection range (toggle -> word-start-right)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorWordStartRight'
@@ -341,6 +343,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 9]]);
         });
         it('should make a selection range (toggle -> line-start)', async () => {
+            await resetCursor(1, 1);
             await recordThroughExecution([
                 'vz.toggleSelection',
                 'vz.cursorLineStart'
@@ -357,7 +360,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorHome'
             ]);
-            await waitForCursorAt(1, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -370,7 +372,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorTop'
             ]);
-            await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -383,7 +384,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorLeftSelect'
             ]);
-            await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -396,7 +396,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorHomeSelect'
             ]);
-            await waitForCursorAt(0, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -409,7 +408,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorViewTop'
             ]);
-            await waitForCursorAt(0, 2);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -422,7 +420,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.cursorLineStartSelect'
             ]);
-            await waitForCursorAt(1, 0);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -443,7 +440,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.scrollLineUp'
             ]);
-            await waitForCursorAt(0, 2);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -456,7 +452,6 @@ describe('KeyboardMacro', () => {
                 'vz.toggleSelection',
                 'vz.scrollLineUpUnselect'
             ]);
-            await waitForCursorAt(0, 2);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -483,8 +478,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(6, 7);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5, 6, 7]]);
         });
@@ -498,8 +491,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 2, 5, 5]]);
         });
@@ -513,8 +504,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
