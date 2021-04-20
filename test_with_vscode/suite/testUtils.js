@@ -55,6 +55,9 @@ const testUtils = (function() {
     const waitForEndSelection = async (mode) => {
         while (await sleep(1), mode.inSelection()) {}
     };
+    const waitForSynchronized = async (mode) => {
+        while (await sleep(1), !mode.synchronized()) {}
+    };
     const revealCursor = async (textEditor, revealType=undefined) => {
         let cursor = textEditor.selections[0].active;
         textEditor.revealRange(new vscode.Range(cursor, cursor), revealType);
@@ -84,14 +87,14 @@ const testUtils = (function() {
         if (revealType !== null) {
             await revealCursor(textEditor, revealType);
         }
-        while (await sleep(1), !mode.synchronized()) {}
+        await waitForSynchronized(mode);
     };
     const selectRange = async (textEditor, mode, l1, c1, l2, c2) => {
         await resetCursor(textEditor, mode, l1, c1);
         mode.expectSync();
         textEditor.selections = [ new vscode.Selection(l1, c1, l2, c2) ];
         await revealCursor(textEditor);
-        while (await sleep(1), !mode.synchronized()) {}
+        await waitForSynchronized(mode);
     };
     const selectRanges = async (textEditor, mode, ranges) => {
         await resetCursor(textEditor, mode, ranges[0][0], ranges[0][1]);
@@ -100,7 +103,7 @@ const testUtils = (function() {
             r => new vscode.Selection(r[0], r[1], r[2], r[3])
         );
         await revealCursor(textEditor);
-        while (await sleep(1), !mode.synchronized()) {}
+        await waitForSynchronized(mode);
         mode.resetSelection(textEditor);
         mode.startSelection(textEditor, true);
     };
