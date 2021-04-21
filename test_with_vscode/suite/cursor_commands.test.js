@@ -547,8 +547,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorViewTop(textEditor);
-            await waitForCursor(500, 5);
+            await cursorHandler.cursorViewTop(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             let current = textEditor.selections[0].active;
@@ -562,8 +561,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 10);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorViewTop(textEditor);
-            await waitForCursor(500, 10);
+            await cursorHandler.cursorViewTop(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections[0].anchor.line, 500);
@@ -581,8 +579,7 @@ describe('CursorHandler', () => {
             let cursor = vlines0.length >> 1;
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorViewTop(textEditor);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorViewTop(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 5]]);
@@ -596,8 +593,7 @@ describe('CursorHandler', () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorViewBottom(textEditor);
-            await waitForCursor(500, 5);
+            await cursorHandler.cursorViewBottom(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             let current = textEditor.selections[0].active;
@@ -611,8 +607,7 @@ describe('CursorHandler', () => {
             await selectRange(500, 5, 500, 10);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorViewBottom(textEditor);
-            await waitForCursor(500, 10);
+            await cursorHandler.cursorViewBottom(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections[0].anchor.line, 500);
@@ -630,8 +625,7 @@ describe('CursorHandler', () => {
             let cursor = 1000 - (vlines0.length >> 1);
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorViewBottom(textEditor);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorViewBottom(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1000, 5]]);
