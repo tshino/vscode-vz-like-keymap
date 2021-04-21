@@ -66,13 +66,7 @@ const KeyboardMacro = function(modeHandler) {
             // console.log(recordedCommands);
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
-                const needsYield = (
-                    cmd[0] === 'vz.toggleSelection'
-                );
                 await cmd[1](textEditor);
-                if (needsYield) {
-                    await sleep(50);
-                }
                 for (let i = 0; i < 10 && !mode.synchronized(); i++) {
                     await sleep(5);
                 }

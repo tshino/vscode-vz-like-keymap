@@ -323,13 +323,13 @@ const CursorHandler = function(modeHandler) {
     };
 
     const registerToggleSelectionCommand = function(context, name, isBox) {
-        registerTextEditorCommand(context, name, function(textEditor, _edit) {
+        registerTextEditorCommand(context, name, async function(textEditor, _edit) {
             mode.sync(textEditor);
             if (mode.inSelection()) {
                 if (!textEditor.selection.isEmpty) {
-                    vscode.commands.executeCommand('cancelSelection');
+                    await vscode.commands.executeCommand('cancelSelection');
                 } else {
-                    vscode.commands.executeCommand('removeSecondaryCursors');
+                    await vscode.commands.executeCommand('removeSecondaryCursors');
                 }
                 mode.resetSelection(textEditor);
             } else {
