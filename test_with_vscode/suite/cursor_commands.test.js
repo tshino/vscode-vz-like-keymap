@@ -646,8 +646,7 @@ describe('CursorHandler', () => {
         it('should move cursor to beginning of current line', async () => {
             await resetCursor(7, 5);
 
-            vscode.commands.executeCommand('vz.cursorLineStart');
-            await waitForCursor(7, 5);
+            await cursorHandler.cursorLineStart(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
@@ -655,8 +654,7 @@ describe('CursorHandler', () => {
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
 
-            vscode.commands.executeCommand('vz.cursorLineStart');
-            await waitForCursor(4, 5);
+            await cursorHandler.cursorLineStart(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
@@ -669,8 +667,7 @@ describe('CursorHandler', () => {
         it('should move cursor to end of current line', async () => {
             await resetCursor(7, 5);
 
-            vscode.commands.executeCommand('vz.cursorLineEnd');
-            await waitForCursor(7, 5);
+            await cursorHandler.cursorLineEnd(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 10]]);
@@ -678,8 +675,7 @@ describe('CursorHandler', () => {
         it('should extend selection', async () => {
             await selectRange(7, 5, 4, 5);
 
-            vscode.commands.executeCommand('vz.cursorLineEnd');
-            await waitForCursor(4, 5);
+            await cursorHandler.cursorLineEnd(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
