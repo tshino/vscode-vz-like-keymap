@@ -474,7 +474,6 @@ describe('KeyboardMacro', () => {
                 'vz.cursorRight',
                 'vz.cursorRight'
             ]);
-            await waitForCursorAt(1, 2);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -603,8 +602,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5, 5, 5]]);
         });
@@ -640,8 +637,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(6, 6);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 6]]);
         });
@@ -656,8 +651,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
@@ -672,8 +665,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
@@ -688,8 +679,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
         });
@@ -704,8 +693,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
@@ -720,8 +707,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 5);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 4, 5, 5]]);
         });
@@ -736,8 +721,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 0);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 13, 5, 0]]);
         });
@@ -752,8 +735,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(10, 0);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
@@ -768,8 +749,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
-            await waitForCursorAt(5, 13);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0, 5, 13]]);
         });
@@ -793,8 +772,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForCursorAt(6, 5);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
         });
