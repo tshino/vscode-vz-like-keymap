@@ -12,15 +12,18 @@ describe('KeyboardMacro', () => {
 
     let textEditor;
     const sleep = testUtils.sleep;
-    const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
-    const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
+    // const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
+    // const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
     const selectRange = async (l1, c1, l2, c2) => {
         await testUtils.selectRange(textEditor, mode, l1, c1, l2, c2);
     };
-    const waitForCursorAt = async (line, character) => {
+    const selectRanges = async (ranges) => {
+        await testUtils.selectRanges(textEditor, mode, ranges);
+    };
+    /*const waitForCursorAt = async (line, character) => {
         while (
             textEditor.selections[0].active.line !== line ||
             textEditor.selections[0].active.character !== character
@@ -35,7 +38,7 @@ describe('KeyboardMacro', () => {
         ) {
             await sleep(1);
         }
-    };
+    };*/
     const selectionsAsArray = function() {
         return testUtils.selectionsToArray(textEditor.selections);
     };
@@ -285,7 +288,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForStartSelection();
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
@@ -294,9 +296,16 @@ describe('KeyboardMacro', () => {
 
             await selectRange(5, 5, 5, 6);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
-            await waitForEmptySelection();
             assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should cancel box selection mode', async () => {
+            await recordThroughExecution(['vz.toggleSelection']);
+
+            await selectRanges([[5, 5, 5, 6], [6, 5, 6, 6]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
         });
         it('should start then cancel selection mode', async () => {
@@ -304,7 +313,6 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
-            await waitForEndSelection();
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
@@ -789,6 +797,50 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
+        });
+    });
+    describe('toggleBoxSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should start box selection mode', async () => {
+            await recordThroughExecution(['vz.toggleBoxSelection']);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
+        });
+        it('should cancel selection mode', async () => {
+            await recordThroughExecution(['vz.toggleBoxSelection']);
+
+            await selectRange(5, 5, 5, 6);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should cancel box selection mode', async () => {
+            await recordThroughExecution(['vz.toggleBoxSelection']);
+
+            await selectRanges([[5, 5, 5, 6], [6, 5, 6, 6]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should start then cancel box selection mode', async () => {
+            await recordThroughExecution(['vz.toggleBoxSelection', 'vz.toggleBoxSelection']);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
     });
 });
