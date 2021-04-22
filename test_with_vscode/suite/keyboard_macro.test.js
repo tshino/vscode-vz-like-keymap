@@ -843,4 +843,27 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
     });
+    describe('toggleBoxSelection + cursor', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should make a box selection', async () => {
+            await resetCursor(1, 1);
+            await recordThroughExecution([
+                'vz.toggleBoxSelection',
+                'vz.cursorRight',
+                'vz.cursorDown',
+                'vz.cursorDown'
+            ]);
+
+            await resetCursor(5, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 6], [6, 5, 6, 6], [7, 5, 7, 6]]);
+        });
+    });
 });
