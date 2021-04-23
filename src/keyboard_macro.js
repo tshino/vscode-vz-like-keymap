@@ -2,16 +2,6 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 
-const exec = function(commands, index = 0) {
-    if (typeof commands === 'string') {
-        commands = [ commands ];
-    }
-    let res = vscode.commands.executeCommand(commands[index]);
-    if (index + 1 < commands.length) {
-        res.then(function() { exec(commands, index + 1); });
-    }
-};
-
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand('vz.' + name, func)
