@@ -925,6 +925,40 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[501, 7]]);
         });
     });
+    describe('stopBoxSelection', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+            cursorHandler.setMarkedPosition(textEditor, null);
+        });
+        it('should discard all empty multi-cursor', async () => {
+            await selectRanges([
+                [2, 7, 2, 7],
+                [3, 7, 3, 7],
+                [4, 7, 4, 7]
+            ]);
+
+            await cursorHandler.stopBoxSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 7]]);
+        });
+        it('should convert all non-empty column selection to all empty multi-cursor', async () => {
+            await selectRanges([
+                [2, 3, 2, 5],
+                [3, 3, 3, 5],
+                [4, 3, 4, 5]
+            ]);
+
+            await cursorHandler.stopBoxSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5], [3, 5], [4, 5]]);
+        });
+    });
     describe('markPosition', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,

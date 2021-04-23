@@ -337,12 +337,13 @@ const CursorHandler = function(modeHandler) {
             }
         });
     };
-    const stopBoxSelection = function(textEditor, _edit) {
+    const stopBoxSelection = async function(textEditor, _edit) {
         if (EditUtil.rangesAllEmpty(textEditor.selections)) {
-            vscode.commands.executeCommand('removeSecondaryCursors');
+            let res = vscode.commands.executeCommand('removeSecondaryCursors');
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
             }
+            return res;
         } else {
             textEditor.selections = textEditor.selections.map((sel) => (
                 new vscode.Selection(sel.active, sel.active)
@@ -578,6 +579,7 @@ const CursorHandler = function(modeHandler) {
         scrollLineUpUnselect,
         scrollLineDown,
         scrollLineDownUnselect,
+        stopBoxSelection,
         getMarkedPosition,  // for testing
         setMarkedPosition,  // for testing
         markPosition,
