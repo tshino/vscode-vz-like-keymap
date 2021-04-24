@@ -866,4 +866,71 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 5, 6], [6, 5, 6, 6], [7, 5, 7, 6]]);
         });
     });
+    describe('stopBoxSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should convert column selection to multi-cursor', async () => {
+            await selectRanges([[1, 1, 1, 4], [2, 1, 2, 4]]);
+            await recordThroughExecution(['vz.stopBoxSelection']);
+
+            await selectRanges([[5, 5, 5, 8], [6, 5, 6, 8]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 8], [6, 8]]);
+        });
+        it('should cancel multi-cursor', async () => {
+            await selectRanges([[1, 4, 1, 4], [2, 4, 2, 4]]);
+            await recordThroughExecution(['vz.stopBoxSelection']);
+
+            await selectRanges([[5, 8, 5, 8], [6, 8, 6, 8]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 8]]);
+        });
+    });
+    describe('toggleBoxSelection + stopBoxSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should convert column selection to multi-cursor', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'vz.toggleBoxSelection',
+                'vz.cursorRight',
+                'vz.cursorDown',
+                'vz.cursorDown',
+                'vz.stopBoxSelection'
+            ]);
+
+            await resetCursor(4, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 6], [5, 6], [6, 6]]);
+        });
+        it('should cancel multi-cursor', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'vz.toggleBoxSelection',
+                'vz.cursorDown',
+                'vz.cursorDown',
+                'vz.stopBoxSelection'
+            ]);
+
+            await resetCursor(4, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+        });
+    });
 });
