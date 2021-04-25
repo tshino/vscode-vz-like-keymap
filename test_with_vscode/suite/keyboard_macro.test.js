@@ -107,7 +107,12 @@ describe('KeyboardMacro', () => {
     const recordThroughExecution = async function(commands) {
         kb_macro.startRecording();
         for (let i = 0; i < commands.length; i++) {
-            await vscode.commands.executeCommand(commands[i]);
+            let cmd = commands[i];
+            if (typeof cmd === 'string') {
+                await vscode.commands.executeCommand(cmd);
+            } else {
+                await vscode.commands.executeCommand(cmd[0], cmd[1]);
+            }
             await sleep(30);
         }
         kb_macro.finishRecording();
@@ -931,6 +936,26 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.strictEqual(mode.inBoxSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+        });
+    });
+    describe('type', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(10)
+            );
+        });
+        it('should insert text', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'a' }]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'a');
         });
     });
 });

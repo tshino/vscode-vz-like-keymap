@@ -2,7 +2,9 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
+const keyboard_macro = require("./keyboard_macro.js");
 
+const kbMacroHandler = keyboard_macro.getInstance();
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand('vz.' + name, func)
@@ -80,6 +82,14 @@ const EditHandler = function(modeHandler) {
                         // pure deleting
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
+                    }
+                    if (changes.length === 1 && changes[0].rangeLength === 0) {
+                        // single pure inserting
+                        kbMacroHandler.pushIfRecording('type', async () => {
+                            await vscode.commands.executeCommand('type', {
+                                text: changes[0].text
+                            });
+                        });
                     }
                 }
                 deletedTextDetector.reset();
