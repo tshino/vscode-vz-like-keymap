@@ -56,6 +56,18 @@ describe('KeyboardMacro', () => {
         });
         const funcA = function() {};
         const funcB = function() {};
+        it('should start and finish recording', async () => {
+            assert.strictEqual(kb_macro.recording(), false);
+            kb_macro.startRecording();
+            assert.strictEqual(kb_macro.recording(), true);
+            kb_macro.finishRecording();
+            assert.strictEqual(kb_macro.recording(), false);
+        });
+        it('should start and cancel recording', async () => {
+            kb_macro.startRecording();
+            kb_macro.cancelRecording();
+            assert.strictEqual(kb_macro.recording(), false);
+        });
         it('should record and replay a single command', async () => {
             kb_macro.startRecording();
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
@@ -955,8 +967,8 @@ describe('KeyboardMacro', () => {
             await resetCursor(3, 0);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'a');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
         });
         it('should insert multiple character', async () => {
             await resetCursor(1, 0);
@@ -969,8 +981,8 @@ describe('KeyboardMacro', () => {
             await resetCursor(4, 0);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 3]]);
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 3]]);
         });
         it('should replace single selection with a text', async () => {
             await selectRange(5, 0, 5, 3);
@@ -981,8 +993,24 @@ describe('KeyboardMacro', () => {
             await selectRange(6, 0, 6, 3);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[6, 1]]);
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 1]]);
+        });
+        it('should replace multiple selections each with a text', async () => {
+            await selectRanges([[5, 0, 5, 3], [6, 0, 6, 3]]);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'Xde');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Xde');
+
+            await selectRanges([[7, 1, 7, 3], [8, 1, 8, 3]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'aXde');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'aXde');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
         });
     });
 });

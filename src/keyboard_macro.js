@@ -81,6 +81,7 @@ const KeyboardMacro = function(modeHandler) {
         finishRecording,
         replay,
         getRecordedCommands: function() { return recordedCommands; }, // for testing
+        recording: function() { return recording; },
         onStartRecording: function(func) { onStartRecording = func; },
         onStopRecording: function(func) { onStopRecording = func; },
         registerCommands

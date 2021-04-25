@@ -83,15 +83,30 @@ const EditHandler = function(modeHandler) {
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
                     }
-                    if (changes.length === 1 &&
-                        vscode.window.activeTextEditor.selections.length === 1 &&
-                        vscode.window.activeTextEditor.selections[0].isEqual(changes[0].range)) {
-                        // single pure inserting or replacing
-                        kbMacroHandler.pushIfRecording('type', async () => {
-                            await vscode.commands.executeCommand('type', {
-                                text: changes[0].text
-                            });
-                        });
+                    if (kbMacroHandler.recording()) {
+                        changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
+                        let selections = vscode.window.activeTextEditor.selections;
+                        if (0 < changes.length && changes.length === selections.length) {
+                            let differ = false;
+                            for (let i = 0; i < changes.length; i++) {
+                                if (!selections[i].isEqual(changes[i].range)) {
+                                    differ = true;
+                                    break;
+                                }
+                                if (changes[i].text !== changes[0].text) {
+                                    differ = true;
+                                    break;
+                                }
+                            }
+                            if (!differ) {
+                                // single pure inserting or replacing
+                                kbMacroHandler.pushIfRecording('type', async () => {
+                                    await vscode.commands.executeCommand('type', {
+                                        text: changes[0].text
+                                    });
+                                });
+                            }
+                        }
                     }
                 }
                 deletedTextDetector.reset();
