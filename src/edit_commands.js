@@ -83,8 +83,10 @@ const EditHandler = function(modeHandler) {
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
                     }
-                    if (changes.length === 1 && changes[0].rangeLength === 0) {
-                        // single pure inserting
+                    if (changes.length === 1 &&
+                        vscode.window.activeTextEditor.selections.length === 1 &&
+                        vscode.window.activeTextEditor.selections[0].isEqual(changes[0].range)) {
+                        // single pure inserting or replacing
                         kbMacroHandler.pushIfRecording('type', async () => {
                             await vscode.commands.executeCommand('type', {
                                 text: changes[0].text

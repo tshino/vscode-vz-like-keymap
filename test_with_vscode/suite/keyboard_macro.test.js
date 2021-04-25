@@ -939,13 +939,14 @@ describe('KeyboardMacro', () => {
         });
     });
     describe('type', () => {
-        before(async () => {
+        beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
-                '\n'.repeat(10)
+                '\n'.repeat(5) +
+                'abcde\n'.repeat(5)
             );
         });
-        it('should insert text', async () => {
+        it('should insert single character', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 ['type', { text: 'a' }]
@@ -956,6 +957,32 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'a');
+        });
+        it('should insert multiple character', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'a' }],
+                ['type', { text: 'b' }],
+                ['type', { text: 'c' }]
+            ]);
+
+            await resetCursor(4, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 3]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
+        });
+        it('should replace single selection with a text', async () => {
+            await selectRange(5, 0, 5, 3);
+            await recordThroughExecution([
+                ['type', { text: 'C' }]
+            ]);
+
+            await selectRange(6, 0, 6, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 1]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Cde');
         });
     });
 });
