@@ -984,6 +984,20 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
             assert.deepStrictEqual(selectionsAsArray(), [[4, 3]]);
         });
+        it('should insert single character at each of multi-cursor', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
+            await recordThroughExecution([
+                ['type', { text: 'a' }]
+            ]);
+
+            await selectRanges([[3, 0, 3, 0], [4, 0, 4, 0]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'a');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'a');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1], [4, 1]]);
+        });
         it('should replace single selection with a text', async () => {
             await selectRange(5, 0, 5, 3);
             await recordThroughExecution([
