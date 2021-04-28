@@ -1027,4 +1027,45 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
         });
     });
+    describe('type + cursor', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                'abcde\n'.repeat(5)
+            );
+        });
+        it('should write some text (type + curosr...)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'B' }],
+                'vz.cursorLeft',
+                ['type', { text: 'A' }],
+                'vz.cursorDown',
+                ['type', { text: 'C' }]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'AB');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'C');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 1]]);
+        });
+        it('should write some text (type + selection...)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'A' }],
+                ['type', { text: 'B' }],
+                'vz.cursorLineStartSelect',
+                ['type', { text: 'C' }]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'C');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
+        });
+    });
 });
