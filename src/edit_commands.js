@@ -99,6 +99,18 @@ const EditHandler = function(modeHandler) {
                                         text: changes[0].text
                                     });
                                 });
+                            } else if (sameText && changes[0].rangeLength <= changes[0].text.length) {
+                                let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
+                                if (sameLength) {
+                                    for (let i = 0; i < changes[0].rangeLength; i++) {
+                                        kbMacroHandler.pushIfRecording('vz.deleteLeft', deleteLeft);
+                                    }
+                                    kbMacroHandler.pushIfRecording('type', async () => {
+                                        await vscode.commands.executeCommand('type', {
+                                            text: changes[0].text
+                                        });
+                                    });
+                                }
                             }
                         }
                     }

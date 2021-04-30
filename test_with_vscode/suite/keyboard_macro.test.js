@@ -48,6 +48,9 @@ describe('KeyboardMacro', () => {
             let cmd = commands[i];
             if (typeof cmd === 'string') {
                 await vscode.commands.executeCommand(cmd);
+            } else if (cmd[0] === 'edit') {
+                await textEditor.edit(cmd[1]);
+                await resetCursor(cmd[2][0], cmd[2][1]);
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
             }
@@ -1025,6 +1028,32 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'aXde');
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'aXde');
             assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
+        });
+    });
+    describe('type + code completion', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                '123 \n'.repeat(5)
+            );
+        });
+        it('should insert some text', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'a' }],
+                ['type', { text: 'b' }],
+                ['edit', edit => {
+                    edit.replace(new vscode.Selection(1, 0, 1, 2), 'abcde');
+                }, [1, 5]]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcde');
+
+            await resetCursor(5, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
     });
     describe('type + cursor', () => {
