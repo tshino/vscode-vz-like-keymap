@@ -1086,5 +1086,24 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde12');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 7], [6, 7], [7, 7]]);
         });
+        it('should write some text (type + box-selection... / bottom to top)', async () => {
+            await resetCursor(2, 0);
+            await recordThroughExecution([
+                'vz.toggleBoxSelection',
+                'vz.cursorUp',
+                'vz.cursorUp',
+                ['type', { text: '1' }],
+                ['type', { text: '2' }]
+            ]);
+
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abc12de');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abc12de');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abc12de');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 5], [7, 5], [6, 5]]);
+        });
     });
 });

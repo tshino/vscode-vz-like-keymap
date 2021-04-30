@@ -87,6 +87,8 @@ const EditHandler = function(modeHandler) {
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         let selections = vscode.window.activeTextEditor.selections;
                         if (0 < changes.length && changes.length === selections.length) {
+                            selections = Array.from(selections);
+                            selections.sort((a, b) => a.start.compareTo(b.start));
                             let differ = false;
                             for (let i = 0; i < changes.length; i++) {
                                 if (!selections[i].isEqual(changes[i].range)) {
