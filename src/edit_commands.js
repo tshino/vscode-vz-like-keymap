@@ -89,19 +89,11 @@ const EditHandler = function(modeHandler) {
                         if (0 < changes.length && changes.length === selections.length) {
                             selections = Array.from(selections);
                             selections.sort((a, b) => a.start.compareTo(b.start));
-                            let differ = false;
-                            for (let i = 0; i < changes.length; i++) {
-                                if (!selections[i].isEqual(changes[i].range)) {
-                                    differ = true;
-                                    break;
-                                }
-                                if (changes[i].text !== changes[0].text) {
-                                    differ = true;
-                                    break;
-                                }
-                            }
-                            if (!differ) {
-                                // single pure inserting or replacing
+                            let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
+                            let sameText = changes.every((chg) => chg.text === changes[0].text);
+                            if (sameRange && sameText) {
+                                // pure insertion of a single line of text or,
+                                // replacing (possibly multiple) selected range(s) with a text
                                 kbMacroHandler.pushIfRecording('type', async () => {
                                     await vscode.commands.executeCommand('type', {
                                         text: changes[0].text
