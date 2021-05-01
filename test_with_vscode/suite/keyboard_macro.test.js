@@ -1038,7 +1038,7 @@ describe('KeyboardMacro', () => {
                 '123 \n'.repeat(5)
             );
         });
-        it('should insert some text', async () => {
+        it('should insert some text (code completion)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 ['type', { text: 'a' }],
@@ -1054,6 +1054,23 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
+        });
+        it('should insert some text (IME)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: 'あ' }],
+                ['type', { text: 'い' }],
+                ['edit', edit => {
+                    edit.replace(new vscode.Selection(1, 0, 1, 2), '愛');
+                }, [1, 1]]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
+
+            await resetCursor(5, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
         });
     });
     describe('type + cursor', () => {

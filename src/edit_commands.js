@@ -99,9 +99,11 @@ const EditHandler = function(modeHandler) {
                                         text: changes[0].text
                                     });
                                 });
-                            } else if (sameText && changes[0].rangeLength <= changes[0].text.length) {
+                            } else if (sameText) {
+                                let emptySelection = EditUtil.rangesAllEmpty(selections);
+                                let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
                                 let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
-                                if (sameLength) {
+                                if (emptySelection && cursorAtEndOfRange && sameLength) {
                                     for (let i = 0; i < changes[0].rangeLength; i++) {
                                         kbMacroHandler.pushIfRecording('vz.deleteLeft', deleteLeft);
                                     }
