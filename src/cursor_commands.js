@@ -105,11 +105,13 @@ const CursorHandler = function(modeHandler) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
         let newSelection = new vscode.Selection(anchor, cursor);
-        if (!textEditor.selection.isEqual(newSelection)) {
+        let expectSelectionChangeCallback = !textEditor.selection.isEqual(newSelection);
+        textEditor.selection = newSelection;
+        mode.sync(textEditor);
+        textEditor.revealRange(new vscode.Range(cursor, cursor));
+        if (expectSelectionChangeCallback) {
             mode.expectSync();
         }
-        textEditor.selection = newSelection;
-        textEditor.revealRange(new vscode.Range(cursor, cursor));
     };
 
     const cursorHalfPageUpImpl = function(textEditor, select) {
@@ -279,13 +281,11 @@ const CursorHandler = function(modeHandler) {
     const cursorLineStartSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         moveCursorTo(textEditor, line, 0, true);
-        mode.sync(textEditor);
     };
     const cursorLineEndSelect = function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
-        mode.sync(textEditor);
     };
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
