@@ -89,15 +89,17 @@ const CursorHandler = function(modeHandler) {
                     cmd = selectCmd;
                 }
             }
-            return new Promise(resolve => {
+            if (typeof cmd === 'function') {
+                return exec(cmd, 0, textEditor);
+            } else {
                 mode.expectSync();
                 let res = exec(cmd, 0, textEditor);
                 res = res.then(result => {
                     mode.sync(textEditor);
                     return result;
                 });
-                resolve(res);
-            });
+                return res;
+            }
         };
     };
     const registerCursorCommand = function(context, name, cmdForSelect, cmdForBoxSelect) {
