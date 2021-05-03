@@ -337,8 +337,10 @@ const CursorHandler = function(modeHandler) {
             mode.sync(textEditor);
             if (mode.inSelection()) {
                 if (!textEditor.selection.isEmpty) {
+                    mode.expectSync();
                     await vscode.commands.executeCommand('cancelSelection');
-                } else {
+                } else if (1 < textEditor.selections.length) {
+                    mode.expectSync();
                     await vscode.commands.executeCommand('removeSecondaryCursors');
                 }
                 mode.resetSelection(textEditor);
