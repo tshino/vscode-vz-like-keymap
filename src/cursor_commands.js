@@ -313,7 +313,13 @@ const CursorHandler = function(modeHandler) {
     };
     const cancelSelection = async function(textEditor) {
         if (mode.inSelection()) {
-            await exec(['cancelSelection']);
+            if (!textEditor.selection.isEmpty) {
+                mode.expectSync();
+                await vscode.commands.executeCommand('cancelSelection');
+            } else if (1 < textEditor.selections.length) {
+                mode.expectSync();
+                await vscode.commands.executeCommand('removeSecondaryCursors');
+            }
             mode.resetSelection(textEditor);
         }
     };
@@ -336,14 +342,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, name, async function(textEditor, _edit) {
             mode.sync(textEditor);
             if (mode.inSelection()) {
-                if (!textEditor.selection.isEmpty) {
-                    mode.expectSync();
-                    await vscode.commands.executeCommand('cancelSelection');
-                } else if (1 < textEditor.selections.length) {
-                    mode.expectSync();
-                    await vscode.commands.executeCommand('removeSecondaryCursors');
-                }
-                mode.resetSelection(textEditor);
+                await cancelSelection(textEditor);
             } else {
                 mode.startSelection(textEditor, isBox);
             }
