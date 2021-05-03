@@ -92,18 +92,22 @@ const EditHandler = function(modeHandler) {
                             let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
                             let sameText = changes.every((chg) => chg.text === changes[0].text);
                             if (sameRange && sameText) {
-                                // pure insertion of a single line of text or,
+                                // Pure insertion of a single line of text or,
                                 // replacing (possibly multiple) selected range(s) with a text
                                 kbMacroHandler.pushIfRecording('type', async () => {
                                     await vscode.commands.executeCommand('type', {
                                         text: changes[0].text
                                     });
                                 });
+                                mode.expectSync();
                             } else if (sameText) {
                                 let emptySelection = EditUtil.rangesAllEmpty(selections);
                                 let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
                                 let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
                                 if (emptySelection && cursorAtEndOfRange && sameLength) {
+                                    // Text insertion/replacement by code completion or maybe IME.
+                                    // It starts with removing one or more already inserted characters
+                                    // followed by inserting complete word(s).
                                     for (let i = 0; i < changes[0].rangeLength; i++) {
                                         kbMacroHandler.pushIfRecording('vz.deleteLeft', deleteLeft);
                                     }
@@ -112,6 +116,7 @@ const EditHandler = function(modeHandler) {
                                             text: changes[0].text
                                         });
                                     });
+                                    mode.expectSync();
                                 }
                             }
                         }
