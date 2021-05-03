@@ -78,18 +78,26 @@ const CursorHandler = function(modeHandler) {
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
+            let cmd = basicCmd;
             if (mode.inSelection()) {
                 if (mode.inBoxSelection() && !boxSelectCmd) {
                     mode.resetBoxSelection();
                 }
                 if (mode.inBoxSelection()) {
-                    return exec(boxSelectCmd, 0, textEditor);
+                    cmd = boxSelectCmd;
                 } else {
-                    return exec(selectCmd, 0, textEditor);
+                    cmd = selectCmd;
                 }
-            } else {
-                return exec(basicCmd, 0, textEditor);
             }
+            return new Promise(resolve => {
+                mode.expectSync();
+                let res = exec(cmd, 0, textEditor);
+                res = res.then(result => {
+                    mode.sync(textEditor);
+                    return result;
+                });
+                resolve(res);
+            });
         };
     };
     const registerCursorCommand = function(context, name, cmdForSelect, cmdForBoxSelect) {
