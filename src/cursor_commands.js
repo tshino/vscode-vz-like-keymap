@@ -349,16 +349,18 @@ const CursorHandler = function(modeHandler) {
         });
     };
     const stopBoxSelection = async function(textEditor, _edit) {
-        if (EditUtil.rangesAllEmpty(textEditor.selections)) {
-            let res = vscode.commands.executeCommand('removeSecondaryCursors');
-            if (mode.inSelection()) {
+        if (mode.inSelection() && 1 < textEditor.selections.length) {
+            if (EditUtil.rangesAllEmpty(textEditor.selections)) {
+                mode.expectSync();
+                await vscode.commands.executeCommand('removeSecondaryCursors');
                 mode.resetSelection(textEditor);
+            } else {
+                textEditor.selections = textEditor.selections.map((sel) => (
+                    new vscode.Selection(sel.active, sel.active)
+                ));
+                mode.sync(textEditor);
+                mode.expectSync();
             }
-            return res;
-        } else {
-            textEditor.selections = textEditor.selections.map((sel) => (
-                new vscode.Selection(sel.active, sel.active)
-            ));
         }
     };
     const reverseSelection = function(textEditor, _edit) {
