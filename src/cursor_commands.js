@@ -372,11 +372,11 @@ const CursorHandler = function(modeHandler) {
         if (mode.inSelection()) {
             let box = mode.inBoxSelection();
             mode.resetSelection(textEditor);
+            let nextCursor = textEditor.selections[0].anchor;
             textEditor.selections = textEditor.selections.map((sel) => (
                 new vscode.Selection(sel.active, sel.anchor)
             )).reverse();
-            let pos = textEditor.selections[textEditor.selections.length - 1].active;
-            textEditor.revealRange(new vscode.Range(pos, pos));
+            textEditor.revealRange(new vscode.Range(nextCursor, nextCursor));
             mode.startSelection(textEditor, box);
         }
     };
@@ -598,6 +598,7 @@ const CursorHandler = function(modeHandler) {
         scrollLineDown,
         scrollLineDownUnselect,
         stopBoxSelection,
+        reverseSelection,
         getMarkedPosition,  // for testing
         setMarkedPosition,  // for testing
         markPosition,

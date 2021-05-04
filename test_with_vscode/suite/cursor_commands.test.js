@@ -959,6 +959,57 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5], [3, 5], [4, 5]]);
         });
     });
+    describe('reverseSelection', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+            cursorHandler.setMarkedPosition(textEditor, null);
+        });
+        it('should swap the cursor and the anchor of the current selection range (single selection)', async () => {
+            await selectRange(4, 1, 8, 7);
+
+            await cursorHandler.reverseSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 7, 4, 1]]);
+        });
+        it('should do nothing but ratain selection mode if empty selection', async () => {
+            await resetCursor(2, 0);
+            await cursorHandler.cursorLineEndSelect(textEditor);
+            await cursorHandler.cursorLineStartSelect(textEditor);
+
+            await cursorHandler.reverseSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+        });
+        it('should reverse the order of multi-cursor', async () => {
+            await selectRanges([
+                [2, 7, 2, 7],
+                [3, 7, 3, 7]
+            ]);
+
+            await cursorHandler.reverseSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7], [2, 7]]);
+        });
+        it('should reverse in both direction of row and column of a column selection', async () => {
+            await selectRanges([
+                [2, 3, 2, 5],
+                [3, 3, 3, 5],
+                [4, 3, 4, 5]
+            ]);
+
+            await cursorHandler.reverseSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5, 4, 3], [3, 5, 3, 3], [2, 5, 2, 3]]);
+        });
+    });
     describe('markPosition', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
