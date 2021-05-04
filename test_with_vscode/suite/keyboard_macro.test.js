@@ -971,6 +971,26 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
         });
     });
+    describe('reverseSelection', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                'abcde\n'.repeat(5)
+            );
+        });
+        it('should reverse current selection', async () => {
+            await selectRange(1, 0, 5, 3);
+            await recordThroughExecution([
+                'vz.reverseSelection'
+            ]);
+
+            await selectRange(2, 0, 6, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4, 2, 0]]);
+        });
+    });
     describe('type', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

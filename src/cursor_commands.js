@@ -369,7 +369,8 @@ const CursorHandler = function(modeHandler) {
         }
     };
     const reverseSelection = function(textEditor, _edit) {
-        if (mode.inSelection()) {
+        if (mode.inSelection() &&
+            (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty)) {
             let box = mode.inBoxSelection();
             mode.resetSelection(textEditor);
             let nextCursor = textEditor.selections[0].anchor;
@@ -378,6 +379,7 @@ const CursorHandler = function(modeHandler) {
             )).reverse();
             textEditor.revealRange(new vscode.Range(nextCursor, nextCursor));
             mode.startSelection(textEditor, box);
+            mode.expectSync();
         }
     };
 
