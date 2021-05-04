@@ -42,6 +42,11 @@ const CursorHandler = function(modeHandler) {
             vscode.window.onDidChangeTextEditorSelection(function(event) {
                 if (event.textEditor === vscode.window.activeTextEditor) {
                     taskAfterScroll = null;
+                    if (kbMacroHandler.recording()) {
+                        if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
+                            kbMacroHandler.cancelRecording();
+                        }
+                    }
                     mode.sync(event.textEditor);
                 }
             })
