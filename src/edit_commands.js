@@ -94,11 +94,17 @@ const EditHandler = function(modeHandler) {
                             if (sameRange && sameText) {
                                 // Pure insertion of a single line of text or,
                                 // replacing (possibly multiple) selected range(s) with a text
+                                let expectedSelections = changes.map(chg => {
+                                    let pos = new vscode.Position(
+                                        chg.range.start.line,
+                                        chg.range.start.character + chg.text.length);
+                                    return new vscode.Selection(pos, pos);
+                                });
                                 kbMacroHandler.pushIfRecording('type', async () => {
                                     await vscode.commands.executeCommand('type', {
                                         text: changes[0].text
                                     });
-                                });
+                                }, expectedSelections);
                                 mode.expectSync();
                             } else if (sameText) {
                                 let emptySelection = EditUtil.rangesAllEmpty(selections);

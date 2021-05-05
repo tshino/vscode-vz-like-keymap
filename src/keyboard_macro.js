@@ -15,15 +15,18 @@ const KeyboardMacro = function(modeHandler) {
     let recordedCommands = [];
     let onStartRecording = null;
     let onStopRecording = null;
+    let expectedSelections = null;
 
-    const pushIfRecording = function(command, func) {
+    const pushIfRecording = function(command, func, expectedSelections_) {
         if (recording) {
             recordedCommands.push([command, func]);
+            expectedSelections = expectedSelections_;
         }
     };
     const startRecording = function() {
         if (!recording) {
             recording = true;
+            expectedSelections = null;
             recordedCommands = [];
             if (onStartRecording) {
                 onStartRecording();
@@ -35,6 +38,7 @@ const KeyboardMacro = function(modeHandler) {
     const cancelRecording = function() {
         if (recording) {
             recording = false;
+            expectedSelections = null;
             recordedCommands = [];
             if (onStopRecording) {
                 onStopRecording();
@@ -46,6 +50,7 @@ const KeyboardMacro = function(modeHandler) {
     const finishRecording = function() {
         if (recording) {
             recording = false;
+            expectedSelections = null;
             if (onStopRecording) {
                 onStopRecording();
             }
@@ -83,6 +88,7 @@ const KeyboardMacro = function(modeHandler) {
         cancelRecording,
         finishRecording,
         replay,
+        getExpectedSelections: function() { return expectedSelections; },
         getRecordedCommands: function() { return recordedCommands; }, // for testing
         recording: function() { return recording; },
         onStartRecording: function(func) { onStartRecording = func; },

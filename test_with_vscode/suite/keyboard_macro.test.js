@@ -51,9 +51,13 @@ describe('KeyboardMacro', () => {
             } else if (cmd[0] === 'edit') {
                 await textEditor.edit(cmd[1]);
                 if (typeof cmd[2][0] == 'number') {
-                    await resetCursor(cmd[2][0], cmd[2][1]);
+                    textEditor.selections = [
+                        new vscode.Selection(cmd[2][0], cmd[2][1], cmd[2][0], cmd[2][1])
+                    ];
                 } else {
-                    await selectRanges(cmd[2]);
+                    textEditor.selections = cmd[2].map(
+                        r => new vscode.Selection(r[0], r[1], r[2], r[3])
+                    );
                 }
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
@@ -1124,6 +1128,7 @@ describe('KeyboardMacro', () => {
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcde');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5], [2, 5]]);
 
             await resetCursor(5, 4);
             await kb_macro.replay(textEditor);
@@ -1179,12 +1184,42 @@ describe('KeyboardMacro', () => {
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '愛');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+        });
+        it('should insert some text and locate cursor some where (bracket completion)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
+
+            await resetCursor(5, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
+        });
+        it('should insert some text and locate cursor some where (bracket completion) (rec multi, replay single)', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '()');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
+
+            await resetCursor(5, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
     });
     describe('type + cursor', () => {

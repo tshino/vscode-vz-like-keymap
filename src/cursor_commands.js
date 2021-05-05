@@ -45,6 +45,39 @@ const CursorHandler = function(modeHandler) {
                     if (kbMacroHandler.recording()) {
                         if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
                             kbMacroHandler.cancelRecording();
+                        } else if (!mode.synchronized()) {
+                            let expectedSelections = kbMacroHandler.getExpectedSelections();
+                            if (expectedSelections) {
+                                let current = Array.from(event.selections);
+                                current.sort((a, b) => a.start.compareTo(b.start));
+                                let sameSelections = (
+                                    expectedSelections.length === current.length &&
+                                    expectedSelections.every((sel, i) => {
+                                        return sel.isEqual(current[i]);
+                                    })
+                                );
+                                if (!sameSelections) {
+                                    // Here, occurence of this change event was expected but the result is not the expected one.
+                                    // This is probably a kind of code completion like bracket completion.
+                                    // e.g. typing '(' would insert '()' and put back the cursor to right before the ')'
+                                    let delta = current[0].start.character - expectedSelections[0].start.character;
+                                    let isUniformCursorMotion = (
+                                        expectedSelections.length === current.length &&
+                                        expectedSelections.every(sel => sel.isEmpty) &&
+                                        current.every(sel => sel.isEmpty) &&
+                                        expectedSelections.every((sel,i) => sel.start.line === current[i].start.line) &&
+                                        expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
+                                    );
+                                    if (isUniformCursorMotion) {
+                                        for (; delta < 0; delta += 1) {
+                                            kbMacroHandler.pushIfRecording('vz.cursorLeft', cursorLeft);
+                                        }
+                                        for (; delta > 0; delta -= 1) {
+                                            kbMacroHandler.pushIfRecording('vz.cursorRight', cursorRight);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     mode.sync(event.textEditor);
@@ -302,6 +335,8 @@ const CursorHandler = function(modeHandler) {
         let col = textEditor.document.lineAt(line).range.end.character;
         moveCursorTo(textEditor, line, col, true);
     };
+    const cursorLeft = makeCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
+    const cursorRight = makeCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     const cursorLineStart = makeCursorCommand('cursorLineStart', cursorLineStartSelect);
@@ -544,8 +579,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorViewBottom', cursorViewBottom);
         registerTextEditorCommand(context, 'cursorLineStartSelect', cursorLineStartSelect);
         registerTextEditorCommand(context, 'cursorLineEndSelect', cursorLineEndSelect);
-        registerCursorCommand(context, 'cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
-        registerCursorCommand(context, 'cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
+        registerTextEditorCommand(context, 'cursorLeft', cursorLeft);
+        registerTextEditorCommand(context, 'cursorRight', cursorRight);
         registerTextEditorCommand(context, 'cursorUp', cursorUp);
         registerTextEditorCommand(context, 'cursorDown', cursorDown);
         registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
