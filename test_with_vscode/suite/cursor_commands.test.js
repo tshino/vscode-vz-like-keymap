@@ -717,6 +717,86 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
         });
     });
+    describe('cursorLeft', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor left one character', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 7, 9]]);
+        });
+        it('should extend box-selection', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+
+            await cursorHandler.cursorLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 4]]);
+        });
+        it('should extend box-selection (multi line)', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+            await cursorHandler.cursorDown(textEditor);
+
+            await cursorHandler.cursorLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 4], [4, 3, 4, 4]]);
+        });
+    });
+    describe('cursorRight', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor right one character', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 9);
+
+            await cursorHandler.cursorRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 7, 10]]);
+        });
+        it('should extend box-selection', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+
+            await cursorHandler.cursorRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 6]]);
+        });
+        it('should extend box-selection (multi line)', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+            await cursorHandler.cursorDown(textEditor);
+
+            await cursorHandler.cursorRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 6], [4, 3, 4, 6]]);
+        });
+    });
     describe('cursorUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));

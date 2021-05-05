@@ -629,6 +629,8 @@ const CursorHandler = function(modeHandler) {
         cursorLineEnd,
         cursorLineStartSelect,
         cursorLineEndSelect,
+        cursorLeft,
+        cursorRight,
         cursorUp,
         cursorDown,
         scrollLineUp,
