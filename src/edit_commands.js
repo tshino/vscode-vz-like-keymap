@@ -95,9 +95,7 @@ const EditHandler = function(modeHandler) {
                                 // Pure insertion of a single line of text or,
                                 // replacing (possibly multiple) selected range(s) with a text
                                 let expectedSelections = changes.map(chg => {
-                                    let pos = new vscode.Position(
-                                        chg.range.start.line,
-                                        chg.range.start.character + chg.text.length);
+                                    let pos = chg.range.start.translate({ characterDelta: chg.text.length });
                                     return new vscode.Selection(pos, pos);
                                 });
                                 kbMacroHandler.pushIfRecording('type', async () => {
