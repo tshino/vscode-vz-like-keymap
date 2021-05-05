@@ -411,12 +411,12 @@
             {
                 "key": "escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+j",
