@@ -1206,6 +1206,22 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
+        it('should insert some text and locate cursor some where (bracket completion) (rec single, replay multi)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
+
+            await selectRanges([[5, 4, 5, 4], [6, 4, 6, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '123 ()');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 5], [6, 5]]);
+        });
         it('should insert some text and locate cursor some where (bracket completion) (rec multi, replay single)', async () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
             await recordThroughExecution([

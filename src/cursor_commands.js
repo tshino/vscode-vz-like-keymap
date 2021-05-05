@@ -69,12 +69,13 @@ const CursorHandler = function(modeHandler) {
                                         expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
                                     );
                                     if (isUniformCursorMotion) {
-                                        for (; delta < 0; delta += 1) {
-                                            kbMacroHandler.pushIfRecording('vz.cursorLeft', cursorLeft);
-                                        }
-                                        for (; delta > 0; delta -= 1) {
-                                            kbMacroHandler.pushIfRecording('vz.cursorRight', cursorRight);
-                                        }
+                                        kbMacroHandler.pushIfRecording('<uniform-cursor-motion>', (textEditor) => {
+                                            let selections = textEditor.selections.map(sel => {
+                                                let pos = sel.active.translate({ characterDelta: delta });
+                                                return new vscode.Selection(pos, pos);
+                                            });
+                                            textEditor.selections = selections;
+                                        });
                                     }
                                 }
                             }
