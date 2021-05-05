@@ -1009,7 +1009,7 @@ describe('CursorHandler', () => {
             assert.strictEqual(mode.inBoxSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5, 4, 3], [3, 5, 3, 3], [2, 5, 2, 3]]);
         });
-        it('should retain box selection mode even if selected single line', async () => {
+        it('should retain box selection mode even if a single line is selected', async () => {
             await selectRanges([
                 [2, 3, 2, 5]
             ]);
