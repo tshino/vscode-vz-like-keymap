@@ -84,46 +84,7 @@ const EditHandler = function(modeHandler) {
                         deletedTextDetector.onDelete(changes);
                     }
                     if (kbMacroHandler.recording()) {
-                        changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
-                        let selections = vscode.window.activeTextEditor.selections;
-                        if (0 < changes.length && changes.length === selections.length) {
-                            selections = Array.from(selections);
-                            selections.sort((a, b) => a.start.compareTo(b.start));
-                            let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
-                            let sameText = changes.every((chg) => chg.text === changes[0].text);
-                            if (sameRange && sameText) {
-                                // Pure insertion of a single line of text or,
-                                // replacing (possibly multiple) selected range(s) with a text
-                                let expectedSelections = changes.map(chg => {
-                                    let pos = chg.range.start.translate({ characterDelta: chg.text.length });
-                                    return new vscode.Selection(pos, pos);
-                                });
-                                kbMacroHandler.pushIfRecording('type', async () => {
-                                    await vscode.commands.executeCommand('type', {
-                                        text: changes[0].text
-                                    });
-                                }, expectedSelections);
-                                mode.expectSync();
-                            } else if (sameText) {
-                                let emptySelection = EditUtil.rangesAllEmpty(selections);
-                                let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
-                                let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
-                                if (emptySelection && cursorAtEndOfRange && sameLength) {
-                                    // Text insertion/replacement by code completion or maybe IME.
-                                    // It starts with removing one or more already inserted characters
-                                    // followed by inserting complete word(s).
-                                    for (let i = 0; i < changes[0].rangeLength; i++) {
-                                        kbMacroHandler.pushIfRecording('vz.deleteLeft', deleteLeft);
-                                    }
-                                    kbMacroHandler.pushIfRecording('type', async () => {
-                                        await vscode.commands.executeCommand('type', {
-                                            text: changes[0].text
-                                        });
-                                    });
-                                    mode.expectSync();
-                                }
-                            }
-                        }
+                        kbMacroHandler.processOnChangeDocument(changes);
                     }
                 }
                 deletedTextDetector.reset();

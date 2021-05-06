@@ -1,6 +1,8 @@
 "use strict";
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
+const EditUtil = require("./edit_util.js");
+const edit_commands = require("./edit_commands.js");
 
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
@@ -165,6 +167,60 @@ const KeyboardMacro = function(modeHandler) {
         };
     })();
 
+    const editEventHandler = (function() {
+        const processOnChangeDocument = function(changes) {
+            changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
+            let selections = vscode.window.activeTextEditor.selections;
+            if (0 < changes.length && changes.length === selections.length) {
+                selections = Array.from(selections);
+                selections.sort((a, b) => a.start.compareTo(b.start));
+                let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
+                let sameText = changes.every((chg) => chg.text === changes[0].text);
+                if (sameRange && sameText) {
+                    // Pure insertion of a single line of text or,
+                    // replacing (possibly multiple) selected range(s) with a text
+                    let expectedSelections = changes.map(chg => {
+                        let pos = chg.range.start.translate({ characterDelta: chg.text.length });
+                        return new vscode.Selection(pos, pos);
+                    });
+                    pushIfRecording('type', async () => {
+                        await vscode.commands.executeCommand('type', {
+                            text: changes[0].text
+                        });
+                    }, expectedSelections);
+                    mode.expectSync();
+                } else if (sameText) {
+                    let emptySelection = EditUtil.rangesAllEmpty(selections);
+                    let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
+                    let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
+                    if (emptySelection && cursorAtEndOfRange && sameLength) {
+                        // Text insertion/replacement by code completion or maybe IME.
+                        // It starts with removing one or more already inserted characters
+                        // followed by inserting complete word(s).
+                        for (let i = 0; i < changes[0].rangeLength; i++) {
+                            pushIfRecording('vz.deleteLeft', edit_commands.getInstance().deleteLeft);
+                        }
+                        pushIfRecording('type', async () => {
+                            await vscode.commands.executeCommand('type', {
+                                text: changes[0].text
+                            });
+                        });
+                        mode.expectSync();
+                    } else {
+                        // console.log('unhandled edit event (1)');
+                    }
+                } else {
+                    // console.log('unhandled edit event (2)');
+                }
+            } else {
+                // console.log('unhandled edit event (3)');
+            }
+        };
+        return {
+            processOnChangeDocument
+        };
+    })();
+
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'startRecording', startRecording);
         registerTextEditorCommand(context, 'cancelRecording', cancelRecording);
@@ -181,6 +237,7 @@ const KeyboardMacro = function(modeHandler) {
         getRecordedCommands: function() { return recordedCommands; }, // for testing
         recording: function() { return recording; },
         processOnChangeSelections: cursorEventHandler.processOnChangeSelections,
+        processOnChangeDocument: editEventHandler.processOnChangeDocument,
         onStartRecording: function(func) { onStartRecording = func; },
         onStopRecording: function(func) { onStopRecording = func; },
         registerCommands
