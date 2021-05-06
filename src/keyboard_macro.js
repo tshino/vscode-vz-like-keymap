@@ -15,19 +15,18 @@ const KeyboardMacro = function(modeHandler) {
     let recordedCommands = [];
     let onStartRecording = null;
     let onStopRecording = null;
-    let expectedSelections = null;
 
-    const pushIfRecording = function(command, func, expectedSelections_) {
+    const pushIfRecording = function(command, func, expectedSelections) {
         if (recording) {
             recordedCommands.push([command, func]);
-            expectedSelections = expectedSelections_;
+            cursorEventHandler.setExpectedSelections(expectedSelections);
         }
     };
     const startRecording = function() {
         if (!recording) {
             recording = true;
-            expectedSelections = null;
             recordedCommands = [];
+            cursorEventHandler.reset();
             if (onStartRecording) {
                 onStartRecording();
             }
@@ -38,8 +37,8 @@ const KeyboardMacro = function(modeHandler) {
     const cancelRecording = function() {
         if (recording) {
             recording = false;
-            expectedSelections = null;
             recordedCommands = [];
+            cursorEventHandler.reset();
             if (onStopRecording) {
                 onStopRecording();
             }
@@ -50,7 +49,7 @@ const KeyboardMacro = function(modeHandler) {
     const finishRecording = function() {
         if (recording) {
             recording = false;
-            expectedSelections = null;
+            cursorEventHandler.reset();
             if (onStopRecording) {
                 onStopRecording();
             }
@@ -75,6 +74,97 @@ const KeyboardMacro = function(modeHandler) {
         }
     };
 
+    const cursorEventHandler = (function() {
+        let lastSelections = null;
+        let lastTextEditor = null;
+        let expectedSelections = null;
+
+        // let unhandleCount = 0;
+        // const selectionsToString = (selections) => selections.map(
+        //     sel => [sel.anchor, sel.active].map(
+        //         pos => [pos.line, pos.character].join(',')
+        //     ).join('-')
+        // ).join(' ');
+        // const printSelectionChangeEventInfo = function(event) {
+        //     console.log('selections: ' +
+        //         selectionsToString(lastSelections) + ' -> ' +
+        //         selectionsToString(event.selections));
+        //     console.log('kind', event.kind);
+        // };
+
+        const reset = function() {
+            lastSelections = null;
+            lastTextEditor = null;
+            expectedSelections = null;
+        };
+        const setExpectedSelections = function(expectedSelections_) {
+            expectedSelections = expectedSelections_; // can be undefined/null
+        }
+        const detectAndRecordImplicitMotion = function(event) {
+            if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
+                cancelRecording();
+            } else if (mode.synchronized()) {
+                // unhandleCount += 1;
+                // console.log('=== unexpected selection change (event) #' + unhandleCount);
+                // printSelectionChangeEventInfo(event);
+            } else {
+                if (expectedSelections) {
+                    let current = Array.from(event.selections);
+                    current.sort((a, b) => a.start.compareTo(b.start));
+                    let sameSelections = (
+                        expectedSelections.length === current.length &&
+                        expectedSelections.every((sel, i) => {
+                            return sel.isEqual(current[i]);
+                        })
+                    );
+                    if (!sameSelections) {
+                        // Here, occurence of this change event was expected but the result is not the expected one.
+                        // This is probably a kind of code completion like bracket completion.
+                        // e.g. typing '(' would insert '()' and put back the cursor to right before the ')'
+                        let delta = current[0].start.character - expectedSelections[0].start.character;
+                        let isUniformCursorMotion = (
+                            expectedSelections.length === current.length &&
+                            expectedSelections.every(sel => sel.isEmpty) &&
+                            current.every(sel => sel.isEmpty) &&
+                            expectedSelections.every((sel,i) => sel.start.line === current[i].start.line) &&
+                            expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
+                        );
+                        if (isUniformCursorMotion) {
+                            pushIfRecording('<uniform-cursor-motion>', (textEditor) => {
+                                let selections = textEditor.selections.map(sel => {
+                                    let pos = sel.active.translate({ characterDelta: delta });
+                                    return new vscode.Selection(pos, pos);
+                                });
+                                textEditor.selections = selections;
+                            });
+                        } else {
+                            // unhandleCount += 1;
+                            // console.log('=== unexpected selection change (selections) #' + unhandleCount);
+                            // console.log('expectation: ' + selectionsToString(expectedSelections));
+                            // printSelectionChangeEventInfo(event);
+                        }
+                    } else {
+                        // console.log('... exactly expected selection change');
+                        // printSelectionChangeEventInfo(event);
+                    }
+                }
+            }
+        };
+        const processOnChangeSelections = function(event) {
+            if (lastTextEditor !== event.textEditor) {
+                lastTextEditor = event.textEditor;
+                lastSelections = event.selections;
+            }
+            detectAndRecordImplicitMotion(event);
+            lastSelections = event.selections;
+        };
+        return {
+            reset,
+            setExpectedSelections,
+            processOnChangeSelections
+        };
+    })();
+
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'startRecording', startRecording);
         registerTextEditorCommand(context, 'cancelRecording', cancelRecording);
@@ -88,9 +178,9 @@ const KeyboardMacro = function(modeHandler) {
         cancelRecording,
         finishRecording,
         replay,
-        getExpectedSelections: function() { return expectedSelections; },
         getRecordedCommands: function() { return recordedCommands; }, // for testing
         recording: function() { return recording; },
+        processOnChangeSelections: cursorEventHandler.processOnChangeSelections,
         onStartRecording: function(func) { onStartRecording = func; },
         onStopRecording: function(func) { onStopRecording = func; },
         registerCommands

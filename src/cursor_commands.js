@@ -43,44 +43,9 @@ const CursorHandler = function(modeHandler) {
                 if (event.textEditor === vscode.window.activeTextEditor) {
                     taskAfterScroll = null;
                     if (kbMacroHandler.recording()) {
-                        if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
-                            kbMacroHandler.cancelRecording();
-                        } else if (!mode.synchronized()) {
-                            let expectedSelections = kbMacroHandler.getExpectedSelections();
-                            if (expectedSelections) {
-                                let current = Array.from(event.selections);
-                                current.sort((a, b) => a.start.compareTo(b.start));
-                                let sameSelections = (
-                                    expectedSelections.length === current.length &&
-                                    expectedSelections.every((sel, i) => {
-                                        return sel.isEqual(current[i]);
-                                    })
-                                );
-                                if (!sameSelections) {
-                                    // Here, occurence of this change event was expected but the result is not the expected one.
-                                    // This is probably a kind of code completion like bracket completion.
-                                    // e.g. typing '(' would insert '()' and put back the cursor to right before the ')'
-                                    let delta = current[0].start.character - expectedSelections[0].start.character;
-                                    let isUniformCursorMotion = (
-                                        expectedSelections.length === current.length &&
-                                        expectedSelections.every(sel => sel.isEmpty) &&
-                                        current.every(sel => sel.isEmpty) &&
-                                        expectedSelections.every((sel,i) => sel.start.line === current[i].start.line) &&
-                                        expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
-                                    );
-                                    if (isUniformCursorMotion) {
-                                        kbMacroHandler.pushIfRecording('<uniform-cursor-motion>', (textEditor) => {
-                                            let selections = textEditor.selections.map(sel => {
-                                                let pos = sel.active.translate({ characterDelta: delta });
-                                                return new vscode.Selection(pos, pos);
-                                            });
-                                            textEditor.selections = selections;
-                                        });
-                                    }
-                                }
-                            }
-                        }
+                        kbMacroHandler.processOnChangeSelections(event);
                     }
+                    // do mode.sync AFTER the above kbMacroHandler's process
                     mode.sync(event.textEditor);
                 }
             })
