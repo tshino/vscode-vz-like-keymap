@@ -101,7 +101,16 @@ const KeyboardMacro = function(modeHandler) {
         };
         const setExpectedSelections = function(expectedSelections_) {
             expectedSelections = expectedSelections_; // can be undefined/null
-        }
+        };
+        const makeCursorUniformMotion = function(delta) {
+            return function(textEditor) {
+                let selections = textEditor.selections.map(sel => {
+                    let pos = sel.active.translate({ characterDelta: delta });
+                    return new vscode.Selection(pos, pos);
+                });
+                textEditor.selections = selections;
+            };
+        };
         const detectAndRecordImplicitMotion = function(event) {
             if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
                 cancelRecording();
@@ -132,13 +141,8 @@ const KeyboardMacro = function(modeHandler) {
                             expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
                         );
                         if (isUniformCursorMotion) {
-                            pushIfRecording('<uniform-cursor-motion>', (textEditor) => {
-                                let selections = textEditor.selections.map(sel => {
-                                    let pos = sel.active.translate({ characterDelta: delta });
-                                    return new vscode.Selection(pos, pos);
-                                });
-                                textEditor.selections = selections;
-                            });
+                            const cursorUniformMotion = makeCursorUniformMotion(delta);
+                            pushIfRecording('<cursor-uniform-motion>', cursorUniformMotion);
                         } else {
                             // unhandleCount += 1;
                             // console.log('=== unexpected selection change (selections) #' + unhandleCount);
@@ -168,6 +172,11 @@ const KeyboardMacro = function(modeHandler) {
     })();
 
     const editEventHandler = (function() {
+        const makeInsertUniformText = function(text) {
+            return async () => {
+                await vscode.commands.executeCommand('type', { text: text });
+            };
+        };
         const processOnChangeDocument = function(changes) {
             changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
             let selections = vscode.window.activeTextEditor.selections;
@@ -183,11 +192,8 @@ const KeyboardMacro = function(modeHandler) {
                         let pos = chg.range.start.translate({ characterDelta: chg.text.length });
                         return new vscode.Selection(pos, pos);
                     });
-                    pushIfRecording('type', async () => {
-                        await vscode.commands.executeCommand('type', {
-                            text: changes[0].text
-                        });
-                    }, expectedSelections);
+                    const insertUniformText = makeInsertUniformText(changes[0].text);
+                    pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
                     mode.expectSync();
                 } else if (sameText) {
                     let emptySelection = EditUtil.rangesAllEmpty(selections);
@@ -200,11 +206,8 @@ const KeyboardMacro = function(modeHandler) {
                         for (let i = 0; i < changes[0].rangeLength; i++) {
                             pushIfRecording('vz.deleteLeft', edit_commands.getInstance().deleteLeft);
                         }
-                        pushIfRecording('type', async () => {
-                            await vscode.commands.executeCommand('type', {
-                                text: changes[0].text
-                            });
-                        });
+                        const insertUniformText = makeInsertUniformText(changes[0].text);
+                        pushIfRecording('<insert-uniform-text>', insertUniformText);
                         mode.expectSync();
                     } else {
                         // console.log('unhandled edit event (1)');
