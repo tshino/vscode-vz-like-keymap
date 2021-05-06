@@ -43,7 +43,7 @@ describe('KeyboardMacro', () => {
         return testUtils.selectionsToArray(textEditor.selections);
     };
     const recordThroughExecution = async function(commands) {
-        kb_macro.startRecording();
+        kb_macro.startRecording(textEditor);
         for (let i = 0; i < commands.length; i++) {
             let cmd = commands[i];
             if (typeof cmd === 'string') {
@@ -82,18 +82,18 @@ describe('KeyboardMacro', () => {
         const funcB = function() {};
         it('should start and finish recording', async () => {
             assert.strictEqual(kb_macro.recording(), false);
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             assert.strictEqual(kb_macro.recording(), true);
             kb_macro.finishRecording();
             assert.strictEqual(kb_macro.recording(), false);
         });
         it('should start and cancel recording', async () => {
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.cancelRecording();
             assert.strictEqual(kb_macro.recording(), false);
         });
         it('should record and replay a single command', async () => {
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
@@ -102,7 +102,7 @@ describe('KeyboardMacro', () => {
             ]);
         });
         it('should record and replay a series of commands', async () => {
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
@@ -117,23 +117,23 @@ describe('KeyboardMacro', () => {
             ]);
         });
         it('should clear previously recorded sequence by finishing recording immediately', async () => {
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.finishRecording();  // clear the above sequence
 
             assert.deepStrictEqual(kb_macro.getRecordedCommands(), []);
         });
         it('should clear previously recorded sequence by canceling recording', async () => {
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
 
-            kb_macro.startRecording();
+            kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.cancelRecording();  // clear the above sequence
 

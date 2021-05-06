@@ -22,11 +22,11 @@ const KeyboardMacro = function(modeHandler) {
             cursorEventHandler.setExpectedSelections(expectedSelections);
         }
     };
-    const startRecording = function() {
+    const startRecording = function(textEditor) {
         if (!recording) {
             recording = true;
             recordedCommands = [];
-            cursorEventHandler.reset();
+            cursorEventHandler.reset(textEditor);
             if (onStartRecording) {
                 onStartRecording();
             }
@@ -92,9 +92,9 @@ const KeyboardMacro = function(modeHandler) {
         //     console.log('kind', event.kind);
         // };
 
-        const reset = function() {
-            lastSelections = null;
-            lastTextEditor = null;
+        const reset = function(textEditor) {
+            lastSelections = textEditor ? textEditor.selections : null;
+            lastTextEditor = textEditor || null;
             expectedSelections = null;
         };
         const setExpectedSelections = function(expectedSelections_) {
