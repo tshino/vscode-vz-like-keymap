@@ -2,8 +2,8 @@
 
 # Vz Keymap for VS Code
 
-[![Node.js CI](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml)
-[![CodeQL](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml)
+[![Node.js CI](https://img.shields.io/github/workflow/status/tshino/vscode-vz-like-keymap/Node.js%20CI?logo=GitHub&label=Node.js%20CI)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml)
+[![CodeQL](https://img.shields.io/github/workflow/status/tshino/vscode-vz-like-keymap/CodeQL?logo=GitHub&label=CodeQL)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml)
 
 Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code拡張です。
 
