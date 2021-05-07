@@ -111,13 +111,33 @@ const KeyboardMacro = function(modeHandler) {
                 textEditor.selections = selections;
             };
         };
+        const recordImplicitMotion = function(expected, current) {
+            let delta = current[0].start.character - expected[0].start.character;
+            let isUniformCursorMotion = (
+                expected.length === current.length &&
+                expected.every(sel => sel.isEmpty) &&
+                current.every(sel => sel.isEmpty) &&
+                expected.every((sel,i) => sel.start.line === current[i].start.line) &&
+                expected.every((sel,i) => current[i].start.character - sel.start.character === delta)
+            );
+            if (isUniformCursorMotion) {
+                const cursorUniformMotion = makeCursorUniformMotion(delta);
+                pushIfRecording('<cursor-uniform-motion>', cursorUniformMotion);
+                return true;
+            }
+            return false;
+        };
         const detectAndRecordImplicitMotion = function(event) {
             if (event.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
                 cancelRecording();
             } else if (mode.synchronized()) {
-                // unhandleCount += 1;
-                // console.log('=== unexpected selection change (event) #' + unhandleCount);
-                // printSelectionChangeEventInfo(event);
+                let current = Array.from(event.selections);
+                let ok = recordImplicitMotion(lastSelections, current);
+                if (!ok) {
+                    // unhandleCount += 1;
+                    // console.log('=== unexpected selection change (event) #' + unhandleCount);
+                    // printSelectionChangeEventInfo(event);
+                }
             } else {
                 if (expectedSelections) {
                     let current = Array.from(event.selections);
@@ -132,18 +152,8 @@ const KeyboardMacro = function(modeHandler) {
                         // Here, occurence of this change event was expected but the result is not the expected one.
                         // This is probably a kind of code completion like bracket completion.
                         // e.g. typing '(' would insert '()' and put back the cursor to right before the ')'
-                        let delta = current[0].start.character - expectedSelections[0].start.character;
-                        let isUniformCursorMotion = (
-                            expectedSelections.length === current.length &&
-                            expectedSelections.every(sel => sel.isEmpty) &&
-                            current.every(sel => sel.isEmpty) &&
-                            expectedSelections.every((sel,i) => sel.start.line === current[i].start.line) &&
-                            expectedSelections.every((sel,i) => current[i].start.character - sel.start.character === delta)
-                        );
-                        if (isUniformCursorMotion) {
-                            const cursorUniformMotion = makeCursorUniformMotion(delta);
-                            pushIfRecording('<cursor-uniform-motion>', cursorUniformMotion);
-                        } else {
+                        let ok = recordImplicitMotion(expectedSelections, current);
+                        if (!ok) {
                             // unhandleCount += 1;
                             // console.log('=== unexpected selection change (selections) #' + unhandleCount);
                             // console.log('expectation: ' + selectionsToString(expectedSelections));
@@ -210,7 +220,7 @@ const KeyboardMacro = function(modeHandler) {
                         pushIfRecording('<insert-uniform-text>', insertUniformText);
                         mode.expectSync();
                     } else {
-                        // console.log('unhandled edit event (1)');
+                        // console.log('unhandled edit event (1):', emptySelection, cursorAtEndOfRange, sameLength);
                     }
                 } else {
                     // console.log('unhandled edit event (2)');
