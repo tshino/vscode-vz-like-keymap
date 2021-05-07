@@ -182,9 +182,40 @@ const KeyboardMacro = function(modeHandler) {
     })();
 
     const editEventHandler = (function() {
-        const makeInsertUniformText = function(text) {
-            return async () => {
-                await vscode.commands.executeCommand('type', { text: text });
+        // const makeInsertUniformText = function(text) {
+        //     return async () => {
+        //         await vscode.commands.executeCommand('type', { text: text });
+        //     };
+        // };
+        const makeInsertUniformText2 = function(text, numDeleteLeft) {
+            // FIXME: may fail if the text constains any line breaks
+            return async (textEditor) => {
+                let selections = Array.from(textEditor.selections);
+                await textEditor.edit(edit => {
+                    for (let i = 0; i < selections.length; i++) {
+                        let pos = selections[i].active;
+                        if (0 < numDeleteLeft) {
+                            let range = new vscode.Range(
+                                pos.translate({ characterDelta: -numDeleteLeft }),
+                                pos
+                            );
+                            edit.delete(range);
+                        } else if (!selections[i].isEmpty) {
+                            edit.delete(selections[i]);
+                            pos = selections[i].start;
+                        }
+                        edit.insert(pos, text);
+                        pos = pos.translate({ characterDelta: text.length - numDeleteLeft });
+                        selections[i] = new vscode.Selection(pos, pos);
+                    }
+                });
+                if (mode.inSelection()) {
+                    mode.resetSelection(textEditor);
+                }
+                textEditor.selections = selections;
+                if (1 < selections.length) {
+                    mode.startSelection(textEditor, true);
+                }
             };
         };
         const processOnChangeDocument = function(changes) {
@@ -202,7 +233,8 @@ const KeyboardMacro = function(modeHandler) {
                         let pos = chg.range.start.translate({ characterDelta: chg.text.length });
                         return new vscode.Selection(pos, pos);
                     });
-                    const insertUniformText = makeInsertUniformText(changes[0].text);
+                    const numDeleteLeft = 0;
+                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                     pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
                     mode.expectSync();
                 } else if (sameText) {
@@ -213,10 +245,8 @@ const KeyboardMacro = function(modeHandler) {
                         // Text insertion/replacement by code completion or maybe IME.
                         // It starts with removing one or more already inserted characters
                         // followed by inserting complete word(s).
-                        for (let i = 0; i < changes[0].rangeLength; i++) {
-                            pushIfRecording('vz.deleteLeft', edit_commands.getInstance().deleteLeft);
-                        }
-                        const insertUniformText = makeInsertUniformText(changes[0].text);
+                        const numDeleteLeft = changes[0].rangeLength;
+                        const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                         pushIfRecording('<insert-uniform-text>', insertUniformText);
                         mode.expectSync();
                     } else {

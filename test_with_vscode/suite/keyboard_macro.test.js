@@ -1237,11 +1237,11 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
-        it('should insert some text and locate cursor some where (bracket completion + overwrite)', async () => {
+        it('should just move cursor forward when typing a closing bracket explicitly (closing bracket completion)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
-                ['type', { text: '(' }],
-                ['type', { text: ')' }]
+                ['type', { text: '(' }], // => '(|)'
+                ['type', { text: ')' }]  // => '()|'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
@@ -1251,6 +1251,20 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should insert just an opening bracket (bracket completion not work)', async () => {
+            await resetCursor(5, 0);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '(123 ');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+
+            await resetCursor(2, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '(');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 1]]);
         });
     });
     describe('type + cursor', () => {
