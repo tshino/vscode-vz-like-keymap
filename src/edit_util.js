@@ -46,6 +46,13 @@ EditUtil.sortRangesInAscending = function(ranges) {
     }
 };
 
+EditUtil.isEqualSelections = function(selections1, selections2) {
+    return (
+        selections1.length === selections2.length &&
+        selections1.every((sel, i) => sel.isEqual(selections2[i]))
+    );
+};
+
 EditUtil.topmostSelection = function(selections) {
     if (1 < selections.length && selections[0].start.isAfter(selections[1].start)) {
         return selections[selections.length - 1];

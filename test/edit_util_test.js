@@ -109,6 +109,9 @@ describe('EditUtil', function() {
             assert(ranges2[0].start.isEqual(PositionMock(5, 0)));
         });
     });
+    describe('isEqualSelections', function() {
+        // TODO
+    });
     describe('topmostSelection', function() {
         it('should find the topmost selection from passed selection array which is ordered in either ascending or descending', function() {
             const empty = [

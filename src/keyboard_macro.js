@@ -2,7 +2,6 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
-const edit_commands = require("./edit_commands.js");
 
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
@@ -142,12 +141,7 @@ const KeyboardMacro = function(modeHandler) {
                 if (expectedSelections) {
                     let current = Array.from(event.selections);
                     current.sort((a, b) => a.start.compareTo(b.start));
-                    let sameSelections = (
-                        expectedSelections.length === current.length &&
-                        expectedSelections.every((sel, i) => {
-                            return sel.isEqual(current[i]);
-                        })
-                    );
+                    let sameSelections = EditUtil.isEqualSelections(expectedSelections, current);
                     if (!sameSelections) {
                         // Here, occurence of this change event was expected but the result is not the expected one.
                         // This is probably a kind of code completion like bracket completion.
@@ -220,13 +214,14 @@ const KeyboardMacro = function(modeHandler) {
         };
         const processOnChangeDocument = function(changes) {
             changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
+            // console.log('#changes ' + changes.map(chg => chg.text));
             let selections = vscode.window.activeTextEditor.selections;
             if (0 < changes.length && changes.length === selections.length) {
                 selections = Array.from(selections);
                 selections.sort((a, b) => a.start.compareTo(b.start));
                 let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
-                let sameText = changes.every((chg) => chg.text === changes[0].text);
-                if (sameRange && sameText) {
+                let uniformText = changes.every((chg) => chg.text === changes[0].text);
+                if (sameRange && uniformText) {
                     // Pure insertion of a single line of text or,
                     // replacing (possibly multiple) selected range(s) with a text
                     let expectedSelections = changes.map(chg => {
@@ -237,11 +232,11 @@ const KeyboardMacro = function(modeHandler) {
                     const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                     pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
                     mode.expectSync();
-                } else if (sameText) {
+                } else if (uniformText) {
                     let emptySelection = EditUtil.rangesAllEmpty(selections);
                     let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
-                    let sameLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
-                    if (emptySelection && cursorAtEndOfRange && sameLength) {
+                    let uniformRangeLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
+                    if (emptySelection && cursorAtEndOfRange && uniformRangeLength) {
                         // Text insertion/replacement by code completion or maybe IME.
                         // It starts with removing one or more already inserted characters
                         // followed by inserting complete word(s).
@@ -250,7 +245,7 @@ const KeyboardMacro = function(modeHandler) {
                         pushIfRecording('<insert-uniform-text>', insertUniformText);
                         mode.expectSync();
                     } else {
-                        // console.log('unhandled edit event (1):', emptySelection, cursorAtEndOfRange, sameLength);
+                        // console.log('unhandled edit event (1):', emptySelection, cursorAtEndOfRange, uniformRangeLength);
                     }
                 } else {
                     // console.log('unhandled edit event (2)');
