@@ -1072,6 +1072,56 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
         });
     });
+    describe('type + space/TAB', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                'abcde\n'.repeat(5)
+            );
+        });
+        it('should insert space characters', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: ' ' }],
+                ['type', { text: ' ' }],
+                ['type', { text: ' ' }]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '   ');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3]]);
+        });
+        it('should insert space characters (4TAB)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['edit', edit => {
+                    edit.insert(textEditor.selections[0].active, '    ');
+                }, [1, 4]]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '    ');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 4]]);
+        });
+        it('should insert space characters (TAB)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                'tab'
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            let line = textEditor.document.lineAt(3).text;
+            assert.strictEqual(Array.from(line).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, line.length]]);
+        });
+    });
     describe('type + code completion', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
@@ -1136,6 +1186,15 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
+    });
+    describe('type + IME', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                '123 \n'.repeat(5)
+            );
+        });
         it('should insert some text (IME)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
@@ -1191,6 +1250,15 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+        });
+    });
+    describe('type + bracket completion', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                '123 \n'.repeat(5)
+            );
         });
         it('should insert some text and locate cursor some where (bracket completion)', async () => {
             await resetCursor(1, 0);
