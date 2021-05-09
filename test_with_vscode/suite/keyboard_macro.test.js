@@ -1237,7 +1237,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
-        it('should just move cursor forward when typing a closing bracket explicitly (closing bracket completion)', async () => {
+        it('should just move cursor forward when typing a closing bracket explicitly', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 ['type', { text: '(' }], // => '(|)'
@@ -1252,13 +1252,77 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
         });
-        it('should insert just an opening bracket (bracket completion not work)', async () => {
+        it('should just move cursor forward when typing a closing bracket explicitly (rec single, replay multi)', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                ['type', { text: '(' }], // => '(|)'
+                ['type', { text: ')' }]  // => '()|'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+
+            await selectRanges([[5, 4, 5, 4], [6, 4, 6, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '123 ()');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6], [6, 6]]);
+        });
+        it('should just move cursor forward when typing a closing bracket explicitly (rec multi, replay single)', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
+            await recordThroughExecution([
+                ['type', { text: '(' }], // => '(|)'
+                ['type', { text: ')' }]  // => '()|'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '()');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2], [2, 2]]);
+
+            await resetCursor(5, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 ()');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 6]]);
+        });
+        it('should insert just an opening bracket (no bracket completion)', async () => {
             await resetCursor(5, 0);
             await recordThroughExecution([
                 ['type', { text: '(' }]
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '(123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+
+            await resetCursor(2, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '(');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 1]]);
+        });
+        it('should insert just an opening bracket (no bracket completion) (rec single, replay multi)', async () => {
+            await resetCursor(5, 0);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '(123 ');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+
+            await selectRanges([[2, 0, 2, 0], [3, 0, 3, 0]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '(');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '(');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 1], [3, 1]]);
+        });
+        it('should insert just an opening bracket (no bracket completion) (rec multi, replay single)', async () => {
+            await selectRanges([[5, 0, 5, 0], [6, 0, 6, 0]]);
+            await recordThroughExecution([
+                ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '(123 ');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '(123 ');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1], [6, 1]]);
 
             await resetCursor(2, 0);
             await kb_macro.replay(textEditor);
