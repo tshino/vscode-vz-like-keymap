@@ -1072,7 +1072,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
         });
     });
-    describe('type + space/TAB', () => {
+    describe('type (space/TAB)', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1121,6 +1121,33 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(Array.from(line).every(ch => ch === ' ' || ch === '\t'), true);
             assert.deepStrictEqual(selectionsAsArray(), [[3, line.length]]);
         });
+        // TODO: add tests for multi-cursor
+    });
+    describe('type (Enter)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'abc\n'.repeat(5) +
+                'abcde\n'.repeat(5)
+            );
+        });
+        it('should insert a line break', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'c');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+
+            await resetCursor(6, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abc');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'de');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+        });
+        // TODO: add tests for multi-cursor
     });
     describe('type + code completion', () => {
         beforeEach(async () => {

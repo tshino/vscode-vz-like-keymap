@@ -185,6 +185,13 @@ const KeyboardMacro = function(modeHandler) {
             // FIXME: may fail if the text constains any line breaks
             return async (textEditor) => {
                 let selections = Array.from(textEditor.selections);
+                const bottomToTop = 1 < selections.length && selections[0].start.isAfter(selections[1].start);
+                if (bottomToTop) {
+                    selections.reverse();
+                }
+                const numLF = Array.from(text).filter(c => c === '\n').length;
+                const lenLastLine = numLF === 0 ? 0 : text.length - (text.lastIndexOf('\n') + 1);
+                let lineOffset = 0;
                 await textEditor.edit(edit => {
                     for (let i = 0; i < selections.length; i++) {
                         let pos = selections[i].active;
@@ -199,12 +206,20 @@ const KeyboardMacro = function(modeHandler) {
                             pos = selections[i].start;
                         }
                         edit.insert(pos, text);
-                        pos = pos.translate({ characterDelta: text.length - numDeleteLeft });
+                        if (numLF === 0) {
+                            pos = pos.translate({ characterDelta: text.length - numDeleteLeft });
+                        } else {
+                            lineOffset += numLF;
+                            pos = new vscode.Position(pos.line + lineOffset, lenLastLine);
+                        }
                         selections[i] = new vscode.Selection(pos, pos);
                     }
                 });
                 if (mode.inSelection()) {
                     mode.resetSelection(textEditor);
+                }
+                if (bottomToTop) {
+                    selections.reverse();
                 }
                 textEditor.selections = selections;
                 if (1 < selections.length) {
