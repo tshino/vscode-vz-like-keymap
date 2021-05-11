@@ -1149,6 +1149,24 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'de');
             assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
         });
+        it('should insert line breaks', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                ['type', { text: '\n' }],
+                ['type', { text: '\n' }],
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'c');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abc');
+            assert.deepStrictEqual(textEditor.document.lineAt(11).text, 'de');
+            assert.deepStrictEqual(selectionsAsArray(), [[11, 0]]);
+        });
         it('should insert line breaks (with multi-cursor)', async () => {
             await selectRanges([[1, 1, 1, 1], [2, 1, 2, 1]]);
             await recordThroughExecution([
@@ -1199,7 +1217,6 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'e');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
         });
-        // TODO: add tests for inserting multiple LFs
         // TODO* add tests for CTRL+N (insertLineBefore)
         // TODO: add tests for auto indentation
     });
