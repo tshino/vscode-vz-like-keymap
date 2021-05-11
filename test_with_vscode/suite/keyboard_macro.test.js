@@ -1149,7 +1149,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'de');
             assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
         });
-        it('should insert line breaks (multi-cursor)', async () => {
+        it('should insert line breaks (with multi-cursor)', async () => {
             await selectRanges([[1, 1, 1, 1], [2, 1, 2, 1]]);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
@@ -1166,7 +1166,39 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'de');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
         });
-        // TODO: add tests for cases with selections
+        it('should insert line breaks (with a selected range)', async () => {
+            await selectRange(1, 1, 1, 2);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'a');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'c');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+
+            await selectRange(7, 2, 7, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'e');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
+        });
+        it('should insert line breaks (with selected ranges)', async () => {
+            await selectRanges([[1, 1, 1, 2], [2, 1, 2, 2]]);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'a');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'c');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0], [4, 0]]);
+
+            await selectRanges([[7, 2, 7, 4], [8, 2, 8, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'e');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
+        });
         // TODO: add tests for inserting multiple LFs
         // TODO* add tests for CTRL+N (insertLineBefore)
         // TODO: add tests for auto indentation
