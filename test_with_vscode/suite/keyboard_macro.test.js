@@ -1121,7 +1121,9 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(Array.from(line).every(ch => ch === ' ' || ch === '\t'), true);
             assert.deepStrictEqual(selectionsAsArray(), [[3, line.length]]);
         });
-        // TODO: add tests for multi-cursor
+        // TODO: add tests for cases with multi-cursor
+        // TODO: add tests for cases with selections
+        // TODO: add tests for inserting TAB into middle of a line
     });
     describe('type (Enter)', () => {
         beforeEach(async () => {
@@ -1147,7 +1149,27 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'de');
             assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
         });
-        // TODO: add tests for multi-cursor
+        it('should insert line breaks (multi-cursor)', async () => {
+            await selectRanges([[1, 1, 1, 1], [2, 1, 2, 1]]);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'bc');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'bc');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0], [4, 0]]);
+
+            await selectRanges([[7, 3, 7, 3], [8, 3, 8, 3]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'de');
+            assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'de');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
+        });
+        // TODO: add tests for cases with selections
+        // TODO: add tests for inserting multiple LFs
+        // TODO* add tests for CTRL+N (insertLineBefore)
+        // TODO: add tests for auto indentation
     });
     describe('type + code completion', () => {
         beforeEach(async () => {
