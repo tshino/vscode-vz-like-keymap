@@ -1130,7 +1130,8 @@ describe('KeyboardMacro', () => {
             await testUtils.resetDocument(
                 textEditor,
                 'abc\n'.repeat(5) +
-                'abcde\n'.repeat(5)
+                'abcde\n'.repeat(5) +
+                '    1234\n'.repeat(5)
             );
         });
         it('should insert a line break', async () => {
@@ -1218,7 +1219,45 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
         });
         // TODO* add tests for CTRL+N (insertLineBefore)
-        // TODO: add tests for auto indentation
+        it('should insert a line break and possible auto indent', async () => {
+            await resetCursor(10, 8);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            const autoIndent = textEditor.document.lineAt(11).text === '    ';
+            if (!autoIndent) {
+                console.log('.. skipped tests for auto indent');
+            } else {
+                assert.deepStrictEqual(selectionsAsArray(), [[11, 4]]);
+
+                await resetCursor(12, 8);
+                await kb_macro.replay(textEditor);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.deepStrictEqual(textEditor.document.lineAt(13).text, '    ');
+                assert.deepStrictEqual(selectionsAsArray(), [[13, 4]]);
+            }
+        });
+        it('should insert a line break and possible auto indent (multi-cursor)', async () => {
+            await selectRanges([[10, 8, 10, 8], [11, 8, 11, 8]]);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            const autoIndent = textEditor.document.lineAt(11).text === '    ';
+            if (!autoIndent) {
+                console.log('.. skipped tests for auto indent');
+            } else {
+                assert.strictEqual(textEditor.document.lineAt(13).text, '    ');
+                assert.deepStrictEqual(selectionsAsArray(), [[11, 4], [13, 4]]);
+
+                await selectRanges([[14, 8, 14, 8], [15, 8, 15, 8]]);
+                await kb_macro.replay(textEditor);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
+                assert.deepStrictEqual(textEditor.document.lineAt(15).text, '    ');
+                assert.deepStrictEqual(textEditor.document.lineAt(17).text, '    ');
+                assert.deepStrictEqual(selectionsAsArray(), [[15, 4], [17, 4]]);
+            }
+        });
     });
     describe('type + code completion', () => {
         beforeEach(async () => {
