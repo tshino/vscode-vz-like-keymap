@@ -75,17 +75,23 @@ const KeyboardMacro = function(modeHandler) {
         }
     };
 
+    // const selectionsToString = (selections) => selections.map(
+    //     sel => [sel.anchor, sel.active].map(
+    //         pos => [pos.line, pos.character].join(',')
+    //     ).join('-')
+    // ).join(' ');
+    // const rangesToString = (ranges) => ranges.map(
+    //     r => [r.start, r.end].map(
+    //         pos => [pos.line, pos.character].join(',')
+    //     ).join('-')
+    // ).join(' ');
+
     const cursorEventHandler = (function() {
         let lastSelections = null;
         let lastTextEditor = null;
         let expectedSelections = null;
 
         // let unhandleCount = 0;
-        // const selectionsToString = (selections) => selections.map(
-        //     sel => [sel.anchor, sel.active].map(
-        //         pos => [pos.line, pos.character].join(',')
-        //     ).join('-')
-        // ).join(' ');
         // const printSelectionChangeEventInfo = function(event) {
         //     console.log('selections: ' +
         //         selectionsToString(lastSelections) + ' -> ' +
@@ -104,7 +110,11 @@ const KeyboardMacro = function(modeHandler) {
         const makeCursorUniformMotion = function(delta) {
             return function(textEditor) {
                 let selections = textEditor.selections.map(sel => {
-                    let pos = sel.active.translate({ characterDelta: delta });
+                    let pos = sel.active;
+                    pos = new vscode.Position(
+                        pos.line,
+                        Math.max(0, pos.character + delta)
+                    );
                     return new vscode.Selection(pos, pos);
                 });
                 textEditor.selections = selections;
@@ -181,7 +191,7 @@ const KeyboardMacro = function(modeHandler) {
         //         await vscode.commands.executeCommand('type', { text: text });
         //     };
         // };
-        const makeInsertUniformText2 = function(text, numDeleteLeft) {
+        const makeInsertUniformText2 = function(text, numDeleteLeft, lineAbove) {
             // FIXME: may fail if the text constains any line breaks
             return async (textEditor) => {
                 let selections = Array.from(textEditor.selections);
@@ -195,7 +205,13 @@ const KeyboardMacro = function(modeHandler) {
                 await textEditor.edit(edit => {
                     for (let i = 0; i < selections.length; i++) {
                         let pos = selections[i].active;
-                        if (0 < numDeleteLeft) {
+                        if (lineAbove) {
+                            let line = Math.max(pos.line - 1, 0);
+                            pos = new vscode.Position(
+                                line,
+                                textEditor.document.lineAt(line).text.length
+                            );
+                        } else if (0 < numDeleteLeft) {
                             let range = new vscode.Range(
                                 pos.translate({ characterDelta: -numDeleteLeft }),
                                 pos
@@ -236,7 +252,11 @@ const KeyboardMacro = function(modeHandler) {
                 selections.sort((a, b) => a.start.compareTo(b.start));
                 let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
                 let uniformText = changes.every((chg) => chg.text === changes[0].text);
-                if (sameRange && uniformText) {
+                if (!uniformText) {
+                    // console.log('unhandled edit event (2)');
+                    return;
+                }
+                if (sameRange) {
                     // Pure insertion of a single line of text or,
                     // replacing (possibly multiple) selected range(s) with a text
                     let expectedSelections = changes.map(chg => {
@@ -244,29 +264,46 @@ const KeyboardMacro = function(modeHandler) {
                         return new vscode.Selection(pos, pos);
                     });
                     const numDeleteLeft = 0;
-                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
+                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft, false);
                     pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
                     mode.expectSync();
-                } else if (uniformText) {
-                    let emptySelection = EditUtil.rangesAllEmpty(selections);
-                    let cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
-                    let uniformRangeLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
-                    if (emptySelection && cursorAtEndOfRange && uniformRangeLength) {
-                        // Text insertion/replacement by code completion or maybe IME.
-                        // It starts with removing one or more already inserted characters
-                        // followed by inserting complete word(s).
-                        const numDeleteLeft = changes[0].rangeLength;
-                        const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
-                        pushIfRecording('<insert-uniform-text>', insertUniformText);
-                        mode.expectSync();
-                    } else {
-                        // console.log('unhandled edit event (1):', emptySelection, cursorAtEndOfRange, uniformRangeLength);
-                    }
-                } else {
-                    // console.log('unhandled edit event (2)');
+                    return;
                 }
+                const emptySelection = EditUtil.rangesAllEmpty(selections);
+                const uniformRangeLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
+                if (!emptySelection || !uniformRangeLength) {
+                    // console.log('selections: ' + selectionsToString(selections));
+                    // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
+                    // console.log('unhandled edit event (3):', emptySelection, uniformRangeLength);
+                    return;
+                }
+                const cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
+                if (cursorAtEndOfRange) {
+                    // Text insertion/replacement by code completion or maybe IME.
+                    // It starts with removing one or more already inserted characters
+                    // followed by inserting complete word(s).
+                    const numDeleteLeft = changes[0].rangeLength;
+                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft, false);
+                    pushIfRecording('<insert-uniform-text>', insertUniformText);
+                    mode.expectSync();
+                    return;
+                }
+                let document = vscode.window.activeTextEditor.document;
+                const allEndOfPreviousLine = changes.every((chg,i) => (
+                    chg.range.start.line === selections[i].active.line - 1 &&
+                    chg.range.start.character === document.lineAt(chg.range.start.line).text.length
+                ));
+                if (allEndOfPreviousLine) {
+                    const insertUniformTextAbove = makeInsertUniformText2(changes[0].text, 0, true);
+                    pushIfRecording('<insert-uniform-text-above', insertUniformTextAbove);
+                    mode.expectSync();
+                    return;
+                }
+                // console.log('selections: ' + selectionsToString(selections));
+                // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
+                // console.log('unhandled edit event (4):');
             } else {
-                // console.log('unhandled edit event (3)');
+                // console.log('unhandled edit event (1)');
             }
         };
         return {

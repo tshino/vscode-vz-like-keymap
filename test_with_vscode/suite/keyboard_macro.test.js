@@ -1218,7 +1218,6 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'e');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
         });
-        // TODO* add tests for CTRL+N (insertLineBefore)
         it('should insert a line break and possible auto indent', async () => {
             await resetCursor(10, 8);
             await recordThroughExecution([
@@ -1258,6 +1257,33 @@ describe('KeyboardMacro', () => {
                 assert.deepStrictEqual(selectionsAsArray(), [[15, 4], [17, 4]]);
             }
         });
+    });
+    describe('type (Ctrl+N)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'abc\n'.repeat(5) +
+                'abcde\n'.repeat(5) +
+                '    1234\n'.repeat(5)
+            );
+        });
+        it('should insert a new line before the current line', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'editor.action.insertLineBefore'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+
+            await resetCursor(6, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
+        });
+        // TODO: add tests more
     });
     describe('type + code completion', () => {
         beforeEach(async () => {
