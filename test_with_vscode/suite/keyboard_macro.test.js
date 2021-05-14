@@ -1283,6 +1283,28 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
+        it('should insert new lines before the current line', async () => {
+            await resetCursor(1, 2);
+            await recordThroughExecution([
+                'editor.action.insertLineBefore',
+                'editor.action.insertLineBefore',
+                'editor.action.insertLineBefore'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(10).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(11).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
+        });
         // TODO: add tests more
     });
     describe('type + code completion', () => {
