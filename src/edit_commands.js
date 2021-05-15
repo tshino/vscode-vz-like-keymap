@@ -10,11 +10,21 @@ const registerTextEditorCommand = function(context, name, func) {
         vscode.commands.registerTextEditorCommand('vz.' + name, func)
     );
 };
+const registerTextEditorCommandReplayable = function(context, name, func) {
+    const command = 'vz.' + name;
+    context.subscriptions.push(
+        vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
+            kbMacroHandler.pushIfRecording(command, func);
+            return func(textEditor, edit);
+        })
+    );
+};
 
 const EditHandler = function(modeHandler) {
     const mode = modeHandler;
     const textStack = [];
     const undeleteStack = [];
+    let editsExpected = false; // for keyboard macro recording
 
     const deletedTextDetector = (function() {
         let possibleDeletingInfo = [];
@@ -83,7 +93,7 @@ const EditHandler = function(modeHandler) {
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
                     }
-                    if (kbMacroHandler.recording()) {
+                    if (kbMacroHandler.recording() && !editsExpected) {
                         kbMacroHandler.processOnChangeDocument(changes);
                     }
                 }
@@ -488,7 +498,10 @@ const EditHandler = function(modeHandler) {
         }
     };
     const insertLineBefore = async function(_textEditor, _edit) {
+        editsExpected = true;
+        mode.expectSync();
         await vscode.commands.executeCommand('editor.action.insertLineBefore');
+        editsExpected = false;
     };
     const LOWERCASE = 0;
     const UPPERCASE = 1;
@@ -630,7 +643,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
-        registerTextEditorCommand(context, 'insertLineBefore', insertLineBefore);
+        registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);
     };

@@ -191,7 +191,7 @@ const KeyboardMacro = function(modeHandler) {
         //         await vscode.commands.executeCommand('type', { text: text });
         //     };
         // };
-        const makeInsertUniformText2 = function(text, numDeleteLeft, lineAbove) {
+        const makeInsertUniformText2 = function(text, numDeleteLeft) {
             // FIXME: may fail if the text constains any line breaks
             return async (textEditor) => {
                 let selections = Array.from(textEditor.selections);
@@ -205,13 +205,7 @@ const KeyboardMacro = function(modeHandler) {
                 await textEditor.edit(edit => {
                     for (let i = 0; i < selections.length; i++) {
                         let pos = selections[i].active;
-                        if (lineAbove) {
-                            let line = Math.max(pos.line - 1, 0);
-                            pos = new vscode.Position(
-                                line,
-                                textEditor.document.lineAt(line).text.length
-                            );
-                        } else if (0 < numDeleteLeft) {
+                        if (0 < numDeleteLeft) {
                             let range = new vscode.Range(
                                 pos.translate({ characterDelta: -numDeleteLeft }),
                                 pos
@@ -264,7 +258,7 @@ const KeyboardMacro = function(modeHandler) {
                         return new vscode.Selection(pos, pos);
                     });
                     const numDeleteLeft = 0;
-                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft, false);
+                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                     pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
                     mode.expectSync();
                     return;
@@ -283,19 +277,8 @@ const KeyboardMacro = function(modeHandler) {
                     // It starts with removing one or more already inserted characters
                     // followed by inserting complete word(s).
                     const numDeleteLeft = changes[0].rangeLength;
-                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft, false);
+                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                     pushIfRecording('<insert-uniform-text>', insertUniformText);
-                    mode.expectSync();
-                    return;
-                }
-                let document = vscode.window.activeTextEditor.document;
-                const allEndOfPreviousLine = changes.every((chg,i) => (
-                    chg.range.start.line === selections[i].active.line - 1 &&
-                    chg.range.start.character === document.lineAt(chg.range.start.line).text.length
-                ));
-                if (allEndOfPreviousLine) {
-                    const insertUniformTextAbove = makeInsertUniformText2(changes[0].text, 0, true);
-                    pushIfRecording('<insert-uniform-text-above', insertUniformTextAbove);
                     mode.expectSync();
                     return;
                 }

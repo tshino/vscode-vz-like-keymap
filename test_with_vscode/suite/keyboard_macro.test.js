@@ -1258,7 +1258,7 @@ describe('KeyboardMacro', () => {
             }
         });
     });
-    describe('type (Ctrl+N)', () => {
+    describe('insertLineBefore', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1270,7 +1270,7 @@ describe('KeyboardMacro', () => {
         it('should insert a new line before the current line', async () => {
             await resetCursor(1, 2);
             await recordThroughExecution([
-                'editor.action.insertLineBefore'
+                'vz.insertLineBefore'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
@@ -1286,9 +1286,9 @@ describe('KeyboardMacro', () => {
         it('should insert new lines before the current line', async () => {
             await resetCursor(1, 2);
             await recordThroughExecution([
-                'editor.action.insertLineBefore',
-                'editor.action.insertLineBefore',
-                'editor.action.insertLineBefore'
+                'vz.insertLineBefore',
+                'vz.insertLineBefore',
+                'vz.insertLineBefore'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
@@ -1304,6 +1304,27 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(11).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
+        });
+        it('should insert a new line before the current line (with multi-cursor)', async () => {
+            await selectRanges([[1, 2, 1, 2], [2, 2, 2, 2]]);
+            await recordThroughExecution([
+                'vz.insertLineBefore'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0], [3, 0]]);
+
+            await selectRanges([[7, 2, 7, 2], [8, 2, 8, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0], [9, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abcde');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'abcde');
         });
         // TODO: add tests more
     });
