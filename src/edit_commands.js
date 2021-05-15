@@ -487,6 +487,9 @@ const EditHandler = function(modeHandler) {
             await insertDeletedTexts(textEditor, deleted);
         }
     };
+    const insertLineBefore = async function(_textEditor, _edit) {
+        await vscode.commands.executeCommand('editor.action.insertLineBefore');
+    };
     const LOWERCASE = 0;
     const UPPERCASE = 1;
     const TITLECASE = 2;
@@ -627,6 +630,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
+        registerTextEditorCommand(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);
     };
@@ -659,6 +663,7 @@ const EditHandler = function(modeHandler) {
         deleteAllLeft,
         deleteAllRight,
         undelete,
+        insertLineBefore,
         transformCase,
         insertPath,
         registerCommands

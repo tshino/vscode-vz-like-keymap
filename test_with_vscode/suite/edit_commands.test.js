@@ -12,6 +12,15 @@ describe('EditHandler', () => {
 
     let textEditor;
     const sleep = testUtils.sleep;
+    const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
+        await testUtils.resetCursor(textEditor, mode, line, character, revealType);
+    };
+    const selectRange = async (l1, c1, l2, c2) => {
+        await testUtils.selectRange(textEditor, mode, l1, c1, l2, c2);
+    };
+    const selectRanges = async (ranges) => {
+        await testUtils.selectRanges(textEditor, mode, ranges);
+    };
     const waitForCursor = async (prevLine, prevCharacter) => {
         while (
             textEditor.selections[0].active.line === prevLine &&
@@ -2205,6 +2214,55 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghijabc');
             assert.strictEqual(textEditor.document.lineAt(4).text, '     fgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+    });
+    describe('insertLineBefore', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123456\n' +
+                    '1234\n' +
+                    '1234\n' +
+                    '    abcde\n' +
+                    '    fghijklmno\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should insert a new line before the current line', async () => {
+            await resetCursor(2, 2);
+
+            await editHandler.insertLineBefore(textEditor);
+
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+        });
+        it('should insert a new line and cancel selection range if exists', async () => {
+            await selectRange(2, 2, 2, 4);
+
+            await editHandler.insertLineBefore(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+        });
+        it('should insert new lines before each cursor (multi-cursor)', async () => {
+            await selectRanges([[0, 3, 0, 3], [1, 3, 1, 3]]);
+
+            await editHandler.insertLineBefore(textEditor);
+
+            assert.deepStrictEqual(textEditor.document.lineAt(0).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0], [2, 0]]);
         });
     });
     describe('transformCase', () => {

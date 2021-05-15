@@ -568,7 +568,7 @@
             },
             {
                 "key": "ctrl+n",
-                "command": "editor.action.insertLineBefore",
+                "command": "vz.insertLineBefore",
                 "when": "editorTextFocus && !editorReadonly && config.vzKeymap.ctrl+N"
             },
             {
