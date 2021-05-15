@@ -2253,6 +2253,16 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
         });
+        it('should insert a new line and cancel selection range even if anchor retains after edits', async () => {
+            await selectRange(2, 0, 2, 4);
+
+            await editHandler.insertLineBefore(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+        });
         it('should insert new lines before each cursor (multi-cursor)', async () => {
             await selectRanges([[0, 3, 0, 3], [1, 3, 1, 3]]);
 

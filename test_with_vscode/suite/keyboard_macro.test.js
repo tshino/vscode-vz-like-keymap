@@ -1326,6 +1326,22 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(9).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'abcde');
         });
+        it('should insert a new line before the current line (with selection range)', async () => {
+            await selectRange(6, 2, 6, 4);
+            await recordThroughExecution([
+                'vz.insertLineBefore'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
+
+            await selectRanges([[8, 0, 8, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, 'abcde');
+        });
         // TODO: add tests more
     });
     describe('type + code completion', () => {

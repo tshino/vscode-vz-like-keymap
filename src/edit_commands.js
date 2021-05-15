@@ -497,10 +497,13 @@ const EditHandler = function(modeHandler) {
             await insertDeletedTexts(textEditor, deleted);
         }
     };
-    const insertLineBefore = async function(_textEditor, _edit) {
+    const insertLineBefore = async function(textEditor, _edit) {
         editsExpected = true;
         mode.expectSync();
         await vscode.commands.executeCommand('editor.action.insertLineBefore');
+        if (mode.inSelection() && 1 === textEditor.selections.length) {
+            mode.resetSelection(textEditor);
+        }
         editsExpected = false;
     };
     const LOWERCASE = 0;
