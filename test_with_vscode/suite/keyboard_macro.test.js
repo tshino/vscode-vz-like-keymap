@@ -1218,7 +1218,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'e');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
         });
-        it('should insert a line break and possible auto indent', async () => {
+        it('should insert a line break with possible auto indent', async () => {
             await resetCursor(10, 8);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
@@ -1236,7 +1236,7 @@ describe('KeyboardMacro', () => {
                 assert.deepStrictEqual(selectionsAsArray(), [[13, 4]]);
             }
         });
-        it('should insert a line break and possible auto indent (multi-cursor)', async () => {
+        it('should insert a line break with possible auto indent (multi-cursor)', async () => {
             await selectRanges([[10, 8, 10, 8], [11, 8, 11, 8]]);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
@@ -1305,7 +1305,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(11).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
         });
-        it('should insert a new line before the current line (with multi-cursor)', async () => {
+        it('should insert new lines before each line of multi-cursor', async () => {
             await selectRanges([[1, 2, 1, 2], [2, 2, 2, 2]]);
             await recordThroughExecution([
                 'vz.insertLineBefore'
@@ -1326,7 +1326,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(9).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'abcde');
         });
-        it('should insert a new line before the current line (with selection range)', async () => {
+        it('should insert a new line before the line of cursor (with selection range)', async () => {
             await selectRange(6, 2, 6, 4);
             await recordThroughExecution([
                 'vz.insertLineBefore'
@@ -1335,14 +1335,75 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
 
-            await selectRanges([[8, 0, 8, 4]]);
+            await selectRange(8, 2, 8, 4);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(9).text, 'abcde');
         });
-        // TODO: add tests more
+        it('should insert new lines before each line of cursor (with selection ranges)', async () => {
+            await selectRanges([[6, 2, 6, 4], [7, 2, 7, 4]]);
+            await recordThroughExecution([
+                'vz.insertLineBefore'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0], [8, 0]]);
+
+            await selectRanges([[1, 0, 1, 2], [2, 0, 2, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0], [3, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abc');
+        });
+        it('should insert a new line with possible auto indent', async () => {
+            await resetCursor(11, 6);
+            await recordThroughExecution([
+                'vz.insertLineBefore'
+            ]);
+            const autoIndent = textEditor.document.lineAt(11).text === '    ';
+            if (!autoIndent) {
+                console.log('.. skipped tests for auto indent');
+            } else {
+                assert.deepStrictEqual(selectionsAsArray(), [[11, 4]]);
+
+                await resetCursor(13, 3);
+                await kb_macro.replay(textEditor);
+                assert.strictEqual(mode.inSelection(), false);
+                assert.deepStrictEqual(textEditor.document.lineAt(13).text, '    ');
+                assert.deepStrictEqual(textEditor.document.lineAt(14).text, '    1234');
+                assert.deepStrictEqual(selectionsAsArray(), [[13, 4]]);
+            }
+        });
+        it('should insert new lines with possible auto indent (multi-cursor)', async () => {
+            await selectRanges([[11, 3, 11, 3], [12, 4, 12, 4]]);
+            await recordThroughExecution([
+                'vz.insertLineBefore'
+            ]);
+            const autoIndent = textEditor.document.lineAt(11).text === '    ';
+            if (!autoIndent) {
+                console.log('.. skipped tests for auto indent');
+            } else {
+                assert.deepStrictEqual(selectionsAsArray(), [[11, 4], [13, 4]]);
+
+                await selectRanges([[14, 6, 14, 6], [15, 4, 15, 4]]);
+                await kb_macro.replay(textEditor);
+                assert.strictEqual(mode.inSelection(), true);
+                assert.strictEqual(mode.inBoxSelection(), true);
+                assert.deepStrictEqual(textEditor.document.lineAt(14).text, '    ');
+                assert.deepStrictEqual(textEditor.document.lineAt(15).text, '    1234');
+                assert.deepStrictEqual(textEditor.document.lineAt(16).text, '    ');
+                assert.deepStrictEqual(textEditor.document.lineAt(17).text, '    1234');
+                assert.deepStrictEqual(selectionsAsArray(), [[14, 4], [16, 4]]);
+            }
+        });
     });
     describe('type + code completion', () => {
         beforeEach(async () => {
