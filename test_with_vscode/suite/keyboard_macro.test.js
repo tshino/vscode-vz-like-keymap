@@ -270,6 +270,48 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4, 3, 13]]);
         });
     });
+    describe('cursor (special cases)', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '123\n' +
+                '123456\n' +
+                '    ABCD\n' +
+                'ABCD\n' +
+                'ABCD' // no new line
+            );
+        });
+        it('should do nothing (cannot move cursor left)', async () => {
+            await resetCursor(1, 1);
+            await recordThroughExecution([
+                'vz.cursorLeft'
+            ]);
+
+            await resetCursor(0, 0);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should move to the end of the previous line', async () => {
+            await resetCursor(1, 1);
+            await recordThroughExecution([
+                'vz.cursorLeft'
+            ]);
+
+            await resetCursor(1, 0);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
+        });
+        it('should no nothing (cannot move cursor to start/end of a logical line)', async () => {
+            await resetCursor(1, 4);
+            await recordThroughExecution([
+                'vz.cursorLineStart'
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+        });
+    });
     describe('scroll', () => {
         before(async () => {
             await testUtils.resetDocument(
