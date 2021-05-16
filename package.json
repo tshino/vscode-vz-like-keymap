@@ -430,12 +430,12 @@
             },
             {
                 "key": "ctrl+q ctrl+k",
-                "command": "editor.action.jumpToBracket",
+                "command": "vz.jumpToBracket",
                 "when": "editorTextFocus"
             },
             {
                 "key": "ctrl+q k",
-                "command": "editor.action.jumpToBracket",
+                "command": "vz.jumpToBracket",
                 "when": "editorTextFocus"
             },
             {

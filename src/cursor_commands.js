@@ -383,6 +383,10 @@ const CursorHandler = function(modeHandler) {
             mode.expectSync();
         }
     };
+    const jumpToBracket = async function(_textEditor, _edit) {
+        mode.expectSync();
+        await vscode.commands.executeCommand('editor.action.jumpToBracket');
+    };
 
     let markedPositionMap = new Map();
     const getMarkedPosition = function(textEditor) {
@@ -571,6 +575,7 @@ const CursorHandler = function(modeHandler) {
         registerToggleSelectionCommand(context, 'toggleBoxSelection', true);
         registerTextEditorCommand(context, 'stopBoxSelection', stopBoxSelection);
         registerTextEditorCommand(context, 'reverseSelection', reverseSelection);
+        registerTextEditorCommand(context, 'jumpToBracket', jumpToBracket);
         registerTextEditorCommand(context, 'markPosition', markPosition);
         registerTextEditorCommand(context, 'cursorLastPosition', cursorLastPosition);
         registerTextEditorCommand(context, 'tagJump', tagJump);
@@ -604,6 +609,7 @@ const CursorHandler = function(modeHandler) {
         scrollLineDownUnselect,
         stopBoxSelection,
         reverseSelection,
+        jumpToBracket,
         getMarkedPosition,  // for testing
         setMarkedPosition,  // for testing
         markPosition,
