@@ -1101,6 +1101,50 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5, 2, 3]]);
         });
     });
+    describe('jumpToBracket', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                'aaaa( bbbb )\n' +
+                '{\n' +
+                '    { cccc }\n' +
+                '}\n'
+            );
+        });
+        it('should move cursor to opposite side of the pair of bracket', async () => {
+            await resetCursor(1, 0);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+        });
+        it('should jump to the corresponding bracket (inside nested brackets)', async () => {
+            await resetCursor(2, 4);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4]]);
+        });
+        it('should jump to the closing bracket (from middle of the range)', async () => {
+            await resetCursor(2, 0);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+
+            await cursorHandler.jumpToBracket(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+        });
+        // TODO: more tests for jumpToBracket
+    });
     describe('markPosition', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
