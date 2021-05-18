@@ -1037,6 +1037,28 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[6, 4, 2, 0]]);
         });
     });
+    describe('jumpToBracket', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                'aaaa( bbbb )\n' +
+                '{\n' +
+                '    { cccc }\n' +
+                '}\n'
+            );
+        });
+        it('should move cursor to opposite side of the pair of bracket', async () => {
+            await resetCursor(1, 0);
+            await recordThroughExecution([
+                'vz.jumpToBracket'
+            ]);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+        });
+    });
     describe('type', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
