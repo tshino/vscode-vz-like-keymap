@@ -352,12 +352,12 @@ const EditHandler = function(modeHandler) {
         await vscode.env.clipboard.writeText('');
         vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
     };
-    const runEditCommand = function(command, textEditor, _edit) {
+    const runEditCommand = async function(command, textEditor, _edit) {
         if (mode.inSelection() && !mode.inBoxSelection()) {
-            vscode.commands.executeCommand(command);
+            await vscode.commands.executeCommand(command);
             mode.resetSelection(textEditor);
         } else {
-            vscode.commands.executeCommand(command);
+            await vscode.commands.executeCommand(command);
         }
     };
     const prepareDeleting = function(textEditor, isLeftward) {
@@ -392,29 +392,29 @@ const EditHandler = function(modeHandler) {
     const prepareDeletingRight = function(textEditor) {
         prepareDeleting(textEditor, false);
     };
-    const deleteLeft = function(textEditor, edit) {
+    const deleteLeft = async function(textEditor, edit) {
         prepareDeletingLeft(textEditor);
-        runEditCommand('deleteLeft', textEditor, edit);
+        await runEditCommand('deleteLeft', textEditor, edit);
     };
-    const deleteRight = function(textEditor, edit) {
+    const deleteRight = async function(textEditor, edit) {
         prepareDeletingRight(textEditor);
-        runEditCommand('deleteRight', textEditor, edit);
+        await runEditCommand('deleteRight', textEditor, edit);
     };
-    const deleteWordLeft = function(textEditor, edit) {
+    const deleteWordLeft = async function(textEditor, edit) {
         prepareDeletingLeft(textEditor);
-        runEditCommand('deleteWordLeft', textEditor, edit);
+        await runEditCommand('deleteWordLeft', textEditor, edit);
     };
-    const deleteWordRight = function(textEditor, edit) {
+    const deleteWordRight = async function(textEditor, edit) {
         prepareDeletingRight(textEditor);
-        runEditCommand('deleteWordRight', textEditor, edit);
+        await runEditCommand('deleteWordRight', textEditor, edit);
     };
-    const deleteAllLeft = function(textEditor, edit) {
+    const deleteAllLeft = async function(textEditor, edit) {
         prepareDeletingLeft(textEditor);
-        runEditCommand('deleteAllLeft', textEditor, edit);
+        await runEditCommand('deleteAllLeft', textEditor, edit);
     };
-    const deleteAllRight = function(textEditor, edit) {
+    const deleteAllRight = async function(textEditor, edit) {
         prepareDeletingRight(textEditor);
-        runEditCommand('deleteAllRight', textEditor, edit);
+        await runEditCommand('deleteAllRight', textEditor, edit);
     };
     const insertDeletedTexts = async function(textEditor, deleted) {
         let n = textEditor.selections.length;

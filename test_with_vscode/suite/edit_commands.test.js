@@ -1309,8 +1309,7 @@ describe('EditHandler', () => {
         it('should delete the character before the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(1, 5);
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 4]]);
@@ -1322,8 +1321,7 @@ describe('EditHandler', () => {
         it('should delete one level of indent before the cursor', async () => {
             textEditor.selections = [ new vscode.Selection(6, tabSize * 2, 6, tabSize * 2) ];
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(6, tabSize * 2);
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, tabSize]]);
@@ -1335,8 +1333,7 @@ describe('EditHandler', () => {
         it('should remove one new line character', async () => {
             textEditor.selections = [ new vscode.Selection(2, 0, 2, 0) ];
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(2, 0);
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
@@ -1348,7 +1345,7 @@ describe('EditHandler', () => {
         it('should do nothing if the cursor is at the beginning of the document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
 
-            editHandler.deleteLeft(textEditor);
+            await editHandler.deleteLeft(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -1362,9 +1359,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
             while (await sleep(1), !mode.inSelection()) {}
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(1, 7);
-            while (await sleep(1), mode.inSelection()) {}
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
@@ -1381,8 +1376,7 @@ describe('EditHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
             while (await sleep(1), !mode.inBoxSelection()) {}
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(1, 3);
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -1402,8 +1396,7 @@ describe('EditHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
             while (await sleep(1), !mode.inBoxSelection()) {}
 
-            editHandler.deleteLeft(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -1422,8 +1415,7 @@ describe('EditHandler', () => {
             while (await sleep(1), !mode.inSelection()) {}
             while (await sleep(1), !mode.inBoxSelection()) {}
 
-            editHandler.deleteLeft(textEditor);
-            await waitForCursor(1, 7);
+            await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
