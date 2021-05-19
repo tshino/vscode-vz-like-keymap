@@ -1285,8 +1285,8 @@ describe('EditHandler', () => {
         });
     });
     describe('deleteLeft', () => {
-        const tabSize = vscode.workspace.getConfiguration('editor').get('tabSize');
-        const indent = ' '.repeat(tabSize);
+        const TAB_SIZE = vscode.workspace.getConfiguration('editor').get('tabSize');
+        const INDENT = ' '.repeat(TAB_SIZE);
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1296,8 +1296,8 @@ describe('EditHandler', () => {
                     'abcde\n' +
                     'fghij\n' +
                     '\n' +
-                    indent + '12345\n' +
-                    indent + indent + '67890' // <= no new line
+                    INDENT + '12345\n' +
+                    INDENT + INDENT + '67890' // <= no new line
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -1319,15 +1319,15 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one level of indent before the cursor', async () => {
-            await resetCursor(6, tabSize * 2);
+            await resetCursor(6, TAB_SIZE * 2);
 
             await editHandler.deleteLeft(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[6, tabSize]]);
-            assert.strictEqual(textEditor.document.lineAt(6).text, indent + '67890');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, TAB_SIZE]]);
+            assert.strictEqual(textEditor.document.lineAt(6).text, INDENT + '67890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: true, text: indent }
+                { isLeftward: true, text: INDENT }
             ]);
         });
         it('should remove one new line character', async () => {
@@ -1433,10 +1433,9 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should delete the character at the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
 
-            editHandler.deleteRight(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
@@ -1446,10 +1445,9 @@ describe('EditHandler', () => {
             ]);
         });
         it('should remove one new line character', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 5, 2, 5) ];
+            await resetCursor(2, 5);
 
-            editHandler.deleteRight(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(2).text.length === 5) {}
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
@@ -1459,9 +1457,9 @@ describe('EditHandler', () => {
             ]);
         });
         it('should do nothing if the cursor is at the end of the document', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
+            await resetCursor(6, 5);
 
-            editHandler.deleteRight(textEditor);
+            await editHandler.deleteRight(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -1472,12 +1470,9 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should delete the selected range', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
-            while (await sleep(1), !mode.inSelection()) {}
+            await selectRange(1, 3, 1, 7);
 
-            editHandler.deleteRight(textEditor);
-            await waitForCursor(1, 7);
-            while (await sleep(1), mode.inSelection()) {}
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
@@ -1487,15 +1482,9 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one character for each of multiple cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 3, 1, 3),
-                new vscode.Selection(2, 3, 2, 3)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[1, 3, 1, 3], [2, 3, 2, 3]]);
 
-            editHandler.deleteRight(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -1508,15 +1497,9 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one for each of multiple cursors excluding the end of the document', async () => {
-            textEditor.selections = [
-                new vscode.Selection(5, 5, 5, 5),
-                new vscode.Selection(6, 5, 6, 5) // end of document
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[5, 5, 5, 5], [6, 5, 6, 5]]); // (6, 5): end of document
 
-            editHandler.deleteRight(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(5).text.length === 5) {}
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -1528,15 +1511,9 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete the selected multiple ranges', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 3, 1, 7),
-                new vscode.Selection(2, 3, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[1, 3, 1, 7], [2, 3, 2, 5]]);
 
-            editHandler.deleteRight(textEditor);
-            await waitForCursor(1, 7);
+            await editHandler.deleteRight(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
