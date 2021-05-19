@@ -1307,7 +1307,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should delete the character before the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1319,7 +1319,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one level of indent before the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(6, tabSize * 2, 6, tabSize * 2) ];
+            await resetCursor(6, tabSize * 2);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1331,7 +1331,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should remove one new line character', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 0, 2, 0) ];
+            await resetCursor(2, 0);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1343,7 +1343,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should do nothing if the cursor is at the beginning of the document', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            await resetCursor(0, 0);
 
             await editHandler.deleteLeft(textEditor);
             await sleep(20);
@@ -1356,8 +1356,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should delete the selected range', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 3, 1, 7) ];
-            while (await sleep(1), !mode.inSelection()) {}
+            await selectRange(1, 3, 1, 7);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1369,12 +1368,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one character for each of multiple cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 3, 1, 3),
-                new vscode.Selection(2, 3, 2, 3)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[1, 3, 1, 3], [2, 3, 2, 3]]);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1389,12 +1383,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete one for each of multiple cursors excluding the beginning of the document', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 0, 0, 0),
-                new vscode.Selection(1, 0, 1, 0)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[0, 0, 0, 0], [1, 0, 1, 0]]);
 
             await editHandler.deleteLeft(textEditor);
 
@@ -1408,12 +1397,7 @@ describe('EditHandler', () => {
             ]);
         });
         it('should delete the selected multiple ranges', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 3, 1, 7),
-                new vscode.Selection(2, 3, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([[1, 3, 1, 7], [2, 3, 2, 5]]);
 
             await editHandler.deleteLeft(textEditor);
 
