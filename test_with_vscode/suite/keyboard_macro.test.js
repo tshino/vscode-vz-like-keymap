@@ -4,11 +4,13 @@ const vscode = require('vscode');
 const testUtils = require("./testUtils.js");
 const mode_handler = require("./../../src/mode_handler.js");
 const keyboard_macro = require("./../../src/keyboard_macro.js");
+const edit_commands = require("./../../src/edit_commands.js");
 
 
 describe('KeyboardMacro', () => {
     const mode = mode_handler.getInstance();
     const kb_macro = keyboard_macro.getInstance();
+    const editHandler = edit_commands.getInstance();
 
     let textEditor;
     const sleep = testUtils.sleep;
@@ -1824,5 +1826,31 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abc12de');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 5], [7, 5], [6, 5]]);
         });
+    });
+    describe('delete', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '11 22 33\n'.repeat(5) +
+                'aaa bbb ccc\n'.repeat(5)
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            mode.initialize(textEditor);
+        });
+        it('should a delete character (deleteLeft)', async () => {
+            await resetCursor(0, 8);
+            await recordThroughExecution([
+                'vz.deleteLeft'
+            ]);
+
+            await resetCursor(5, 11);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa bbb cc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'c' }
+            ]);
+        });
+        // todo: more tests
     });
 });

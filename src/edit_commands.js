@@ -393,8 +393,14 @@ const EditHandler = function(modeHandler) {
         prepareDeleting(textEditor, false);
     };
     const deleteLeft = async function(textEditor, edit) {
+        editsExpected = true;
+        mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteLeft', textEditor, edit);
+        if (mode.inSelection() && 1 === textEditor.selections.length) {
+            mode.resetSelection(textEditor);
+        }
+        editsExpected = false;
     };
     const deleteRight = async function(textEditor, edit) {
         prepareDeletingRight(textEditor);
@@ -639,7 +645,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', paste);
         registerTextEditorCommand(context, 'clipboardClearStack', clearStack);
-        registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
+        registerTextEditorCommandReplayable(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
         registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
