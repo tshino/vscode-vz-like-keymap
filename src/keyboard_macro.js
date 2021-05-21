@@ -308,6 +308,7 @@ const KeyboardMacro = function(modeHandler) {
         finishRecording,
         replay,
         getRecordedCommands: function() { return recordedCommands; }, // for testing
+        getRecordedCommandNames: function() { return recordedCommands.map(x => x[0]); }, // for testing
         recording: function() { return recording; },
         processOnChangeSelections: cursorEventHandler.processOnChangeSelections,
         processOnChangeDocument: editEventHandler.processOnChangeDocument,

@@ -1837,9 +1837,12 @@ describe('KeyboardMacro', () => {
             editHandler.clearUndeleteStack();
             mode.initialize(textEditor);
         });
-        it('should a delete character (deleteLeft)', async () => {
+        it('should delete a character (deleteLeft)', async () => {
             await resetCursor(0, 8);
             await recordThroughExecution([
+                'vz.deleteLeft'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.deleteLeft'
             ]);
 
@@ -1852,9 +1855,12 @@ describe('KeyboardMacro', () => {
             ]);
         });
         // todo: more tests for deleteLeft
-        it('should a delete character (deleteRight)', async () => {
+        it('should delete a character (deleteRight)', async () => {
             await resetCursor(0, 6);
             await recordThroughExecution([
+                'vz.deleteRight'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.deleteRight'
             ]);
 
@@ -1867,9 +1873,12 @@ describe('KeyboardMacro', () => {
             ]);
         });
         // todo: more tests for deleteRight
-        it('should a delete character (deleteWordLeft)', async () => {
+        it('should delete a word (deleteWordLeft)', async () => {
             await resetCursor(0, 2);
             await recordThroughExecution([
+                'vz.deleteWordLeft'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.deleteWordLeft'
             ]);
 

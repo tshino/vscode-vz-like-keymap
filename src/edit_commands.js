@@ -408,6 +408,7 @@ const EditHandler = function(modeHandler) {
     };
     const deleteWordLeft = async function(textEditor, edit) {
         editsExpected = true;
+        mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteWordLeft', textEditor, edit);
         editsExpected = false;
