@@ -1867,6 +1867,21 @@ describe('KeyboardMacro', () => {
             ]);
         });
         // todo: more tests for deleteRight
+        it('should a delete character (deleteWordLeft)', async () => {
+            await resetCursor(0, 2);
+            await recordThroughExecution([
+                'vz.deleteWordLeft'
+            ]);
+
+            await resetCursor(5, 3);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, ' bbb ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'aaa' }
+            ]);
+        });
+        // todo: more tests for deleteWordLeft
         // todo: more tests for deleteXXXXX
     });
 });
