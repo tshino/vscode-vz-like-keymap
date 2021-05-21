@@ -651,7 +651,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommandReplayable(context, 'deleteRight', deleteRight);
         registerTextEditorCommandReplayable(context, 'deleteWordLeft', deleteWordLeft);
-        registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
+        registerTextEditorCommandReplayable(context, 'deleteWordRight', deleteWordRight);
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
