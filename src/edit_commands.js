@@ -646,7 +646,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardPaste', paste);
         registerTextEditorCommand(context, 'clipboardClearStack', clearStack);
         registerTextEditorCommandReplayable(context, 'deleteLeft', deleteLeft);
-        registerTextEditorCommand(context, 'deleteRight', deleteRight);
+        registerTextEditorCommandReplayable(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
         registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
