@@ -2142,6 +2142,7 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 11);
             await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa bbb cc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
@@ -2160,10 +2161,29 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 3);
             await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaabbb ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 3]]);
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: ' ' }
+            ]);
+        });
+        it('should delete characters in selected range (deleteRight)', async () => {
+            await selectRange(0, 3, 0, 6);
+            await recordThroughExecution([
+                'vz.deleteRight'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.deleteRight'
+            ]);
+
+            await selectRange(5, 4, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' }
             ]);
         });
         // todo: more tests for deleteRight
@@ -2178,6 +2198,7 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 3);
             await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, ' bbb ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
@@ -2196,6 +2217,7 @@ describe('KeyboardMacro', () => {
 
             await resetCursor(5, 3);
             await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 3]]);
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [

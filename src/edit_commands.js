@@ -399,8 +399,10 @@ const EditHandler = function(modeHandler) {
         editsExpected = false;
     };
     const deleteRight = async function(textEditor, edit) {
+        editsExpected = true;
         prepareDeletingRight(textEditor);
         await runEditCommand('deleteRight', textEditor, edit);
+        editsExpected = false;
     };
     const deleteWordLeft = async function(textEditor, edit) {
         editsExpected = true;
