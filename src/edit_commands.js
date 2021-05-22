@@ -353,11 +353,10 @@ const EditHandler = function(modeHandler) {
         vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
     };
     const runEditCommand = async function(command, textEditor, _edit) {
-        if (mode.inSelection() && !mode.inBoxSelection()) {
-            await vscode.commands.executeCommand(command);
+        let resetSelection = mode.inSelection() && !mode.inBoxSelection();
+        await vscode.commands.executeCommand(command);
+        if (resetSelection) {
             mode.resetSelection(textEditor);
-        } else {
-            await vscode.commands.executeCommand(command);
         }
     };
     const prepareDeleting = function(textEditor, isLeftward) {
@@ -397,9 +396,6 @@ const EditHandler = function(modeHandler) {
         mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteLeft', textEditor, edit);
-        if (mode.inSelection() && 1 === textEditor.selections.length) {
-            mode.resetSelection(textEditor);
-        }
         editsExpected = false;
     };
     const deleteRight = async function(textEditor, edit) {
@@ -509,8 +505,9 @@ const EditHandler = function(modeHandler) {
     const insertLineBefore = async function(textEditor, _edit) {
         editsExpected = true;
         mode.expectSync();
+        let resetSelection = mode.inSelection() && !mode.inBoxSelection();
         await vscode.commands.executeCommand('editor.action.insertLineBefore');
-        if (mode.inSelection() && 1 === textEditor.selections.length) {
+        if (resetSelection) {
             mode.resetSelection(textEditor);
         }
         editsExpected = false;
