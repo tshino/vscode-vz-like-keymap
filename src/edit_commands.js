@@ -418,8 +418,11 @@ const EditHandler = function(modeHandler) {
         editsExpected = false;
     };
     const deleteAllLeft = async function(textEditor, edit) {
+        editsExpected = true;
+        mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteAllLeft', textEditor, edit);
+        editsExpected = false;
     };
     const deleteAllRight = async function(textEditor, edit) {
         prepareDeletingRight(textEditor);
@@ -653,7 +656,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'deleteRight', deleteRight);
         registerTextEditorCommandReplayable(context, 'deleteWordLeft', deleteWordLeft);
         registerTextEditorCommandReplayable(context, 'deleteWordRight', deleteWordRight);
-        registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
+        registerTextEditorCommandReplayable(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommand(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
