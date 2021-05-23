@@ -2149,6 +2149,24 @@ describe('KeyboardMacro', () => {
                 { isLeftward: true, text: 'c' }
             ]);
         });
+        it('should delete selected characters (deleteLeft)', async () => {
+            await selectRange(0, 3, 0, 6);
+            await recordThroughExecution([
+                'vz.deleteLeft'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.deleteLeft'
+            ]);
+
+            await selectRange(5, 4, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' }
+            ]);
+        });
         // todo: more tests for deleteLeft
         it('should delete a character (deleteRight)', async () => {
             await resetCursor(0, 6);
@@ -2168,7 +2186,7 @@ describe('KeyboardMacro', () => {
                 { isLeftward: false, text: ' ' }
             ]);
         });
-        it('should delete characters in selected range (deleteRight)', async () => {
+        it('should delete selected characters (deleteRight)', async () => {
             await selectRange(0, 3, 0, 6);
             await recordThroughExecution([
                 'vz.deleteRight'
@@ -2205,6 +2223,24 @@ describe('KeyboardMacro', () => {
                 { isLeftward: true, text: 'aaa' }
             ]);
         });
+        it('should delete selected characters (deleteWordLeft)', async () => {
+            await selectRange(0, 3, 0, 6);
+            await recordThroughExecution([
+                'vz.deleteWordLeft'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.deleteWordLeft'
+            ]);
+
+            await selectRange(5, 4, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' }
+            ]);
+        });
         // todo: more tests for deleteWordLeft
         it('should delete a word (deleteWordRight)', async () => {
             await resetCursor(0, 3);
@@ -2224,7 +2260,7 @@ describe('KeyboardMacro', () => {
                 { isLeftward: false, text: ' bbb' }
             ]);
         });
-        it('should delete characters in selected range (deleteWordRight)', async () => {
+        it('should delete selected characters (deleteWordRight)', async () => {
             await selectRange(0, 3, 0, 6);
             await recordThroughExecution([
                 'vz.deleteWordRight'
