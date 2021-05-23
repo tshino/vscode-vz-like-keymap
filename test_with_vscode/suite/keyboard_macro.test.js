@@ -2121,7 +2121,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[8, 5], [7, 5], [6, 5]]);
         });
     });
-    describe('delete', () => {
+    describe('deleteXXX', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
                 '11 22 33\n'.repeat(5) +
@@ -2131,154 +2131,137 @@ describe('KeyboardMacro', () => {
             editHandler.clearUndeleteStack();
             mode.initialize(textEditor);
         });
+        const recordSingleDeleteAt = async function(line, character, cmd) {
+            await resetCursor(line, character);
+            await recordThroughExecution([cmd]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd]);
+        };
+        const testSingleDeleteAt = async function(line, character, resultText, resultSel, resultStack) {
+            await resetCursor(line, character);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(line).text, resultText);
+            assert.deepStrictEqual(selectionsAsArray(), resultSel);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), resultStack);
+        };
         it('should delete a character (deleteLeft)', async () => {
-            await resetCursor(0, 8);
-            await recordThroughExecution([
-                'vz.deleteLeft'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteLeft'
-            ]);
-
-            await resetCursor(5, 11);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa bbb cc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+            await recordSingleDeleteAt(0, 8, 'vz.deleteLeft');
+            await testSingleDeleteAt(5, 11, 'aaa bbb cc', [[5, 10]], [
                 { isLeftward: true, text: 'c' }
-            ]);
-        });
-        it('should delete selected characters (deleteLeft)', async () => {
-            await selectRange(0, 3, 0, 6);
-            await recordThroughExecution([
-                'vz.deleteLeft'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteLeft'
-            ]);
-
-            await selectRange(5, 4, 5, 8);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: true, text: 'bbb ' }
             ]);
         });
         // todo: more tests for deleteLeft
         it('should delete a character (deleteRight)', async () => {
-            await resetCursor(0, 6);
-            await recordThroughExecution([
-                'vz.deleteRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteRight'
-            ]);
-
-            await resetCursor(5, 3);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaabbb ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 3]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+            await recordSingleDeleteAt(0, 6, 'vz.deleteRight');
+            await testSingleDeleteAt(5, 3, 'aaabbb ccc', [[5, 3]], [
                 { isLeftward: false, text: ' ' }
-            ]);
-        });
-        it('should delete selected characters (deleteRight)', async () => {
-            await selectRange(0, 3, 0, 6);
-            await recordThroughExecution([
-                'vz.deleteRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteRight'
-            ]);
-
-            await selectRange(5, 4, 5, 8);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: true, text: 'bbb ' }
             ]);
         });
         // todo: more tests for deleteRight
         it('should delete a word (deleteWordLeft)', async () => {
-            await resetCursor(0, 2);
-            await recordThroughExecution([
-                'vz.deleteWordLeft'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteWordLeft'
-            ]);
-
-            await resetCursor(5, 3);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, ' bbb ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+            await recordSingleDeleteAt(0, 2, 'vz.deleteWordLeft');
+            await testSingleDeleteAt(5, 3, ' bbb ccc', [[5, 0]], [
                 { isLeftward: true, text: 'aaa' }
-            ]);
-        });
-        it('should delete selected characters (deleteWordLeft)', async () => {
-            await selectRange(0, 3, 0, 6);
-            await recordThroughExecution([
-                'vz.deleteWordLeft'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteWordLeft'
-            ]);
-
-            await selectRange(5, 4, 5, 8);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: true, text: 'bbb ' }
             ]);
         });
         // todo: more tests for deleteWordLeft
         it('should delete a word (deleteWordRight)', async () => {
-            await resetCursor(0, 3);
-            await recordThroughExecution([
-                'vz.deleteWordRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteWordRight'
-            ]);
-
-            await resetCursor(5, 3);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 3]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+            await recordSingleDeleteAt(0, 3, 'vz.deleteWordRight');
+            await testSingleDeleteAt(5, 3, 'aaa ccc', [[5, 3]], [
                 { isLeftward: false, text: ' bbb' }
-            ]);
-        });
-        it('should delete selected characters (deleteWordRight)', async () => {
-            await selectRange(0, 3, 0, 6);
-            await recordThroughExecution([
-                'vz.deleteWordRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.deleteWordRight'
-            ]);
-
-            await selectRange(5, 4, 5, 8);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                { isLeftward: true, text: 'bbb ' }
             ]);
         });
         // todo: more tests for deleteWordRight
         // todo: more tests for deleteXXXXX
     });
+    describe('deleteXXX (with a selected range)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '11 22 33\n'.repeat(5) +
+                'aaa bbb ccc\n'.repeat(5)
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            mode.initialize(textEditor);
+        });
+        const recordWithSelectedRange = async function(cmd) {
+            await selectRange(0, 3, 0, 6);
+            await recordThroughExecution([cmd]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd]);
+        };
+        const testPureDeletingOfSelectedRange = async function() {
+            await selectRange(5, 4, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' }
+            ]);
+        };
+        it('should delete selected characters (deleteLeft)', async () => {
+            await recordWithSelectedRange('vz.deleteLeft');
+            await testPureDeletingOfSelectedRange();
+        });
+        it('should delete selected characters (deleteRight)', async () => {
+            await recordWithSelectedRange('vz.deleteRight');
+            await testPureDeletingOfSelectedRange();
+        });
+        it('should delete selected characters (deleteWordLeft)', async () => {
+            await recordWithSelectedRange('vz.deleteWordLeft');
+            await testPureDeletingOfSelectedRange();
+        });
+        it('should delete selected characters (deleteWordRight)', async () => {
+            await recordWithSelectedRange('vz.deleteWordRight');
+            await testPureDeletingOfSelectedRange();
+        });
+        // todo: more tests for deleteXXXXX
+    });
+    describe('deleteXXX (with multiple selected ranges)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '11 22 33\n'.repeat(5) +
+                'aaa bbb ccc\n'.repeat(5)
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            mode.initialize(textEditor);
+        });
+        const recordWithSelectedRanges = async function(cmd) {
+            await selectRanges([[0, 3, 0, 6], [1, 3, 1, 6]]);
+            await recordThroughExecution([cmd]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd]);
+        };
+        const testPureDeletingOfSelectedRanges = async function() {
+            await selectRanges([[5, 4, 5, 8], [6, 4, 6, 8]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4], [6, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' },
+                { isLeftward: true, text: 'bbb ' }
+            ]);
+        };
+        it('should delete selected characters (deleteLeft)', async () => {
+            await recordWithSelectedRanges('vz.deleteLeft');
+            await testPureDeletingOfSelectedRanges();
+        });
+        it('should delete selected characters (deleteRight)', async () => {
+            await recordWithSelectedRanges('vz.deleteRight');
+            await testPureDeletingOfSelectedRanges();
+        });
+        it('should delete selected characters (deleteWordLeft)', async () => {
+            await recordWithSelectedRanges('vz.deleteWordLeft');
+            await testPureDeletingOfSelectedRanges();
+        });
+        it('should delete selected characters (deleteWordRight)', async () => {
+            await recordWithSelectedRanges('vz.deleteWordRight');
+            await testPureDeletingOfSelectedRanges();
+        });
+        // todo: more tests for deleteXXXXX
+    });
+    // todo: tests for deleteXXX with multi-cursor
 });
