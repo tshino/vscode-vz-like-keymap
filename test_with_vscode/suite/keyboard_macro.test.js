@@ -2224,6 +2224,24 @@ describe('KeyboardMacro', () => {
                 { isLeftward: false, text: ' bbb' }
             ]);
         });
+        it('should delete characters in selected range (deleteWordRight)', async () => {
+            await selectRange(0, 3, 0, 6);
+            await recordThroughExecution([
+                'vz.deleteWordRight'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.deleteWordRight'
+            ]);
+
+            await selectRange(5, 4, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'bbb ' }
+            ]);
+        });
         // todo: more tests for deleteWordRight
         // todo: more tests for deleteXXXXX
     });
