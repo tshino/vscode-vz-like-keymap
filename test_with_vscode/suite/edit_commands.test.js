@@ -1750,6 +1750,18 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '123 456' }
             ]);
         });
+        it('should delete the left half of the line with selected range (single selection range reversed)', async () => {
+            await selectRange(0, 7, 0, 4);
+
+            await editHandler.deleteAllLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, ' 789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '123 456' }
+            ]);
+        });
     });
     describe('deleteAllRight', () => {
         beforeEach(async () => {

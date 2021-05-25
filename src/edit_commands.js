@@ -378,6 +378,7 @@ const EditHandler = function(modeHandler) {
                 let start = selection.start;
                 if (isLeftward) {
                     start = new vscode.Position(start.line, 0);
+                    position = selection.end;
                 }
                 let range = new vscode.Range(start, selection.end);
                 deletingInfo.push([
