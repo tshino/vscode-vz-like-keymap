@@ -2223,7 +2223,8 @@ describe('KeyboardMacro', () => {
             await testPureDeletingOfSelectedRange();
         });
         it('should delete selected characters and left half of a line (deleteAllLeft)', async () => {
-            // This inconsistent behavior is just a given one for me.
+            // This inconsistent behavior is just a given one for us.
+            // We test it as is just to keep the acceptable result.
             await recordWithSelectedRange('vz.deleteAllLeft');
 
             await selectRange(5, 4, 5, 8);
@@ -2280,6 +2281,23 @@ describe('KeyboardMacro', () => {
         it('should delete selected characters (deleteWordRight)', async () => {
             await recordWithSelectedRanges('vz.deleteWordRight');
             await testPureDeletingOfSelectedRanges();
+        });
+        it('should delete selected characters and left half of lines (deleteAllLeft)', async () => {
+            // This inconsistent behavior is just a given one for us.
+            // We test it as is just to keep the acceptable result.
+            await recordWithSelectedRanges('vz.deleteAllLeft');
+
+            await selectRanges([[5, 4, 5, 8], [6, 4, 6, 8]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ccc');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 0], [6, 0]]);
+            // assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                // { isLeftward: true, text: 'aaa bbb ' },
+                // { isLeftward: true, text: 'aaa bbb ' }
+            // ]);
         });
         // todo: more tests for deleteXXXXX
     });
