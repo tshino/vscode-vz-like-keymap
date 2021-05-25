@@ -2232,9 +2232,9 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
-            // assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                // { isLeftward: true, text: 'aaa bbb ' }
-            // ]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'aaa bbb ' }
+            ]);
         });
         // todo: more tests for deleteXXXXX
     });
@@ -2294,10 +2294,10 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ccc');
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0], [6, 0]]);
-            // assert.deepStrictEqual(editHandler.readUndeleteStack(), [
-                // { isLeftward: true, text: 'aaa bbb ' },
-                // { isLeftward: true, text: 'aaa bbb ' }
-            // ]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'aaa bbb ' },
+                { isLeftward: true, text: 'aaa bbb ' }
+            ]);
         });
         // todo: more tests for deleteXXXXX
     });

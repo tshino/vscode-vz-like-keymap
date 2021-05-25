@@ -8,6 +8,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Ctrl+^ for finish recording or replay recorded sequence.
 - Improved:
   - The 'when' clause of Escape to cancel box-selection mode.
+  - The behavior of Undelete (Utrl+U) of Delete left half of line with non-empty selection range.
 
 ### [0.15.0] - 2021-02-18
 - Added out-of-editor shortcut keys:

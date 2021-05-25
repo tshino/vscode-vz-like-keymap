@@ -1710,7 +1710,7 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '\n' }
             ]);
         });
-        it('should delete the left half of each line', async () => {
+        it('should delete the left half of each line (multi-cursor)', async () => {
             await selectRanges([[0, 6, 0, 6], [1, 6, 1, 6]]);
 
             await editHandler.deleteAllLeft(textEditor);
@@ -1737,6 +1737,18 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
             assert.strictEqual(textEditor.document.lineAt(0).text, '123 456 789');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should delete the left half of the line with selected range (single selection range)', async () => {
+            await selectRange(0, 4, 0, 7);
+
+            await editHandler.deleteAllLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, ' 789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '123 456' }
+            ]);
         });
     });
     describe('deleteAllRight', () => {
