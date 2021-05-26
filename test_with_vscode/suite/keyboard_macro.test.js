@@ -2179,6 +2179,13 @@ describe('KeyboardMacro', () => {
             ]);
         });
         // todo: more tests for deleteAllLeft
+        it('should delete left half of a line (deleteAllRight)', async () => {
+            await recordSingleDeleteAt(0, 3, 'vz.deleteAllRight');
+            await testSingleDeleteAt(5, 4, 'aaa ', [[5, 4]], [
+                { isLeftward: false, text: 'bbb ccc' }
+            ]);
+        });
+        // todo: more tests for deleteAllRight
         // todo: more tests for deleteXXXXX
     });
     describe('deleteXXX (with a selected range)', () => {
@@ -2235,6 +2242,10 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: 'aaa bbb ' }
             ]);
+        });
+        it('should delete selected characters (deleteAllRight)', async () => {
+            await recordWithSelectedRange('vz.deleteAllRight');
+            await testPureDeletingOfSelectedRange();
         });
         // todo: more tests for deleteXXXXX
     });
@@ -2298,6 +2309,10 @@ describe('KeyboardMacro', () => {
                 { isLeftward: true, text: 'aaa bbb ' },
                 { isLeftward: true, text: 'aaa bbb ' }
             ]);
+        });
+        it('should delete selected characters (deleteAllRight)', async () => {
+            await recordWithSelectedRanges('vz.deleteAllRight');
+            await testPureDeletingOfSelectedRanges();
         });
         // todo: more tests for deleteXXXXX
     });
