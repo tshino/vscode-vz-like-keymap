@@ -1833,6 +1833,30 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, '    1234');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should delete the selected range (single selection range)', async () => {
+            await selectRange(0, 4, 0, 7);
+
+            await editHandler.deleteAllRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123  789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: '456' }
+            ]);
+        });
+        it('should delete the selected range (single selection range reversed)', async () => {
+            await selectRange(0, 7, 0, 4);
+
+            await editHandler.deleteAllRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 4]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123  789');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '456' }
+            ]);
+        });
     });
     describe('undelete', () => {
         beforeEach(async () => {
