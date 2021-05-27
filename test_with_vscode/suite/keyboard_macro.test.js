@@ -2292,21 +2292,38 @@ describe('KeyboardMacro', () => {
                 { isLeftward: true, text: 'bbb ' }
             ]);
         };
+        const testPureDeletingOfSelectedReversedRanges = async function() {
+            await selectRanges([[7, 8, 7, 4], [8, 8, 8, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'aaa ccc');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 4], [8, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: 'bbb ' },
+                { isLeftward: false, text: 'bbb ' }
+            ]);
+        };
         it('should delete selected characters (deleteLeft)', async () => {
             await recordWithSelectedRanges('vz.deleteLeft');
             await testPureDeletingOfSelectedRanges();
+            await testPureDeletingOfSelectedReversedRanges();
         });
         it('should delete selected characters (deleteRight)', async () => {
             await recordWithSelectedRanges('vz.deleteRight');
             await testPureDeletingOfSelectedRanges();
+            await testPureDeletingOfSelectedReversedRanges();
         });
         it('should delete selected characters (deleteWordLeft)', async () => {
             await recordWithSelectedRanges('vz.deleteWordLeft');
             await testPureDeletingOfSelectedRanges();
+            await testPureDeletingOfSelectedReversedRanges();
         });
         it('should delete selected characters (deleteWordRight)', async () => {
             await recordWithSelectedRanges('vz.deleteWordRight');
             await testPureDeletingOfSelectedRanges();
+            await testPureDeletingOfSelectedReversedRanges();
         });
         it('should delete selected characters and left half of lines (deleteAllLeft)', async () => {
             // This inconsistent behavior is just a given one for us.
@@ -2328,6 +2345,7 @@ describe('KeyboardMacro', () => {
         it('should delete selected characters (deleteAllRight)', async () => {
             await recordWithSelectedRanges('vz.deleteAllRight');
             await testPureDeletingOfSelectedRanges();
+            await testPureDeletingOfSelectedReversedRanges();
         });
         // todo: more tests for deleteXXXXX
     });
