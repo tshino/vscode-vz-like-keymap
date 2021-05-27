@@ -2213,21 +2213,35 @@ describe('KeyboardMacro', () => {
                 { isLeftward: true, text: 'bbb ' }
             ]);
         };
+        const testPureDeletingOfSelectedReversedRange = async function() {
+            await selectRange(6, 8, 6, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'aaa ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: 'bbb ' }
+            ]);
+        };
         it('should delete selected characters (deleteLeft)', async () => {
             await recordWithSelectedRange('vz.deleteLeft');
             await testPureDeletingOfSelectedRange();
+            await testPureDeletingOfSelectedReversedRange();
         });
         it('should delete selected characters (deleteRight)', async () => {
             await recordWithSelectedRange('vz.deleteRight');
             await testPureDeletingOfSelectedRange();
+            await testPureDeletingOfSelectedReversedRange();
         });
         it('should delete selected characters (deleteWordLeft)', async () => {
             await recordWithSelectedRange('vz.deleteWordLeft');
             await testPureDeletingOfSelectedRange();
+            await testPureDeletingOfSelectedReversedRange();
         });
         it('should delete selected characters (deleteWordRight)', async () => {
             await recordWithSelectedRange('vz.deleteWordRight');
             await testPureDeletingOfSelectedRange();
+            await testPureDeletingOfSelectedReversedRange();
         });
         it('should delete selected characters and left half of a line (deleteAllLeft)', async () => {
             // This inconsistent behavior is just a given one for us.
@@ -2246,6 +2260,7 @@ describe('KeyboardMacro', () => {
         it('should delete selected characters (deleteAllRight)', async () => {
             await recordWithSelectedRange('vz.deleteAllRight');
             await testPureDeletingOfSelectedRange();
+            await testPureDeletingOfSelectedReversedRange();
         });
         // todo: more tests for deleteXXXXX
     });

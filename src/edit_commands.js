@@ -359,7 +359,7 @@ const EditHandler = function(modeHandler) {
             mode.resetSelection(textEditor);
         }
     };
-    const prepareDeleting = function(textEditor, isLeftward) {
+    const prepareDeleting = function(textEditor, isLeftward, isLeftAll) {
         let deletingInfo = [];
         for (let i = 0; i < textEditor.selections.length; i++) {
             let selection = textEditor.selections[i];
@@ -376,7 +376,7 @@ const EditHandler = function(modeHandler) {
                 deletingInfo.push([position, text]);
             } else {
                 let start = selection.start;
-                if (isLeftward) {
+                if (isLeftward && isLeftAll) {
                     start = new vscode.Position(start.line, 0);
                     position = selection.end;
                 }
@@ -391,10 +391,13 @@ const EditHandler = function(modeHandler) {
         deletedTextDetector.setPossibleDeletingInfo(deletingInfo);
     };
     const prepareDeletingLeft = function(textEditor) {
-        prepareDeleting(textEditor, true);
+        prepareDeleting(textEditor, true, false);
+    };
+    const prepareDeletingLeftAll = function(textEditor) {
+        prepareDeleting(textEditor, true, true);
     };
     const prepareDeletingRight = function(textEditor) {
-        prepareDeleting(textEditor, false);
+        prepareDeleting(textEditor, false, false);
     };
     const deleteLeft = async function(textEditor, edit) {
         editsExpected = true;
@@ -425,7 +428,7 @@ const EditHandler = function(modeHandler) {
     const deleteAllLeft = async function(textEditor, edit) {
         editsExpected = true;
         mode.expectSync();
-        prepareDeletingLeft(textEditor);
+        prepareDeletingLeftAll(textEditor);
         await runEditCommand('deleteAllLeft', textEditor, edit);
         editsExpected = false;
     };
