@@ -2033,12 +2033,10 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the left of multiple-cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 5, 1, 5),
-                new vscode.Selection(2, 5, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [1, 5, 1, 5],
+                [2, 5, 2, 5]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'abc' },
                 { isLeftward: true, text: 'fgh' }
@@ -2054,12 +2052,10 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the right of multiple-cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 5, 1, 5),
-                new vscode.Selection(2, 5, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [1, 5, 1, 5],
+                [2, 5, 2, 5]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'abc' },
                 { isLeftward: false, text: 'fgh' }
@@ -2075,7 +2071,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should do nothing if the stack is empty', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
 
             await editHandler.undelete(textEditor);
             await sleep(20);
@@ -2088,12 +2084,10 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert deleted single line to the left of each cursor repeatedly', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 10, 0, 10),
-                new vscode.Selection(1, 10, 1, 10)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [0, 10, 0, 10],
+                [1, 10, 1, 10]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'abc' }
             ]);
@@ -2108,12 +2102,10 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert deleted single line to the right of each cursor repeatedly', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 10, 0, 10),
-                new vscode.Selection(1, 10, 1, 10)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [0, 10, 0, 10],
+                [1, 10, 1, 10]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'abc' }
             ]);
@@ -2128,13 +2120,11 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should leave the rest empty if the number of deleted lines is less than cursors (left)', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 5, 0, 5),
-                new vscode.Selection(1, 5, 1, 5),
-                new vscode.Selection(2, 5, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [0, 5, 0, 5],
+                [1, 5, 1, 5],
+                [2, 5, 2, 5]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'abc' },
                 { isLeftward: true, text: 'def' }
@@ -2151,13 +2141,11 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should leave the rest empty if the number of deleted lines is less than cursors (right)', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 5, 0, 5),
-                new vscode.Selection(1, 5, 1, 5),
-                new vscode.Selection(2, 5, 2, 5)
-            ];
-            while (await sleep(1), !mode.inSelection()) {}
-            while (await sleep(1), !mode.inBoxSelection()) {}
+            await selectRanges([
+                [0, 5, 0, 5],
+                [1, 5, 1, 5],
+                [2, 5, 2, 5]
+            ]);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'abc' },
                 { isLeftward: false, text: 'def' }
@@ -2174,7 +2162,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the left of lines below the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+            await resetCursor(4, 0);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'abc' },
                 { isLeftward: true, text: 'fgh' }
@@ -2191,7 +2179,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the right of lines below the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+            await resetCursor(4, 0);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'abc' },
                 { isLeftward: false, text: 'fgh' }
@@ -2208,7 +2196,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the left of lines below the cursor with aligned indent', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            await resetCursor(3, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'abc' },
                 { isLeftward: true, text: 'fgh' }
@@ -2224,7 +2212,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert multiple-texts to the right of lines below the cursor with aligned indent', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            await resetCursor(3, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'abc' },
                 { isLeftward: false, text: 'fgh' }
