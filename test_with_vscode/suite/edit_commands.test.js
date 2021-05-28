@@ -1268,7 +1268,8 @@ describe('EditHandler', () => {
             editHandler.clearTextStack();
         });
         it('should clear text stack and clipboard', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 1, 1, 1) ];
+            await resetCursor(1, 1);
+
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
@@ -1952,7 +1953,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should insert the deleted characters to the left of the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'a' }
             ]);
@@ -1965,7 +1966,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert the deleted characters to the right of the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'a' }
             ]);
@@ -1978,8 +1979,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should remove selected range and insert characters to the left of it', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 2, 1, 7) ];
-            while (await sleep(1), !mode.inSelection()) {}
+            await selectRange(1, 2, 1, 7);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: 'a' }
             ]);
@@ -1992,8 +1992,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should remove selected range and insert characters to the right of it', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 2, 1, 7) ];
-            while (await sleep(1), !mode.inSelection()) {}
+            await selectRange(1, 2, 1, 7);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: 'a' }
             ]);
@@ -2006,7 +2005,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert a line break to the left of the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: true, text: '\n' }
             ]);
@@ -2020,7 +2019,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
         it('should insert a line break to the right of the cursor', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             editHandler.pushUndeleteStack([
                 { isLeftward: false, text: '\n' }
             ]);
