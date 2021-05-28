@@ -1958,7 +1958,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 6]]);
@@ -1972,7 +1971,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
@@ -1987,7 +1985,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
@@ -2002,7 +1999,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
@@ -2016,7 +2012,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
@@ -2031,7 +2026,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 5]]);
@@ -2052,7 +2046,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2074,7 +2067,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(1).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2108,7 +2100,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2129,7 +2120,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2152,7 +2142,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2176,7 +2165,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(0).text.length === 10) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2194,7 +2182,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2212,7 +2199,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2230,7 +2216,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
@@ -2247,7 +2232,6 @@ describe('EditHandler', () => {
             ]);
 
             await editHandler.undelete(textEditor);
-            while (await sleep(1), textEditor.document.lineAt(4).text.length === 0) {}
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
