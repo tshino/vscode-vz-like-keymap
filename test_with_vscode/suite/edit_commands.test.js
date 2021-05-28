@@ -1367,6 +1367,18 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '4567' }
             ]);
         });
+        it('should delete the selected backward range', async () => {
+            await selectRange(1, 7, 1, 3);
+
+            await editHandler.deleteLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '4567' }
+            ]);
+        });
         it('should delete one character for each of multiple cursors', async () => {
             await selectRanges([[1, 3, 1, 3], [2, 3, 2, 3]]);
 
@@ -1479,6 +1491,18 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123890');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: '4567' }
+            ]);
+        });
+        it('should delete the selected backward range', async () => {
+            await selectRange(1, 7, 1, 3);
+
+            await editHandler.deleteRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123890');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: '4567' }
             ]);
         });
         it('should delete one character for each of multiple cursors', async () => {
@@ -1596,6 +1620,30 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, '123 456 789');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should delete the selected range', async () => {
+            await selectRange(2, 3, 2, 5);
+
+            await editHandler.deleteWordLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '   o()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'fo' }
+            ]);
+        });
+        it('should delete the selected backward range', async () => {
+            await selectRange(2, 5, 2, 3);
+
+            await editHandler.deleteWordLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '   o()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: 'fo' }
+            ]);
+        });
     });
     describe('deleteWordRight', () => {
         beforeEach(async () => {
@@ -1666,6 +1714,30 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 8]]);
             assert.strictEqual(textEditor.document.lineAt(4).text, '    1234');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        });
+        it('should delete the selected range', async () => {
+            await selectRange(2, 3, 2, 5);
+
+            await editHandler.deleteWordRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '   o()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'fo' }
+            ]);
+        });
+        it('should delete the selected backward range', async () => {
+            await selectRange(2, 5, 2, 3);
+
+            await editHandler.deleteWordRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '   o()   ');
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: false, text: 'fo' }
+            ]);
         });
     });
     describe('deleteAllLeft', () => {
