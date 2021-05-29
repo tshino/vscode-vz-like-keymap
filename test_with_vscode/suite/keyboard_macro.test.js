@@ -2256,6 +2256,15 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: 'aaa bbb ' }
             ]);
+
+            await selectRange(7, 8, 7, 4); // reversed
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'aaa bbb ' }
+            ]);
         });
         it('should delete selected characters (deleteAllRight)', async () => {
             await recordWithSelectedRange('vz.deleteAllRight');
@@ -2337,6 +2346,18 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ccc');
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'ccc');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 0], [6, 0]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), [
+                { isLeftward: true, text: 'aaa bbb ' },
+                { isLeftward: true, text: 'aaa bbb ' }
+            ]);
+
+            await selectRanges([[7, 8, 7, 4], [8, 8, 8, 4]]); // reversed
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'ccc');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'ccc');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0], [8, 0]]);
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: true, text: 'aaa bbb ' },
                 { isLeftward: true, text: 'aaa bbb ' }
