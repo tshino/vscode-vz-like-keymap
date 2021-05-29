@@ -440,6 +440,7 @@ const EditHandler = function(modeHandler) {
     };
     const insertDeletedTexts = async function(textEditor, deleted) {
         let n = textEditor.selections.length;
+        mode.expectSync();
         await textEditor.edit(function(edit) {
             for (let i = 0; i < n; i++) {
                 let selection = textEditor.selections[i];
@@ -469,6 +470,7 @@ const EditHandler = function(modeHandler) {
             }
         }
         if (updateSelections) {
+            mode.expectSync();
             textEditor.selections = selections;
             if (n === 1) {
                 mode.resetSelection(textEditor);
@@ -517,7 +519,6 @@ const EditHandler = function(modeHandler) {
                 }
             }
             editsExpected = true;
-            mode.expectSync();
             await insertDeletedTexts(textEditor, deleted);
             editsExpected = false;
         }

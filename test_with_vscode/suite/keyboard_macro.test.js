@@ -2410,5 +2410,37 @@ describe('KeyboardMacro', () => {
             await testReplayAt(3, 0);
             await testReplayAt(10, 0); // end of document
         });
+        it('should restore deleted characters (deleteWordLeft)', async () => {
+            await recordDeleteAndUndelete(0, 3, 'vz.deleteWordLeft');
+            await testReplayAt(5, 4);
+            await testReplayAt(6, 3);
+            await testReplayAt(2, 8);
+            await testReplayAt(3, 0);
+            await testReplayAt(0, 0);
+        });
+        it('should restore deleted characters (deleteWordRight)', async () => {
+            await recordDeleteAndUndelete(0, 3, 'vz.deleteWordRight');
+            await testReplayAt(5, 4);
+            await testReplayAt(6, 3);
+            await testReplayAt(2, 8);
+            await testReplayAt(3, 0);
+            await testReplayAt(10, 0); // end of document
+        });
+        it('should restore deleted characters (deleteAllLeft)', async () => {
+            await recordDeleteAndUndelete(0, 3, 'vz.deleteAllLeft');
+            await testReplayAt(5, 4);
+            await testReplayAt(6, 3);
+            await testReplayAt(2, 8);
+            await testReplayAt(3, 0);
+            await testReplayAt(0, 0);
+        });
+        it('should restore deleted characters (deleteAllRight)', async () => {
+            await recordDeleteAndUndelete(0, 3, 'vz.deleteAllRight');
+            await testReplayAt(5, 4);
+            await testReplayAt(6, 3);
+            await testReplayAt(2, 8);
+            await testReplayAt(3, 0);
+            await testReplayAt(10, 0); // end of document
+        });
     });
 });
