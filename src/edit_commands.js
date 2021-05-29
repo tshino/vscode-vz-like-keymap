@@ -516,7 +516,10 @@ const EditHandler = function(modeHandler) {
                     deleted.push(fill_value);
                 }
             }
+            editsExpected = true;
+            mode.expectSync();
             await insertDeletedTexts(textEditor, deleted);
+            editsExpected = false;
         }
     };
     const insertLineBefore = async function(textEditor, _edit) {
@@ -668,7 +671,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'deleteWordRight', deleteWordRight);
         registerTextEditorCommandReplayable(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommandReplayable(context, 'deleteAllRight', deleteAllRight);
-        registerTextEditorCommand(context, 'undelete', undelete);
+        registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);

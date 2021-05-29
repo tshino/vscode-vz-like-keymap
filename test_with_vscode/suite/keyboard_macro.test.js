@@ -2371,4 +2371,44 @@ describe('KeyboardMacro', () => {
         // todo: more tests for deleteXXXXX
     });
     // todo: tests for deleteXXX with multi-cursor
+    describe('undelete', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '11 22 33\n'.repeat(5) +
+                'aaa bbb ccc\n'.repeat(5)
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            mode.initialize(textEditor);
+        });
+        const recordDeleteAndUndelete = async function(line, character, cmd) {
+            await resetCursor(line, character);
+            await recordThroughExecution([cmd, 'vz.undelete']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd, 'vz.undelete']);
+        };
+        const testReplayAt = async function(line, character) {
+            let prevText = textEditor.document.lineAt(line).text;
+            await resetCursor(line, character);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(line).text, prevText);
+            assert.deepStrictEqual(selectionsAsArray(), [[line, character]]);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
+        };
+        it('should restore deleted characters (deleteLeft)', async () => {
+            await recordDeleteAndUndelete(0, 8, 'vz.deleteLeft');
+            await testReplayAt(5, 11);
+            await testReplayAt(2, 1);
+            await testReplayAt(3, 0);
+            await testReplayAt(0, 0);
+        });
+        it('should restore deleted characters (deleteRight)', async () => {
+            await recordDeleteAndUndelete(0, 3, 'vz.deleteRight');
+            await testReplayAt(5, 8);
+            await testReplayAt(5, 11);
+            await testReplayAt(2, 7);
+            await testReplayAt(3, 0);
+            await testReplayAt(10, 0); // end of document
+        });
+    });
 });
