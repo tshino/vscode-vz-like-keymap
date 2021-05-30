@@ -2131,62 +2131,104 @@ describe('KeyboardMacro', () => {
             editHandler.clearUndeleteStack();
             mode.initialize(textEditor);
         });
-        const recordSingleDeleteAt = async function(line, character, cmd) {
+        const recordAt = async function(line, character, commands) {
             await resetCursor(line, character);
-            await recordThroughExecution([cmd]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd]);
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
         };
-        const testSingleDeleteAt = async function(line, character, resultText, resultSel, resultStack) {
+        const testReplayAt = async function(line, character, resultText, resultSel, resultStack) {
+            editHandler.clearUndeleteStack();
             await resetCursor(line, character);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(line).text, resultText);
             assert.deepStrictEqual(selectionsAsArray(), resultSel);
-            assert.deepStrictEqual(editHandler.readUndeleteStack(), resultStack);
+            assert.deepStrictEqual(editHandler.getUndeleteStack(), resultStack);
         };
         it('should delete a character (deleteLeft)', async () => {
-            await recordSingleDeleteAt(0, 8, 'vz.deleteLeft');
-            await testSingleDeleteAt(5, 11, 'aaa bbb cc', [[5, 10]], [
-                { isLeftward: true, text: 'c' }
+            await recordAt(0, 8, ['vz.deleteLeft']);
+            await testReplayAt(5, 11, 'aaa bbb cc', [[5, 10]], [
+                [{ isLeftward: true, text: 'c' }]
             ]);
         });
-        // todo: more tests for deleteLeft
+        it('should delete characters (deleteLeft 3-time)', async () => {
+            await recordAt(0, 8, ['vz.deleteLeft', 'vz.deleteLeft', 'vz.deleteLeft']);
+            await testReplayAt(5, 11, 'aaa bbb ', [[5, 8]], [
+                [{ isLeftward: true, text: 'c' }],
+                [{ isLeftward: true, text: 'c' }],
+                [{ isLeftward: true, text: 'c' }]
+            ]);
+        });
         it('should delete a character (deleteRight)', async () => {
-            await recordSingleDeleteAt(0, 6, 'vz.deleteRight');
-            await testSingleDeleteAt(5, 3, 'aaabbb ccc', [[5, 3]], [
-                { isLeftward: false, text: ' ' }
+            await recordAt(0, 6, ['vz.deleteRight']);
+            await testReplayAt(5, 3, 'aaabbb ccc', [[5, 3]], [
+                [{ isLeftward: false, text: ' ' }]
             ]);
         });
-        // todo: more tests for deleteRight
+        it('should delete characters (deleteRight 3-time)', async () => {
+            await recordAt(0, 6, ['vz.deleteRight', 'vz.deleteRight', 'vz.deleteRight']);
+            await testReplayAt(5, 6, 'aaa bbcc', [[5, 6]], [
+                [{ isLeftward: false, text: 'b' }],
+                [{ isLeftward: false, text: ' ' }],
+                [{ isLeftward: false, text: 'c' }]
+            ]);
+        });
         it('should delete a word (deleteWordLeft)', async () => {
-            await recordSingleDeleteAt(0, 2, 'vz.deleteWordLeft');
-            await testSingleDeleteAt(5, 3, ' bbb ccc', [[5, 0]], [
-                { isLeftward: true, text: 'aaa' }
+            await recordAt(0, 2, ['vz.deleteWordLeft']);
+            await testReplayAt(5, 3, ' bbb ccc', [[5, 0]], [
+                [{ isLeftward: true, text: 'aaa' }]
             ]);
         });
-        // todo: more tests for deleteWordLeft
+        it('should delete words (deleteWordLeft 3-time)', async () => {
+            await recordAt(2, 3, ['vz.deleteWordLeft', 'vz.deleteWordLeft', 'vz.deleteWordLeft']);
+            await testReplayAt(5, 9, 'cc', [[5, 0]], [
+                [{ isLeftward: true, text: 'c' }],
+                [{ isLeftward: true, text: 'bbb ' }],
+                [{ isLeftward: true, text: 'aaa ' }]
+            ]);
+        });
         it('should delete a word (deleteWordRight)', async () => {
-            await recordSingleDeleteAt(0, 3, 'vz.deleteWordRight');
-            await testSingleDeleteAt(5, 3, 'aaa ccc', [[5, 3]], [
-                { isLeftward: false, text: ' bbb' }
+            await recordAt(0, 3, ['vz.deleteWordRight']);
+            await testReplayAt(5, 3, 'aaa ccc', [[5, 3]], [
+                [{ isLeftward: false, text: ' bbb' }]
             ]);
         });
-        // todo: more tests for deleteWordRight
+        it('should delete words (deleteWordRight 3-time)', async () => {
+            await recordAt(0, 0, ['vz.deleteWordRight', 'vz.deleteWordRight', 'vz.deleteWordRight']);
+            await testReplayAt(5, 1, 'a', [[5, 1]], [
+                [{ isLeftward: false, text: 'aa' }],
+                [{ isLeftward: false, text: ' bbb' }],
+                [{ isLeftward: false, text: ' ccc' }]
+            ]);
+        });
         it('should delete left half of a line (deleteAllLeft)', async () => {
-            await recordSingleDeleteAt(0, 3, 'vz.deleteAllLeft');
-            await testSingleDeleteAt(5, 4, 'bbb ccc', [[5, 0]], [
-                { isLeftward: true, text: 'aaa ' }
+            await recordAt(0, 3, ['vz.deleteAllLeft']);
+            await testReplayAt(5, 4, 'bbb ccc', [[5, 0]], [
+                [{ isLeftward: true, text: 'aaa ' }]
             ]);
         });
-        // todo: more tests for deleteAllLeft
-        it('should delete left half of a line (deleteAllRight)', async () => {
-            await recordSingleDeleteAt(0, 3, 'vz.deleteAllRight');
-            await testSingleDeleteAt(5, 4, 'aaa ', [[5, 4]], [
-                { isLeftward: false, text: 'bbb ccc' }
+        it('should delete left half of a line and another line (deleteAllLeft 3-time)', async () => {
+            await recordAt(1, 3, ['vz.deleteAllLeft', 'vz.deleteAllLeft', 'vz.deleteAllLeft']);
+            await testReplayAt(7, 5, 'aaa bbb ccc', [[6, 0]], [
+                [{ isLeftward: true, text: 'aaa b' }],
+                [{ isLeftward: true, text: '\n' }],
+                [{ isLeftward: true, text: 'aaa bbb ccc' }]
             ]);
         });
-        // todo: more tests for deleteAllRight
-        // todo: more tests for deleteXXXXX
+        it('should delete right half of a line (deleteAllRight)', async () => {
+            await recordAt(0, 3, ['vz.deleteAllRight']);
+            await testReplayAt(5, 4, 'aaa ', [[5, 4]], [
+                [{ isLeftward: false, text: 'bbb ccc' }]
+            ]);
+        });
+        it('should delete right half of a line and another line (deleteAllRight 3-time)', async () => {
+            await recordAt(1, 3, ['vz.deleteAllRight', 'vz.deleteAllRight', 'vz.deleteAllRight']);
+            await testReplayAt(5, 4, 'aaa ', [[5, 4]], [
+                [{ isLeftward: false, text: 'bbb ccc' }],
+                [{ isLeftward: false, text: '\n' }],
+                [{ isLeftward: false, text: 'aaa bbb ccc' }]
+            ]);
+        });
     });
     describe('deleteXXX (with a selected range)', () => {
         beforeEach(async () => {
@@ -2271,7 +2313,6 @@ describe('KeyboardMacro', () => {
             await testPureDeletingOfSelectedRange();
             await testPureDeletingOfSelectedReversedRange();
         });
-        // todo: more tests for deleteXXXXX
     });
     describe('deleteXXX (with multiple selected ranges)', () => {
         beforeEach(async () => {
@@ -2368,7 +2409,6 @@ describe('KeyboardMacro', () => {
             await testPureDeletingOfSelectedRanges();
             await testPureDeletingOfSelectedReversedRanges();
         });
-        // todo: more tests for deleteXXXXX
     });
     // todo: tests for deleteXXX with multi-cursor
     describe('undelete', () => {
