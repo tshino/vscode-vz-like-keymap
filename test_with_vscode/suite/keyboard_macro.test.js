@@ -2230,6 +2230,71 @@ describe('KeyboardMacro', () => {
             ]);
         });
     });
+    describe('deleteXXX (with multi-cursor)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '11 22 33\n'.repeat(5) +
+                'aaa bbb ccc\n'.repeat(5)
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            mode.initialize(textEditor);
+        });
+        const recordAt = async function(cursors, commands) {
+            await selectRanges(cursors.map(pos => [pos[0], pos[1], pos[0], pos[1]]));
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+        };
+        const testReplayAt = async function(cursors, resultTexts, resultSel, resultStack) {
+            editHandler.clearUndeleteStack();
+            await selectRanges(cursors.map(pos => [pos[0], pos[1], pos[0], pos[1]]));
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(
+                cursors.map(pos => textEditor.document.lineAt(pos[0]).text),
+                resultTexts
+            );
+            assert.deepStrictEqual(selectionsAsArray(), resultSel);
+            assert.deepStrictEqual(editHandler.getUndeleteStack(), resultStack);
+        };
+        it('should delete characters (deleteLeft)', async () => {
+            await recordAt([[0, 8], [1, 8]], ['vz.deleteLeft']);
+            await testReplayAt([[5, 11], [6, 11]], ['aaa bbb cc', 'aaa bbb cc'], [[5, 10], [6, 10]], [
+                [{ isLeftward: true, text: 'c' }, { isLeftward: true, text: 'c' }]
+            ]);
+        });
+        it('should delete characters (deleteRight)', async () => {
+            await recordAt([[0, 3], [1, 3]], ['vz.deleteRight']);
+            await testReplayAt([[5, 4], [6, 4]], ['aaa bb ccc', 'aaa bb ccc'], [[5, 4], [6, 4]], [
+                [{ isLeftward: false, text: 'b' }, { isLeftward: false, text: 'b' }]
+            ]);
+        });
+        it('should delete words (deleteWordLeft)', async () => {
+            await recordAt([[0, 5], [1, 5]], ['vz.deleteWordLeft']);
+            await testReplayAt([[5, 4], [6, 4]], ['bbb ccc', 'bbb ccc'], [[5, 0], [6, 0]], [
+                [{ isLeftward: true, text: 'aaa ' }, { isLeftward: true, text: 'aaa ' }]
+            ]);
+        });
+        it('should delete words (deleteWordRight)', async () => {
+            await recordAt([[0, 8], [1, 8]], ['vz.deleteWordRight']);
+            await testReplayAt([[5, 4], [6, 4]], ['aaa  ccc', 'aaa  ccc'], [[5, 4], [6, 4]], [
+                [{ isLeftward: false, text: 'bbb' }, { isLeftward: false, text: 'bbb' }]
+            ]);
+        });
+        it('should delete words (deleteAllLeft)', async () => {
+            await recordAt([[0, 5], [1, 5]], ['vz.deleteAllLeft']);
+            await testReplayAt([[5, 7], [6, 7]], [' ccc', ' ccc'], [[5, 0], [6, 0]], [
+                [{ isLeftward: true, text: 'aaa bbb' }, { isLeftward: true, text: 'aaa bbb' }]
+            ]);
+        });
+        it('should delete words (deleteAllRight)', async () => {
+            await recordAt([[0, 6], [1, 6]], ['vz.deleteAllRight']);
+            await testReplayAt([[5, 4], [6, 4]], ['aaa ', 'aaa '], [[5, 4], [6, 4]], [
+                [{ isLeftward: false, text: 'bbb ccc' }, { isLeftward: false, text: 'bbb ccc' }]
+            ]);
+        });
+    });
     describe('deleteXXX (with a selected range)', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
@@ -2410,7 +2475,6 @@ describe('KeyboardMacro', () => {
             await testPureDeletingOfSelectedReversedRanges();
         });
     });
-    // todo: tests for deleteXXX with multi-cursor
     describe('undelete', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
