@@ -2308,7 +2308,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should switch case of a word between lower, upper and title case', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 8, 0, 8) ];
+            await resetCursor(0, 8);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
@@ -2320,7 +2320,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
         });
         it('should work even if the cursor is at middle of a word', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 10, 0, 10) ];
+            await resetCursor(0, 10);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
@@ -2332,7 +2332,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
         });
         it('should detect an existing title case word that starts at the cursor position', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 8, 1, 8) ];
+            await resetCursor(1, 8);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
@@ -2344,7 +2344,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
         });
         it('should detect title case words also when the cursor is at middle of the word', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 10, 1, 10) ];
+            await resetCursor(1, 10);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
@@ -2356,7 +2356,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn Opqrstu Vwxyz');
         });
         it('should toggle case of single-letter words', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 7, 6, 7) ];
+            await resetCursor(6, 7);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(6).text, 'I have A pen');
@@ -2366,7 +2366,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(6).text, 'I have A pen');
         });
         it('should work with non-ASCII alphabets', async () => {
-            textEditor.selections = [ new vscode.Selection(4, 0, 4, 0) ];
+            await resetCursor(4, 0);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(4).text, 'ＡＢＣＤ ＡＢＣＤ');
@@ -2378,7 +2378,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, 'ＡＢＣＤ ＡＢＣＤ');
         });
         it('should work with non-English alphabets', async () => {
-            textEditor.selections = [ new vscode.Selection(5, 0, 5, 0) ];
+            await resetCursor(5, 0);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
@@ -2389,7 +2389,7 @@ describe('EditHandler', () => {
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ ΑΒΓΔ');
 
-            textEditor.selections = [ new vscode.Selection(5, 5, 5, 5) ];
+            await resetCursor(5, 5);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ Αβγδ');
@@ -2401,7 +2401,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(5).text, 'ΑΒΓΔ Αβγδ');
         });
         it('should switch case of words in the selection range', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 8, 0, 24) ];
+            await selectRange(0, 8, 0, 24);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
@@ -2413,7 +2413,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
         });
         it('should detect existing title case in the selection range', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 8, 1, 24) ];
+            await selectRange(1, 8, 1, 24);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
@@ -2425,7 +2425,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg hijklmn opqrstu Vwxyz');
         });
         it('should toggle case of a single-letter word in selection range', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 0, 6, 2) ];
+            await selectRange(6, 0, 6, 2);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
@@ -2435,7 +2435,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(6).text, 'i have a pen');
         });
         it('should switch case of words in selection range even if it starts with a single-letter word', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 0, 6, 12) ];
+            await selectRange(6, 0, 6, 12);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(6).text, 'I HAVE A PEN');
@@ -2447,7 +2447,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(6).text, 'I HAVE A PEN');
         });
         it('should work even if the selection range starts with non-alphabet characters', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 0, 3, 8) ];
+            await selectRange(3, 0, 3, 8);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
@@ -2459,7 +2459,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
         });
         it('should work even if the selection range starts with multiple spaces', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 0, 2, 14) ];
+            await selectRange(2, 0, 2, 14);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(2).text, '    ABCD EFGH ijkl');
@@ -2471,7 +2471,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, '    ABCD EFGH ijkl');
         });
         it('should check the character immediately before the cursor if non-alphabet character', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 7, 0, 7) ];
+            await resetCursor(0, 7);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
@@ -2483,13 +2483,13 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
         });
         it('should check the character immediately before the cursor if at EOL', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 29, 0, 29) ];
+            await resetCursor(0, 29);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu VWXYZ');
         });
         it('should do nothing if no alphabet character', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 0, 3, 0) ];
+            await resetCursor(3, 0);
 
             await editHandler.transformCase(textEditor);
             await sleep(20);
@@ -2499,10 +2499,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 abc def');
         });
         it('should work with multiple selection ranges', async () => {
-            textEditor.selections = [
-                new vscode.Selection(0, 8, 0, 24),
-                new vscode.Selection(1, 8, 1, 24)
-            ];
+            await selectRanges([[0, 8, 0, 24], [1, 8, 1, 24]]);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN OPQRSTU vwxyz');
@@ -2518,10 +2515,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg HIJKLMN OPQRSTU Vwxyz');
         });
         it('should work with multiple selection ranges even if the first one contains no alphabets', async () => {
-            textEditor.selections = [
-                new vscode.Selection(2, 0, 2, 4),
-                new vscode.Selection(3, 0, 3, 7)
-            ];
+            await selectRanges([[2, 0, 2, 4], [3, 0, 3, 7]]);
 
             await editHandler.transformCase(textEditor);
             assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
