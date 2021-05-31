@@ -2547,4 +2547,26 @@ describe('KeyboardMacro', () => {
             await testReplayAt(10, 0); // end of document
         });
     });
+    describe('transformCase', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'abcdefg hijklmn opqrstu vwxyz\n',
+                vscode.EndOfLine.CRLF
+            );
+        });
+        it('should switch case of a word between lower, upper and title case', async () => {
+            await resetCursor(0, 8);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg Hijklmn opqrstu vwxyz');
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+        });
+    });
 });

@@ -674,13 +674,14 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
-        registerTextEditorCommand(context, 'transformCase', transformCase);
+        registerTextEditorCommandReplayable(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);
     };
     return {
         clearUndeleteStack, // for testing purpose
         readUndeleteStack, // for testing purpose
         pushUndeleteStack, // for testing purpose
+        getUndeleteStack: function() { return undeleteStack; }, // for testing purpose
         singleLineRange,
         cancelSelection,
         readText,
