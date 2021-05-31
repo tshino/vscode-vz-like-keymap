@@ -643,13 +643,19 @@ const EditHandler = function(modeHandler) {
         let nextCase = getNextCaseTransformTo(textEditor);
         switch (nextCase) {
             case LOWERCASE:
+                editsExpected = true;
                 await vscode.commands.executeCommand('editor.action.transformToLowercase');
+                editsExpected = false;
                 break;
             case UPPERCASE:
+                editsExpected = true;
                 await vscode.commands.executeCommand('editor.action.transformToUppercase');
+                editsExpected = false;
                 break;
             case TITLECASE:
+                editsExpected = true;
                 await vscode.commands.executeCommand('editor.action.transformToTitlecase');
+                editsExpected = false;
                 break;
             default:
                 break;

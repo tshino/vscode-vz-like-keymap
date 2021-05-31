@@ -2551,6 +2551,7 @@ describe('KeyboardMacro', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
+                'abcdefg hijklmn opqrstu vwxyz\n' +
                 'abcdefg hijklmn opqrstu vwxyz\n',
                 vscode.EndOfLine.CRLF
             );
@@ -2567,6 +2568,39 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg hijklmn opqrstu vwxyz');
             await kb_macro.replay(textEditor);
             assert.strictEqual(textEditor.document.lineAt(0).text, 'abcdefg HIJKLMN opqrstu vwxyz');
+        });
+        it('should switch case of words (replay with various selections)', async () => {
+            await resetCursor(0, 0);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG hijklmn opqrstu vwxyz');
+
+            await resetCursor(0, 10);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG HIJKLMN opqrstu vwxyz');
+            await selectRange(0, 16, 0, 23);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG HIJKLMN OPQRSTU vwxyz');
+            await resetCursor(0, 29);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, 'ABCDEFG HIJKLMN OPQRSTU VWXYZ');
+        });
+        it('should switch case of words (record with various selections)', async () => {
+            await resetCursor(0, 7);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
+
+            await selectRange(0, 8, 0, 15);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
+
+            await selectRanges([[0, 15, 0, 15], [1, 15, 1, 15]]);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
+
+            await selectRanges([[0, 8, 0, 15], [1, 8, 1, 15]]);
+            await recordThroughExecution(['vz.transformCase']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
         });
     });
 });
