@@ -423,18 +423,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> arrow)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorRight',
                 'vz.cursorRight',
                 'vz.cursorRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorRight',
-                'vz.cursorRight',
-                'vz.cursorRight'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -443,14 +439,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> word-start-right)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorWordStartRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorWordStartRight'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -459,14 +453,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> line-start)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLineStart'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLineStart'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -475,14 +467,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> home)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorHome'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorHome'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -491,14 +481,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> top)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorTop'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorTop'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -507,14 +495,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> left-select)', async () => {
             await resetCursor(0, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLeftSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLeftSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -523,14 +509,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> home-select)', async () => {
             await resetCursor(0, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorHomeSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorHomeSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -539,14 +523,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> view-top)', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorViewTop'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorViewTop'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -555,14 +537,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> line-start-select)', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLineStartSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLineStartSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -579,14 +559,12 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (toggle -> scroll-line-up)', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.scrollLineUp'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.scrollLineUp'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -595,14 +573,12 @@ describe('KeyboardMacro', () => {
         });
         it('should start and stop selection mode (toggle -> scroll-line-up-unselect)', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.scrollLineUpUnselect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.scrollLineUpUnselect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -619,18 +595,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (arrow -> toggle -> arrow)', async () => {
             await resetCursor(0, 0);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorDown',
                 'vz.toggleSelection',
                 'vz.cursorRight',
                 'vz.cursorRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorDown',
-                'vz.toggleSelection',
-                'vz.cursorRight',
-                'vz.cursorRight'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -639,16 +611,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (word-start-left -> toggle -> word-start-right)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorWordStartLeft',
                 'vz.toggleSelection',
                 'vz.cursorWordStartRight'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorWordStartLeft',
-                'vz.toggleSelection',
-                'vz.cursorWordStartRight'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -657,16 +626,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (line-end -> toggle -> line-start)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorLineEnd',
                 'vz.toggleSelection',
                 'vz.cursorLineStart'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorLineEnd',
-                'vz.toggleSelection',
-                'vz.cursorLineStart'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -675,16 +641,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (end -> toggle -> home)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorEnd',
                 'vz.toggleSelection',
                 'vz.cursorHome'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorEnd',
-                'vz.toggleSelection',
-                'vz.cursorHome'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -693,16 +656,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (top -> toggle -> bottom)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorTop',
                 'vz.toggleSelection',
                 'vz.cursorBottom'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorTop',
-                'vz.toggleSelection',
-                'vz.cursorBottom'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -711,16 +671,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (right-select -> toggle -> left-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorRightSelect',
                 'vz.toggleSelection',
                 'vz.cursorLeftSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorRightSelect',
-                'vz.toggleSelection',
-                'vz.cursorLeftSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -729,16 +686,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (end-select -> toggle -> home-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorEndSelect',
                 'vz.toggleSelection',
                 'vz.cursorHomeSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorEndSelect',
-                'vz.toggleSelection',
-                'vz.cursorHomeSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -747,16 +701,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (view-top -> toggle -> view-bottom)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorViewTop',
                 'vz.toggleSelection',
                 'vz.cursorViewBottom'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorViewTop',
-                'vz.toggleSelection',
-                'vz.cursorViewBottom'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -765,16 +716,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (line-start-select -> toggle -> line-end-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.cursorLineStartSelect',
                 'vz.toggleSelection',
                 'vz.cursorLineEndSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.cursorLineStartSelect',
-                'vz.toggleSelection',
-                'vz.cursorLineEndSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -791,16 +739,13 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range (scroll-line-up -> toggle -> scroll-line-down)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.scrollLineUp',
                 'vz.toggleSelection',
                 'vz.scrollLineDown'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.scrollLineUp',
-                'vz.toggleSelection',
-                'vz.scrollLineDown'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -809,16 +754,13 @@ describe('KeyboardMacro', () => {
         });
         it('should start and stop selection mode (scroll-line-up-unselect -> toggle -> scroll-line-down-unselect)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.scrollLineUpUnselect',
                 'vz.toggleSelection',
                 'vz.scrollLineDownUnselect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.scrollLineUpUnselect',
-                'vz.toggleSelection',
-                'vz.scrollLineDownUnselect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -835,18 +777,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (arrow)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorRight',
                 'vz.toggleSelection',
                 'vz.cursorDown'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorRight',
-                'vz.toggleSelection',
-                'vz.cursorDown'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -855,18 +793,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (word-start-left/right)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorWordStartRight',
                 'vz.toggleSelection',
                 'vz.cursorWordStartLeft'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorWordStartRight',
-                'vz.toggleSelection',
-                'vz.cursorWordStartLeft'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -875,18 +809,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (line-start/end)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLineEnd',
                 'vz.toggleSelection',
                 'vz.cursorLineStart'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLineEnd',
-                'vz.toggleSelection',
-                'vz.cursorLineStart'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -895,18 +825,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (home/end)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorEnd',
                 'vz.toggleSelection',
                 'vz.cursorHome'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorEnd',
-                'vz.toggleSelection',
-                'vz.cursorHome'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -915,18 +841,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a selection range and cancel it then move cursor (top/bottom)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorTop',
                 'vz.toggleSelection',
                 'vz.cursorBottom'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorTop',
-                'vz.toggleSelection',
-                'vz.cursorBottom'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -935,18 +857,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make and cancel a selection range then make another one (left/right-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLeftSelect',
                 'vz.toggleSelection',
                 'vz.cursorRightSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLeftSelect',
-                'vz.toggleSelection',
-                'vz.cursorRightSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -955,18 +873,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make and cancel a selection range then make another one (home/end-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorEndSelect',
                 'vz.toggleSelection',
                 'vz.cursorHomeSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorEndSelect',
-                'vz.toggleSelection',
-                'vz.cursorHomeSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -975,18 +889,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make and cancel a selection range then move cursor (view-top/bottom)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorViewTop',
                 'vz.toggleSelection',
                 'vz.cursorViewBottom'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorViewTop',
-                'vz.toggleSelection',
-                'vz.cursorViewBottom'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -995,18 +905,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make and cancel a selection range then make another one (line-start/end-select)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.cursorLineStartSelect',
                 'vz.toggleSelection',
                 'vz.cursorLineEndSelect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.cursorLineStartSelect',
-                'vz.toggleSelection',
-                'vz.cursorLineEndSelect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -1023,20 +929,15 @@ describe('KeyboardMacro', () => {
         });
         it('should make and cancel a selection range then move cursor (scroll-line-up/down)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.scrollLineUp',
                 'vz.toggleSelection',
                 'vz.scrollLineDown',
                 'vz.scrollLineDown'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.scrollLineUp',
-                'vz.toggleSelection',
-                'vz.scrollLineDown',
-                'vz.scrollLineDown'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -1045,20 +946,15 @@ describe('KeyboardMacro', () => {
         });
         it('should start and stop selection mode twice and move cursor (scroll-line-up/down-unselect)', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleSelection',
                 'vz.scrollLineUpUnselect',
                 'vz.toggleSelection',
                 'vz.scrollLineDownUnselect',
                 'vz.scrollLineDownUnselect'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleSelection',
-                'vz.scrollLineUpUnselect',
-                'vz.toggleSelection',
-                'vz.scrollLineDownUnselect',
-                'vz.scrollLineDownUnselect'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -1125,18 +1021,14 @@ describe('KeyboardMacro', () => {
         });
         it('should make a box selection', async () => {
             await resetCursor(1, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleBoxSelection',
                 'vz.cursorRight',
                 'vz.cursorDown',
                 'vz.cursorDown'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleBoxSelection',
-                'vz.cursorRight',
-                'vz.cursorDown',
-                'vz.cursorDown'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(5, 5);
             await kb_macro.replay(textEditor);
@@ -1184,20 +1076,15 @@ describe('KeyboardMacro', () => {
         });
         it('should convert column selection to multi-cursor', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleBoxSelection',
                 'vz.cursorRight',
                 'vz.cursorDown',
                 'vz.cursorDown',
                 'vz.stopBoxSelection'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleBoxSelection',
-                'vz.cursorRight',
-                'vz.cursorDown',
-                'vz.cursorDown',
-                'vz.stopBoxSelection'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(4, 5);
             await kb_macro.replay(textEditor);
@@ -1207,18 +1094,14 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel multi-cursor', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.toggleBoxSelection',
                 'vz.cursorDown',
                 'vz.cursorDown',
                 'vz.stopBoxSelection'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.toggleBoxSelection',
-                'vz.cursorDown',
-                'vz.cursorDown',
-                'vz.stopBoxSelection'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(4, 5);
             await kb_macro.replay(textEditor);
@@ -1237,12 +1120,11 @@ describe('KeyboardMacro', () => {
         });
         it('should reverse current selection', async () => {
             await selectRange(1, 0, 5, 3);
-            await recordThroughExecution([
+            const commands = [
                 'vz.reverseSelection'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.reverseSelection'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await selectRange(2, 0, 6, 4);
             await kb_macro.replay(textEditor);
@@ -1261,12 +1143,11 @@ describe('KeyboardMacro', () => {
         });
         it('should move cursor to opposite side of the pair of bracket', async () => {
             await resetCursor(1, 0);
-            await recordThroughExecution([
+            const commands = [
                 'vz.jumpToBracket'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.jumpToBracket'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
 
             await kb_macro.replay(textEditor);
@@ -1549,12 +1430,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert a new line before the current line', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
@@ -1568,16 +1448,13 @@ describe('KeyboardMacro', () => {
         });
         it('should insert new lines before the current line', async () => {
             await resetCursor(1, 2);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore',
                 'vz.insertLineBefore',
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore',
-                'vz.insertLineBefore',
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
@@ -1595,12 +1472,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert new lines before each line of multi-cursor', async () => {
             await selectRanges([[1, 2, 1, 2], [2, 2, 2, 2]]);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abc');
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
@@ -1619,12 +1495,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert a new line before the line of cursor (with selection range)', async () => {
             await selectRange(6, 2, 6, 4);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
@@ -1638,12 +1513,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert new lines before each line of cursor (with selection ranges)', async () => {
             await selectRanges([[6, 2, 6, 4], [7, 2, 7, 4]]);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcde');
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, '');
@@ -1662,12 +1536,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert a new line with possible auto indent', async () => {
             await resetCursor(11, 6);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             const autoIndent = textEditor.document.lineAt(11).text === '    ';
             if (!autoIndent) {
                 console.log('.. skipped tests for auto indent');
@@ -1684,12 +1557,11 @@ describe('KeyboardMacro', () => {
         });
         it('should insert new lines with possible auto indent (multi-cursor)', async () => {
             await selectRanges([[11, 3, 11, 3], [12, 4, 12, 4]]);
-            await recordThroughExecution([
+            const commands = [
                 'vz.insertLineBefore'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.insertLineBefore'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             const autoIndent = textEditor.document.lineAt(11).text === '    ';
             if (!autoIndent) {
                 console.log('.. skipped tests for auto indent');
