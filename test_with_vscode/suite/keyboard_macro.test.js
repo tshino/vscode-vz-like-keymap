@@ -65,6 +65,9 @@ describe('KeyboardMacro', () => {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
             }
             await sleep(60);
+            for (let j = 0; j < 10 && !mode.synchronized(); j++) {
+                await sleep(10);
+            }
         }
         kb_macro.finishRecording();
     };
