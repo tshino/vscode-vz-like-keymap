@@ -14,8 +14,6 @@ describe('KeyboardMacro', () => {
 
     let textEditor;
     const sleep = testUtils.sleep;
-    // const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
-    // const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
@@ -25,22 +23,6 @@ describe('KeyboardMacro', () => {
     const selectRanges = async (ranges) => {
         await testUtils.selectRanges(textEditor, mode, ranges);
     };
-    /*const waitForCursorAt = async (line, character) => {
-        while (
-            textEditor.selections[0].active.line !== line ||
-            textEditor.selections[0].active.character !== character
-        ) {
-            await sleep(1);
-        }
-    };
-    const waitForEmptySelection = async () => {
-        while (
-            textEditor.selections[0].active.line !== textEditor.selections[0].anchor.line ||
-            textEditor.selections[0].active.character !== textEditor.selections[0].anchor.character
-        ) {
-            await sleep(1);
-        }
-    };*/
     const selectionsAsArray = function() {
         return testUtils.selectionsToArray(textEditor.selections);
     };

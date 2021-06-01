@@ -21,14 +21,6 @@ describe('EditHandler', () => {
     const selectRanges = async (ranges) => {
         await testUtils.selectRanges(textEditor, mode, ranges);
     };
-    const waitForCursor = async (prevLine, prevCharacter) => {
-        while (
-            textEditor.selections[0].active.line === prevLine &&
-            textEditor.selections[0].active.character === prevCharacter
-        ) {
-            await sleep(1);
-        }
-    };
     const selectionsAsArray = function() {
         return testUtils.selectionsToArray(textEditor.selections);
     };
