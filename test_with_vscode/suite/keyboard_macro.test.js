@@ -2606,4 +2606,41 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.transformCase']);
         });
     });
+    describe('insertPath', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdefg\n' +
+                    '\n' +
+                    '0123456\n' +
+                    'ABCDEFG'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should insert the file path of current document', async () => {
+            await resetCursor(0, 0);
+            await recordThroughExecution(['vz.insertPath']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.insertPath']);
+
+            await resetCursor(1, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+        });
+        it('should replace selection range with the file path of current document', async () => {
+            await selectRange(0, 0, 0, 1);
+            await recordThroughExecution(['vz.insertPath']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.insertPath']);
+
+            await selectRange(1, 0, 2, 7);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'ABCDEFG');
+        });
+    });
 });

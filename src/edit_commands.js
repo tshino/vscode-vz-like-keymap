@@ -662,8 +662,11 @@ const EditHandler = function(modeHandler) {
         }
     };
     const insertPath = async function(textEditor, _edit) {
+        editsExpected = true;
+        mode.expectSync();
         let path = textEditor.document.fileName;
         await vscode.commands.executeCommand('paste', { text: path });
+        editsExpected = false;
     };
     const registerCommands = function(context) {
         setupListeners(context);
@@ -681,7 +684,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommandReplayable(context, 'transformCase', transformCase);
-        registerTextEditorCommand(context, 'insertPath', insertPath);
+        registerTextEditorCommandReplayable(context, 'insertPath', insertPath);
     };
     return {
         clearUndeleteStack, // for testing purpose
