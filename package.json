@@ -573,12 +573,12 @@
             },
             {
                 "key": "ctrl+k ctrl+d",
-                "command": "editor.action.copyLinesDownAction",
+                "command": "vz.copyLinesDown",
                 "when": "editorTextFocus && !editorReadonly"
             },
             {
                 "key": "ctrl+k d",
-                "command": "editor.action.copyLinesDownAction",
+                "command": "vz.copyLinesDown",
                 "when": "editorTextFocus && !editorReadonly"
             },
             {

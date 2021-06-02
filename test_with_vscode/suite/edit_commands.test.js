@@ -2279,6 +2279,36 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0], [2, 0]]);
         });
     });
+    describe('copyLinesDown', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123456\n' +
+                    'abcde\n' +
+                    'fghijklmno\n' +
+                    'pqrst' // no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should duplicate the line the cursor is on', async () => {
+            await resetCursor(0, 0);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+        // todo: add more tests
+    });
     describe('transformCase', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
