@@ -1936,6 +1936,44 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[8, 5], [7, 5], [6, 5]]);
         });
     });
+    describe('clearStack', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should clear text stack and clipboard', async () => {
+            const commands = ['vz.clipboardClearStack'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(1, 1);
+            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.cutAndPushImpl(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+
+            await kb_macro.replay(textEditor);
+
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '');
+
+            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPasteImpl(textEditor, false);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+    });
     describe('deleteXXX', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
