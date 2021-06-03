@@ -534,7 +534,9 @@ const EditHandler = function(modeHandler) {
         editsExpected = false;
     };
     const copyLinesDown = async function(_textEditor, _edit) {
+        editsExpected = true;
         await vscode.commands.executeCommand('editor.action.copyLinesDownAction');
+        editsExpected = false;
     };
     const LOWERCASE = 0;
     const UPPERCASE = 1;
@@ -686,7 +688,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
-        registerTextEditorCommand(context, 'copyLinesDown', copyLinesDown);
+        registerTextEditorCommandReplayable(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommandReplayable(context, 'transformCase', transformCase);
         registerTextEditorCommandReplayable(context, 'insertPath', insertPath);
     };

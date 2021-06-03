@@ -2400,6 +2400,50 @@ describe('KeyboardMacro', () => {
             await testReplayAt(10, 0); // end of document
         });
     });
+    describe('copyLinesDown', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '123456\n' +
+                'abcde\n' +
+                'fghijklmno\n' +
+                'pqrst', // no new line
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should duplicate the line the cursor is on', async () => {
+            await resetCursor(0, 0);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fghijklmno');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'fghijklmno');
+            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
+        it('should duplicate the last line of the document even if it has no new line', async () => {
+            await resetCursor(0, 0);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
+
+            await resetCursor(4, 0);
+            await kb_macro.replay(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'pqrst');
+            assert.strictEqual(textEditor.document.lineAt(5).text, 'pqrst');
+            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
+    });
     describe('transformCase', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
