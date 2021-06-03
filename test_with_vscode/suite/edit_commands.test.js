@@ -2307,7 +2307,64 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
             assert.strictEqual(textEditor.document.lineCount, 5);
         });
-        // todo: add more tests
+        it('should duplicate the last line of the document even if it has no new line', async () => {
+            await resetCursor(3, 0);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'pqrst');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'pqrst');
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+        it('should duplicate single line if entire line is selected', async () => {
+            await selectRange(0, 0, 0, 6);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+        it('should duplicate single line if entire line including the new line character is selected', async () => {
+            await selectRange(0, 0, 1, 0);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 2, 0]]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
+        it('should duplicate multiple lines that are selected', async () => {
+            await selectRange(0, 0, 1, 5);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 3, 5]]);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
+        it('should duplicate each lines of multi cursor', async () => {
+            await selectRanges([[1, 5, 1, 5], [2, 5, 2, 5]]);
+
+            await editHandler.copyLinesDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5], [4, 5]]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fghijklmno');
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'fghijklmno');
+            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
     });
     describe('transformCase', () => {
         beforeEach(async () => {
