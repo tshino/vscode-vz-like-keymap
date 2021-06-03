@@ -2430,18 +2430,29 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
         it('should duplicate the last line of the document even if it has no new line', async () => {
-            await resetCursor(0, 0);
+            await resetCursor(3, 0); // the last line of document
             await recordThroughExecution(['vz.copyLinesDown']);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
-
-            await resetCursor(4, 0);
-            await kb_macro.replay(textEditor);
-
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 0]]);
-            assert.strictEqual(textEditor.document.lineAt(4).text, 'pqrst');
-            assert.strictEqual(textEditor.document.lineAt(5).text, 'pqrst');
-            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
+        it('should duplicate single line if entire line is selected', async () => {
+            await selectRange(0, 0, 0, 6);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
+        });
+        it('should duplicate single line if entire line including the new line character is selected', async () => {
+            await selectRange(0, 0, 1, 0);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
+        });
+        it('should duplicate multiple lines that are selected', async () => {
+            await selectRange(0, 0, 1, 5);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
+        });
+        it('should duplicate each lines of multi cursor', async () => {
+            await selectRanges([[1, 5, 1, 5], [2, 5, 2, 5]]);
+            await recordThroughExecution(['vz.copyLinesDown']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.copyLinesDown']);
         });
     });
     describe('transformCase', () => {
