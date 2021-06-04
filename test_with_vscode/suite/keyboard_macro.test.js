@@ -5,12 +5,14 @@ const testUtils = require("./testUtils.js");
 const mode_handler = require("./../../src/mode_handler.js");
 const keyboard_macro = require("./../../src/keyboard_macro.js");
 const edit_commands = require("./../../src/edit_commands.js");
+const cursor_commands = require("./../../src/cursor_commands.js");
 
 
 describe('KeyboardMacro', () => {
     const mode = mode_handler.getInstance();
     const kb_macro = keyboard_macro.getInstance();
     const editHandler = edit_commands.getInstance();
+    const cursorHandler = cursor_commands.getInstance();
 
     let textEditor;
     const sleep = testUtils.sleep;
@@ -1154,6 +1156,26 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+        });
+    });
+    describe('markPosition', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+            cursorHandler.setMarkedPosition(textEditor, null);
+        });
+        it('should mark current cursor position', async () => {
+            await resetCursor(3, 7);
+            const commands = ['vz.markPosition'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(8, 2);
+            await kb_macro.replay(textEditor);
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.notStrictEqual(pos, null);
+            assert.strictEqual(pos.isEqual(new vscode.Position(8, 2)), true);
         });
     });
     describe('type', () => {
