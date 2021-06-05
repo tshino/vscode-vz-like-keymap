@@ -1177,6 +1177,47 @@ describe('KeyboardMacro', () => {
             assert.notStrictEqual(pos, null);
             assert.strictEqual(pos.isEqual(new vscode.Position(8, 2)), true);
         });
+        it('should move marked position if some text inserted before it', async () => {
+            await resetCursor(3, 7);
+            await recordThroughExecution([
+                'vz.markPosition',
+                'vz.cursorUp',
+                ['type', { text: 'a' }],
+                ['type', { text: '\n' }],
+                ['type', { text: 'b' }],
+                ['type', { text: '\n' }]
+            ]);
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 5);
+            assert.strictEqual(pos.character, 7);
+
+            await resetCursor(7, 7);
+            await kb_macro.replay(textEditor);
+
+            pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 9);
+            assert.strictEqual(pos.character, 7);
+        });
+        it('should move marked position if some text deleted at before it', async () => {
+            await resetCursor(6, 1);
+            await recordThroughExecution([
+                'vz.markPosition',
+                'vz.cursorUp',
+                'vz.toggleSelection',
+                'vz.cursorUp',
+                'vz.deleteRight'
+            ]);
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 5);
+            assert.strictEqual(pos.character, 1);
+
+            await resetCursor(8, 1);
+            await kb_macro.replay(textEditor);
+
+            pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 7);
+            assert.strictEqual(pos.character, 1);
+        });
     });
     describe('type', () => {
         beforeEach(async () => {
