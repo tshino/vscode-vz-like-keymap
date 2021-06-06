@@ -1223,6 +1223,47 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(pos.character, 1);
         });
     });
+    describe('cursorLastPosition', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor,
+                '0123456789\n'.repeat(10)
+            );
+        });
+        beforeEach(async () => {
+            cursorHandler.setMarkedPosition(textEditor, null);
+        });
+        it('should move cursor to marked position', async () => {
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(4, 5));
+            await resetCursor(3, 7);
+            await recordThroughExecution(['vz.cursorLastPosition']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.cursorLastPosition']);
+
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(6, 2));
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 8);
+            assert.strictEqual(pos.character, 3);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 2]]);
+        });
+        it('should return to current position (jump twice)', async () => {
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(4, 5));
+            await resetCursor(3, 7);
+            const commands = ['vz.cursorLastPosition', 'vz.cursorLastPosition'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(6, 2));
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 6);
+            assert.strictEqual(pos.character, 2);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 3]]);
+        });
+    });
     describe('type', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
