@@ -1209,6 +1209,7 @@ describe('KeyboardMacro', () => {
                 'vz.cursorUp',
                 'vz.deleteRight'
             ]);
+            await sleep(30);
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.strictEqual(pos.line, 5);
             assert.strictEqual(pos.character, 1);
@@ -1216,6 +1217,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(8, 1);
             await kb_macro.replay(textEditor);
 
+            await sleep(30);
             pos = cursorHandler.getMarkedPosition(textEditor);
             assert.strictEqual(pos.line, 7);
             assert.strictEqual(pos.character, 1);
