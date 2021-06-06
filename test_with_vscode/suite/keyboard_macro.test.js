@@ -1320,7 +1320,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '   ');
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3]]);
         });
-        it('should insert space characters (4TAB)', async () => {
+        it('should insert space characters (4TAB by edit)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 ['edit', edit => {
@@ -1334,7 +1334,21 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '    ');
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4]]);
         });
-        it('should insert space characters (TAB)', async () => {
+        it('should insert space characters at middle of a line (4TAB by edit)', async () => {
+            await resetCursor(6, 4);
+            await recordThroughExecution([
+                ['edit', edit => {
+                    edit.insert(textEditor.selections[0].active, '    ');
+                }, [6, 8]]
+            ]);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '    ');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 4]]);
+        });
+        it('should insert space characters (TAB by command)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 'tab'
@@ -1344,12 +1358,84 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             let line = textEditor.document.lineAt(3).text;
+            assert.strictEqual(0 < line.length, true);
             assert.strictEqual(Array.from(line).every(ch => ch === ' ' || ch === '\t'), true);
             assert.deepStrictEqual(selectionsAsArray(), [[3, line.length]]);
         });
-        // TODO: add tests for cases with multi-cursor
+        it('should insert space characters at middle of a line (TAB by command)', async () => {
+            await resetCursor(6, 2);
+            await recordThroughExecution([
+                'tab'
+            ]);
+
+            await resetCursor(8, 2);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            let line = textEditor.document.lineAt(8).text;
+            assert.strictEqual(5 < line.length, true);
+            assert.strictEqual(Array.from(line.slice(2, -3)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, line.length - 3]]);
+        });
+        it('should insert space characters (multi-cursor)', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0], [3, 0, 3, 0]]);
+            await recordThroughExecution([
+                ['type', { text: ' ' }],
+                ['type', { text: ' ' }],
+                ['type', { text: ' ' }]
+            ]);
+
+            await selectRanges([[4, 0, 4, 0], [5, 2, 5, 2], [6, 2, 6, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '   ');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ab   cde');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'ab   cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 3], [5, 5], [6, 5]]);
+        });
+        it('should insert space characters (multi-cursor; 4TAB by edit)', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0], [3, 0, 3, 0]]);
+            await recordThroughExecution([
+                ['edit', edit => {
+                    textEditor.selections.forEach(sel => edit.insert(sel.active, '    '));
+                }, [[1, 4, 1, 4], [2, 4, 2, 4], [3, 4, 3, 4]]]
+            ]);
+
+            await selectRanges([[4, 0, 4, 0], [5, 4, 5, 4], [6, 4, 6, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    ');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'abcd    e');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd    e');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 4], [5, 8], [6, 8]]);
+        });
+        it('should insert space characters (multi-cursor; TAB by command)', async () => {
+            await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0], [3, 0, 3, 0]]);
+            await recordThroughExecution([
+                'tab'
+            ]);
+
+            await selectRanges([[4, 0, 4, 0], [5, 4, 5, 4], [6, 4, 6, 4]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            let line4 = textEditor.document.lineAt(4).text;
+            let line5 = textEditor.document.lineAt(5).text;
+            let line6 = textEditor.document.lineAt(6).text;
+            assert.strictEqual(0 < line4.length, true);
+            assert.strictEqual(5 < line5.length, true);
+            assert.strictEqual(5 < line6.length, true);
+            assert.strictEqual(Array.from(line4).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(Array.from(line5.slice(4, -1)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(Array.from(line6.slice(4, -1)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.deepStrictEqual(selectionsAsArray(), [
+                [4, line4.length],
+                [5, line5.length - 1],
+                [6, line6.length - 1]
+            ]);
+        });
         // TODO: add tests for cases with selections
-        // TODO: add tests for inserting TAB into middle of a line
     });
     describe('type (Enter)', () => {
         beforeEach(async () => {
