@@ -1263,6 +1263,21 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(pos.character, 2);
             assert.deepStrictEqual(selectionsAsArray(), [[8, 3]]);
         });
+        it('should work if current selection range is not empty', async () => {
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(7, 9));
+            await selectRange(2, 3, 4, 8);
+            await recordThroughExecution(['vz.cursorLastPosition']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.cursorLastPosition']);
+
+            cursorHandler.setMarkedPosition(textEditor, new vscode.Position(8, 5));
+            await selectRange(1, 2, 3, 7);
+            await kb_macro.replay(textEditor);
+
+            let pos = cursorHandler.getMarkedPosition(textEditor);
+            assert.strictEqual(pos.line, 3);
+            assert.strictEqual(pos.character, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2, 8, 5]]);
+        });
     });
     describe('type', () => {
         beforeEach(async () => {
