@@ -15,6 +15,7 @@ function activate(context) {
     const searchHandler = search_commands.getInstance();
     const kbMacroHandler = keyboard_macro.getInstance();
     const modeIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 90);
+    const macroModeIndicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 91);
 
     editHandler.registerCommands(context);
     cursorHandler.registerCommands(context);
@@ -35,9 +36,12 @@ function activate(context) {
 
     kbMacroHandler.onStartRecording(function() {
         vscode.commands.executeCommand('setContext', 'vz.keyboardMacroRecording', true);
+        macroModeIndicator.text = "[M]";
+        macroModeIndicator.show();
     });
     kbMacroHandler.onStopRecording(function() {
         vscode.commands.executeCommand('setContext', 'vz.keyboardMacroRecording', false);
+        macroModeIndicator.hide();
     });
 
     if (vscode.window.activeTextEditor) {

@@ -31,7 +31,7 @@ const KeyboardMacro = function(modeHandler) {
             if (onStartRecording) {
                 onStartRecording();
             }
-            vscode.window.setStatusBarMessage('Recording has been started.', 5000);
+            vscode.window.setStatusBarMessage('Recording started!', 3000);
             // console.log('recording started');
         }
     };
@@ -43,7 +43,7 @@ const KeyboardMacro = function(modeHandler) {
             if (onStopRecording) {
                 onStopRecording();
             }
-            vscode.window.setStatusBarMessage('Canceled recording.', 3000);
+            vscode.window.setStatusBarMessage('Canceled.', 3000);
             // console.log('recording canceled');
         }
     };
@@ -54,7 +54,7 @@ const KeyboardMacro = function(modeHandler) {
             if (onStopRecording) {
                 onStopRecording();
             }
-            vscode.window.setStatusBarMessage('Completed recording!', 5000);
+            vscode.window.setStatusBarMessage('Finished!', 3000);
             // console.log('recording finished');
         }
     };
