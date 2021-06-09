@@ -1918,6 +1918,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+            await sleep(60);
         });
         it('should insert some text (IME) (record with single-cursor, replay with multi-cursor)', async () => {
             await resetCursor(1, 0);
@@ -1937,6 +1938,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1], [6, 1]]);
+            await sleep(60);
         });
         it('should insert some text (IME) (record with multi-cursor, replay with single-cursor)', async () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
@@ -1957,6 +1959,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+            await sleep(60);
         });
     });
     describe('type + bracket completion', () => {
