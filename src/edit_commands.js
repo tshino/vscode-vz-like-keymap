@@ -190,11 +190,14 @@ const EditHandler = function(modeHandler) {
         return textStack.length;
     };
     let reentryGuard = null;
+    const REENTRY_CUTANDPUSH = 'cutAndPush';
+    const REENTRY_COPYANDPUSH = 'copyAndPush';
+    const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
-        if (reentryGuard === 'cutAndPush') {
+        if (reentryGuard === REENTRY_CUTANDPUSH) {
             return;
         }
-        reentryGuard = 'cutAndPush';
+        reentryGuard = REENTRY_CUTANDPUSH;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -223,10 +226,10 @@ const EditHandler = function(modeHandler) {
         await cutAndPushImpl(textEditor, useTextStack);
     };
     const copyAndPushImpl = async function(textEditor, useTextStack = true) {
-        if (reentryGuard === 'copyAndPush') {
+        if (reentryGuard === REENTRY_COPYANDPUSH) {
             return;
         }
-        reentryGuard = 'copyAndPush';
+        reentryGuard = REENTRY_COPYANDPUSH;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -326,10 +329,10 @@ const EditHandler = function(modeHandler) {
         textEditor.selections = [new vscode.Selection(newPos, newPos)];
     };
     const popAndPasteImpl = async function(textEditor, withoutPop = false) {
-        if (reentryGuard === 'popAndPaste') {
+        if (reentryGuard === REENTRY_POPANDPASTE) {
             return;
         }
-        reentryGuard = 'popAndPaste';
+        reentryGuard = REENTRY_POPANDPASTE;
         let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
         if (isBoxMode) {
             await pasteBoxText(textEditor, text);
@@ -705,9 +708,7 @@ const EditHandler = function(modeHandler) {
         clearTextStack, // for testing purpose
         getTextStackLength, // for testing purpose
         cutAndPushImpl,
-        cutAndPush,
         copyAndPushImpl,
-        copyAndPush,
         peekTextStack,
         popTextStack,
         pasteLines,
