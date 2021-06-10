@@ -1125,15 +1125,15 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should pop a text from the text stack and paste it', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
+            await selectRange(1, 1, 1, 9);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
+            await resetCursor(1, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
         });
         it('should prevent reentry', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 1, 1, 1) ];
+            await resetCursor(1, 1);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
@@ -1143,37 +1143,37 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
         it('should retain the text stack (paste)', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
+            await selectRange(1, 1, 1, 9);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
+            await resetCursor(1, 2);
             await editHandler.paste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '23456789');
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
         });
         it('should paste a single text into each position of multiple cursors', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 0, 2, 5) ];
+            await selectRange(2, 0, 2, 5);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [
-                new vscode.Selection(0, 3, 0, 3),
-                new vscode.Selection(1, 3, 1, 3)
-            ];
+            await selectRanges([
+                [0, 3, 0, 3],
+                [1, 3, 1, 3]
+            ]);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(0).text, '123abcde4567890');
             assert.strictEqual(textEditor.document.lineAt(1).text, '123abcde4567890');
         });
         it('should insert a single line if the text is from line mode cut or copy', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
+            await resetCursor(3, 2);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            await resetCursor(2, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
         });
         it('should repeat inserting a single line (paste)', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
+            await resetCursor(3, 2);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            await resetCursor(2, 2);
             assert.strictEqual(textEditor.document.lineCount, 6);
             await editHandler.paste(textEditor);
             await editHandler.paste(textEditor);
@@ -1185,7 +1185,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(5).text, 'abcde');
         });
         it('should insert multiple lines that are from multiple cuts', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
+            await resetCursor(2, 2);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
@@ -1198,42 +1198,37 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
         });
         it('should insert multiple lines of inline text into at multiple cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(2, 0, 2, 3),
-                new vscode.Selection(3, 0, 3, 3)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [2, 0, 2, 3],
+                [3, 0, 3, 3]
+            ]);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [
-                new vscode.Selection(2, 2, 2, 2),
-                new vscode.Selection(3, 2, 3, 2)
-            ];
+            await selectRanges([
+                [2, 2, 2, 2],
+                [3, 2, 3, 2]
+            ]);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
         });
         it('should insert multiple lines of inline text into lines below the cursor', async () => {
-            textEditor.selections = [
-                new vscode.Selection(2, 0, 2, 3),
-                new vscode.Selection(3, 0, 3, 3)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [2, 0, 2, 3],
+                [3, 0, 3, 3]
+            ]);
             await editHandler.cutAndPushImpl(textEditor);
-            textEditor.selections = [
-                new vscode.Selection(2, 2, 2, 2)
-            ];
+            await resetCursor(2, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
         });
         it('should repeat inserting multiple lines of inline text (paste)', async () => {
-            textEditor.selections = [
-                new vscode.Selection(2, 0, 2, 3),
-                new vscode.Selection(3, 0, 3, 3)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [2, 0, 2, 3],
+                [3, 0, 3, 3]
+            ]);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.paste(textEditor);
             await editHandler.paste(textEditor);
