@@ -344,8 +344,7 @@ const EditHandler = function(modeHandler) {
         reentryGuard = null;
     };
     const popAndPaste = async function(textEditor, _edit) {
-        const enableTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
-        await popAndPasteImpl(textEditor, enableTextStack ? false : true);
+        await popAndPasteImpl(textEditor, false);
     };
     const paste = async function(textEditor, _edit) {
         await popAndPasteImpl(textEditor, true);
@@ -714,7 +713,7 @@ const EditHandler = function(modeHandler) {
         pasteLines,
         pasteInlineText,
         pasteBoxText,
-        popAndPasteImpl,
+        popAndPaste,
         paste,
         clearStack,
         deleteLeft,

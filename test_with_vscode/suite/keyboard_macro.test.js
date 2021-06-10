@@ -2221,8 +2221,8 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '');
 
-            await editHandler.popAndPasteImpl(textEditor, false);
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
         });
     });

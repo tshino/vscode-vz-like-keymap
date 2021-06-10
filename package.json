@@ -624,7 +624,12 @@
             {
                 "key": "ctrl+j",
                 "command": "vz.clipboardPopAndPaste",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && config.vzKeymap.textStack"
+            },
+            {
+                "key": "ctrl+j",
+                "command": "vz.clipboardPaste",
+                "when": "editorTextFocus && !editorReadonly && !config.vzKeymap.textStack"
             },
             {
                 "key": "ctrl+k ctrl+c",

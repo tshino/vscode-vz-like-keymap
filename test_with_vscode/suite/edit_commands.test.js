@@ -1105,7 +1105,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
     });
-    describe('popAndPasteImpl, paste', () => {
+    describe('popAndPaste, paste', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1128,7 +1128,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
             await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
         });
@@ -1137,8 +1137,8 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
-            let p1 = editHandler.popAndPasteImpl(textEditor, false);
-            let p2 = editHandler.popAndPasteImpl(textEditor, false);
+            let p1 = editHandler.popAndPaste(textEditor);
+            let p2 = editHandler.popAndPaste(textEditor);
             await Promise.all([p1, p2]);
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
@@ -1157,7 +1157,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(0, 3, 0, 3),
                 new vscode.Selection(1, 3, 1, 3)
             ];
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(0).text, '123abcde4567890');
             assert.strictEqual(textEditor.document.lineAt(1).text, '123abcde4567890');
@@ -1166,7 +1166,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
             await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
         });
@@ -1189,9 +1189,9 @@ describe('EditHandler', () => {
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
             await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.popAndPasteImpl(textEditor, false);
-            await editHandler.popAndPasteImpl(textEditor, false);
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
+            await editHandler.popAndPaste(textEditor);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
@@ -1208,7 +1208,7 @@ describe('EditHandler', () => {
                 new vscode.Selection(2, 2, 2, 2),
                 new vscode.Selection(3, 2, 3, 2)
             ];
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
@@ -1223,7 +1223,7 @@ describe('EditHandler', () => {
             textEditor.selections = [
                 new vscode.Selection(2, 2, 2, 2)
             ];
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
@@ -1272,8 +1272,8 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '');
 
-            await editHandler.popAndPasteImpl(textEditor, false);
-            await editHandler.popAndPasteImpl(textEditor, false);
+            await editHandler.popAndPaste(textEditor);
+            await editHandler.popAndPaste(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
         });
     });
