@@ -1105,7 +1105,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
     });
-    describe('popAndPasteImpl', () => {
+    describe('popAndPasteImpl, paste', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1142,11 +1142,11 @@ describe('EditHandler', () => {
             await Promise.all([p1, p2]);
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
-        it('should retain the text stack if the second argument is true', async () => {
+        it('should retain the text stack (paste)', async () => {
             textEditor.selections = [ new vscode.Selection(1, 1, 1, 9) ];
             await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(1, 2, 1, 2) ];
-            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.paste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '23456789');
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
         });
@@ -1170,14 +1170,14 @@ describe('EditHandler', () => {
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
         });
-        it('should repeat inserting a single line', async () => {
+        it('should repeat inserting a single line (paste)', async () => {
             textEditor.selections = [ new vscode.Selection(3, 2, 3, 2) ];
             await editHandler.cutAndPushImpl(textEditor);
             textEditor.selections = [ new vscode.Selection(2, 2, 2, 2) ];
             assert.strictEqual(textEditor.document.lineCount, 6);
-            await editHandler.popAndPasteImpl(textEditor, true);
-            await editHandler.popAndPasteImpl(textEditor, true);
-            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.paste(textEditor);
+            await editHandler.paste(textEditor);
+            await editHandler.paste(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 9);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
@@ -1228,16 +1228,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
         });
-        it('should repeat inserting multiple lines of inline text', async () => {
+        it('should repeat inserting multiple lines of inline text (paste)', async () => {
             textEditor.selections = [
                 new vscode.Selection(2, 0, 2, 3),
                 new vscode.Selection(3, 0, 3, 3)
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.popAndPasteImpl(textEditor, true);
-            await editHandler.popAndPasteImpl(textEditor, true);
-            await editHandler.popAndPasteImpl(textEditor, true);
+            await editHandler.paste(textEditor);
+            await editHandler.paste(textEditor);
+            await editHandler.paste(textEditor);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcabcabcde');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghfghfghij');
         });

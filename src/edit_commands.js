@@ -715,6 +715,7 @@ const EditHandler = function(modeHandler) {
         pasteInlineText,
         pasteBoxText,
         popAndPasteImpl,
+        paste,
         clearStack,
         deleteLeft,
         deleteRight,
