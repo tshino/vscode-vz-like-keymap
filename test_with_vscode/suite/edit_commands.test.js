@@ -903,7 +903,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should insert a single line into the document', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!\n');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -912,7 +912,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
         });
         it('should insert multiple lines into the document', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!\nHave a nice day!\n');
             assert.strictEqual(textEditor.document.lineCount, 9);
@@ -922,7 +922,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
         });
         it('should insert a single line even if it has no new line', async () => {
-            textEditor.selections = [ new vscode.Selection(5, 3, 5, 3) ];
+            await resetCursor(5, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -931,7 +931,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 3]]);
         });
         it('should insert a single line even if both the text and the current line of the document have no new line', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 3, 6, 3) ];
+            await resetCursor(6, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteLines(textEditor, 'Hello, world!');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -943,7 +943,7 @@ describe('EditHandler', () => {
             await textEditor.edit((edit) => {
                 edit.insert(new vscode.Position(6, 5), '\n');
             });
-            textEditor.selections = [ new vscode.Selection(7, 0, 7, 0) ];
+            await resetCursor(7, 0);
             assert.strictEqual(textEditor.document.lineCount, 8);
             await editHandler.pasteLines(textEditor, 'Hello, world!');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -971,7 +971,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should insert a text inline', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteInlineText('Hello, world!');
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -980,7 +980,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should replace the current selection range with a text', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 1, 2, 4) ];
+            await selectRange(2, 1, 2, 4);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteInlineText('Hello, world!');
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -989,7 +989,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should replace multiple lines of current selection range with a text', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 0, 4, 0) ];
+            await selectRange(2, 0, 4, 0);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteInlineText('Hello, world!\n');
             assert.strictEqual(textEditor.document.lineCount, 6);
@@ -1000,7 +1000,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should insert a text inline even if it contains new lines', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteInlineText('Hello,\nworld!');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -1010,9 +1010,10 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should insert a text into each position of current cursors', async () => {
-            textEditor.selections = [
-                new vscode.Selection(2, 1, 2, 1), new vscode.Selection(3, 1, 3, 1),
-            ];
+            await selectRanges([
+                [2, 1, 2, 1],
+                [3, 1, 3, 1]
+            ])
             await editHandler.pasteInlineText('_____');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'a_____bcde');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'f_____ghij');
@@ -1040,7 +1041,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
         });
         it('should insert multiple lines of text into existing lines', async () => {
-            textEditor.selections = [ new vscode.Selection(1, 5, 1, 5) ];
+            await resetCursor(1, 5);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -1051,7 +1052,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should insert additional spaces to align the position to paste lines', async () => {
-            textEditor.selections = [ new vscode.Selection(3, 5, 3, 5) ];
+            await resetCursor(3, 5);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -1062,7 +1063,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should extend the document when inserting a text at near the end of doc', async () => {
-            textEditor.selections = [ new vscode.Selection(5, 0, 5, 0) ];
+            await resetCursor(5, 0);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
             assert.strictEqual(textEditor.document.lineCount, 8);
@@ -1073,7 +1074,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should extend the document when inserting a text at near the end of doc', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
+            await resetCursor(6, 0);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.\n');
             assert.strictEqual(textEditor.document.lineCount, 9);
@@ -1084,7 +1085,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should ignore the new line character at the end of the pasting text', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 0, 6, 0) ];
+            await resetCursor(6, 0);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
             assert.strictEqual(textEditor.document.lineCount, 9);
@@ -1095,7 +1096,7 @@ describe('EditHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
         });
         it('should insert additional lines and spaces to paste lines of text', async () => {
-            textEditor.selections = [ new vscode.Selection(6, 5, 6, 5) ];
+            await resetCursor(6, 5);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
             assert.strictEqual(textEditor.document.lineCount, 9);
