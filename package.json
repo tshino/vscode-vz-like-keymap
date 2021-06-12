@@ -608,13 +608,23 @@
             },
             {
                 "key": "ctrl+k ctrl+k",
+                "command": "vz.clipboardCopyAndPush",
+                "when": "editorTextFocus && config.vzKeymap.textStack"
+            },
+            {
+                "key": "ctrl+k k",
+                "command": "vz.clipboardCopyAndPush",
+                "when": "editorTextFocus && config.vzKeymap.textStack"
+            },
+            {
+                "key": "ctrl+k ctrl+k",
                 "command": "vz.clipboardCopy",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !config.vzKeymap.textStack"
             },
             {
                 "key": "ctrl+k k",
                 "command": "vz.clipboardCopy",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !config.vzKeymap.textStack"
             },
             {
                 "key": "ctrl+j",

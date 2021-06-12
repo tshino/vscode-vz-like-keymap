@@ -516,7 +516,7 @@ describe('EditHandler', () => {
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(4), true);
         });
     });
-    describe('copyAndPushImpl', () => {
+    describe('clipboardCopyAndPush', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -537,7 +537,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(0).text, '1234567890');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
@@ -548,8 +548,8 @@ describe('EditHandler', () => {
         it('should prevent reentry', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
-            let p1 = editHandler.copyAndPushImpl(textEditor);
-            let p2 = editHandler.copyAndPushImpl(textEditor);
+            let p1 = editHandler.clipboardCopyAndPush(textEditor);
+            let p2 = editHandler.clipboardCopyAndPush(textEditor);
             await Promise.all([p1, p2]);
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
@@ -558,7 +558,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
@@ -571,7 +571,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
@@ -587,7 +587,7 @@ describe('EditHandler', () => {
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
@@ -605,7 +605,7 @@ describe('EditHandler', () => {
             ];
             while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
@@ -616,6 +616,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'fghij\n\n12345\n');
         });
     });
+    // todo: add tests for clipboardCopy (used if Text Stack is disabled)
     describe('peekTextStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
@@ -636,7 +637,7 @@ describe('EditHandler', () => {
         it('should read the last copied/cut part of document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, '4567890\n1234567');
             assert.strictEqual(isLineMode, false);
@@ -650,7 +651,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'abcde\n');
             assert.strictEqual(isLineMode, true);
@@ -661,7 +662,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'abcde');
             assert.strictEqual(isLineMode, true);
@@ -675,7 +676,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'ghi\n\n234\n');
             assert.strictEqual(isLineMode, false);
@@ -689,7 +690,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'fghij\n\n12345\n');
             assert.strictEqual(isLineMode, true);
@@ -698,7 +699,7 @@ describe('EditHandler', () => {
         it('should return clipboard text if it does not match the last copied/cut text', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('unknown text');
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'unknown text');
@@ -713,7 +714,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('diff\nerent\ntext');
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, 'diff\nerent\ntext');
@@ -766,7 +767,7 @@ describe('EditHandler', () => {
         it('should read the last copied/cut part of document', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, '4567890\n1234567');
             assert.strictEqual(isLineMode, false);
@@ -781,7 +782,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'abcde\n');
             assert.strictEqual(isLineMode, true);
@@ -797,7 +798,7 @@ describe('EditHandler', () => {
             mode.initialize(textEditor);
             mode.startSelection(textEditor, true); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'abcde');
             assert.strictEqual(isLineMode, true);
@@ -816,7 +817,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'ghi\n\n234\n');
             assert.strictEqual(isLineMode, false);
@@ -835,7 +836,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'fghij\n\n12345\n');
             assert.strictEqual(isLineMode, true);
@@ -849,7 +850,7 @@ describe('EditHandler', () => {
         it('should return clipboard text if it does not match the last copied/cut text', async () => {
             textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
             mode.initialize(textEditor);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('unknown text');
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'unknown text');
@@ -869,7 +870,7 @@ describe('EditHandler', () => {
             ];
             mode.initialize(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.copyAndPushImpl(textEditor);
+            await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('diff\nerent\ntext');
             let [text, isLineMode, isBoxMode] = await editHandler.popTextStack();
             assert.strictEqual(text, 'diff\nerent\ntext');

@@ -233,7 +233,9 @@ const EditHandler = function(modeHandler) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
-            textStack.length = 0;
+            if (0 < textStack.length) {
+                textStack.length = textStack.length - 1;
+            }
         }
         textStack.push({
             text: text,
@@ -244,8 +246,12 @@ const EditHandler = function(modeHandler) {
         await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
     };
-    const copyAndPush = async function(textEditor, _edit) {
-        const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+    const clipboardCopyAndPush = async function(textEditor, _edit) {
+        const useTextStack = true;
+        await copyAndPushImpl(textEditor, useTextStack);
+    };
+    const clipboardCopy = async function(textEditor, _edit) {
+        const useTextStack = false;
         await copyAndPushImpl(textEditor, useTextStack);
     };
     const peekTextStack = async function() {
@@ -678,7 +684,8 @@ const EditHandler = function(modeHandler) {
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
-        registerTextEditorCommand(context, 'clipboardCopy', copyAndPush);
+        registerTextEditorCommand(context, 'clipboardCopyAndPush', clipboardCopyAndPush);
+        registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', paste);
         registerTextEditorCommandReplayable(context, 'clipboardClearStack', clearStack);
@@ -707,7 +714,8 @@ const EditHandler = function(modeHandler) {
         clearTextStack, // for testing purpose
         getTextStackLength, // for testing purpose
         cutAndPushImpl,
-        copyAndPushImpl,
+        clipboardCopyAndPush,
+        clipboardCopy,
         peekTextStack,
         popTextStack,
         pasteLines,

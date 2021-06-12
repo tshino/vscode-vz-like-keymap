@@ -10,8 +10,11 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - The 'when' clause of Escape to cancel box-selection mode.
   - The behavior of Undelete (Utrl+U) of Delete left half of line with non-empty selection range.
 - Changed:
-  - The behavior of command `vz.clipboardPopAndPaste` to always use the Text Stack regardless the setting `vzKeymap.textStack`.
-    If the value of the setting is false, when user presses Ctrl+J another command `vz.clipboardPaste` will be invoked.
+  - Arranged the behavior of clipboard commands slightly as described below:
+    - `vz.clipboardCopyAndPush` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
+    - `vz.clipboardCopy` ... does copy the text to the clipboard and also keep it at top of the Text Stack.
+    - `vz.clipboardPopAndPaste` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
+    - `vz.clipboardPaste` ... does only paste the text from the clipboard.
 
 
 ### [0.15.0] - 2021-02-18
