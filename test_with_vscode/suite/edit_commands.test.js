@@ -534,8 +534,7 @@ describe('EditHandler', () => {
             editHandler.clearTextStack();
         });
         it('should copy selected part of document', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -546,8 +545,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
         it('should prevent reentry', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCopyAndPush(textEditor);
             let p2 = editHandler.clipboardCopyAndPush(textEditor);
             await Promise.all([p1, p2]);
@@ -555,8 +553,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
         it('should copy an entire line when selection is empty', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -567,9 +564,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'abcde\n');
         });
         it('should copy the line when in box-selection mode', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
-            mode.startSelection(textEditor, true); // box-selection mode
+            await selectRanges([[2, 3, 2, 3]]); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -580,12 +575,11 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'abcde');
         });
         it('should copy multiple selection ranges when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 1, 3, 4),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 1, 5, 4)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [3, 1, 3, 4],
+                [4, 0, 4, 0],
+                [5, 1, 5, 4]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -598,12 +592,11 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'ghi\n\n234\n');
         });
         it('should copy multiple lines when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 2, 3, 2),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 2, 5, 2)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -635,8 +628,7 @@ describe('EditHandler', () => {
             editHandler.clearTextStack();
         });
         it('should read the last copied/cut part of document', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
             assert.strictEqual(text, '4567890\n1234567');
@@ -648,8 +640,7 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, false);
         });
         it('should read the last copied/cut line with empty selection', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
@@ -658,9 +649,7 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, false);
         });
         it('should read the last copied/cut line in box-selection mode', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
-            mode.startSelection(textEditor, true); // box-selection mode
+            await selectRanges([[2, 3, 2, 3]]); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
@@ -669,12 +658,11 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, true);
         });
         it('should copy multiple selection ranges when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 1, 3, 4),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 1, 5, 4)
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 1, 3, 4],
+                [4, 0, 4, 0],
+                [5, 1, 5, 4]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
@@ -683,12 +671,11 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, true);
         });
         it('should copy multiple lines when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 2, 3, 2),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 2, 5, 2)
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
@@ -697,8 +684,7 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, true);
         });
         it('should return clipboard text if it does not match the last copied/cut text', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('unknown text');
             let [text, isLineMode, isBoxMode] = await editHandler.peekTextStack();
@@ -707,12 +693,11 @@ describe('EditHandler', () => {
             assert.strictEqual(isBoxMode, false);
         });
         it('should return clipboard text if it does not match the last copied/cut text (multi)', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 2, 3, 2),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 2, 5, 2)
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCopyAndPush(textEditor);
             await vscode.env.clipboard.writeText('diff\nerent\ntext');
