@@ -98,12 +98,18 @@ const testUtils = (function() {
     };
     const selectRanges = async (textEditor, mode, ranges) => {
         await resetCursor(textEditor, mode, ranges[0][0], ranges[0][1]);
-        mode.expectSync();
-        textEditor.selections = ranges.map(
-            r => new vscode.Selection(r[0], r[1], r[2], r[3])
-        );
-        await revealCursor(textEditor);
-        await waitForSynchronized(mode);
+        if (!(
+            1 === ranges.length &&
+            ranges[0][0] === ranges[0][2] &&
+            ranges[0][1] === ranges[0][3]
+        )) {
+            mode.expectSync();
+            textEditor.selections = ranges.map(
+                r => new vscode.Selection(r[0], r[1], r[2], r[3])
+            );
+            await revealCursor(textEditor);
+            await waitForSynchronized(mode);
+        }
         mode.resetSelection(textEditor);
         mode.startSelection(textEditor, true);
     };
