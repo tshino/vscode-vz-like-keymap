@@ -603,8 +603,13 @@
             },
             {
                 "key": "ctrl+y",
+                "command": "vz.clipboardCutAndPush",
+                "when": "editorTextFocus && !editorReadonly && config.vzKeymap.textStack"
+            },
+            {
+                "key": "ctrl+y",
                 "command": "vz.clipboardCut",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && !config.vzKeymap.textStack"
             },
             {
                 "key": "ctrl+k ctrl+k",

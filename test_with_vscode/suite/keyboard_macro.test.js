@@ -2211,8 +2211,8 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await resetCursor(1, 1);
-            await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
 
             await kb_macro.replay(textEditor);

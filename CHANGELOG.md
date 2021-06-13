@@ -11,6 +11,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - The behavior of Undelete (Utrl+U) of Delete left half of line with non-empty selection range.
 - Changed:
   - Arranged the behavior of clipboard commands slightly as described below:
+    - `vz.clipboardCutAndPush` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
+    - `vz.clipboardCut` ... does cut the text to the clipboard and also keep it at top of the Text Stack.
     - `vz.clipboardCopyAndPush` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
     - `vz.clipboardCopy` ... does copy the text to the clipboard and also keep it at top of the Text Stack.
     - `vz.clipboardPopAndPaste` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.

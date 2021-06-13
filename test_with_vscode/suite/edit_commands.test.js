@@ -388,7 +388,7 @@ describe('EditHandler', () => {
             assert.strictEqual(isLineMode, true);
         });
     });
-    describe('cutAndPushImpl', () => {
+    describe('clipboardCutAndPush', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -408,7 +408,7 @@ describe('EditHandler', () => {
         it('should delete selected part of document', async () => {
             await selectRange(0, 3, 1, 7);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 6);
             assert.strictEqual(textEditor.document.lineAt(0).text, '123890');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
@@ -418,8 +418,8 @@ describe('EditHandler', () => {
         });
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
-            let p1 = editHandler.cutAndPushImpl(textEditor);
-            let p2 = editHandler.cutAndPushImpl(textEditor);
+            let p1 = editHandler.clipboardCutAndPush(textEditor);
+            let p2 = editHandler.clipboardCutAndPush(textEditor);
             await Promise.all([p1, p2]);
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
@@ -427,7 +427,7 @@ describe('EditHandler', () => {
         it('should delete an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 6);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
@@ -438,7 +438,7 @@ describe('EditHandler', () => {
         it('should delete the line but leave empty line there when in box-selection mode', async () => {
             await selectRanges([[2, 3, 2, 3]]); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(2).text, '');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
@@ -453,7 +453,7 @@ describe('EditHandler', () => {
                 [5, 1, 5, 4]
             ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fj');
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
@@ -470,7 +470,7 @@ describe('EditHandler', () => {
                 [5, 2, 5, 2]
             ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.strictEqual(textEditor.document.lineAt(3).text, '');
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
@@ -491,7 +491,7 @@ describe('EditHandler', () => {
             textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
             while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
             assert.strictEqual(textEditor.document.lineCount, 107);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(4), true);
@@ -1086,7 +1086,7 @@ describe('EditHandler', () => {
         });
         it('should pop a text from the text stack and paste it', async () => {
             await selectRange(1, 1, 1, 9);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await resetCursor(1, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
@@ -1095,8 +1095,8 @@ describe('EditHandler', () => {
         it('should prevent reentry', async () => {
             await resetCursor(1, 1);
             assert.strictEqual(textEditor.document.lineCount, 7);
-            await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             let p1 = editHandler.popAndPaste(textEditor);
             let p2 = editHandler.popAndPaste(textEditor);
             await Promise.all([p1, p2]);
@@ -1104,7 +1104,7 @@ describe('EditHandler', () => {
         });
         it('should retain the text stack (paste)', async () => {
             await selectRange(1, 1, 1, 9);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await resetCursor(1, 2);
             await editHandler.paste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '23456789');
@@ -1112,7 +1112,7 @@ describe('EditHandler', () => {
         });
         it('should paste a single text into each position of multiple cursors', async () => {
             await selectRange(2, 0, 2, 5);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await selectRanges([
                 [0, 3, 0, 3],
                 [1, 3, 1, 3]
@@ -1124,7 +1124,7 @@ describe('EditHandler', () => {
         });
         it('should insert a single line if the text is from line mode cut or copy', async () => {
             await resetCursor(3, 2);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await resetCursor(2, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
@@ -1132,7 +1132,7 @@ describe('EditHandler', () => {
         });
         it('should repeat inserting a single line (paste)', async () => {
             await resetCursor(3, 2);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await resetCursor(2, 2);
             assert.strictEqual(textEditor.document.lineCount, 6);
             await editHandler.paste(textEditor);
@@ -1146,9 +1146,9 @@ describe('EditHandler', () => {
         });
         it('should insert multiple lines that are from multiple cuts', async () => {
             await resetCursor(2, 2);
-            await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.popAndPaste(textEditor);
             await editHandler.popAndPaste(textEditor);
             await editHandler.popAndPaste(textEditor);
@@ -1162,7 +1162,7 @@ describe('EditHandler', () => {
                 [2, 0, 2, 3],
                 [3, 0, 3, 3]
             ]);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await selectRanges([
                 [2, 2, 2, 2],
                 [3, 2, 3, 2]
@@ -1177,7 +1177,7 @@ describe('EditHandler', () => {
                 [2, 0, 2, 3],
                 [3, 0, 3, 3]
             ]);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await resetCursor(2, 2);
             await editHandler.popAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
@@ -1189,7 +1189,7 @@ describe('EditHandler', () => {
                 [2, 0, 2, 3],
                 [3, 0, 3, 3]
             ]);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.paste(textEditor);
             await editHandler.paste(textEditor);
             await editHandler.paste(textEditor);
@@ -1217,8 +1217,8 @@ describe('EditHandler', () => {
         it('should clear text stack and clipboard', async () => {
             await resetCursor(1, 1);
 
-            await editHandler.cutAndPushImpl(textEditor);
-            await editHandler.cutAndPushImpl(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
 
             await editHandler.clearStack(textEditor);

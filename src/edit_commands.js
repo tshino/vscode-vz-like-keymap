@@ -201,7 +201,9 @@ const EditHandler = function(modeHandler) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
-            textStack.length = 0;
+            if (0 < textStack.length) {
+                textStack.length = textStack.length - 1;
+            }
         }
         let lastCursorPos = textEditor.selections[0].active;
         let isBoxMode = mode.inBoxSelection();
@@ -221,8 +223,12 @@ const EditHandler = function(modeHandler) {
         await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
     };
-    const cutAndPush = async function(textEditor, _edit) {
-        const useTextStack = vscode.workspace.getConfiguration('vzKeymap').get('textStack');
+    const clipboardCutAndPush = async function(textEditor, _edit) {
+        const useTextStack = true;
+        await cutAndPushImpl(textEditor, useTextStack);
+    };
+    const clipboardCut = async function(textEditor, _edit) {
+        const useTextStack = false;
         await cutAndPushImpl(textEditor, useTextStack);
     };
     const copyAndPushImpl = async function(textEditor, useTextStack = true) {
@@ -683,7 +689,8 @@ const EditHandler = function(modeHandler) {
     };
     const registerCommands = function(context) {
         setupListeners(context);
-        registerTextEditorCommand(context, 'clipboardCut', cutAndPush);
+        registerTextEditorCommand(context, 'clipboardCutAndPush', clipboardCutAndPush);
+        registerTextEditorCommand(context, 'clipboardCut', clipboardCut);
         registerTextEditorCommand(context, 'clipboardCopyAndPush', clipboardCopyAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
@@ -713,7 +720,8 @@ const EditHandler = function(modeHandler) {
         makeCutCopyRanges,
         clearTextStack, // for testing purpose
         getTextStackLength, // for testing purpose
-        cutAndPushImpl,
+        clipboardCutAndPush,
+        clipboardCut,
         clipboardCopyAndPush,
         clipboardCopy,
         peekTextStack,
