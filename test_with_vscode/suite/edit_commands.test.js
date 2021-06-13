@@ -276,31 +276,28 @@ describe('EditHandler', () => {
                 vscode.EndOfLine.LF
             );
         });
-        it('should make a range array corresponding to current selection (single)', () => {
+        it('should make a range array corresponding to current selection (single)', async () => {
             {
-                textEditor.selections = [ new vscode.Selection(0, 0, 1, 0) ];
-                mode.initialize(textEditor);
+                await selectRange(0, 0, 1, 0);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 1);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(0, 0, 1, 0)), true);
                 assert.strictEqual(isLineMode, false);
             }
             {
-                textEditor.selections = [ new vscode.Selection(2, 3, 0, 5) ];
-                mode.initialize(textEditor);
+                await selectRange(2, 3, 0, 5);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 1);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(0, 5, 2, 3)), true);
                 assert.strictEqual(isLineMode, false);
             }
         });
-        it('should make a range array corresponding to current selection (multiple)', () => {
+        it('should make a range array corresponding to current selection (multiple)', async () => {
             {
-                textEditor.selections = [
-                    new vscode.Selection(0, 0, 0, 7),
-                    new vscode.Selection(1, 0, 1, 7)
-                ];
-                mode.initialize(textEditor);
+                await selectRanges([
+                    [0, 0, 0, 7],
+                    [1, 0, 1, 7]
+                ]);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 2);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(0, 0, 0, 7)), true);
@@ -308,14 +305,13 @@ describe('EditHandler', () => {
                 assert.strictEqual(isLineMode, false);
             }
         });
-        it('should retain ranges even if the selections contain empty ranges', () => {
+        it('should retain ranges even if the selections contain empty ranges', async () => {
             {
-                textEditor.selections = [
-                    new vscode.Selection(0, 5, 0, 8),
-                    new vscode.Selection(1, 5, 1, 8),
-                    new vscode.Selection(2, 5, 2, 5)
-                ];
-                mode.initialize(textEditor);
+                await selectRanges([
+                    [0, 5, 0, 8],
+                    [1, 5, 1, 8],
+                    [2, 5, 2, 5]
+                ]);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 3);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(0, 5, 0, 8)), true);
@@ -324,14 +320,13 @@ describe('EditHandler', () => {
                 assert.strictEqual(isLineMode, false);
             }
         });
-        it('should reverse the range array to make it ascending order', () => {
+        it('should reverse the range array to make it ascending order', async () => {
             {
-                textEditor.selections = [
-                    new vscode.Selection(3, 2, 3, 5),
-                    new vscode.Selection(2, 2, 2, 5),
-                    new vscode.Selection(1, 2, 1, 5)
-                ];
-                mode.initialize(textEditor);
+                await selectRanges([
+                    [3, 2, 3, 5],
+                    [2, 2, 2, 5],
+                    [1, 2, 1, 5]
+                ]);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 3);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(1, 2, 1, 5)), true);
@@ -339,12 +334,11 @@ describe('EditHandler', () => {
                 assert.strictEqual(isLineMode, false);
             }
             {
-                textEditor.selections = [
-                    new vscode.Selection(1, 8, 1, 10),
-                    new vscode.Selection(1, 0, 1, 2),
-                    new vscode.Selection(0, 0, 0, 2)
-                ];
-                mode.initialize(textEditor);
+                await selectRanges([
+                    [1, 8, 1, 10],
+                    [1, 0, 1, 2],
+                    [0, 0, 0, 2]
+                ]);
                 let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
                 assert.strictEqual(ranges.length, 3);
                 assert.strictEqual(ranges[0].isEqual(new vscode.Range(0, 0, 0, 2)), true);
@@ -352,30 +346,26 @@ describe('EditHandler', () => {
                 assert.strictEqual(isLineMode, false);
             }
         });
-        it('should make a single-line range when the selection is empty (Line mode)', () => {
-            textEditor.selections = [ new vscode.Selection(1, 4, 1, 4) ];
-            mode.initialize(textEditor);
+        it('should make a single-line range when the selection is empty (Line mode)', async () => {
+            await resetCursor(1, 4);
             let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
             assert.strictEqual(ranges.length, 1);
             assert.strictEqual(ranges[0].isEqual(new vscode.Range(1, 0, 2, 0)), true);
             assert.strictEqual(isLineMode, true);
         });
-        it('should make a single-line, but excluding new line character, range when the selection is empty and is in box-selection mode', () => {
-            textEditor.selections = [ new vscode.Selection(1, 4, 1, 4) ];
-            mode.initialize(textEditor);
-            mode.startSelection(textEditor, true); // box-selection mode
+        it('should make a single-line, but excluding new line character, range when the selection is empty and is in box-selection mode', async () => {
+            await selectRanges([[1, 4, 1, 4]]); // box-selection mode
             let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
             assert.strictEqual(ranges.length, 1);
             assert.strictEqual(ranges[0].isEqual(new vscode.Range(1, 0, 1, 10)), true);
             assert.strictEqual(isLineMode, true);
         });
-        it('should make multiple single-line, but excluding new line character, ranges when the selections are all empty', () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 3, 3, 3),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 3, 5, 3)
-            ];
-            mode.initialize(textEditor);
+        it('should make multiple single-line, but excluding new line character, ranges when the selections are all empty', async () => {
+            await selectRanges([
+                [3, 3, 3, 3],
+                [4, 0, 4, 0],
+                [5, 3, 5, 3]
+            ]);
             let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
             assert.strictEqual(ranges.length, 3);
             assert.strictEqual(ranges[0].isEqual(new vscode.Range(3, 0, 3, 5)), true);
@@ -383,14 +373,13 @@ describe('EditHandler', () => {
             assert.strictEqual(ranges[2].isEqual(new vscode.Range(5, 0, 5, 5)), true);
             assert.strictEqual(isLineMode, true);
         });
-        it('should remove duplicate lines from the resulting multiple single-line ranges', () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 3, 1, 3),
-                new vscode.Selection(1, 9, 1, 9), // can happen if the line is wrapped
-                new vscode.Selection(2, 3, 2, 3),
-                new vscode.Selection(3, 3, 3, 3)
-            ];
-            mode.initialize(textEditor);
+        it('should remove duplicate lines from the resulting multiple single-line ranges', async () => {
+            await selectRanges([
+                [1, 3, 1, 3],
+                [1, 9, 1, 9], // can happen if the line is wrapped
+                [2, 3, 2, 3],
+                [3, 3, 3, 3]
+            ]);
             let [ranges, isLineMode] = editHandler.makeCutCopyRanges(textEditor);
             assert.strictEqual(ranges.length, 3);
             assert.strictEqual(ranges[0].isEqual(new vscode.Range(1, 0, 1, 10)), true);
@@ -417,8 +406,7 @@ describe('EditHandler', () => {
             editHandler.clearTextStack();
         });
         it('should delete selected part of document', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 6);
@@ -429,8 +417,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
         it('should prevent reentry', async () => {
-            textEditor.selections = [ new vscode.Selection(0, 3, 1, 7) ];
-            mode.initialize(textEditor);
+            await selectRange(0, 3, 1, 7);
             let p1 = editHandler.cutAndPushImpl(textEditor);
             let p2 = editHandler.cutAndPushImpl(textEditor);
             await Promise.all([p1, p2]);
@@ -438,8 +425,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
         it('should delete an entire line when selection is empty', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
+            await resetCursor(2, 3);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 6);
@@ -450,9 +436,7 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'abcde\n');
         });
         it('should delete the line but leave empty line there when in box-selection mode', async () => {
-            textEditor.selections = [ new vscode.Selection(2, 3, 2, 3) ];
-            mode.initialize(textEditor);
-            mode.startSelection(textEditor, true); // box-selection mode
+            await selectRanges([[2, 3, 2, 3]]); // box-selection mode
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -463,12 +447,11 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'abcde');
         });
         it('should delete multiple selection ranges when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 1, 3, 4),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 1, 5, 4)
-            ];
-            while (await sleep(1), !mode.inBoxSelection()) {} // ensure all handlers get invoked
+            await selectRanges([
+                [3, 1, 3, 4],
+                [4, 0, 4, 0],
+                [5, 1, 5, 4]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -481,12 +464,11 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'ghi\n\n234\n');
         });
         it('should delete multiple lines and leave empty line there when in box-selection mode', async () => {
-            textEditor.selections = [
-                new vscode.Selection(3, 2, 3, 2),
-                new vscode.Selection(4, 0, 4, 0),
-                new vscode.Selection(5, 2, 5, 2)
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
+            ]);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.cutAndPushImpl(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);
@@ -505,8 +487,7 @@ describe('EditHandler', () => {
                     Array(100).fill('xxxxxyyyyyzzzzz').join('\n') + '\n'
                 );
             });
-            textEditor.selections = [ new vscode.Selection(4, 0, 104, 0) ];
-            mode.initialize(textEditor);
+            await selectRange(4, 0, 104, 0);
             textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
             while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
             assert.strictEqual(textEditor.document.lineCount, 107);
