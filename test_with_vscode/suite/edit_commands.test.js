@@ -53,46 +53,41 @@ describe('EditHandler', () => {
                 )
             );
         });
-        it('should cancel single selection range and retain cursor position', () => {
-            textEditor.selections = [ new vscode.Selection(1, 0, 1, 10) ];
-            mode.initialize(textEditor);
+        it('should cancel single selection range and retain cursor position', async () => {
+            await selectRange(1, 0, 1, 10);
             editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
 
-            textEditor.selections = [ new vscode.Selection(1, 0, 2, 5) ];
-            mode.initialize(textEditor);
+            await selectRange(1, 0, 2, 5);
             editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
-        it('should cancel multiple selection range and locate cursor at the start of the topmost selection', () => {
-            textEditor.selections = [
-                new vscode.Selection(1, 0, 1, 5),
-                new vscode.Selection(2, 0, 2, 5),
-                new vscode.Selection(3, 0, 3, 5)
-            ];
-            mode.initialize(textEditor);
+        it('should cancel multiple selection range and locate cursor at the start of the topmost selection', async () => {
+            await selectRanges([
+                [1, 0, 1, 5],
+                [2, 0, 2, 5],
+                [3, 0, 3, 5]
+            ]);
             editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
-            textEditor.selections = [
-                new vscode.Selection(3, 0, 3, 5),
-                new vscode.Selection(2, 0, 2, 5),
-                new vscode.Selection(1, 0, 1, 5)
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 0, 3, 5],
+                [2, 0, 2, 5],
+                [1, 0, 1, 5]
+            ]);
             editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
-            textEditor.selections = [
-                new vscode.Selection(3, 5, 3, 0),
-                new vscode.Selection(2, 5, 2, 0),
-                new vscode.Selection(1, 5, 1, 0),
-            ];
-            mode.initialize(textEditor);
+            await selectRanges([
+                [3, 5, 3, 0],
+                [2, 5, 2, 0],
+                [1, 5, 1, 0]
+            ]);
             editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
@@ -497,6 +492,7 @@ describe('EditHandler', () => {
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(4), true);
         });
     });
+    // todo: add tests for clipboardCut (used if Text Stack is disabled)
     describe('clipboardCopyAndPush', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
