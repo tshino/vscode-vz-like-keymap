@@ -1913,6 +1913,7 @@ describe('KeyboardMacro', () => {
                 }, [1, 1]]
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
+            await sleep(60);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
@@ -1931,6 +1932,7 @@ describe('KeyboardMacro', () => {
                 }, [1, 1]]
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
+            await sleep(60);
 
             await selectRanges([[5, 0, 5, 0], [6, 0, 6, 0]]);
             await kb_macro.replay(textEditor);
@@ -1954,6 +1956,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '愛');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
+            await sleep(60);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
