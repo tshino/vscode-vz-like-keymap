@@ -35,6 +35,7 @@ describe('KeyboardMacro', () => {
             if (typeof cmd === 'string') {
                 await vscode.commands.executeCommand(cmd);
             } else if (cmd[0] === 'edit') {
+                await sleep(60);
                 await textEditor.edit(cmd[1]);
                 await sleep(60);
                 if (typeof cmd[2][0] == 'number') {
@@ -46,6 +47,7 @@ describe('KeyboardMacro', () => {
                         r => new vscode.Selection(r[0], r[1], r[2], r[3])
                     );
                 }
+                await sleep(60);
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
                 await sleep(30);
@@ -1901,6 +1903,7 @@ describe('KeyboardMacro', () => {
                 '\n'.repeat(5) +
                 '123 \n'.repeat(5)
             );
+            mode.initialize(textEditor);
         });
         it('should insert some text (IME)', async () => {
             await resetCursor(1, 0);
@@ -1912,6 +1915,7 @@ describe('KeyboardMacro', () => {
                 }, [1, 1]]
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
+            await sleep(60);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
@@ -1930,6 +1934,7 @@ describe('KeyboardMacro', () => {
                 }, [1, 1]]
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
+            await sleep(60);
 
             await selectRanges([[5, 0, 5, 0], [6, 0, 6, 0]]);
             await kb_macro.replay(textEditor);
@@ -1953,6 +1958,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '愛');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
+            await sleep(60);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
