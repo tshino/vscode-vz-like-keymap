@@ -197,6 +197,7 @@ const EditHandler = function(modeHandler) {
         if (reentryGuard === REENTRY_CUTANDPUSH) {
             return;
         }
+        editsExpected = true;
         reentryGuard = REENTRY_CUTANDPUSH;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
@@ -208,6 +209,9 @@ const EditHandler = function(modeHandler) {
         let lastCursorPos = textEditor.selections[0].active;
         let isBoxMode = mode.inBoxSelection();
         textStack.push({ text, isLineMode, isBoxMode });
+        if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
+            mode.expectSync();
+        }
         cancelSelection(textEditor);
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
         if (isLineMode && !isBoxMode) {
@@ -222,6 +226,7 @@ const EditHandler = function(modeHandler) {
         }
         await vscode.env.clipboard.writeText(text);
         reentryGuard = null;
+        editsExpected = false;
     };
     const clipboardCutAndPush = async function(textEditor, _edit) {
         const useTextStack = true;
@@ -691,7 +696,7 @@ const EditHandler = function(modeHandler) {
     };
     const registerCommands = function(context) {
         setupListeners(context);
-        registerTextEditorCommand(context, 'clipboardCutAndPush', clipboardCutAndPush);
+        registerTextEditorCommandReplayable(context, 'clipboardCutAndPush', clipboardCutAndPush);
         registerTextEditorCommand(context, 'clipboardCut', clipboardCut);
         registerTextEditorCommand(context, 'clipboardCopyAndPush', clipboardCopyAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
