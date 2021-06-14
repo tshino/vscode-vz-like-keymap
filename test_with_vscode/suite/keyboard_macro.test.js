@@ -36,7 +36,7 @@ describe('KeyboardMacro', () => {
                 await vscode.commands.executeCommand(cmd);
             } else if (cmd[0] === 'edit') {
                 await textEditor.edit(cmd[1]);
-                await sleep(60);
+                await sleep(100);
                 if (typeof cmd[2][0] == 'number') {
                     textEditor.selections = [
                         new vscode.Selection(cmd[2][0], cmd[2][1], cmd[2][0], cmd[2][1])
@@ -46,6 +46,7 @@ describe('KeyboardMacro', () => {
                         r => new vscode.Selection(r[0], r[1], r[2], r[3])
                     );
                 }
+                await sleep(100);
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
                 await sleep(30);
