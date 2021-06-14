@@ -340,12 +340,12 @@ const EditHandler = function(modeHandler) {
         let newPos = pos.with({character: pos.character + lines[0].length});
         textEditor.selections = [new vscode.Selection(newPos, newPos)];
     };
-    const popAndPasteImpl = async function(textEditor, withoutPop = false) {
+    const popAndPasteImpl = async function(textEditor, withPop = true) {
         if (reentryGuard === REENTRY_POPANDPASTE) {
             return;
         }
         reentryGuard = REENTRY_POPANDPASTE;
-        let [text, isLineMode, isBoxMode] = withoutPop ? await peekTextStack() : await popTextStack();
+        let [text, isLineMode, isBoxMode] = withPop ? await popTextStack() : await peekTextStack();
         if (isBoxMode) {
             await pasteBoxText(textEditor, text);
         } else if (isLineMode && !mode.inBoxSelection()) {
@@ -355,11 +355,13 @@ const EditHandler = function(modeHandler) {
         }
         reentryGuard = null;
     };
-    const popAndPaste = async function(textEditor, _edit) {
-        await popAndPasteImpl(textEditor, false);
+    const clipboardPopAndPaste = async function(textEditor, _edit) {
+        const withPop = true;
+        await popAndPasteImpl(textEditor, withPop);
     };
-    const paste = async function(textEditor, _edit) {
-        await popAndPasteImpl(textEditor, true);
+    const clipboardPaste = async function(textEditor, _edit) {
+        const withPop = false;
+        await popAndPasteImpl(textEditor, withPop);
     };
     const clearStack = async function(_textEditor, _edit) {
         clearTextStack();
@@ -693,8 +695,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardCut', clipboardCut);
         registerTextEditorCommand(context, 'clipboardCopyAndPush', clipboardCopyAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
-        registerTextEditorCommand(context, 'clipboardPopAndPaste', popAndPaste);
-        registerTextEditorCommand(context, 'clipboardPaste', paste);
+        registerTextEditorCommand(context, 'clipboardPopAndPaste', clipboardPopAndPaste);
+        registerTextEditorCommand(context, 'clipboardPaste', clipboardPaste);
         registerTextEditorCommandReplayable(context, 'clipboardClearStack', clearStack);
         registerTextEditorCommandReplayable(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommandReplayable(context, 'deleteRight', deleteRight);
@@ -729,8 +731,8 @@ const EditHandler = function(modeHandler) {
         pasteLines,
         pasteInlineText,
         pasteBoxText,
-        popAndPaste,
-        paste,
+        clipboardPopAndPaste,
+        clipboardPaste,
         clearStack,
         deleteLeft,
         deleteRight,
