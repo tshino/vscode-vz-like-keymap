@@ -35,10 +35,9 @@ describe('KeyboardMacro', () => {
             if (typeof cmd === 'string') {
                 await vscode.commands.executeCommand(cmd);
             } else if (cmd[0] === 'edit') {
+                await sleep(60);
                 await textEditor.edit(cmd[1]);
-                await sleep(30);
-                await sleep(30);
-                await sleep(30);
+                await sleep(60);
                 if (typeof cmd[2][0] == 'number') {
                     textEditor.selections = [
                         new vscode.Selection(cmd[2][0], cmd[2][1], cmd[2][0], cmd[2][1])
@@ -48,9 +47,7 @@ describe('KeyboardMacro', () => {
                         r => new vscode.Selection(r[0], r[1], r[2], r[3])
                     );
                 }
-                await sleep(30);
-                await sleep(30);
-                await sleep(30);
+                await sleep(60);
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
                 await sleep(30);
@@ -1906,6 +1903,7 @@ describe('KeyboardMacro', () => {
                 '\n'.repeat(5) +
                 '123 \n'.repeat(5)
             );
+            mode.initialize(textEditor);
         });
         it('should insert some text (IME)', async () => {
             await resetCursor(1, 0);
