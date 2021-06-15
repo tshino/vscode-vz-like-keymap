@@ -190,15 +190,21 @@ const EditHandler = function(modeHandler) {
         return textStack.length;
     };
     let reentryGuard = null;
+    const makeCommandWithReentryGuard = function(func, guardLabel) {
+        return async function(textEditor, edit) {
+            if (reentryGuard === guardLabel) {
+                return;
+            }
+            reentryGuard = guardLabel;
+            await func(textEditor, edit);
+            reentryGuard = null;
+        };
+    };
     const REENTRY_CUTANDPUSH = 'cutAndPush';
     const REENTRY_COPYANDPUSH = 'copyAndPush';
     const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
-        if (reentryGuard === REENTRY_CUTANDPUSH) {
-            return;
-        }
         editsExpected = true;
-        reentryGuard = REENTRY_CUTANDPUSH;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -225,17 +231,23 @@ const EditHandler = function(modeHandler) {
             );
         }
         await vscode.env.clipboard.writeText(text);
-        reentryGuard = null;
         editsExpected = false;
     };
-    const clipboardCutAndPush = async function(textEditor, _edit) {
-        const useTextStack = true;
-        await cutAndPushImpl(textEditor, useTextStack);
-    };
-    const clipboardCut = async function(textEditor, _edit) {
-        const useTextStack = false;
-        await cutAndPushImpl(textEditor, useTextStack);
-    };
+    const clipboardCutAndPush = makeCommandWithReentryGuard(
+        async function(textEditor, _edit) {
+            kbMacroHandler.pushIfRecording('vz.clipboardCutAndPush', clipboardCutAndPush);
+            const useTextStack = true;
+            await cutAndPushImpl(textEditor, useTextStack);
+        },
+        REENTRY_CUTANDPUSH
+    );
+    const clipboardCut = makeCommandWithReentryGuard(
+        async function(textEditor, _edit) {
+            const useTextStack = false;
+            await cutAndPushImpl(textEditor, useTextStack);
+        },
+        REENTRY_CUTANDPUSH
+    );
     const copyAndPushImpl = async function(textEditor, useTextStack = true) {
         if (reentryGuard === REENTRY_COPYANDPUSH) {
             return;
@@ -696,7 +708,7 @@ const EditHandler = function(modeHandler) {
     };
     const registerCommands = function(context) {
         setupListeners(context);
-        registerTextEditorCommandReplayable(context, 'clipboardCutAndPush', clipboardCutAndPush);
+        registerTextEditorCommand(context, 'clipboardCutAndPush', clipboardCutAndPush);
         registerTextEditorCommand(context, 'clipboardCut', clipboardCut);
         registerTextEditorCommand(context, 'clipboardCopyAndPush', clipboardCopyAndPush);
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
