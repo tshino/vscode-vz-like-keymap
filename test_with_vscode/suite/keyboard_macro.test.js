@@ -2232,14 +2232,17 @@ describe('KeyboardMacro', () => {
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
             let p2 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
-            await Promise.all([p1, p2]);
+            await p1.then(() => p2);
             kb_macro.finishRecording();
-
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCutAndPush'
             ]);
+
             await selectRange(1, 3, 2, 2);
             await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'de\nfg');
         });
