@@ -2246,6 +2246,22 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'de\nfg');
         });
+        it('should delete an entire line when selection is empty', async () => {
+            await resetCursor(2, 3);
+            const commands = ['vz.clipboardCutAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(4, 2);
+            assert.strictEqual(textEditor.document.lineCount, 6);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+            assert.strictEqual(textEditor.document.lineAt(4).text, '67890');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 2]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '12345\n');
+        });
     });
     describe('clearStack', () => {
         beforeEach(async () => {

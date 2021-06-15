@@ -219,8 +219,10 @@ const EditHandler = function(modeHandler) {
             mode.expectSync();
         }
         cancelSelection(textEditor);
+        mode.expectSync();
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
         if (isLineMode && !isBoxMode) {
+            mode.expectSync();
             textEditor.selections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
         }
         if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
