@@ -1914,14 +1914,19 @@ describe('KeyboardMacro', () => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), '愛');
                 }, [1, 1]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             await sleep(60);
 
             await resetCursor(5, 0);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             await sleep(60);
         });
         it('should insert some text (IME) (record with single-cursor, replay with multi-cursor)', async () => {
@@ -1933,6 +1938,11 @@ describe('KeyboardMacro', () => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), '愛');
                 }, [1, 1]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             await sleep(60);
 
@@ -1940,9 +1950,9 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1], [6, 1]]);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '愛123 ');
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, '愛123 ');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 1], [6, 1]]);
             await sleep(60);
         });
         it('should insert some text (IME) (record with multi-cursor, replay with single-cursor)', async () => {
@@ -1954,6 +1964,11 @@ describe('KeyboardMacro', () => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), '愛');
                     edit.replace(new vscode.Selection(2, 0, 2, 2), '愛');
                 }, [[1, 1, 1, 1], [2, 1, 2, 1]]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '愛');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '愛');
