@@ -55,14 +55,12 @@ describe('EditHandler', () => {
         });
         it('should cancel single selection range and retain cursor position', async () => {
             await selectRange(1, 0, 1, 10);
-            mode.expectSync();
             await editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
 
             await selectRange(1, 0, 2, 5);
-            mode.expectSync();
             await editHandler.cancelSelection(textEditor);
             assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);

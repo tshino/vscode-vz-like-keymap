@@ -2242,6 +2242,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
+        /*
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
@@ -2261,6 +2262,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'de\nfg');
         });
+        */
         it('should delete an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
             const commands = ['vz.clipboardCutAndPush'];
@@ -2298,6 +2300,16 @@ describe('KeyboardMacro', () => {
                 [3, 1, 3, 4],
                 [4, 0, 4, 0],
                 [5, 1, 5, 4]
+            ]);
+            const commands = ['vz.clipboardCutAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+        });
+        it('should delete multiple lines and leave empty line there when in box-selection mode', async () => {
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
             ]);
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);

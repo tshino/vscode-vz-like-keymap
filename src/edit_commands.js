@@ -139,7 +139,13 @@ const EditHandler = function(modeHandler) {
         let cursor = mode.inBoxSelection() ?
             EditUtil.topmostSelection(textEditor.selections).start :
             textEditor.selections[0].active;
-        textEditor.selection = new vscode.Selection(cursor, cursor);
+        let newSelections = [new vscode.Selection(cursor, cursor)];
+        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+            mode.expectSync();
+            textEditor.selections = newSelections;
+        } else {
+            mode.sync(textEditor);
+        }
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
         }
@@ -219,15 +225,18 @@ const EditHandler = function(modeHandler) {
         let lastCursorPos = textEditor.selections[0].active;
         let isBoxMode = mode.inBoxSelection();
         textStack.push({ text, isLineMode, isBoxMode });
-        if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
-            mode.expectSync();
-        }
-        cancelSelection(textEditor);
+        await cancelSelection(textEditor);
         mode.expectSync();
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
         if (isLineMode && !isBoxMode) {
-            mode.expectSync();
-            textEditor.selections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
+            let newSelections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
+            if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+                mode.expectSync();
+                textEditor.selections = newSelections;
+                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                    await sleep(5);
+                }
+            }
         }
         if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
             let newCursorPos = textEditor.selections[0].active;
