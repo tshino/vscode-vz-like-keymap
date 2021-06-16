@@ -55,12 +55,16 @@ describe('EditHandler', () => {
         });
         it('should cancel single selection range and retain cursor position', async () => {
             await selectRange(1, 0, 1, 10);
-            editHandler.cancelSelection(textEditor);
+            mode.expectSync();
+            await editHandler.cancelSelection(textEditor);
+            assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
 
             await selectRange(1, 0, 2, 5);
-            editHandler.cancelSelection(textEditor);
+            mode.expectSync();
+            await editHandler.cancelSelection(textEditor);
+            assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
@@ -70,7 +74,8 @@ describe('EditHandler', () => {
                 [2, 0, 2, 5],
                 [3, 0, 3, 5]
             ]);
-            editHandler.cancelSelection(textEditor);
+            await editHandler.cancelSelection(textEditor);
+            assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
@@ -79,7 +84,8 @@ describe('EditHandler', () => {
                 [2, 0, 2, 5],
                 [1, 0, 1, 5]
             ]);
-            editHandler.cancelSelection(textEditor);
+            await editHandler.cancelSelection(textEditor);
+            assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
 
@@ -88,7 +94,8 @@ describe('EditHandler', () => {
                 [2, 5, 2, 0],
                 [1, 5, 1, 0]
             ]);
-            editHandler.cancelSelection(textEditor);
+            await editHandler.cancelSelection(textEditor);
+            assert.strictEqual(mode.synchronized(), true);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
         });

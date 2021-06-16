@@ -26,6 +26,7 @@ const EditHandler = function(modeHandler) {
     const undeleteStack = [];
     let editsExpected = false; // for keyboard macro recording
 
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     const deletedTextDetector = (function() {
         let possibleDeletingInfo = [];
         let numExpectedChanges = 0;
@@ -134,13 +135,16 @@ const EditHandler = function(modeHandler) {
             new vscode.Position(line + 1, 0)
         );
     };
-    const cancelSelection = function(textEditor) {
+    const cancelSelection = async function(textEditor) {
         let cursor = mode.inBoxSelection() ?
             EditUtil.topmostSelection(textEditor.selections).start :
             textEditor.selections[0].active;
         textEditor.selection = new vscode.Selection(cursor, cursor);
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
+        }
+        for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+            await sleep(5);
         }
     };
     const readText = function(textEditor, ranges) {
