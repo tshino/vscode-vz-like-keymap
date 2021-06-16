@@ -2266,9 +2266,9 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineCount, 6);
 
             await resetCursor(4, 2);
-            assert.strictEqual(textEditor.document.lineCount, 6);
             await kb_macro.replay(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
             assert.strictEqual(textEditor.document.lineAt(4).text, '67890');
@@ -2276,6 +2276,32 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '12345\n');
+        });
+        it('should delete the line but leave empty line there when in box-selection mode', async () => {
+            await selectRanges([[0, 3, 0, 3]]); // box-selection mode
+            const commands = ['vz.clipboardCutAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+
+            await selectRanges([[2, 3, 2, 3]]); // box-selection mode
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, 'abcde');
+        });
+        it('should delete multiple selection ranges when in box-selection mode', async () => {
+            await selectRanges([
+                [3, 1, 3, 4],
+                [4, 0, 4, 0],
+                [5, 1, 5, 4]
+            ]);
+            const commands = ['vz.clipboardCutAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
         });
     });
     describe('clearStack', () => {
