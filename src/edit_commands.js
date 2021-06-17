@@ -140,17 +140,17 @@ const EditHandler = function(modeHandler) {
             EditUtil.topmostSelection(textEditor.selections).start :
             textEditor.selections[0].active;
         let newSelections = [new vscode.Selection(cursor, cursor)];
-        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
-            mode.expectSync();
-            textEditor.selections = newSelections;
-        } else {
-            mode.sync(textEditor);
-        }
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
         }
-        for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-            await sleep(5);
+        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+            mode.expectSync();
+            textEditor.selections = newSelections;
+            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+        } else {
+            mode.sync(textEditor);
         }
     };
     const readText = function(textEditor, ranges) {
