@@ -231,7 +231,13 @@ const KeyboardMacro = function(modeHandler) {
                 if (bottomToTop) {
                     selections.reverse();
                 }
-                textEditor.selections = selections;
+                if (!EditUtil.isEqualSelections(textEditor.selections, selections)) {
+                    mode.expectSync();
+                    textEditor.selections = selections;
+                    for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                        await sleep(5);
+                    }
+                }
                 if (1 < selections.length) {
                     mode.startSelection(textEditor, true);
                 }
