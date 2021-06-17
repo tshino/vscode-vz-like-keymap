@@ -222,20 +222,29 @@ const EditHandler = function(modeHandler) {
                 textStack.length = textStack.length - 1;
             }
         }
-        let lastCursorPos = textEditor.selections[0].active;
+        let nextCursorPos = textEditor.selections[0].active;
         let isBoxMode = mode.inBoxSelection();
         textStack.push({ text, isLineMode, isBoxMode });
-        await cancelSelection(textEditor);
+        if (!isLineMode || isBoxMode) {
+            nextCursorPos = mode.inBoxSelection() ?
+                EditUtil.topmostSelection(textEditor.selections).start :
+                textEditor.selections[0].start;
+        }
         mode.expectSync();
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
-        if (isLineMode && !isBoxMode) {
-            let newSelections = [new vscode.Selection(lastCursorPos, lastCursorPos)];
-            if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
-                mode.expectSync();
-                textEditor.selections = newSelections;
-                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-                    await sleep(5);
-                }
+        let newSelections = [new vscode.Selection(nextCursorPos, nextCursorPos)];
+        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+            mode.expectSync();
+            textEditor.selections = newSelections;
+            if (mode.inSelection()) {
+                mode.resetSelection(textEditor);
+            }
+            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                await sleep(5);
+            }
+        } else {
+            if (mode.inSelection()) {
+                mode.resetSelection(textEditor);
             }
         }
         if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
