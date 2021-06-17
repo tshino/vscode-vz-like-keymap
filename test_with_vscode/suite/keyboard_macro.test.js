@@ -2242,12 +2242,11 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        /*
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
-            let p1 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
-            let p2 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
+            let p1 = editHandler.clipboardCutAndPush(textEditor);
+            let p2 = editHandler.clipboardCutAndPush(textEditor);
             await p1.then(() => p2);
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
@@ -2262,7 +2261,6 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'de\nfg');
         });
-        */
         it('should delete an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
             const commands = ['vz.clipboardCutAndPush'];
