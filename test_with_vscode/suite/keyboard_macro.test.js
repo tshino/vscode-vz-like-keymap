@@ -1848,6 +1848,11 @@ describe('KeyboardMacro', () => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), 'abcde');
                 }, [1, 5]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcde');
 
             await resetCursor(5, 4);
@@ -1864,6 +1869,11 @@ describe('KeyboardMacro', () => {
                 ['edit', edit => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), 'abcde');
                 }, [1, 5]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcde');
 
@@ -1884,6 +1894,11 @@ describe('KeyboardMacro', () => {
                     edit.replace(new vscode.Selection(1, 0, 1, 2), 'abcde');
                     edit.replace(new vscode.Selection(2, 0, 2, 2), 'abcde');
                 }, [[1, 5, 1, 5], [2, 5, 2, 5]]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcde');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abcde');
