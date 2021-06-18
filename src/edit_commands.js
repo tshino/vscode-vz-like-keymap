@@ -236,16 +236,12 @@ const EditHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
             textEditor.selections = newSelections;
-            if (mode.inSelection()) {
-                mode.resetSelection(textEditor);
-            }
             for (let i = 0; i < 10 && !mode.synchronized(); i++) {
                 await sleep(5);
             }
-        } else {
-            if (mode.inSelection()) {
-                mode.resetSelection(textEditor);
-            }
+        }
+        if (mode.inSelection()) {
+            mode.resetSelection(textEditor);
         }
         if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
             let newCursorPos = textEditor.selections[0].active;
