@@ -234,12 +234,16 @@ const KeyboardMacro = function(modeHandler) {
                 if (!EditUtil.isEqualSelections(textEditor.selections, selections)) {
                     mode.expectSync();
                     textEditor.selections = selections;
+                    if (1 < selections.length) {
+                        mode.startSelection(textEditor, true);
+                    }
                     for (let i = 0; i < 10 && !mode.synchronized(); i++) {
                         await sleep(5);
                     }
-                }
-                if (1 < selections.length) {
-                    mode.startSelection(textEditor, true);
+                } else {
+                    if (1 < selections.length) {
+                        mode.startSelection(textEditor, true);
+                    }
                 }
             };
         };
