@@ -243,6 +243,9 @@ const EditHandler = function(modeHandler) {
         for (let i = 0; i < 10 && !editsConfirmed; i++) {
             await sleep(5);
         }
+        if (!editsConfirmed) {
+            console.log('*** debug: Waited too long for editsConfirmed');
+        }
         let newLineLength = textEditor.document.lineAt(nextCursorPos.line).text.length;
         if (newLineLength < nextCursorPos.character) {
             nextCursorPos = nextCursorPos.with({character: newLineLength});

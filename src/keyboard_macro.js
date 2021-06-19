@@ -69,6 +69,7 @@ const KeyboardMacro = function(modeHandler) {
                     await sleep(5);
                 }
                 if (!mode.synchronized()) {
+                    console.log('*** debug: Missing expected selection change')
                     mode.sync(textEditor);
                 }
             }
