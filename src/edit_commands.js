@@ -25,6 +25,7 @@ const EditHandler = function(modeHandler) {
     const textStack = [];
     const undeleteStack = [];
     let editsExpected = false; // for keyboard macro recording
+    let editsConfirmed = false;
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     const deletedTextDetector = (function() {
@@ -93,6 +94,9 @@ const EditHandler = function(modeHandler) {
                         // pure deleting
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
+                    }
+                    if (editsExpected) {
+                        editsConfirmed = true;
                     }
                     if (kbMacroHandler.recording() && !editsExpected) {
                         kbMacroHandler.processOnChangeDocument(changes);
@@ -215,6 +219,7 @@ const EditHandler = function(modeHandler) {
     const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
         editsExpected = true;
+        editsConfirmed = false;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -232,6 +237,16 @@ const EditHandler = function(modeHandler) {
         }
         mode.expectSync();
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
+        // for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+            // await sleep(5);
+        // }
+        for (let i = 0; i < 10 && !editsConfirmed; i++) {
+            await sleep(5);
+        }
+        let newLineLength = textEditor.document.lineAt(nextCursorPos.line).text.length;
+        if (newLineLength < nextCursorPos.character) {
+            nextCursorPos = nextCursorPos.with({character: newLineLength});
+        }
         let newSelections = [new vscode.Selection(nextCursorPos, nextCursorPos)];
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
