@@ -2321,6 +2321,21 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRanges([
+                [1, 2, 1, 5],
+                [2, 2, 2, 5],
+                [3, 2, 3, 2]
+            ]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1267890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'ab');
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fj');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '345\ncde\n\n');
         });
         it('should delete multiple lines and leave empty line there when in box-selection mode', async () => {
             await selectRanges([
@@ -2331,6 +2346,25 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRanges([
+                [1, 2, 1, 2],
+                [2, 2, 2, 2],
+                [3, 0, 3, 0]
+            ]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '');
+            assert.strictEqual(textEditor.document.lineAt(2).text, '');
+            assert.strictEqual(textEditor.document.lineAt(3).text, '');
+            if (selectionsAsArray()[0][1] === 0) {
+                assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+            } else {
+                assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+            }
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '1234567890\nabcde\n\n');
         });
     });
     describe('clearStack', () => {
