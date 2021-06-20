@@ -26,8 +26,20 @@ const EditHandler = function(modeHandler) {
     const undeleteStack = [];
     let editsExpected = false; // for keyboard macro recording
     let editsConfirmed = false;
+    let missingExpectedEditsCount = 0;
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+    const expectEdits = function() {
+        editsExpected = true;
+        editsConfirmed = false;
+    };
+    const endExpectEdits = function() {
+        if (!editsConfirmed) {
+            missingExpectedEditsCount += 1;
+            console.log('*** debug: Missing expected edits #' + missingExpectedEditsCount);
+        }
+        editsExpected = false;
+    };
     const deletedTextDetector = (function() {
         let possibleDeletingInfo = [];
         let numExpectedChanges = 0;
@@ -218,8 +230,6 @@ const EditHandler = function(modeHandler) {
     const REENTRY_COPYANDPUSH = 'copyAndPush';
     const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
-        editsExpected = true;
-        editsConfirmed = false;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -235,6 +245,7 @@ const EditHandler = function(modeHandler) {
                 EditUtil.topmostSelection(textEditor.selections).start :
                 textEditor.selections[0].start;
         }
+        expectEdits();
         mode.expectSync();
         await textEditor.edit((edit) => deleteRanges(edit, ranges));
         // for (let i = 0; i < 10 && !mode.synchronized(); i++) {
@@ -243,9 +254,7 @@ const EditHandler = function(modeHandler) {
         for (let i = 0; i < 10 && !editsConfirmed; i++) {
             await sleep(5);
         }
-        if (!editsConfirmed) {
-            console.log('*** debug: Waited too long for editsConfirmed');
-        }
+        endExpectEdits();
         let newLineLength = textEditor.document.lineAt(nextCursorPos.line).text.length;
         if (newLineLength < nextCursorPos.character) {
             nextCursorPos = nextCursorPos.with({character: newLineLength});
@@ -274,7 +283,6 @@ const EditHandler = function(modeHandler) {
             );
         }
         await vscode.env.clipboard.writeText(text);
-        editsExpected = false;
     };
     const clipboardCutAndPush = makeCommandWithReentryGuard(
         async function(textEditor, _edit) {
@@ -476,43 +484,52 @@ const EditHandler = function(modeHandler) {
         prepareDeleting(textEditor, false, false);
     };
     const deleteLeft = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
         mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteLeft', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const deleteRight = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
+        // if (mode.inSelection()) {
+            // mode.expectSync();
+        // }
         prepareDeletingRight(textEditor);
         await runEditCommand('deleteRight', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const deleteWordLeft = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
         mode.expectSync();
         prepareDeletingLeft(textEditor);
         await runEditCommand('deleteWordLeft', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const deleteWordRight = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
+        // if (mode.inSelection()) {
+            // mode.expectSync();
+        // }
         prepareDeletingRight(textEditor);
         await runEditCommand('deleteWordRight', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const deleteAllLeft = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
         mode.expectSync();
         prepareDeletingLeftAll(textEditor);
         await runEditCommand('deleteAllLeft', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const deleteAllRight = async function(textEditor, edit) {
-        editsExpected = true;
+        expectEdits();
+        // if (mode.inSelection()) {
+            // mode.expectSync();
+        // }
         prepareDeletingRight(textEditor);
         await runEditCommand('deleteAllRight', textEditor, edit);
-        editsExpected = false;
+        endExpectEdits();
     };
     const insertDeletedTexts = async function(textEditor, deleted) {
         let n = textEditor.selections.length;
@@ -594,25 +611,25 @@ const EditHandler = function(modeHandler) {
                     deleted.push(fill_value);
                 }
             }
-            editsExpected = true;
+            expectEdits();
             await insertDeletedTexts(textEditor, deleted);
-            editsExpected = false;
+            endExpectEdits();
         }
     };
     const insertLineBefore = async function(textEditor, _edit) {
-        editsExpected = true;
+        expectEdits();
         mode.expectSync();
         let resetSelection = mode.inSelection() && !mode.inBoxSelection();
         await vscode.commands.executeCommand('editor.action.insertLineBefore');
         if (resetSelection) {
             mode.resetSelection(textEditor);
         }
-        editsExpected = false;
+        endExpectEdits();
     };
     const copyLinesDown = async function(_textEditor, _edit) {
-        editsExpected = true;
+        expectEdits();
         await vscode.commands.executeCommand('editor.action.copyLinesDownAction');
-        editsExpected = false;
+        endExpectEdits();
     };
     const LOWERCASE = 0;
     const UPPERCASE = 1;
@@ -724,30 +741,30 @@ const EditHandler = function(modeHandler) {
         let nextCase = getNextCaseTransformTo(textEditor);
         switch (nextCase) {
             case LOWERCASE:
-                editsExpected = true;
+                expectEdits();
                 await vscode.commands.executeCommand('editor.action.transformToLowercase');
-                editsExpected = false;
+                endExpectEdits();
                 break;
             case UPPERCASE:
-                editsExpected = true;
+                expectEdits();
                 await vscode.commands.executeCommand('editor.action.transformToUppercase');
-                editsExpected = false;
+                endExpectEdits();
                 break;
             case TITLECASE:
-                editsExpected = true;
+                expectEdits();
                 await vscode.commands.executeCommand('editor.action.transformToTitlecase');
-                editsExpected = false;
+                endExpectEdits();
                 break;
             default:
                 break;
         }
     };
     const insertPath = async function(textEditor, _edit) {
-        editsExpected = true;
+        expectEdits();
         mode.expectSync();
         let path = textEditor.document.fileName;
         await vscode.commands.executeCommand('paste', { text: path });
-        editsExpected = false;
+        endExpectEdits();
     };
     const registerCommands = function(context) {
         setupListeners(context);
