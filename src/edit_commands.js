@@ -226,6 +226,14 @@ const EditHandler = function(modeHandler) {
             reentryGuard = null;
         };
     };
+    const waitForEndOfGuardedCommand = async function() { // test purpose only
+        if (reentryGuard !== null) {
+            console.log('*** debug: Guarded command still be running unexpectedly')
+        }
+        for (let i = 0; i < 10 && reentryGuard !== null; i++) {
+            await sleep(5);
+        }
+    };
     const REENTRY_CUTANDPUSH = 'cutAndPush';
     const REENTRY_COPYANDPUSH = 'copyAndPush';
     const REENTRY_POPANDPASTE = 'popAndPaste';
@@ -799,6 +807,7 @@ const EditHandler = function(modeHandler) {
         makeCutCopyRanges,
         clearTextStack, // for testing purpose
         getTextStackLength, // for testing purpose
+        waitForEndOfGuardedCommand, // for testing purpose
         clipboardCutAndPush,
         clipboardCut,
         clipboardCopyAndPush,

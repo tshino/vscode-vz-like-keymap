@@ -30,6 +30,10 @@ describe('KeyboardMacro', () => {
         return testUtils.selectionsToArray(textEditor.selections);
     };
     const assertDocumentLineCount = async function(expected) {
+        // FIXME: This waiting loop should not be needed.
+        if (textEditor.document.lineCount !== expected) {
+            console.log('*** debug: Expected document lineCount change has not yet happened');
+        }
         for (let i = 0; i < 10 && textEditor.document.lineCount !== expected; i++) {
             await sleep(5);
         }
@@ -2253,6 +2257,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
 
             await selectRange(0, 3, 1, 7);
             await assertDocumentLineCount(6);
@@ -2274,6 +2279,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCutAndPush'
             ]);
+            await editHandler.waitForEndOfGuardedCommand();
 
             await selectRange(1, 3, 2, 2);
             await kb_macro.replay(textEditor);
@@ -2288,6 +2294,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
             await assertDocumentLineCount(6);
 
             await resetCursor(4, 2);
@@ -2304,6 +2311,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
             await assertDocumentLineCount(7);
 
             await selectRanges([[2, 3, 2, 3]]); // box-selection mode
@@ -2328,6 +2336,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
 
             await selectRanges([
                 [1, 2, 1, 5],
@@ -2353,6 +2362,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
 
             await selectRanges([
                 [1, 2, 1, 2],
@@ -2387,6 +2397,7 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await editHandler.waitForEndOfGuardedCommand();
             await assertDocumentLineCount(7);
 
             await textEditor.edit((edit) => {
