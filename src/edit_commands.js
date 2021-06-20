@@ -489,6 +489,14 @@ const EditHandler = function(modeHandler) {
         prepareDeleting(textEditor, false, false);
     };
     const deleteLeft = async function(textEditor, edit) {
+        let selection = textEditor.selections[0];
+        if (selection.active.line === 0 &&
+            selection.active.character === 0 &&
+            selection.isEmpty &&
+            textEditor.selections.length === 1) {
+            // nothing to do
+            return;
+        }
         expectEdits();
         mode.expectSync();
         prepareDeletingLeft(textEditor);
@@ -496,6 +504,15 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteRight = async function(textEditor, edit) {
+        let selection = textEditor.selections[0];
+        let lastLine = textEditor.document.lineCount - 1;
+        if (selection.active.line === lastLine &&
+            selection.active.character === textEditor.document.lineAt(lastLine).text.length &&
+            selection.isEmpty &&
+            textEditor.selections.length === 1) {
+            // nothing to do
+            return;
+        }
         expectEdits();
         // if (mode.inSelection()) {
             // mode.expectSync();
