@@ -31,12 +31,12 @@ describe('KeyboardMacro', () => {
     };
     const assertDocumentLineCount = async function(expected) {
         // FIXME: This waiting loop should not be needed.
-        if (textEditor.document.lineCount !== expected) {
-            console.log('*** debug: Expected document lineCount change has not yet happened');
-        }
-        for (let i = 0; i < 10 && textEditor.document.lineCount !== expected; i++) {
-            await sleep(5);
-        }
+        // if (textEditor.document.lineCount !== expected) {
+            // console.log('*** debug: Expected document lineCount change has not yet happened');
+        // }
+        // for (let i = 0; i < 10 && textEditor.document.lineCount !== expected; i++) {
+            // await sleep(5);
+        // }
         assert.strictEqual(textEditor.document.lineCount, expected);
     };
     const recordThroughExecution = async function(commands) {

@@ -259,9 +259,6 @@ const EditHandler = function(modeHandler) {
         // for (let i = 0; i < 10 && !mode.synchronized(); i++) {
             // await sleep(5);
         // }
-        for (let i = 0; i < 10 && !editsConfirmed; i++) {
-            await sleep(5);
-        }
         endExpectEdits();
         let newLineLength = textEditor.document.lineAt(nextCursorPos.line).text.length;
         if (newLineLength < nextCursorPos.character) {
