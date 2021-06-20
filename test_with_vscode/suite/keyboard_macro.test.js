@@ -6,6 +6,7 @@ const mode_handler = require("./../../src/mode_handler.js");
 const keyboard_macro = require("./../../src/keyboard_macro.js");
 const edit_commands = require("./../../src/edit_commands.js");
 const cursor_commands = require("./../../src/cursor_commands.js");
+const EditUtil = require("./../../src/edit_util.js");
 
 
 describe('KeyboardMacro', () => {
@@ -2365,6 +2366,37 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '1234567890\nabcde\n\n');
+        });
+        it('should reveal the cursor after a cut even if it is a long range', async () => {
+            await textEditor.edit((edit) => {
+                edit.insert(
+                    new vscode.Position(4, 0),
+                    Array(100).fill('xxxxxyyyyyzzzzz').join('\n') + '\n'
+                );
+            });
+            await selectRange(4, 0, 104, 0);
+            textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
+            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
+            assert.strictEqual(textEditor.document.lineCount, 107);
+            const commands = ['vz.clipboardCutAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+
+            await textEditor.edit((edit) => {
+                edit.insert(
+                    new vscode.Position(3, 0),
+                    Array(100).fill('xxxxxyyyyyzzzzz').join('\n') + '\n'
+                );
+            });
+            await selectRange(3, 0, 103, 0);
+            textEditor.revealRange(new vscode.Range(103, 0, 103, 0), vscode.TextEditorRevealType.Default);
+            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(103)) {}
+            assert.strictEqual(textEditor.document.lineCount, 107);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
+            assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(3), true);
         });
     });
     describe('clearStack', () => {
