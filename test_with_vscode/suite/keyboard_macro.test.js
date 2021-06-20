@@ -2805,6 +2805,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(line, character);
             await recordThroughExecution([cmd, 'vz.undelete']);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [cmd, 'vz.undelete']);
+            assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         };
         const testReplayAt = async function(line, character) {
             let prevText = textEditor.document.lineAt(line).text;
