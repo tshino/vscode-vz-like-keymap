@@ -227,11 +227,11 @@ const EditHandler = function(modeHandler) {
         };
     };
     const waitForEndOfGuardedCommand = async function() { // test purpose only
+        for (let i = 0; i < 10 && reentryGuard !== null; i++) {
+            await sleep(10);
+        }
         if (reentryGuard !== null) {
             console.log('*** debug: Guarded command still be running unexpectedly')
-        }
-        for (let i = 0; i < 10 && reentryGuard !== null; i++) {
-            await sleep(5);
         }
     };
     const REENTRY_CUTANDPUSH = 'cutAndPush';
