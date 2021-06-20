@@ -29,6 +29,12 @@ describe('KeyboardMacro', () => {
     const selectionsAsArray = function() {
         return testUtils.selectionsToArray(textEditor.selections);
     };
+    const assertDocumentLineCount = async function(expected) {
+        for (let i = 0; i < 10 && textEditor.document.lineCount !== expected; i++) {
+            await sleep(5);
+        }
+        assert.strictEqual(textEditor.document.lineCount, expected);
+    };
     const recordThroughExecution = async function(commands) {
         kb_macro.startRecording(textEditor);
         for (let i = 0; i < commands.length; i++) {
@@ -2249,9 +2255,9 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             await selectRange(0, 3, 1, 7);
-            assert.strictEqual(textEditor.document.lineCount, 6);
+            await assertDocumentLineCount(6);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            await assertDocumentLineCount(5);
             assert.strictEqual(textEditor.document.lineAt(0).text, '123890');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
             assert.strictEqual(mode.inSelection(), false);
@@ -2271,7 +2277,7 @@ describe('KeyboardMacro', () => {
 
             await selectRange(1, 3, 2, 2);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            await assertDocumentLineCount(5);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
@@ -2282,11 +2288,11 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(textEditor.document.lineCount, 6);
+            await assertDocumentLineCount(6);
 
             await resetCursor(4, 2);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            await assertDocumentLineCount(5);
             assert.strictEqual(textEditor.document.lineAt(4).text, '67890');
             assert.deepStrictEqual(selectionsAsArray(), [[4, 2]]);
             assert.strictEqual(mode.inSelection(), false);
@@ -2298,11 +2304,11 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
 
             await selectRanges([[2, 3, 2, 3]]); // box-selection mode
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
             assert.strictEqual(textEditor.document.lineAt(2).text, '');
             if (selectionsAsArray()[0][1] === 0) {
                 assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
@@ -2329,7 +2335,7 @@ describe('KeyboardMacro', () => {
                 [3, 2, 3, 2]
             ]);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
             assert.strictEqual(textEditor.document.lineAt(1).text, '1267890');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'ab');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fj');
@@ -2354,7 +2360,7 @@ describe('KeyboardMacro', () => {
                 [3, 0, 3, 0]
             ]);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
             assert.strictEqual(textEditor.document.lineAt(1).text, '');
             assert.strictEqual(textEditor.document.lineAt(2).text, '');
             assert.strictEqual(textEditor.document.lineAt(3).text, '');
@@ -2377,11 +2383,11 @@ describe('KeyboardMacro', () => {
             await selectRange(4, 0, 104, 0);
             textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
             while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
-            assert.strictEqual(textEditor.document.lineCount, 107);
+            await assertDocumentLineCount(107);
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
 
             await textEditor.edit((edit) => {
                 edit.insert(
@@ -2392,9 +2398,9 @@ describe('KeyboardMacro', () => {
             await selectRange(3, 0, 103, 0);
             textEditor.revealRange(new vscode.Range(103, 0, 103, 0), vscode.TextEditorRevealType.Default);
             while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(103)) {}
-            assert.strictEqual(textEditor.document.lineCount, 107);
+            await assertDocumentLineCount(107);
             await kb_macro.replay(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 7);
+            await assertDocumentLineCount(7);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 0]]);
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(3), true);
         });
@@ -2424,7 +2430,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(1, 1);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            await assertDocumentLineCount(5);
 
             await kb_macro.replay(textEditor);
 
@@ -2434,7 +2440,7 @@ describe('KeyboardMacro', () => {
 
             await editHandler.clipboardPopAndPaste(textEditor);
             await editHandler.clipboardPopAndPaste(textEditor);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            await assertDocumentLineCount(5);
         });
     });
     describe('deleteXXX', () => {
@@ -2891,7 +2897,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghijklmno');
             assert.strictEqual(textEditor.document.lineAt(4).text, 'fghijklmno');
-            assert.strictEqual(textEditor.document.lineCount, 6);
+            await assertDocumentLineCount(6);
         });
         it('should duplicate the last line of the document even if it has no new line', async () => {
             await resetCursor(3, 0); // the last line of document

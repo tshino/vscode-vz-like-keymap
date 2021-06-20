@@ -98,6 +98,9 @@ const EditHandler = function(modeHandler) {
         context.subscriptions.push(
             vscode.workspace.onDidChangeTextDocument(function(event) {
                 if (event.document === vscode.window.activeTextEditor.document) {
+                    if (editsExpected) {
+                        editsConfirmed = true;
+                    }
                     let changes = Array.from(event.contentChanges);
                     if (changes.length === 0) {
                         return;
@@ -106,9 +109,6 @@ const EditHandler = function(modeHandler) {
                         // pure deleting
                         changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
                         deletedTextDetector.onDelete(changes);
-                    }
-                    if (editsExpected) {
-                        editsConfirmed = true;
                     }
                     if (kbMacroHandler.recording() && !editsExpected) {
                         kbMacroHandler.processOnChangeDocument(changes);
