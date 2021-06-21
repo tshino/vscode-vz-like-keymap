@@ -488,14 +488,30 @@ const EditHandler = function(modeHandler) {
     const prepareDeletingRight = function(textEditor) {
         prepareDeleting(textEditor, false, false);
     };
-    const deleteLeft = async function(textEditor, edit) {
+    const cursorIsAtBeginningOfDocument = function(textEditor) {
         let selection = textEditor.selections[0];
         if (selection.active.line === 0 &&
             selection.active.character === 0 &&
             selection.isEmpty &&
             textEditor.selections.length === 1) {
-            // nothing to do
-            return;
+            return true;
+        }
+        return false;
+    };
+    const cursorIsAtEndOfDocument = function(textEditor) {
+        let selection = textEditor.selections[0];
+        let lastLine = textEditor.document.lineCount - 1;
+        if (selection.active.line === lastLine &&
+            selection.active.character === textEditor.document.lineAt(lastLine).text.length &&
+            selection.isEmpty &&
+            textEditor.selections.length === 1) {
+            return true;
+        }
+        return false;
+    };
+    const deleteLeft = async function(textEditor, edit) {
+        if (cursorIsAtBeginningOfDocument(textEditor)) {
+            return; // nothing to do
         }
         expectEdits();
         mode.expectSync();
@@ -504,14 +520,8 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteRight = async function(textEditor, edit) {
-        let selection = textEditor.selections[0];
-        let lastLine = textEditor.document.lineCount - 1;
-        if (selection.active.line === lastLine &&
-            selection.active.character === textEditor.document.lineAt(lastLine).text.length &&
-            selection.isEmpty &&
-            textEditor.selections.length === 1) {
-            // nothing to do
-            return;
+        if (cursorIsAtEndOfDocument(textEditor)) {
+            return; // nothing to do
         }
         expectEdits();
         // if (mode.inSelection()) {
@@ -522,6 +532,9 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteWordLeft = async function(textEditor, edit) {
+        if (cursorIsAtBeginningOfDocument(textEditor)) {
+            return; // nothing to do
+        }
         expectEdits();
         mode.expectSync();
         prepareDeletingLeft(textEditor);
@@ -529,6 +542,9 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteWordRight = async function(textEditor, edit) {
+        if (cursorIsAtEndOfDocument(textEditor)) {
+            return; // nothing to do
+        }
         expectEdits();
         // if (mode.inSelection()) {
             // mode.expectSync();
@@ -538,6 +554,9 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteAllLeft = async function(textEditor, edit) {
+        if (cursorIsAtBeginningOfDocument(textEditor)) {
+            return; // nothing to do
+        }
         expectEdits();
         mode.expectSync();
         prepareDeletingLeftAll(textEditor);
@@ -545,6 +564,9 @@ const EditHandler = function(modeHandler) {
         endExpectEdits();
     };
     const deleteAllRight = async function(textEditor, edit) {
+        if (cursorIsAtEndOfDocument(textEditor)) {
+            return; // nothing to do
+        }
         expectEdits();
         // if (mode.inSelection()) {
             // mode.expectSync();
