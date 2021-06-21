@@ -2273,9 +2273,11 @@ describe('KeyboardMacro', () => {
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
-            let p1 = editHandler.clipboardCutAndPush(textEditor);
-            let p2 = editHandler.clipboardCutAndPush(textEditor);
-            await p1.then(() => p2);
+            let p1 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
+            let p2 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
+            await p1;
+            await p2;
+            await editHandler.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCutAndPush'
