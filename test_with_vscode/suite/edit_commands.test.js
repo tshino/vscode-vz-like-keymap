@@ -418,6 +418,14 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
+        it('should push the cut text to the text stack', async () => {
+            await resetCursor(0, 0);
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            await editHandler.clipboardCutAndPush(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+            await editHandler.clipboardCutAndPush(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 2);
+        });
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCutAndPush(textEditor);
@@ -537,6 +545,14 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
+        it('should not increase the length of the text stack to greater than 1', async () => {
+            await resetCursor(0, 0);
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            await editHandler.clipboardCut(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+            await editHandler.clipboardCut(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+        });
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCut(textEditor);
@@ -545,7 +561,6 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        // todo: add more tests for clipboardCut
     });
     describe('clipboardCopyAndPush', () => {
         beforeEach(async () => {
