@@ -408,7 +408,9 @@ describe('EditHandler', () => {
         it('should delete selected part of document', async () => {
             await selectRange(0, 3, 1, 7);
             assert.strictEqual(textEditor.document.lineCount, 7);
+
             await editHandler.clipboardCutAndPush(textEditor);
+
             assert.strictEqual(textEditor.document.lineCount, 6);
             assert.strictEqual(textEditor.document.lineAt(0).text, '123890');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
@@ -505,7 +507,46 @@ describe('EditHandler', () => {
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(4), true);
         });
     });
-    // todo: add tests for clipboardCut (used if Text Stack is disabled)
+    describe('clipboardCut', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should delete selected part of document', async () => {
+            await selectRange(0, 3, 1, 7);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+
+            await editHandler.clipboardCut(textEditor);
+
+            assert.strictEqual(textEditor.document.lineCount, 6);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123890');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        it('should prevent reentry', async () => {
+            await selectRange(0, 3, 1, 7);
+            let p1 = editHandler.clipboardCut(textEditor);
+            let p2 = editHandler.clipboardCut(textEditor);
+            await Promise.all([p1, p2]);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        // todo: add more tests for clipboardCut
+    });
     describe('clipboardCopyAndPush', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

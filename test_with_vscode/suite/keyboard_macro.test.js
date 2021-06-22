@@ -2413,6 +2413,61 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(EditUtil.enumVisibleLines(textEditor).includes(3), true);
         });
     });
+    describe('clipboardCut', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should delete selected part of document', async () => {
+            await selectRange(2, 3, 3, 1);
+            const commands = ['vz.clipboardCut'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(0, 3, 1, 7);
+            await assertDocumentLineCount(6);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(5);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123890');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        it('should prevent reentry', async () => {
+            await selectRange(0, 3, 1, 7);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.clipboardCut');
+            let p2 = vscode.commands.executeCommand('vz.clipboardCut');
+            await p1;
+            await p2;
+            await editHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.clipboardCut'
+            ]);
+
+            await selectRange(1, 3, 2, 2);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(5);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, 'de\nfg');
+        });
+    });
     describe('clearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

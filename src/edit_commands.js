@@ -299,6 +299,7 @@ const EditHandler = function(modeHandler) {
     );
     const clipboardCut = makeCommandWithReentryGuard(
         async function(textEditor, _edit) {
+            kbMacroHandler.pushIfRecording('vz.clipboardCut', clipboardCut);
             const useTextStack = false;
             await cutAndPushImpl(textEditor, useTextStack);
         },
