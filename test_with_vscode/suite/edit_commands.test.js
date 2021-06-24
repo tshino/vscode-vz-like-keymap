@@ -590,6 +590,14 @@ describe('EditHandler', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
+        it('should push the copied text to the text stack', async () => {
+            await resetCursor(0, 0);
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            await editHandler.clipboardCopyAndPush(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+            await editHandler.clipboardCopyAndPush(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 2);
+        });
         it('should prevent reentry', async () => {
             await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCopyAndPush(textEditor);
@@ -655,7 +663,51 @@ describe('EditHandler', () => {
             assert.strictEqual(clipboard, 'fghij\n\n12345\n');
         });
     });
-    // todo: add tests for clipboardCopy (used if Text Stack is disabled)
+    describe('clipboardCopy', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should copy selected part of document', async () => {
+            await selectRange(0, 3, 1, 7);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            await editHandler.clipboardCopy(textEditor);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '1234567890');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        it('should not increase the length of the text stack to greater than 1', async () => {
+            await resetCursor(0, 0);
+            assert.strictEqual(editHandler.getTextStackLength(), 0);
+            await editHandler.clipboardCopy(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+            await editHandler.clipboardCopy(textEditor);
+            assert.strictEqual(editHandler.getTextStackLength(), 1);
+        });
+        it('should prevent reentry', async () => {
+            await selectRange(0, 3, 1, 7);
+            let p1 = editHandler.clipboardCopy(textEditor);
+            let p2 = editHandler.clipboardCopy(textEditor);
+            await Promise.all([p1, p2]);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+    });
     describe('peekTextStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
