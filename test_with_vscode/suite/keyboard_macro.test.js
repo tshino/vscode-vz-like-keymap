@@ -2468,6 +2468,76 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(clipboard, 'de\nfg');
         });
     });
+    describe('clipboardCopyAndPush', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should copy selected part of document', async () => {
+            await selectRange(2, 3, 3, 1);
+            const commands = ['vz.clipboardCopyAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(0, 3, 1, 7);
+            await assertDocumentLineCount(7);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '1234567890');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        // todo: add more tests
+    });
+    describe('clipboardCopy', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+        });
+        it('should copy selected part of document', async () => {
+            await selectRange(2, 3, 3, 1);
+            const commands = ['vz.clipboardCopy'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(0, 3, 1, 7);
+            await assertDocumentLineCount(7);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '1234567890');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '4567890\n1234567');
+        });
+        // todo: add more tests
+    });
     describe('clearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

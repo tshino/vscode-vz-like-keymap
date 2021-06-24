@@ -306,10 +306,6 @@ const EditHandler = function(modeHandler) {
         REENTRY_CUTANDPUSH
     );
     const copyAndPushImpl = async function(textEditor, useTextStack = true) {
-        if (reentryGuard === REENTRY_COPYANDPUSH) {
-            return;
-        }
-        reentryGuard = REENTRY_COPYANDPUSH;
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
         if (!useTextStack) {
@@ -317,23 +313,27 @@ const EditHandler = function(modeHandler) {
                 textStack.length = textStack.length - 1;
             }
         }
-        textStack.push({
-            text: text,
-            isLineMode: isLineMode,
-            isBoxMode: mode.inBoxSelection()
-        });
+        let isBoxMode = mode.inBoxSelection();
+        textStack.push({ text, isLineMode, isBoxMode });
         cancelSelection(textEditor);
         await vscode.env.clipboard.writeText(text);
-        reentryGuard = null;
     };
-    const clipboardCopyAndPush = async function(textEditor, _edit) {
-        const useTextStack = true;
-        await copyAndPushImpl(textEditor, useTextStack);
-    };
-    const clipboardCopy = async function(textEditor, _edit) {
-        const useTextStack = false;
-        await copyAndPushImpl(textEditor, useTextStack);
-    };
+    const clipboardCopyAndPush = makeCommandWithReentryGuard(
+        async function(textEditor, _edit) {
+            kbMacroHandler.pushIfRecording('vz.clipboardCopyAndPush', clipboardCopyAndPush);
+            const useTextStack = true;
+            await copyAndPushImpl(textEditor, useTextStack);
+        },
+        REENTRY_COPYANDPUSH
+    );
+    const clipboardCopy = makeCommandWithReentryGuard(
+        async function(textEditor, _edit) {
+            kbMacroHandler.pushIfRecording('vz.clipboardCopy', clipboardCopy);
+            const useTextStack = false;
+            await copyAndPushImpl(textEditor, useTextStack);
+        },
+        REENTRY_COPYANDPUSH
+    );
     const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
         let isLineMode = false;
