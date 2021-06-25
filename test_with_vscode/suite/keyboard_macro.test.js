@@ -2538,7 +2538,74 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'fghij\n');
         });
-        // todo: add more tests
+        it('should copy the line when in box-selection mode', async () => {
+            await selectRanges([[0, 3, 0, 3]]); // box-selection mode
+            const commands = ['vz.clipboardCopyAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await assertDocumentLineCount(7);
+
+            await selectRanges([[2, 3, 2, 3]]); // box-selection mode
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, 'abcde');
+        });
+        it('should copy multiple selection ranges when in box-selection mode', async () => {
+            await selectRanges([
+                [3, 1, 3, 4],
+                [4, 0, 4, 0],
+                [5, 1, 5, 4]
+            ]);
+            const commands = ['vz.clipboardCopyAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await assertDocumentLineCount(7);
+
+            await selectRanges([
+                [1, 2, 1, 7],
+                [2, 2, 2, 5],
+                [3, 2, 3, 5]
+            ]);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1234567890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '34567\ncde\nhij\n');
+        });
+        it('should copy multiple lines when in box-selection mode', async () => {
+            await selectRanges([
+                [3, 2, 3, 2],
+                [4, 0, 4, 0],
+                [5, 2, 5, 2]
+            ]);
+            const commands = ['vz.clipboardCopyAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await assertDocumentLineCount(7);
+
+            await selectRanges([
+                [1, 7, 1, 7],
+                [2, 5, 2, 5],
+                [3, 5, 3, 5]
+            ]);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1234567890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, '1234567890\nabcde\nfghij\n');
+        });
     });
     describe('clipboardCopy', () => {
         beforeEach(async () => {
