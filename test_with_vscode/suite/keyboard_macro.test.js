@@ -2522,6 +2522,22 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, 'de\nfg');
         });
+        it('should copy an entire line when selection is empty', async () => {
+            await resetCursor(2, 3);
+            const commands = ['vz.clipboardCopyAndPush'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await assertDocumentLineCount(7);
+
+            await resetCursor(3, 3);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3]]);
+            assert.strictEqual(mode.inSelection(), false);
+            let clipboard = await vscode.env.clipboard.readText();
+            assert.strictEqual(clipboard, 'fghij\n');
+        });
         // todo: add more tests
     });
     describe('clipboardCopy', () => {
