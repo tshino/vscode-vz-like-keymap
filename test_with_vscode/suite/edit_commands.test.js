@@ -1488,6 +1488,13 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'de' }
             ]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 3);
+            let p1 = editHandler.deleteLeft(textEditor);
+            let p2 = editHandler.deleteLeft(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '124567890');
+        });
     });
     describe('deleteRight', () => {
         beforeEach(async () => {
@@ -1614,6 +1621,13 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'de' }
             ]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 3);
+            let p1 = editHandler.deleteRight(textEditor);
+            let p2 = editHandler.deleteRight(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123567890');
+        });
     });
     describe('deleteWordLeft', () => {
         beforeEach(async () => {
@@ -1708,6 +1722,13 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: 'fo' }
             ]);
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 8);
+            let p1 = editHandler.deleteWordLeft(textEditor);
+            let p2 = editHandler.deleteWordLeft(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123 789');
         });
     });
     describe('deleteWordRight', () => {
@@ -1804,6 +1825,13 @@ describe('EditHandler', () => {
                 { isLeftward: false, text: 'fo' }
             ]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 3);
+            let p1 = editHandler.deleteWordRight(textEditor);
+            let p2 = editHandler.deleteWordRight(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123 789');
+        });
     });
     describe('deleteAllLeft', () => {
         beforeEach(async () => {
@@ -1899,6 +1927,13 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '123 456' }
             ]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 3);
+            let p1 = editHandler.deleteAllLeft(textEditor);
+            let p2 = editHandler.deleteAllLeft(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'lo world');
+        });
     });
     describe('deleteAllRight', () => {
         beforeEach(async () => {
@@ -1993,6 +2028,13 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.readUndeleteStack(), [
                 { isLeftward: false, text: '456' }
             ]);
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 3);
+            let p1 = editHandler.deleteAllRight(textEditor);
+            let p2 = editHandler.deleteAllRight(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'hel');
         });
     });
     describe('undelete', () => {

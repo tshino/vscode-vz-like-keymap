@@ -508,72 +508,90 @@ const EditHandler = function(modeHandler) {
         }
         return false;
     };
-    const deleteLeft = async function(textEditor, edit) {
-        if (cursorIsAtBeginningOfDocument(textEditor)) {
-            return; // nothing to do
+    const deleteLeft = makeGuardedCommand(
+        'deleteLeft',
+        async function(textEditor, edit) {
+            if (cursorIsAtBeginningOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            mode.expectSync();
+            prepareDeletingLeft(textEditor);
+            await runEditCommand('deleteLeft', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        mode.expectSync();
-        prepareDeletingLeft(textEditor);
-        await runEditCommand('deleteLeft', textEditor, edit);
-        endExpectEdits();
-    };
-    const deleteRight = async function(textEditor, edit) {
-        if (cursorIsAtEndOfDocument(textEditor)) {
-            return; // nothing to do
+    );
+    const deleteRight = makeGuardedCommand(
+        'deleteRight',
+        async function(textEditor, edit) {
+            if (cursorIsAtEndOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            // if (mode.inSelection()) {
+                // mode.expectSync();
+            // }
+            prepareDeletingRight(textEditor);
+            await runEditCommand('deleteRight', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        // if (mode.inSelection()) {
-            // mode.expectSync();
-        // }
-        prepareDeletingRight(textEditor);
-        await runEditCommand('deleteRight', textEditor, edit);
-        endExpectEdits();
-    };
-    const deleteWordLeft = async function(textEditor, edit) {
-        if (cursorIsAtBeginningOfDocument(textEditor)) {
-            return; // nothing to do
+    );
+    const deleteWordLeft = makeGuardedCommand(
+        'deleteWordLeft',
+        async function(textEditor, edit) {
+            if (cursorIsAtBeginningOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            mode.expectSync();
+            prepareDeletingLeft(textEditor);
+            await runEditCommand('deleteWordLeft', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        mode.expectSync();
-        prepareDeletingLeft(textEditor);
-        await runEditCommand('deleteWordLeft', textEditor, edit);
-        endExpectEdits();
-    };
-    const deleteWordRight = async function(textEditor, edit) {
-        if (cursorIsAtEndOfDocument(textEditor)) {
-            return; // nothing to do
+    );
+    const deleteWordRight = makeGuardedCommand(
+        'deleteWordRight',
+        async function(textEditor, edit) {
+            if (cursorIsAtEndOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            // if (mode.inSelection()) {
+                // mode.expectSync();
+            // }
+            prepareDeletingRight(textEditor);
+            await runEditCommand('deleteWordRight', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        // if (mode.inSelection()) {
-            // mode.expectSync();
-        // }
-        prepareDeletingRight(textEditor);
-        await runEditCommand('deleteWordRight', textEditor, edit);
-        endExpectEdits();
-    };
-    const deleteAllLeft = async function(textEditor, edit) {
-        if (cursorIsAtBeginningOfDocument(textEditor)) {
-            return; // nothing to do
+    );
+    const deleteAllLeft = makeGuardedCommand(
+        'deleteAllLeft',
+        async function(textEditor, edit) {
+            if (cursorIsAtBeginningOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            mode.expectSync();
+            prepareDeletingLeftAll(textEditor);
+            await runEditCommand('deleteAllLeft', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        mode.expectSync();
-        prepareDeletingLeftAll(textEditor);
-        await runEditCommand('deleteAllLeft', textEditor, edit);
-        endExpectEdits();
-    };
-    const deleteAllRight = async function(textEditor, edit) {
-        if (cursorIsAtEndOfDocument(textEditor)) {
-            return; // nothing to do
+    );
+    const deleteAllRight = makeGuardedCommand(
+        'deleteAllRight',
+        async function(textEditor, edit) {
+            if (cursorIsAtEndOfDocument(textEditor)) {
+                return; // nothing to do
+            }
+            expectEdits();
+            // if (mode.inSelection()) {
+                // mode.expectSync();
+            // }
+            prepareDeletingRight(textEditor);
+            await runEditCommand('deleteAllRight', textEditor, edit);
+            endExpectEdits();
         }
-        expectEdits();
-        // if (mode.inSelection()) {
-            // mode.expectSync();
-        // }
-        prepareDeletingRight(textEditor);
-        await runEditCommand('deleteAllRight', textEditor, edit);
-        endExpectEdits();
-    };
+    );
     const insertDeletedTexts = async function(textEditor, deleted) {
         let n = textEditor.selections.length;
         mode.expectSync();
@@ -818,12 +836,12 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardPopAndPaste', clipboardPopAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', clipboardPaste);
         registerTextEditorCommandReplayable(context, 'clipboardClearStack', clearStack);
-        registerTextEditorCommandReplayable(context, 'deleteLeft', deleteLeft);
-        registerTextEditorCommandReplayable(context, 'deleteRight', deleteRight);
-        registerTextEditorCommandReplayable(context, 'deleteWordLeft', deleteWordLeft);
-        registerTextEditorCommandReplayable(context, 'deleteWordRight', deleteWordRight);
-        registerTextEditorCommandReplayable(context, 'deleteAllLeft', deleteAllLeft);
-        registerTextEditorCommandReplayable(context, 'deleteAllRight', deleteAllRight);
+        registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
+        registerTextEditorCommand(context, 'deleteRight', deleteRight);
+        registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
+        registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
+        registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
+        registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommandReplayable(context, 'copyLinesDown', copyLinesDown);
