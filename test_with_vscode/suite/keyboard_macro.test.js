@@ -2702,6 +2702,28 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
             assert.strictEqual(mode.inSelection(), false);
         });
+        it('should prevent reentry (clipboardPopAndPaste)', async () => {
+            await resetCursor(1, 1);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.clipboardPopAndPaste');
+            let p2 = vscode.commands.executeCommand('vz.clipboardPopAndPaste');
+            await p1;
+            await p2;
+            await editHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.clipboardPopAndPaste'
+            ]);
+
+            await resetCursor(1, 1);
+            await assertDocumentLineCount(7);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(6);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+        });
         // todo: add more tests
     });
     describe('clipboardPaste', () => {
@@ -2735,6 +2757,28 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
             assert.strictEqual(mode.inSelection(), false);
+        });
+        it('should prevent reentry (clipboardPopAndPaste)', async () => {
+            await resetCursor(1, 1);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.clipboardPaste');
+            let p2 = vscode.commands.executeCommand('vz.clipboardPaste');
+            await p1;
+            await p2;
+            await editHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.clipboardPaste'
+            ]);
+
+            await resetCursor(1, 1);
+            await assertDocumentLineCount(7);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(6);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
         });
         // todo: add more tests
     });
