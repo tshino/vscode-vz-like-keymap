@@ -374,8 +374,11 @@ const EditHandler = function(modeHandler) {
             '' != textEditor.document.lineAt(lastPos.line).text)) {
             text += '\n';
         }
+        expectEdits();
+        mode.expectSync();
         await vscode.commands.executeCommand('paste', { text: text });
         textEditor.selection = new vscode.Selection(lastPos, lastPos);
+        endExpectEdits();
     };
     const pasteInlineText = async function(text) {
         expectEdits();

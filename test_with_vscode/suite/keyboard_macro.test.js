@@ -2724,6 +2724,42 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             await assertDocumentLineCount(7);
         });
+        it('should paste a single text into each position of multiple cursors', async () => {
+            await selectRange(5, 0, 5, 5);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.toggleBoxSelection',
+                'vz.cursorDown',
+                'vz.clipboardPopAndPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(1, 0, 1, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(await vscode.env.clipboard.readText(), '');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1234567890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, '12345abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 5], [2, 5]]);
+        });
+        it('should insert a single line if the text is from line mode cut or copy', async () => {
+            await resetCursor(3, 2);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.cursorUp',
+                'vz.clipboardPopAndPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(5, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(await vscode.env.clipboard.readText(), '');
+            assert.strictEqual(textEditor.document.lineAt(4).text, '12345');
+            assert.strictEqual(textEditor.document.lineAt(5).text, '');
+            assert.strictEqual(textEditor.document.lineAt(6).text, '67890');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+        });
         // todo: add more tests
     });
     describe('clipboardPaste', () => {
@@ -2779,6 +2815,29 @@ describe('KeyboardMacro', () => {
             await assertDocumentLineCount(6);
             await kb_macro.replay(textEditor);
             await assertDocumentLineCount(7);
+        });
+        it('should repeat inserting a single line (paste)', async () => {
+            await resetCursor(3, 2);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.cursorUp',
+                'vz.clipboardPaste',
+                'vz.clipboardPaste',
+                'vz.clipboardPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            await assertDocumentLineCount(9);
+
+            await resetCursor(7, 0);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(11);
+            assert.strictEqual(textEditor.document.lineAt(6).text, '12345');
+            assert.strictEqual(textEditor.document.lineAt(7).text, '12345');
+            assert.strictEqual(textEditor.document.lineAt(8).text, '12345');
+            assert.strictEqual(textEditor.document.lineAt(9).text, '');
+            assert.strictEqual(textEditor.document.lineAt(10).text, '67890');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
         // todo: add more tests
     });
