@@ -216,15 +216,17 @@ const EditHandler = function(modeHandler) {
         return textStack.length;
     };
     let reentryGuard = null;
-    const makeCommandWithReentryGuard = function(func, guardLabel) {
-        return async function(textEditor, edit) {
-            if (reentryGuard === guardLabel) {
+    const makeGuardedCommand = function(name, func) {
+        const guardedCommand = async function(textEditor, edit) {
+            if (reentryGuard === name) {
                 return;
             }
-            reentryGuard = guardLabel;
+            reentryGuard = name;
+            kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
             await func(textEditor, edit);
             reentryGuard = null;
         };
+        return guardedCommand;
     };
     const waitForEndOfGuardedCommand = async function() { // test purpose only
         for (let i = 0; i < 10 && reentryGuard !== null; i++) {
@@ -234,8 +236,8 @@ const EditHandler = function(modeHandler) {
             console.log('*** debug: Guarded command still be running unexpectedly')
         }
     };
-    const REENTRY_CUTANDPUSH = 'cutAndPush';
-    const REENTRY_COPYANDPUSH = 'copyAndPush';
+    // const REENTRY_CUTANDPUSH = 'cutAndPush';
+    // const REENTRY_COPYANDPUSH = 'copyAndPush';
     const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
@@ -289,21 +291,19 @@ const EditHandler = function(modeHandler) {
         }
         await vscode.env.clipboard.writeText(text);
     };
-    const clipboardCutAndPush = makeCommandWithReentryGuard(
+    const clipboardCutAndPush = makeGuardedCommand(
+        'clipboardCutAndPush',
         async function(textEditor, _edit) {
-            kbMacroHandler.pushIfRecording('vz.clipboardCutAndPush', clipboardCutAndPush);
             const useTextStack = true;
             await cutAndPushImpl(textEditor, useTextStack);
-        },
-        REENTRY_CUTANDPUSH
+        }
     );
-    const clipboardCut = makeCommandWithReentryGuard(
+    const clipboardCut = makeGuardedCommand(
+        'clipboardCut',
         async function(textEditor, _edit) {
-            kbMacroHandler.pushIfRecording('vz.clipboardCut', clipboardCut);
             const useTextStack = false;
             await cutAndPushImpl(textEditor, useTextStack);
-        },
-        REENTRY_CUTANDPUSH
+        }
     );
     const copyAndPushImpl = async function(textEditor, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
@@ -318,21 +318,19 @@ const EditHandler = function(modeHandler) {
         cancelSelection(textEditor);
         await vscode.env.clipboard.writeText(text);
     };
-    const clipboardCopyAndPush = makeCommandWithReentryGuard(
+    const clipboardCopyAndPush = makeGuardedCommand(
+        'clipboardCopyAndPush',
         async function(textEditor, _edit) {
-            kbMacroHandler.pushIfRecording('vz.clipboardCopyAndPush', clipboardCopyAndPush);
             const useTextStack = true;
             await copyAndPushImpl(textEditor, useTextStack);
-        },
-        REENTRY_COPYANDPUSH
+        }
     );
-    const clipboardCopy = makeCommandWithReentryGuard(
+    const clipboardCopy = makeGuardedCommand(
+        'clipboardCopy',
         async function(textEditor, _edit) {
-            kbMacroHandler.pushIfRecording('vz.clipboardCopy', clipboardCopy);
             const useTextStack = false;
             await copyAndPushImpl(textEditor, useTextStack);
-        },
-        REENTRY_COPYANDPUSH
+        }
     );
     const peekTextStack = async function() {
         let text = await vscode.env.clipboard.readText();
