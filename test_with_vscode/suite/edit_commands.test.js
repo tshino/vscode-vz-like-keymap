@@ -1208,14 +1208,26 @@ describe('EditHandler', () => {
             await editHandler.clipboardPopAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
+            assert.strictEqual(mode.inSelection(), false);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry (clipboardPopAndPaste)', async () => {
             await resetCursor(1, 1);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
             let p1 = editHandler.clipboardPopAndPaste(textEditor);
             let p2 = editHandler.clipboardPopAndPaste(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineCount, 6);
+        });
+        it('should prevent reentry (clipboardPaste)', async () => {
+            await resetCursor(1, 1);
+            assert.strictEqual(textEditor.document.lineCount, 7);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            let p1 = editHandler.clipboardPaste(textEditor);
+            let p2 = editHandler.clipboardPaste(textEditor);
             await Promise.all([p1, p2]);
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
@@ -1238,6 +1250,7 @@ describe('EditHandler', () => {
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(0).text, '123abcde4567890');
             assert.strictEqual(textEditor.document.lineAt(1).text, '123abcde4567890');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 8], [1, 8]]);
         });
         it('should insert a single line if the text is from line mode cut or copy', async () => {
             await resetCursor(3, 2);
@@ -1246,6 +1259,7 @@ describe('EditHandler', () => {
             await editHandler.clipboardPopAndPaste(textEditor);
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'fghij');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 2]]);
         });
         it('should repeat inserting a single line (paste)', async () => {
             await resetCursor(3, 2);
@@ -1260,6 +1274,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(4).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(5).text, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 2]]);
         });
         it('should insert multiple lines that are from multiple cuts', async () => {
             await resetCursor(2, 2);
@@ -1273,6 +1288,11 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghij');
             assert.strictEqual(textEditor.document.lineAt(4).text, '');
+            if (selectionsAsArray()[0][1] === 0) {
+                assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            } else {
+                assert.deepStrictEqual(selectionsAsArray(), [[2, 2]]);
+            }
         });
         it('should insert multiple lines of inline text into at multiple cursors', async () => {
             await selectRanges([
@@ -1288,6 +1308,7 @@ describe('EditHandler', () => {
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
+            // assert.deepStrictEqual(selectionsAsArray(), [[2, 5], [3, 5]]);
         });
         it('should insert multiple lines of inline text into lines below the cursor', async () => {
             await selectRanges([
@@ -1300,6 +1321,7 @@ describe('EditHandler', () => {
             assert.strictEqual(await vscode.env.clipboard.readText(), '');
             assert.strictEqual(textEditor.document.lineAt(2).text, 'deabc');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'ijfgh');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
         });
         it('should repeat inserting multiple lines of inline text (paste)', async () => {
             await selectRanges([
@@ -1312,6 +1334,7 @@ describe('EditHandler', () => {
             await editHandler.clipboardPaste(textEditor);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'abcabcabcde');
             assert.strictEqual(textEditor.document.lineAt(3).text, 'fghfghfghij');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
         });
     });
     describe('clearStack', () => {
