@@ -2670,6 +2670,74 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(clipboard, 'de\nfg');
         });
     });
+    describe('clipboardPopAndPaste', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should pop a text from the text stack and paste it', async () => {
+            await selectRange(2, 1, 2, 4);
+            const commands = ['vz.clipboardCutAndPush', 'vz.cursorRight', 'vz.clipboardPopAndPaste'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(1, 1, 1, 9);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(await vscode.env.clipboard.readText(), '');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
+            assert.strictEqual(mode.inSelection(), false);
+        });
+        // todo: add more tests
+    });
+    describe('clipboardPaste', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '1234567890\n' +
+                    '1234567890\n' +
+                    'abcde\n' +
+                    'fghij\n' +
+                    '\n' +
+                    '12345\n' +
+                    '67890' // <= no new line
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should retain the text stack (paste)', async () => {
+            await selectRange(2, 1, 2, 4);
+            const commands = ['vz.clipboardCutAndPush', 'vz.cursorRight', 'vz.clipboardPaste'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(1, 1, 1, 9);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(await vscode.env.clipboard.readText(), '23456789');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1023456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
+            assert.strictEqual(mode.inSelection(), false);
+        });
+        // todo: add more tests
+    });
     describe('clearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

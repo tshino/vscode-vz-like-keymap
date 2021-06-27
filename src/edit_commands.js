@@ -378,7 +378,10 @@ const EditHandler = function(modeHandler) {
         textEditor.selection = new vscode.Selection(lastPos, lastPos);
     };
     const pasteInlineText = async function(text) {
+        expectEdits();
+        mode.expectSync();
         await vscode.commands.executeCommand('paste', { text: text });
+        endExpectEdits();
     };
     const pasteBoxText = async function(textEditor, text) {
         let pos = textEditor.selection.active;
@@ -413,10 +416,6 @@ const EditHandler = function(modeHandler) {
         textEditor.selections = [new vscode.Selection(newPos, newPos)];
     };
     const popAndPasteImpl = async function(textEditor, withPop = true) {
-        if (reentryGuard === REENTRY_POPANDPASTE) {
-            return;
-        }
-        reentryGuard = REENTRY_POPANDPASTE;
         let [text, isLineMode, isBoxMode] = withPop ? await popTextStack() : await peekTextStack();
         if (isBoxMode) {
             await pasteBoxText(textEditor, text);
@@ -425,16 +424,21 @@ const EditHandler = function(modeHandler) {
         } else {
             await pasteInlineText(text);
         }
-        reentryGuard = null;
     };
-    const clipboardPopAndPaste = async function(textEditor, _edit) {
-        const withPop = true;
-        await popAndPasteImpl(textEditor, withPop);
-    };
-    const clipboardPaste = async function(textEditor, _edit) {
-        const withPop = false;
-        await popAndPasteImpl(textEditor, withPop);
-    };
+    const clipboardPopAndPaste = makeGuardedCommand(
+        'clipboardPopAndPaste',
+        async function(textEditor, _edit) {
+            const withPop = true;
+            await popAndPasteImpl(textEditor, withPop);
+        }
+    );
+    const clipboardPaste = makeGuardedCommand(
+        'clipboardPaste',
+        async function(textEditor, _edit) {
+            const withPop = false;
+            await popAndPasteImpl(textEditor, withPop);
+        }
+    );
     const clearStack = async function(_textEditor, _edit) {
         clearTextStack();
         await vscode.env.clipboard.writeText('');
