@@ -45,30 +45,38 @@ describe('KeyboardMacro', () => {
             let cmd = commands[i];
             if (typeof cmd === 'string') {
                 await vscode.commands.executeCommand(cmd);
+                await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
             } else if (cmd[0] === 'edit') {
-                await sleep(60);
+                mode.expectSync();
                 await textEditor.edit(cmd[1]);
-                await sleep(60);
+                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                    await sleep(5);
+                }
+                mode.sync(textEditor);
+                let newSelections;
                 if (typeof cmd[2][0] == 'number') {
-                    textEditor.selections = [
+                    newSelections = [
                         new vscode.Selection(cmd[2][0], cmd[2][1], cmd[2][0], cmd[2][1])
                     ];
                 } else {
-                    textEditor.selections = cmd[2].map(
+                    newSelections = cmd[2].map(
                         r => new vscode.Selection(r[0], r[1], r[2], r[3])
                     );
                 }
-                await sleep(60);
+                if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+                    mode.expectSync();
+                    textEditor.selections = newSelections;
+                }
             } else {
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
             }
-            await sleep(30);
             for (let j = 0; j < 10 && !mode.synchronized(); j++) {
                 await sleep(10);
             }
+            mode.sync(textEditor);
         }
         kb_macro.finishRecording();
     };
