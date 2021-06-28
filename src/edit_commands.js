@@ -236,9 +236,6 @@ const EditHandler = function(modeHandler) {
             console.log('*** debug: Guarded command still be running unexpectedly')
         }
     };
-    // const REENTRY_CUTANDPUSH = 'cutAndPush';
-    // const REENTRY_COPYANDPUSH = 'copyAndPush';
-    const REENTRY_POPANDPASTE = 'popAndPaste';
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
@@ -377,8 +374,17 @@ const EditHandler = function(modeHandler) {
         expectEdits();
         mode.expectSync();
         await vscode.commands.executeCommand('paste', { text: text });
-        textEditor.selection = new vscode.Selection(lastPos, lastPos);
         endExpectEdits();
+        let newSelections = [new vscode.Selection(lastPos, lastPos)];
+        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+            mode.expectSync();
+            textEditor.selections = newSelections;
+            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                await sleep(5);
+            }
+        } else {
+            mode.sync(textEditor);
+        }
     };
     const pasteInlineText = async function(text) {
         expectEdits();
@@ -417,9 +423,18 @@ const EditHandler = function(modeHandler) {
                 );
             }
         });
-        let newPos = pos.with({character: pos.character + lines[0].length});
-        textEditor.selections = [new vscode.Selection(newPos, newPos)];
         endExpectEdits();
+        let newPos = pos.with({character: pos.character + lines[0].length});
+        let newSelections = [new vscode.Selection(newPos, newPos)];
+        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+            mode.expectSync();
+            textEditor.selections = newSelections;
+            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                await sleep(5);
+            }
+        } else {
+            mode.sync(textEditor);
+        }
     };
     const popAndPasteImpl = async function(textEditor, withPop = true) {
         let [text, isLineMode, isBoxMode] = withPop ? await popTextStack() : await peekTextStack();

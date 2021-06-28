@@ -2913,7 +2913,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(10).text, '67890');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        it('should repeat inserting multiple lines of inline text (paste)', async () => {
+        it('should repeat inserting multiple lines of inline text', async () => {
             await selectRanges([
                 [2, 0, 2, 3],
                 [3, 0, 3, 3]
