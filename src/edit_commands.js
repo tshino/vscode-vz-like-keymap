@@ -407,6 +407,8 @@ const EditHandler = function(modeHandler) {
             lines.length = lines.length - overflow;
             lines[lines.length] = '\n' + rest;
         }
+        expectEdits();
+        mode.expectSync();
         await textEditor.edit((edit) => {
             for (let i = 0, n = lines.length; i < n; i++) {
                 edit.insert(
@@ -417,6 +419,7 @@ const EditHandler = function(modeHandler) {
         });
         let newPos = pos.with({character: pos.character + lines[0].length});
         textEditor.selections = [new vscode.Selection(newPos, newPos)];
+        endExpectEdits();
     };
     const popAndPasteImpl = async function(textEditor, withPop = true) {
         let [text, isLineMode, isBoxMode] = withPop ? await popTextStack() : await peekTextStack();
