@@ -2811,7 +2811,30 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, 'de  abc');
             // assert.deepStrictEqual(selectionsAsArray(), [[1, 7], [2, 5]]);
         });
-        // todo: add more tests
+        it('should insert multiple lines of inline text into lines below the cursor', async () => {
+            await selectRanges([
+                [2, 0, 2, 3],
+                [3, 0, 3, 3]
+            ]);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.cursorRight',
+                'vz.cursorRight',
+                'vz.clipboardPopAndPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRanges([
+                [1, 2, 1, 5],
+                [2, 2, 2, 5]
+            ]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(await vscode.env.clipboard.readText(), '');
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1267345890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'de  abc');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+        });
     });
     describe('clipboardPaste', () => {
         beforeEach(async () => {
@@ -2890,7 +2913,29 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(10).text, '67890');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        // todo: add more tests
+        it('should repeat inserting multiple lines of inline text (paste)', async () => {
+            await selectRanges([
+                [2, 0, 2, 3],
+                [3, 0, 3, 3]
+            ]);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.clipboardPaste',
+                'vz.clipboardPaste',
+                'vz.clipboardPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRanges([
+                [5, 1, 5, 4],
+                [6, 1, 6, 4]
+            ]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(5).text, '12342342345');
+            assert.strictEqual(textEditor.document.lineAt(6).text, '67897897890');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
+        });
     });
     describe('clearStack', () => {
         beforeEach(async () => {
