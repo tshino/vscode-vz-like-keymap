@@ -59,9 +59,13 @@ const KeyboardMacro = function(modeHandler) {
         }
     };
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+    let reentryGuard = null;
     const replay = async function(textEditor) {
         if (!recording) {
-            // console.log(recordedCommands);
+            if (reentryGuard === 'replay') {
+                return;
+            }
+            reentryGuard = 'replay';
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
                 await cmd[1](textEditor);
@@ -73,6 +77,7 @@ const KeyboardMacro = function(modeHandler) {
                     mode.sync(textEditor);
                 }
             }
+            reentryGuard = null;
         }
     };
 

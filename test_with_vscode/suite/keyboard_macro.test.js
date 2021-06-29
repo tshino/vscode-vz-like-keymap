@@ -106,7 +106,7 @@ describe('KeyboardMacro', () => {
             kb_macro.cancelRecording();
             assert.strictEqual(kb_macro.recording(), false);
         });
-        it('should record and replay a single command', async () => {
+        it('should record a single command to replay', async () => {
             kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.finishRecording();
@@ -115,7 +115,7 @@ describe('KeyboardMacro', () => {
                 ['vz.cursorDown', funcA]
             ]);
         });
-        it('should record and replay a series of commands', async () => {
+        it('should record a series of commands to replay', async () => {
             kb_macro.startRecording(textEditor);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
             kb_macro.pushIfRecording('vz.cursorDown', funcA);
@@ -152,6 +152,26 @@ describe('KeyboardMacro', () => {
             kb_macro.cancelRecording();  // clear the above sequence
 
             assert.deepStrictEqual(kb_macro.getRecordedCommands(), []);
+        });
+    });
+    describe('replay', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0123456789\n'.repeat(10)
+            );
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(3, 3);
+            const commands = ['vz.cursorRight', 'vz.cursorRight'];
+            await recordThroughExecution(commands);
+
+            await resetCursor(5, 5);
+            let p1 = kb_macro.replay(textEditor);
+            let p2 = kb_macro.replay(textEditor);
+            await p1;
+            await p2;
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7]]);
         });
     });
     describe('cursor', () => {
