@@ -387,10 +387,12 @@ const EditHandler = function(modeHandler) {
         }
     };
     const pasteInlineText = async function(text) {
-        expectEdits();
-        mode.expectSync();
-        await vscode.commands.executeCommand('paste', { text: text });
-        endExpectEdits();
+        if (text !== '') {
+            expectEdits();
+            mode.expectSync();
+            await vscode.commands.executeCommand('paste', { text: text });
+            endExpectEdits();
+        }
     };
     const pasteBoxText = async function(textEditor, text) {
         let pos = textEditor.selection.active;
