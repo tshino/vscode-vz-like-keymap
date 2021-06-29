@@ -2937,7 +2937,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
         });
     });
-    describe('clearStack', () => {
+    describe('clipboardClearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,

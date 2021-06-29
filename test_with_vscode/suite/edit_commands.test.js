@@ -1337,7 +1337,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
         });
     });
-    describe('clearStack', () => {
+    describe('clipboardClearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1361,7 +1361,7 @@ describe('EditHandler', () => {
             await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 5);
 
-            await editHandler.clearStack(textEditor);
+            await editHandler.clipboardClearStack(textEditor);
 
             assert.strictEqual(editHandler.getTextStackLength(), 0);
             let clipboard = await vscode.env.clipboard.readText();

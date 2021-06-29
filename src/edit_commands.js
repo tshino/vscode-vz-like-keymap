@@ -460,7 +460,7 @@ const EditHandler = function(modeHandler) {
             await popAndPasteImpl(textEditor, withPop);
         }
     );
-    const clearStack = async function(_textEditor, _edit) {
+    const clipboardClearStack = async function(_textEditor, _edit) {
         clearTextStack();
         await vscode.env.clipboard.writeText('');
         vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
@@ -860,7 +860,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', clipboardPopAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', clipboardPaste);
-        registerTextEditorCommandReplayable(context, 'clipboardClearStack', clearStack);
+        registerTextEditorCommandReplayable(context, 'clipboardClearStack', clipboardClearStack);
         registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
@@ -897,7 +897,7 @@ const EditHandler = function(modeHandler) {
         pasteBoxText,
         clipboardPopAndPaste,
         clipboardPaste,
-        clearStack,
+        clipboardClearStack,
         deleteLeft,
         deleteRight,
         deleteWordLeft,
