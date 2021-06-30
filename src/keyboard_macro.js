@@ -301,7 +301,31 @@ const KeyboardMacro = function(modeHandler) {
                 // console.log('selections: ' + selectionsToString(selections));
                 // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
                 // console.log('unhandled edit event (4):');
+            } else if (
+                selections.length === 1 &&
+                changes.length === 2 &&
+                changes[0].range.isEmpty &&
+                changes[1].range.isEmpty &&
+                selections[0].start.isEqual(changes[0].range.start) &&
+                selections[0].end.isEqual(changes[1].range.start) &&
+                changes[0].text.length === 1 &&
+                changes[1].text.length === 1
+            ) {
+                // Possibility: typing an opening bracket with a range of text selected,
+                // caused brack completion around the selected text
+                let text = changes[0].text;
+                pushIfRecording(
+                    '<default-type>',
+                    async function(_textEditor, _edit) {
+                        await vscode.commands.executeCommand('default:type', { text: text });
+                    }
+                );
+                mode.expectSync();
+                return;
             } else {
+                // console.log('selections: ' + selectionsToString(selections));
+                // console.log('changes ' + changes.map(chg => chg.text));
+                // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
                 // console.log('unhandled edit event (1)');
             }
         };
