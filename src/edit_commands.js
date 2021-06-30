@@ -705,14 +705,26 @@ const EditHandler = function(modeHandler) {
         }
     };
     const insertLineBefore = async function(textEditor, _edit) {
-        expectEdits();
-        mode.expectSync();
         let resetSelection = mode.inSelection() && !mode.inBoxSelection();
+        let selectionsWillChange = !(
+            1 === textEditor.selections.length &&
+            textEditor.selections[0].isEmpty &&
+            textEditor.selections[0].start.character === 0
+        );
+        expectEdits();
+        if (selectionsWillChange) {
+            mode.expectSync();
+        }
         await vscode.commands.executeCommand('editor.action.insertLineBefore');
         if (resetSelection) {
             mode.resetSelection(textEditor);
         }
         endExpectEdits();
+        if (selectionsWillChange || resetSelection) {
+            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                await sleep(5);
+            }
+        }
     };
     const copyLinesDown = async function(_textEditor, _edit) {
         expectEdits();
