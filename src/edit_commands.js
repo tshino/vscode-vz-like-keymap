@@ -229,7 +229,7 @@ const EditHandler = function(modeHandler) {
         return guardedCommand;
     };
     const waitForEndOfGuardedCommand = async function() { // test purpose only
-        for (let i = 0; i < 10 && reentryGuard !== null; i++) {
+        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
             await sleep(10);
         }
         if (reentryGuard !== null) {
