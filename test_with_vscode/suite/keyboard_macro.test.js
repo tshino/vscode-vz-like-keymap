@@ -2203,6 +2203,27 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, '[12]3 ');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 1, 6, 3]]);
         });
+        it('should insert a pair of brackets around the selected text (replay multi)', async () => {
+            await selectRange(5, 0, 5, 3);
+            await recordThroughExecution([
+                ['type', { text: '[' }]
+            ]);
+            assert.deepStrictEqual(
+                kb_macro.getRecordedCommandNames(),
+                ['<default-type>']
+            );
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '[123] ');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 1, 5, 4]]);
+
+            await selectRanges([[6, 0, 6, 2], [7, 0, 7, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '[12]3 ');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '[12]3 ');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 1, 6, 3], [7, 1, 7, 3]]);
+        });
+        // todo: add tests for multi-cursor cases for bracket completion around selected texts
     });
     describe('type + cursor', () => {
         beforeEach(async () => {
