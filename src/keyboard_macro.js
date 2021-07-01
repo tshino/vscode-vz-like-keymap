@@ -253,6 +253,24 @@ const KeyboardMacro = function(modeHandler) {
                 }
             };
         };
+        const isBracketCompletionWithSelection = function(selections, changes) {
+            if (changes.length === 0) {
+                return false;
+            }
+            let uniformPairedText = changes.every(
+                (chg,i) => chg.text === changes[i % 2].text
+            );
+            return (
+                uniformPairedText &&
+                selections.length * 2 === changes.length &&
+                changes.every(chg => chg.range.isEmpty) &&
+                selections.every((sel,i) => (
+                    sel.start.isEqual(changes[i * 2].range.start) &&
+                    sel.end.isEqual(changes[i * 2 + 1].range.start)
+                )) &&
+                changes.every(chg => chg.text.length === 1)
+            );
+        };
         const processOnChangeDocument = function(changes) {
             changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
             // console.log('#changes ' + changes.map(chg => chg.text));
@@ -301,16 +319,7 @@ const KeyboardMacro = function(modeHandler) {
                 // console.log('selections: ' + selectionsToString(selections));
                 // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
                 // console.log('unhandled edit event (4):');
-            } else if (
-                selections.length === 1 &&
-                changes.length === 2 &&
-                changes[0].range.isEmpty &&
-                changes[1].range.isEmpty &&
-                selections[0].start.isEqual(changes[0].range.start) &&
-                selections[0].end.isEqual(changes[1].range.start) &&
-                changes[0].text.length === 1 &&
-                changes[1].text.length === 1
-            ) {
+            } else if (isBracketCompletionWithSelection(selections, changes)) {
                 // Possibility: typing an opening bracket with a range of text selected,
                 // caused brack completion around the selected text
                 let text = changes[0].text;
