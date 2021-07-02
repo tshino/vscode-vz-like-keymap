@@ -274,10 +274,9 @@ const KeyboardMacro = function(modeHandler) {
         const processOnChangeDocument = function(changes) {
             changes.sort((a, b) => a.rangeOffset - b.rangeOffset);
             // console.log('#changes ' + changes.map(chg => chg.text));
-            let selections = vscode.window.activeTextEditor.selections;
+            let selections = Array.from(vscode.window.activeTextEditor.selections);
+            selections.sort((a, b) => a.start.compareTo(b.start));
             if (0 < changes.length && changes.length === selections.length) {
-                selections = Array.from(selections);
-                selections.sort((a, b) => a.start.compareTo(b.start));
                 let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
                 let uniformText = changes.every((chg) => chg.text === changes[0].text);
                 if (!uniformText) {
