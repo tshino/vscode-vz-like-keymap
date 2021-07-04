@@ -24,6 +24,7 @@ const EditHandler = function(modeHandler) {
     const mode = modeHandler;
     const textStack = [];
     const undeleteStack = [];
+    let editsFreeCounter = 0;
     let editsExpected = false; // for keyboard macro recording
     let editsConfirmed = false;
     let missingExpectedEditsCount = 0;
@@ -39,6 +40,9 @@ const EditHandler = function(modeHandler) {
             console.log('*** debug: Missing expected edits #' + missingExpectedEditsCount);
         }
         editsExpected = false;
+    };
+    const getEditsFreeCounter = function() {
+        return editsFreeCounter;
     };
     const deletedTextDetector = (function() {
         let possibleDeletingInfo = [];
@@ -98,6 +102,7 @@ const EditHandler = function(modeHandler) {
         context.subscriptions.push(
             vscode.workspace.onDidChangeTextDocument(function(event) {
                 if (event.document === vscode.window.activeTextEditor.document) {
+                    editsFreeCounter += 1;
                     if (editsExpected) {
                         editsConfirmed = true;
                     }
@@ -888,6 +893,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'insertPath', insertPath);
     };
     return {
+        getEditsFreeCounter, // for testing purpose
         clearUndeleteStack, // for testing purpose
         readUndeleteStack, // for testing purpose
         pushUndeleteStack, // for testing purpose

@@ -49,9 +49,13 @@ describe('KeyboardMacro', () => {
                 await editHandler.waitForEndOfGuardedCommand();
             } else if (cmd[0] === 'edit') {
                 mode.expectSync();
+                let lastCount = editHandler.getEditsFreeCounter();
                 await textEditor.edit(cmd[1]);
+                for (let i = 0; i < 10 && lastCount < editHandler.getEditsFreeCounter(); i++) {
+                    await sleep(10);
+                }
                 for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-                    await sleep(5);
+                    await sleep(10);
                 }
                 mode.sync(textEditor);
                 let newSelections;
