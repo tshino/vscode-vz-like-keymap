@@ -51,7 +51,7 @@ describe('KeyboardMacro', () => {
                 mode.expectSync();
                 let lastCount = editHandler.getEditsFreeCounter();
                 await textEditor.edit(cmd[1]);
-                for (let i = 0; i < 10 && lastCount < editHandler.getEditsFreeCounter(); i++) {
+                for (let i = 0; i < 10 && lastCount === editHandler.getEditsFreeCounter(); i++) {
                     await sleep(10);
                 }
                 for (let i = 0; i < 10 && !mode.synchronized(); i++) {
@@ -73,7 +73,11 @@ describe('KeyboardMacro', () => {
                     textEditor.selections = newSelections;
                 }
             } else {
+                let lastCount = editHandler.getEditsFreeCounter();
                 await vscode.commands.executeCommand(cmd[0], cmd[1]);
+                for (let i = 0; i < 10 && lastCount === editHandler.getEditsFreeCounter(); i++) {
+                    await sleep(10);
+                }
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
             }
