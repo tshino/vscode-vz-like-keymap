@@ -1600,6 +1600,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '\n' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'c');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
@@ -1618,6 +1621,11 @@ describe('KeyboardMacro', () => {
                 ['type', { text: '\n' }],
                 ['type', { text: '\n' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'c');
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
@@ -1633,6 +1641,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[1, 1, 1, 1], [2, 1, 2, 1]]);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'bc');
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'bc');
@@ -1651,6 +1662,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '\n' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'a');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'c');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
@@ -1666,6 +1680,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[1, 1, 1, 2], [2, 1, 2, 2]]);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'a');
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'c');
@@ -1684,6 +1701,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '\n' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
             const autoIndent = textEditor.document.lineAt(11).text === '    ';
             if (!autoIndent) {
                 console.log('.. skipped tests for auto indent');
@@ -1701,6 +1721,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[10, 8, 10, 8], [11, 8, 11, 8]]);
             await recordThroughExecution([
                 ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
             const autoIndent = textEditor.document.lineAt(11).text === '    ';
             if (!autoIndent) {
