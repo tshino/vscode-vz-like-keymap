@@ -1422,6 +1422,11 @@ describe('KeyboardMacro', () => {
                 ['type', { text: ' ' }],
                 ['type', { text: ' ' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
 
             await resetCursor(3, 0);
             await kb_macro.replay(textEditor);
@@ -1435,6 +1440,9 @@ describe('KeyboardMacro', () => {
                 ['edit', edit => {
                     edit.insert(textEditor.selections[0].active, '    ');
                 }, [1, 4]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await resetCursor(3, 0);
@@ -1450,6 +1458,9 @@ describe('KeyboardMacro', () => {
                     edit.insert(textEditor.selections[0].active, '    ');
                 }, [6, 8]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
 
             await resetCursor(3, 0);
             await kb_macro.replay(textEditor);
@@ -1461,6 +1472,9 @@ describe('KeyboardMacro', () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 'tab'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await resetCursor(3, 0);
@@ -1475,6 +1489,9 @@ describe('KeyboardMacro', () => {
             await resetCursor(6, 2);
             await recordThroughExecution([
                 'tab'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await resetCursor(8, 2);
@@ -1491,6 +1508,11 @@ describe('KeyboardMacro', () => {
                 ['type', { text: ' ' }],
                 ['type', { text: ' ' }],
                 ['type', { text: ' ' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
             ]);
 
             await selectRanges([[4, 0, 4, 0], [5, 2, 5, 2], [6, 2, 6, 2]]);
@@ -1509,6 +1531,9 @@ describe('KeyboardMacro', () => {
                     textEditor.selections.forEach(sel => edit.insert(sel.active, '    '));
                 }, [[1, 4, 1, 4], [2, 4, 2, 4], [3, 4, 3, 4]]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
 
             await selectRanges([[4, 0, 4, 0], [5, 4, 5, 4], [6, 4, 6, 4]]);
             await kb_macro.replay(textEditor);
@@ -1523,6 +1548,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0], [3, 0, 3, 0]]);
             await recordThroughExecution([
                 'tab'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await selectRanges([[4, 0, 4, 0], [5, 4, 5, 4], [6, 4, 6, 4]]);
@@ -1549,6 +1577,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: ' ' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ab e');
 
             await selectRange(6, 1, 6, 4);
@@ -1564,6 +1595,9 @@ describe('KeyboardMacro', () => {
                     edit.replace(textEditor.selections[0], '    ');
                 }, [5, 4]]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
 
             await selectRange(6, 4, 6, 5);
             await kb_macro.replay(textEditor);
@@ -1575,6 +1609,9 @@ describe('KeyboardMacro', () => {
             await selectRange(5, 2, 5, 4);
             await recordThroughExecution([
                 'tab'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await selectRange(6, 2, 6, 4);
