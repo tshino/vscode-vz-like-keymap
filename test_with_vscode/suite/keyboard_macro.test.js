@@ -1343,6 +1343,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: 'a' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
 
             await resetCursor(3, 0);
             await kb_macro.replay(textEditor);
@@ -1357,6 +1360,11 @@ describe('KeyboardMacro', () => {
                 ['type', { text: 'b' }],
                 ['type', { text: 'c' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
 
             await resetCursor(4, 0);
             await kb_macro.replay(textEditor);
@@ -1368,6 +1376,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
             await recordThroughExecution([
                 ['type', { text: 'a' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
 
             await selectRanges([[3, 0, 3, 0], [4, 0, 4, 0]]);
@@ -1383,6 +1394,9 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: 'C' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
 
             await selectRange(6, 0, 6, 3);
             await kb_macro.replay(textEditor);
@@ -1394,6 +1408,9 @@ describe('KeyboardMacro', () => {
             await selectRanges([[5, 0, 5, 3], [6, 0, 6, 3]]);
             await recordThroughExecution([
                 ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'Xde');
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Xde');
