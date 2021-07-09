@@ -1240,6 +1240,14 @@ describe('KeyboardMacro', () => {
                 ['type', { text: 'b' }],
                 ['type', { text: '\n' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.markPosition',
+                'vz.cursorUp',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>',
+                '<insert-uniform-text>'
+            ]);
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.strictEqual(pos.line, 5);
             assert.strictEqual(pos.character, 7);
@@ -1253,13 +1261,15 @@ describe('KeyboardMacro', () => {
         });
         it('should move marked position if some text deleted at before it', async () => {
             await resetCursor(6, 1);
-            await recordThroughExecution([
+            const commands = [
                 'vz.markPosition',
                 'vz.cursorUp',
                 'vz.toggleSelection',
                 'vz.cursorUp',
                 'vz.deleteRight'
-            ]);
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             await sleep(30);
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.strictEqual(pos.line, 5);
