@@ -842,28 +842,31 @@ const EditHandler = function(modeHandler) {
         lastCaseTransformTo = next;
         return next;
     };
-    const transformCase = async function(textEditor, _edit) {
-        let nextCase = getNextCaseTransformTo(textEditor);
-        switch (nextCase) {
-            case LOWERCASE:
-                expectEdits();
-                await vscode.commands.executeCommand('editor.action.transformToLowercase');
-                endExpectEdits();
-                break;
-            case UPPERCASE:
-                expectEdits();
-                await vscode.commands.executeCommand('editor.action.transformToUppercase');
-                endExpectEdits();
-                break;
-            case TITLECASE:
-                expectEdits();
-                await vscode.commands.executeCommand('editor.action.transformToTitlecase');
-                endExpectEdits();
-                break;
-            default:
-                break;
+    const transformCase = makeGuardedCommand(
+        'transformCase',
+        async function(textEditor, _edit) {
+            let nextCase = getNextCaseTransformTo(textEditor);
+            switch (nextCase) {
+                case LOWERCASE:
+                    expectEdits();
+                    await vscode.commands.executeCommand('editor.action.transformToLowercase');
+                    endExpectEdits();
+                    break;
+                case UPPERCASE:
+                    expectEdits();
+                    await vscode.commands.executeCommand('editor.action.transformToUppercase');
+                    endExpectEdits();
+                    break;
+                case TITLECASE:
+                    expectEdits();
+                    await vscode.commands.executeCommand('editor.action.transformToTitlecase');
+                    endExpectEdits();
+                    break;
+                default:
+                    break;
+            }
         }
-    };
+    );
     const insertPath = async function(textEditor, _edit) {
         expectEdits();
         mode.expectSync();
@@ -889,7 +892,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommandReplayable(context, 'copyLinesDown', copyLinesDown);
-        registerTextEditorCommandReplayable(context, 'transformCase', transformCase);
+        registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommandReplayable(context, 'insertPath', insertPath);
     };
     return {

@@ -2746,6 +2746,13 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 16);
+            let p1 = editHandler.transformCase(textEditor);
+            let p2 = editHandler.transformCase(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn opqrstu Vwxyz');
+        });
     });
     describe('insertPath', () => {
         beforeEach(async () => {
