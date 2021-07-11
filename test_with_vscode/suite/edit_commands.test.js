@@ -2502,6 +2502,13 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, 'fghijklmno');
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 0);
+            let p1 = editHandler.copyLinesDown(textEditor);
+            let p2 = editHandler.copyLinesDown(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineCount, 5);
+        });
     });
     describe('transformCase', () => {
         beforeEach(async () => {

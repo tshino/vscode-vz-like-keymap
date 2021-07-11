@@ -731,11 +731,14 @@ const EditHandler = function(modeHandler) {
             }
         }
     };
-    const copyLinesDown = async function(_textEditor, _edit) {
-        expectEdits();
-        await vscode.commands.executeCommand('editor.action.copyLinesDownAction');
-        endExpectEdits();
-    };
+    const copyLinesDown = makeGuardedCommand(
+        'copyLinesDown',
+        async function(_textEditor, _edit) {
+            expectEdits();
+            await vscode.commands.executeCommand('editor.action.copyLinesDownAction');
+            endExpectEdits();
+        }
+    );
     const LOWERCASE = 0;
     const UPPERCASE = 1;
     const TITLECASE = 2;
@@ -894,7 +897,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
-        registerTextEditorCommandReplayable(context, 'copyLinesDown', copyLinesDown);
+        registerTextEditorCommand(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);
     };
