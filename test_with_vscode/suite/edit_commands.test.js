@@ -2784,5 +2784,12 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'ABCDEFG');
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 0);
+            let p1 = editHandler.insertPath(textEditor);
+            let p2 = editHandler.insertPath(textEditor);
+            await Promise.all([p1, p2]);
+            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+        });
     });
 });

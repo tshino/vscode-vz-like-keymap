@@ -867,13 +867,16 @@ const EditHandler = function(modeHandler) {
             }
         }
     );
-    const insertPath = async function(textEditor, _edit) {
-        expectEdits();
-        mode.expectSync();
-        let path = textEditor.document.fileName;
-        await vscode.commands.executeCommand('paste', { text: path });
-        endExpectEdits();
-    };
+    const insertPath = makeGuardedCommand(
+        'insertPath',
+        async function(textEditor, _edit) {
+            expectEdits();
+            mode.expectSync();
+            let path = textEditor.document.fileName;
+            await vscode.commands.executeCommand('paste', { text: path });
+            endExpectEdits();
+        }
+    );
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCutAndPush', clipboardCutAndPush);
@@ -893,7 +896,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommandReplayable(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommand(context, 'transformCase', transformCase);
-        registerTextEditorCommandReplayable(context, 'insertPath', insertPath);
+        registerTextEditorCommand(context, 'insertPath', insertPath);
     };
     return {
         getEditsFreeCounter, // for testing purpose
