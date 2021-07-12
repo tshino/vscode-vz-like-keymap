@@ -709,28 +709,31 @@ const EditHandler = function(modeHandler) {
             endExpectEdits();
         }
     };
-    const insertLineBefore = async function(textEditor, _edit) {
-        let resetSelection = mode.inSelection() && !mode.inBoxSelection();
-        let selectionsWillChange = !(
-            1 === textEditor.selections.length &&
-            textEditor.selections[0].isEmpty &&
-            textEditor.selections[0].start.character === 0
-        );
-        expectEdits();
-        if (selectionsWillChange) {
-            mode.expectSync();
-        }
-        await vscode.commands.executeCommand('editor.action.insertLineBefore');
-        if (resetSelection) {
-            mode.resetSelection(textEditor);
-        }
-        endExpectEdits();
-        if (selectionsWillChange || resetSelection) {
-            for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-                await sleep(5);
+    const insertLineBefore = makeGuardedCommand(
+        'insertLineBefore',
+        async function(textEditor, _edit) {
+            let resetSelection = mode.inSelection() && !mode.inBoxSelection();
+            let selectionsWillChange = !(
+                1 === textEditor.selections.length &&
+                textEditor.selections[0].isEmpty &&
+                textEditor.selections[0].start.character === 0
+            );
+            expectEdits();
+            if (selectionsWillChange) {
+                mode.expectSync();
+            }
+            await vscode.commands.executeCommand('editor.action.insertLineBefore');
+            if (resetSelection) {
+                mode.resetSelection(textEditor);
+            }
+            endExpectEdits();
+            if (selectionsWillChange || resetSelection) {
+                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
+                    await sleep(5);
+                }
             }
         }
-    };
+    );
     const copyLinesDown = makeGuardedCommand(
         'copyLinesDown',
         async function(_textEditor, _edit) {
@@ -896,7 +899,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
         registerTextEditorCommandReplayable(context, 'undelete', undelete);
-        registerTextEditorCommandReplayable(context, 'insertLineBefore', insertLineBefore);
+        registerTextEditorCommand(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommand(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);

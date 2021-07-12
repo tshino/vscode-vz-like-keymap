@@ -2415,6 +2415,13 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0], [2, 0]]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 2);
+            let p1 = editHandler.insertLineBefore(textEditor);
+            let p2 = editHandler.insertLineBefore(textEditor);
+            await Promise.all([p1, p2]);
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '1234');
+        });
     });
     describe('copyLinesDown', () => {
         beforeEach(async () => {
