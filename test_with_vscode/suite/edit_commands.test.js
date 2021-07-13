@@ -2356,6 +2356,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, '     fgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 5);
+            editHandler.pushUndeleteStack([{ isLeftward: true, text: 'a' }]);
+            editHandler.pushUndeleteStack([{ isLeftward: true, text: 'b' }]);
+            let p1 = editHandler.undelete(textEditor);
+            let p2 = editHandler.undelete(textEditor);
+            await Promise.all([p1, p2]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '12345b67890');
+            assert.deepStrictEqual(editHandler.getUndeleteStack().length, 1);
+        });
     });
     describe('insertLineBefore', () => {
         beforeEach(async () => {

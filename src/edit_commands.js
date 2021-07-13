@@ -663,7 +663,7 @@ const EditHandler = function(modeHandler) {
             }
         }
     };
-    const undelete = async function(textEditor, _edit) {
+    const undeleteImpl = async function(textEditor, _edit) {
         let deleted = popUndeleteStack();
         if (0 < deleted.length) {
             let n = textEditor.selections.length;
@@ -709,6 +709,10 @@ const EditHandler = function(modeHandler) {
             endExpectEdits();
         }
     };
+    const undelete = makeGuardedCommand(
+        'undelete',
+        undeleteImpl
+    );
     const insertLineBefore = makeGuardedCommand(
         'insertLineBefore',
         async function(textEditor, _edit) {
@@ -898,7 +902,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'deleteWordRight', deleteWordRight);
         registerTextEditorCommand(context, 'deleteAllLeft', deleteAllLeft);
         registerTextEditorCommand(context, 'deleteAllRight', deleteAllRight);
-        registerTextEditorCommandReplayable(context, 'undelete', undelete);
+        registerTextEditorCommand(context, 'undelete', undelete);
         registerTextEditorCommand(context, 'insertLineBefore', insertLineBefore);
         registerTextEditorCommand(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommand(context, 'transformCase', transformCase);
