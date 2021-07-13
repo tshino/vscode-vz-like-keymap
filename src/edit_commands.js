@@ -467,11 +467,14 @@ const EditHandler = function(modeHandler) {
             await popAndPasteImpl(textEditor, withPop);
         }
     );
-    const clipboardClearStack = async function(_textEditor, _edit) {
-        clearTextStack();
-        await vscode.env.clipboard.writeText('');
-        vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
-    };
+    const clipboardClearStack = makeGuardedCommand(
+        'clipboardClearStack',
+        async function(_textEditor, _edit) {
+            clearTextStack();
+            await vscode.env.clipboard.writeText('');
+            vscode.window.setStatusBarMessage('Text stack has been cleared.', 3000);
+        }
+    );
     const runEditCommand = async function(command, textEditor, _edit) {
         let resetSelection = mode.inSelection() && !mode.inBoxSelection();
         await vscode.commands.executeCommand(command);
@@ -895,7 +898,7 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'clipboardCopy', clipboardCopy);
         registerTextEditorCommand(context, 'clipboardPopAndPaste', clipboardPopAndPaste);
         registerTextEditorCommand(context, 'clipboardPaste', clipboardPaste);
-        registerTextEditorCommandReplayable(context, 'clipboardClearStack', clipboardClearStack);
+        registerTextEditorCommand(context, 'clipboardClearStack', clipboardClearStack);
         registerTextEditorCommand(context, 'deleteLeft', deleteLeft);
         registerTextEditorCommand(context, 'deleteRight', deleteRight);
         registerTextEditorCommand(context, 'deleteWordLeft', deleteWordLeft);
