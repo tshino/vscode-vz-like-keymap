@@ -10,15 +10,6 @@ const registerTextEditorCommand = function(context, name, func) {
         vscode.commands.registerTextEditorCommand('vz.' + name, func)
     );
 };
-const registerTextEditorCommandReplayable = function(context, name, func) {
-    const command = 'vz.' + name;
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
-            kbMacroHandler.pushIfRecording(command, func);
-            return func(textEditor, edit);
-        })
-    );
-};
 
 const EditHandler = function(modeHandler) {
     const mode = modeHandler;
