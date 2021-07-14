@@ -363,8 +363,8 @@ const EditHandler = function(modeHandler) {
         let lineStart = new vscode.Position(lastPos.line, 0);
         textEditor.selection = new vscode.Selection(lineStart, lineStart);
         if (!text.endsWith('\n') &&
-            (lastPos.line != textEditor.document.lineCount - 1 ||
-            '' != textEditor.document.lineAt(lastPos.line).text)) {
+            (lastPos.line !== textEditor.document.lineCount - 1 ||
+            '' !== textEditor.document.lineAt(lastPos.line).text)) {
             text += '\n';
         }
         expectEdits();

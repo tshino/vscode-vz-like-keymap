@@ -6,7 +6,7 @@ const PositionMock = (function() {
     proto.isEqual = function(other) {
         return (
             this.line === other.line &&
-            this.character == other.character
+            this.character === other.character
         );
     };
     proto.isAfter = function(other) {

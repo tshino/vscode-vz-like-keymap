@@ -59,7 +59,7 @@ describe('KeyboardMacro', () => {
                 }
                 mode.sync(textEditor);
                 let newSelections;
-                if (typeof cmd[2][0] == 'number') {
+                if (typeof cmd[2][0] === 'number') {
                     newSelections = [
                         new vscode.Selection(cmd[2][0], cmd[2][1], cmd[2][0], cmd[2][1])
                     ];

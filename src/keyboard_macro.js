@@ -297,7 +297,7 @@ const KeyboardMacro = function(modeHandler) {
                     return;
                 }
                 const emptySelection = EditUtil.rangesAllEmpty(selections);
-                const uniformRangeLength = changes.every((chg) => chg.rangeLength == changes[0].rangeLength);
+                const uniformRangeLength = changes.every((chg) => chg.rangeLength === changes[0].rangeLength);
                 if (!emptySelection || !uniformRangeLength) {
                     // console.log('selections: ' + selectionsToString(selections));
                     // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
