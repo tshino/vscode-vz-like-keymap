@@ -685,6 +685,41 @@ describe('mode_handler', function() {
                 assert.strictEqual(mode.inBoxSelection(), true);
             });
         });
+        describe('synchronized', function() {
+            let mode;
+            beforeEach(function() {
+                mode = mode_handler.ModeHandler();
+            });
+            it('should be false at the initial state', function() {
+                assert.strictEqual(mode.synchronized(), false);
+            });
+            it('should be false after initialized() called', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                assert.strictEqual(mode.synchronized(), false);
+            });
+            it('should become true when sync() called', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                assert.strictEqual(mode.synchronized(), true);
+            });
+            it('should become false when expectSync() called', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                mode.expectSync();
+                assert.strictEqual(mode.synchronized(), false);
+            });
+            it('should be true after expectSync() then sync() called', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                mode.expectSync();
+                mode.sync(editor);
+                assert.strictEqual(mode.synchronized(), true);
+            });
+        });
     });
     describe('getInstance', function() {
         it('should return the global instance of ModeHandler', function() {
