@@ -9,6 +9,7 @@ const ModeHandler = function() {
     let onStartSelection = null;
     let onResetSelection = null;
     let synchronized = false;
+    let toBeResolved = [];
     const startSelection = function(textEditor, box) {
         mode = box ? MODE_BOX_SELECTION : MODE_SELECTION;
         lastSelectionAnchor = textEditor.selection.anchor;
@@ -43,6 +44,10 @@ const ModeHandler = function() {
             resetSelection(textEditor);
         }
         synchronized = true;
+        if (0 < toBeResolved.length) {
+            toBeResolved.forEach(res => res(true));
+            toBeResolved.length = 0;
+        }
     };
     const initialize = function(textEditor) {
         resetSelection(textEditor);
@@ -51,6 +56,23 @@ const ModeHandler = function() {
     };
     const expectSync = function() {
         synchronized = false;
+    };
+    const waitForSyncTimeout = function(timeout=100) {
+        synchronized = false;
+        return new Promise((resolve, reject) => {
+            let res = (resolved) => {
+                let m = resolved ? resolve : reject;
+                if (m) {
+                    m();
+                }
+                resolve = null;
+                reject = null;
+            };
+            toBeResolved.push(res);
+            setTimeout(() => {
+                res(false);
+            }, timeout);
+        })
     };
     return {
         inSelection: function() { return mode !== MODE_NORMAL; },
@@ -63,6 +85,7 @@ const ModeHandler = function() {
         sync: sync,
         initialize: initialize,
         expectSync,
+        waitForSyncTimeout,
         synchronized: function() { return synchronized; },
     };
 };

@@ -39,6 +39,7 @@ describe('TextEditorMock', function() {
 });
 
 describe('mode_handler', function() {
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     describe('ModeHandler', function() {
         /* Selection state and selection mode:
 
@@ -693,7 +694,7 @@ describe('mode_handler', function() {
             it('should be false at the initial state', function() {
                 assert.strictEqual(mode.synchronized(), false);
             });
-            it('should be false after initialized() called', function() {
+            it('should be false after initialize() called', function() {
                 const editor = TextEditorMock();
                 mode.initialize(editor);
                 assert.strictEqual(mode.synchronized(), false);
@@ -718,6 +719,59 @@ describe('mode_handler', function() {
                 mode.expectSync();
                 mode.sync(editor);
                 assert.strictEqual(mode.synchronized(), true);
+            });
+        });
+        describe('waitForSyncTimeout', function() {
+            let mode;
+            let editor = TextEditorMock();
+            beforeEach(function() {
+                mode = mode_handler.ModeHandler();
+                mode.initialize(editor);
+            });
+            it('should fullfill when sync() called', async function() {
+                let ret = mode.waitForSyncTimeout(3000).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                mode.sync(editor);
+                let result = await ret;
+                assert.strictEqual(result, 'fullfill');
+            });
+            it('should reject when time passed without sync() called', async function() {
+                let ret = mode.waitForSyncTimeout(30).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                let result = await ret;
+                assert.strictEqual(result, 'reject');
+            });
+            it('should reject when time passed before sync() called', async function() {
+                let ret = mode.waitForSyncTimeout(30).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                await sleep(100);
+                mode.sync(editor);
+                let result = await ret;
+                assert.strictEqual(result, 'reject');
+            });
+            it('should fullfill when sync() called before time passed', async function() {
+                let ret = mode.waitForSyncTimeout(30).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                mode.sync(editor);
+                await sleep(100);
+                let result = await ret;
+                assert.strictEqual(result, 'fullfill');
             });
         });
     });
