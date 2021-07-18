@@ -15,7 +15,7 @@ describe('CursorHandler', () => {
     const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
     const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
     const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
-    const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
+    // const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
@@ -66,7 +66,7 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(8), true);
 
-            cursorHandler.moveCursorTo(textEditor, 8, 7, false);
+            await cursorHandler.moveCursorTo(textEditor, 8, 7, false);
             await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
@@ -80,10 +80,8 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(8), true);
 
-            cursorHandler.moveCursorTo(textEditor, 8, 7, true);
+            await cursorHandler.moveCursorTo(textEditor, 8, 7, true);
             await waitForReveal();
-            await waitForStartSelection();
-            await waitForCursor(5, 5);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
@@ -96,10 +94,8 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(8), true);
 
-            cursorHandler.moveCursorTo(textEditor, 8, 7, true);
+            await cursorHandler.moveCursorTo(textEditor, 8, 7, true);
             await waitForReveal();
-            await waitForStartSelection();
-            await waitForCursor(6, 6);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
@@ -112,9 +108,8 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(8), true);
 
-            cursorHandler.moveCursorTo(textEditor, 8, 7, false);
+            await cursorHandler.moveCursorTo(textEditor, 8, 7, false);
             await waitForReveal();
-            await waitForEndSelection();
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[8, 7]]);
@@ -127,7 +122,7 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(999), false);
 
-            cursorHandler.moveCursorTo(textEditor, 999, 0, false);
+            await cursorHandler.moveCursorTo(textEditor, 999, 0, false);
             await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
@@ -141,7 +136,7 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(7), false);
 
-            cursorHandler.moveCursorTo(textEditor, 7, 3, false);
+            await cursorHandler.moveCursorTo(textEditor, 7, 3, false);
             await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
@@ -628,7 +623,7 @@ describe('CursorHandler', () => {
             await cursorHandler.cursorViewBottom(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1000, 5]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[1000, 0]]); // the last line is empty
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(vlines0[0], vlines1[0]);
         });

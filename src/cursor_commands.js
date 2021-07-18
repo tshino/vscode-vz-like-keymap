@@ -115,7 +115,7 @@ const CursorHandler = function(modeHandler) {
         let anchor = select ? textEditor.selection.anchor : cursor;
         textEditor.selection = new vscode.Selection(anchor, cursor);
     };
-    const moveCursorTo = function(textEditor, line, col, select) {
+    const moveCursorTo = async function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
         let newSelection = new vscode.Selection(anchor, cursor);
@@ -124,7 +124,7 @@ const CursorHandler = function(modeHandler) {
         mode.sync(textEditor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
         if (expectSelectionChangeCallback) {
-            mode.expectSync();
+            await mode.waitForSyncTimeout(100);
         }
     };
 
@@ -270,16 +270,16 @@ const CursorHandler = function(modeHandler) {
             return cursorFullPageDownSelect(textEditor);
         }
     };
-    const cursorViewTop = function(textEditor, _edit) {
+    const cursorViewTop = async function(textEditor, _edit) {
         mode.sync(textEditor);
         mode.resetBoxSelection();
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let line = vlines[vlines[0] === 0 ? 0 : Math.min(margin, vlines.length - 1)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, mode.inSelection());
+        await moveCursorTo(textEditor, line, col, mode.inSelection());
     };
-    const cursorViewBottom = function(textEditor, _edit) {
+    const cursorViewBottom = async function(textEditor, _edit) {
         mode.sync(textEditor);
         mode.resetBoxSelection();
         let margin = vscode.workspace.getConfiguration('editor').get('cursorSurroundingLines');
@@ -289,17 +289,17 @@ const CursorHandler = function(modeHandler) {
         let bottom = vlines.length - 1;
         let line = vlines[vlines[bottom] === lineCount - 1 ? bottom : Math.max(0, bottom - margin)];
         let col = textEditor.selection.active.character;
-        moveCursorTo(textEditor, line, col, mode.inSelection());
+        await moveCursorTo(textEditor, line, col, mode.inSelection());
     };
 
-    const cursorLineStartSelect = function(textEditor, _edit) {
+    const cursorLineStartSelect = async function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
-        moveCursorTo(textEditor, line, 0, true);
+        await moveCursorTo(textEditor, line, 0, true);
     };
-    const cursorLineEndSelect = function(textEditor, _edit) {
+    const cursorLineEndSelect = async function(textEditor, _edit) {
         let line = textEditor.selection.active.line;
         let col = textEditor.document.lineAt(line).range.end.character;
-        moveCursorTo(textEditor, line, col, true);
+        await moveCursorTo(textEditor, line, col, true);
     };
     const cursorLeft = makeCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
     const cursorRight = makeCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
