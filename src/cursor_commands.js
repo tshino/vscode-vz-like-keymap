@@ -450,17 +450,21 @@ const CursorHandler = function(modeHandler) {
         setMarkedPosition(textEditor, current);
         vscode.window.setStatusBarMessage('Mark has been set.', 3000);
     };
-    const cursorLastPosition = function(textEditor, _edit) {
+    const cursorLastPosition = async function(textEditor, _edit) {
         let pos = getMarkedPosition(textEditor);
         let current = currentCursorPosition(textEditor);
         setMarkedPosition(textEditor, current);
+        let promise;
         if (pos) {
             if (mode.inSelection() && mode.inBoxSelection()) {
                 mode.resetBoxSelection();
             }
-            moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection());
+            promise = moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection());
         }
         vscode.window.setStatusBarMessage('Here is the marked position.', 3000);
+        if (promise) {
+            await promise;
+        }
     };
 
     const openTextDocument = function(uri, line) {

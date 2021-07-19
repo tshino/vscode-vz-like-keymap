@@ -1231,7 +1231,7 @@ describe('CursorHandler', () => {
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(4, 5));
             await resetCursor(3, 7);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
@@ -1241,7 +1241,7 @@ describe('CursorHandler', () => {
         it('should not move cursor and should mark current position if no position marked', async () => {
             await resetCursor(2, 9);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
@@ -1252,7 +1252,7 @@ describe('CursorHandler', () => {
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(7, 9));
             await selectRange(2, 3, 4, 8);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
@@ -1264,7 +1264,7 @@ describe('CursorHandler', () => {
             await resetCursor(3, 6);
             mode.startSelection(textEditor, false);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
@@ -1279,7 +1279,7 @@ describe('CursorHandler', () => {
                 [4, 3, 4, 5]
             ]);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
 
             assert.strictEqual(mode.inBoxSelection(), false);
             let pos = cursorHandler.getMarkedPosition(textEditor);
@@ -1295,7 +1295,7 @@ describe('CursorHandler', () => {
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 9));
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
             await waitForScroll(vlines0[0]);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
@@ -1313,7 +1313,7 @@ describe('CursorHandler', () => {
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 8));
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorLastPosition(textEditor);
+            await cursorHandler.cursorLastPosition(textEditor);
             await waitForScroll(vlines0[0]);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
