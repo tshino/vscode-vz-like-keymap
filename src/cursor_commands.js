@@ -118,9 +118,9 @@ const CursorHandler = function(modeHandler) {
     const moveCursorTo = async function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
-        let newSelection = new vscode.Selection(anchor, cursor);
-        let expectSelectionChangeCallback = !textEditor.selection.isEqual(newSelection);
-        textEditor.selection = newSelection;
+        let newSelections = [new vscode.Selection(anchor, cursor)];
+        let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
+        textEditor.selections = newSelections;
         mode.sync(textEditor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
         if (expectSelectionChangeCallback) {
