@@ -183,7 +183,7 @@ describe('CursorHandler', () => {
             let cursor = 500 + (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorHalfPageUp(textEditor);
+            await cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
 
@@ -199,7 +199,7 @@ describe('CursorHandler', () => {
             let cursor = 500 - (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorHalfPageUp(textEditor);
+            await cursorHandler.cursorHalfPageUp(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
 
@@ -215,8 +215,7 @@ describe('CursorHandler', () => {
             let cursor = Math.max(1, halfPage - 2);
             await locateCursor(cursor, 0);
 
-            cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForCursor(cursor, 0);
+            await cursorHandler.cursorHalfPageUp(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -228,7 +227,7 @@ describe('CursorHandler', () => {
         it('should extend existing selection', async () => {
             await selectRange(50, 5, 30, 3);
 
-            cursorHandler.cursorHalfPageUp(textEditor);
+            await cursorHandler.cursorHalfPageUp(textEditor);
             await waitForCursor(30, 3);
 
             assert.strictEqual(mode.inSelection(), true);
@@ -245,7 +244,7 @@ describe('CursorHandler', () => {
                 [52, 5, 52, 8]
             ]);
 
-            cursorHandler.cursorHalfPageUp(textEditor);
+            await cursorHandler.cursorHalfPageUp(textEditor);
             await waitForCursor(52, 8);
 
             assert.strictEqual(mode.inSelection(), true);
@@ -354,7 +353,7 @@ describe('CursorHandler', () => {
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500;
 
-            cursorHandler.cursorHalfPageUpSelect(textEditor);
+            await cursorHandler.cursorHalfPageUpSelect(textEditor);
             await waitForScroll(vlines0[0]);
             await waitForCursor(cursor, 5);
             await waitForStartSelection();

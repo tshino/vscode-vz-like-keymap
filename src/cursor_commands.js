@@ -132,7 +132,7 @@ const CursorHandler = function(modeHandler) {
         }
     };
 
-    const cursorHalfPageUpImpl = function(textEditor, select) {
+    const cursorHalfPageUpImpl = async function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
@@ -140,9 +140,9 @@ const CursorHandler = function(modeHandler) {
         let halfPage = Math.max(1, Math.floor(onePage / 2) - 1);
         if (0 === vlines[0]) {
             let newLine = vlines[Math.max(0, currIndex - halfPage)];
-            moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+            await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         } else {
-            taskAfterScroll = function(textEditor) {
+            taskAfterScroll = async function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let deltaScroll = EditUtil.getLowerBoundLineIndex(newVlines, vlines[0]);
                 let delta = Math.max(halfPage, deltaScroll);
@@ -155,7 +155,7 @@ const CursorHandler = function(modeHandler) {
                         newVlines[Math.min(newVlines.length - 1, currIndex)]
                     )
                 );
-                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+                await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             let center = 2 <= vlines.length ? vlines[1] : vlines[0];
             textEditor.revealRange(
@@ -175,10 +175,10 @@ const CursorHandler = function(modeHandler) {
             let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
             moveCursorTo(textEditor, newLine, curr.character, select);
         } else {
-            taskAfterScroll = function(textEditor) {
+            taskAfterScroll = async function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
-                moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
+                await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
             };
             let center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
             textEditor.revealRange(
@@ -187,12 +187,12 @@ const CursorHandler = function(modeHandler) {
             );
         }
     };
-    const cursorHalfPageUp = function(textEditor, _edit) {
+    const cursorHalfPageUp = async function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
-        cursorHalfPageUpImpl(textEditor, mode.inSelection());
+        await cursorHalfPageUpImpl(textEditor, mode.inSelection());
     };
     const cursorHalfPageDown = function(textEditor, _edit) {
         mode.sync(textEditor);
@@ -201,12 +201,12 @@ const CursorHandler = function(modeHandler) {
         }
         cursorHalfPageDownImpl(textEditor, mode.inSelection());
     };
-    const cursorHalfPageUpSelect = function(textEditor, _edit) {
+    const cursorHalfPageUpSelect = async function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
-        cursorHalfPageUpImpl(textEditor, true);
+        await cursorHalfPageUpImpl(textEditor, true);
     };
     const cursorHalfPageDownSelect = function(textEditor, _edit) {
         mode.sync(textEditor);
