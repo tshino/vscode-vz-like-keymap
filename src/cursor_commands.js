@@ -110,10 +110,15 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, name, makeCursorCommand(name, cmdForSelect, cmdForBoxSelect));
     };
 
-    const moveCursorToWithoutScroll = function(textEditor, line, col, select) {
+    const moveCursorToWithoutScroll = async function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
-        textEditor.selection = new vscode.Selection(anchor, cursor);
+        let newSelections = [new vscode.Selection(anchor, cursor)];
+        let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
+        textEditor.selections = newSelections;
+        if (expectSelectionChangeCallback) {
+            await mode.waitForSyncTimeout(100);
+        }
     };
     const moveCursorTo = async function(textEditor, line, col, select) {
         let cursor = new vscode.Position(line, col);

@@ -163,10 +163,7 @@ describe('CursorHandler', () => {
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(7), false);
 
-            cursorHandler.moveCursorToWithoutScroll(textEditor, 7, 3, false);
-            await sleep(10);
-            await sleep(10);
-            await sleep(10);
+            await cursorHandler.moveCursorToWithoutScroll(textEditor, 7, 3, false);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
