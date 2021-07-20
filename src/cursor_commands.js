@@ -121,7 +121,6 @@ const CursorHandler = function(modeHandler) {
         let newSelections = [new vscode.Selection(anchor, cursor)];
         let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
         textEditor.selections = newSelections;
-        mode.sync(textEditor);
         textEditor.revealRange(new vscode.Range(cursor, cursor));
         if (expectSelectionChangeCallback) {
             await mode.waitForSyncTimeout(100);
