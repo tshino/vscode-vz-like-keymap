@@ -115,22 +115,18 @@ const CursorHandler = function(modeHandler) {
     };
 
     const moveCursorToWithoutScroll = async function(textEditor, line, col, select) {
-        let cursor = new vscode.Position(line, col);
-        let anchor = select ? textEditor.selection.anchor : cursor;
-        let newSelections = [new vscode.Selection(anchor, cursor)];
-        let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
-        textEditor.selections = newSelections;
-        if (expectSelectionChangeCallback) {
-            await mode.waitForSyncTimeout(100).catch(() => {});
-        }
+        const reveal = false;
+        await moveCursorTo(textEditor, line, col, select, reveal);
     };
-    const moveCursorTo = async function(textEditor, line, col, select) {
+    const moveCursorTo = async function(textEditor, line, col, select, reveal=true) {
         let cursor = new vscode.Position(line, col);
         let anchor = select ? textEditor.selection.anchor : cursor;
         let newSelections = [new vscode.Selection(anchor, cursor)];
         let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
         textEditor.selections = newSelections;
-        textEditor.revealRange(new vscode.Range(cursor, cursor));
+        if (reveal) {
+            textEditor.revealRange(new vscode.Range(cursor, cursor));
+        }
         if (expectSelectionChangeCallback) {
             await mode.waitForSyncTimeout(100).catch(() => {});
         }
