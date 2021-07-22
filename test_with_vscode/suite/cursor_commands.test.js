@@ -299,8 +299,7 @@ describe('CursorHandler', () => {
             let cursor = 1000 - Math.max(1, halfPage - 2);
             await locateCursor(cursor, 0, null);
 
-            cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForCursor(cursor, 0);
+            await cursorHandler.cursorHalfPageDown(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);

@@ -164,7 +164,7 @@ const CursorHandler = function(modeHandler) {
             );
         }
     };
-    const cursorHalfPageDownImpl = function(textEditor, select) {
+    const cursorHalfPageDownImpl = async function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
@@ -173,7 +173,7 @@ const CursorHandler = function(modeHandler) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
             let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
-            moveCursorTo(textEditor, newLine, curr.character, select);
+            await moveCursorTo(textEditor, newLine, curr.character, select);
         } else {
             taskAfterScroll = async function(textEditor) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
@@ -194,12 +194,12 @@ const CursorHandler = function(modeHandler) {
         }
         await cursorHalfPageUpImpl(textEditor, mode.inSelection());
     };
-    const cursorHalfPageDown = function(textEditor, _edit) {
+    const cursorHalfPageDown = async function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
-        cursorHalfPageDownImpl(textEditor, mode.inSelection());
+        await cursorHalfPageDownImpl(textEditor, mode.inSelection());
     };
     const cursorHalfPageUpSelect = async function(textEditor, _edit) {
         mode.sync(textEditor);
@@ -208,12 +208,12 @@ const CursorHandler = function(modeHandler) {
         }
         await cursorHalfPageUpImpl(textEditor, true);
     };
-    const cursorHalfPageDownSelect = function(textEditor, _edit) {
+    const cursorHalfPageDownSelect = async function(textEditor, _edit) {
         mode.sync(textEditor);
         if (mode.inSelection() && mode.inBoxSelection()) {
             mode.resetBoxSelection();
         }
-        cursorHalfPageDownImpl(textEditor, true);
+        await cursorHalfPageDownImpl(textEditor, true);
     };
 
     const cursorFullPageUp = makeCursorCommand(
