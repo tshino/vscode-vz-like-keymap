@@ -184,8 +184,6 @@ describe('CursorHandler', () => {
             await locateCursor(cursor, 5, null);
 
             await cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[cursor - halfPage, 5]]);
@@ -200,8 +198,6 @@ describe('CursorHandler', () => {
             await locateCursor(cursor, 5, null);
 
             await cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
 
             mode.sync(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -228,7 +224,6 @@ describe('CursorHandler', () => {
             await selectRange(50, 5, 30, 3);
 
             await cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForCursor(30, 3);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections.length, 1);
@@ -245,7 +240,6 @@ describe('CursorHandler', () => {
             ]);
 
             await cursorHandler.cursorHalfPageUp(textEditor);
-            await waitForCursor(52, 8);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), false);
@@ -267,9 +261,7 @@ describe('CursorHandler', () => {
             let cursor = 500 + (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorHalfPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[cursor + halfPage, 5]]);
@@ -283,9 +275,7 @@ describe('CursorHandler', () => {
             let cursor = 500 - (halfPage >> 1);
             await locateCursor(cursor, 5, null);
 
-            cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorHalfPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[cursor + halfPage, 5]]);
@@ -313,8 +303,7 @@ describe('CursorHandler', () => {
         it('should extend existing selection', async () => {
             await selectRange(50, 5, 70, 3);
 
-            cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForCursor(70, 3);
+            await cursorHandler.cursorHalfPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections.length, 1);
@@ -330,8 +319,7 @@ describe('CursorHandler', () => {
                 [52, 5, 52, 8]
             ]);
 
-            cursorHandler.cursorHalfPageDown(textEditor);
-            await waitForCursor(52, 8);
+            await cursorHandler.cursorHalfPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(mode.inBoxSelection(), false);
@@ -353,9 +341,6 @@ describe('CursorHandler', () => {
             let cursor = 500;
 
             await cursorHandler.cursorHalfPageUpSelect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
-            await waitForStartSelection();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[500, 5, cursor - halfPage, 5]]);
@@ -373,10 +358,7 @@ describe('CursorHandler', () => {
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
             let cursor = 500;
 
-            cursorHandler.cursorHalfPageDownSelect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorHalfPageDownSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[500, 5, cursor + halfPage, 5]]);
