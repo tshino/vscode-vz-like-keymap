@@ -117,7 +117,7 @@ const CursorHandler = function(modeHandler) {
         let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
         textEditor.selections = newSelections;
         if (expectSelectionChangeCallback) {
-            await mode.waitForSyncTimeout(100);
+            await mode.waitForSyncTimeout(100).catch(() => {});
         }
     };
     const moveCursorTo = async function(textEditor, line, col, select) {
@@ -128,7 +128,7 @@ const CursorHandler = function(modeHandler) {
         textEditor.selections = newSelections;
         textEditor.revealRange(new vscode.Range(cursor, cursor));
         if (expectSelectionChangeCallback) {
-            await mode.waitForSyncTimeout(100);
+            await mode.waitForSyncTimeout(100).catch(() => {});
         }
     };
 
