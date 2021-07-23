@@ -83,6 +83,29 @@ const CursorHandler = function(modeHandler) {
         );
     };
 
+    const waitForScrollTimeout = async function(task, timeout=200) {
+        return new Promise((resolve, reject) => {
+            let res = async function(textEditor) {
+                if (textEditor) {
+                    await task(textEditor);
+                    if (resolve) {
+                        resolve();
+                    }
+                } else {
+                    if (reject) {
+                        reject();
+                    }
+                }
+                resolve = null;
+                reject = null;
+            };
+            taskAfterScroll.push(res);
+            setTimeout(() => {
+                res(null);
+            }, timeout);
+        });
+    };
+
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
@@ -124,36 +147,17 @@ const CursorHandler = function(modeHandler) {
         let newSelections = [new vscode.Selection(anchor, cursor)];
         let expectSelectionChangeCallback = !EditUtil.isEqualSelections(textEditor.selections, newSelections);
         textEditor.selections = newSelections;
+        let promises = [];
         if (reveal) {
+            promises.push(waitForScrollTimeout(() => {}, 100).catch(() => {}));
             textEditor.revealRange(new vscode.Range(cursor, cursor));
         }
         if (expectSelectionChangeCallback) {
-            await mode.waitForSyncTimeout(100).catch(() => {});
+            promises.push(mode.waitForSyncTimeout(100).catch(() => {}));
         }
+        await Promise.all(promises);
     };
 
-    const waitForScrollTimeout = async function(task, timeout=200) {
-        return new Promise((resolve, reject) => {
-            let res = async function(textEditor) {
-                if (textEditor) {
-                    await task(textEditor);
-                    if (resolve) {
-                        resolve();
-                    }
-                } else {
-                    if (reject) {
-                        reject();
-                    }
-                }
-                resolve = null;
-                reject = null;
-            };
-            taskAfterScroll.push(res);
-            setTimeout(() => {
-                res(null);
-            }, timeout);
-        });
-    };
     const cursorHalfPageUpImpl = async function(textEditor, select) {
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);

@@ -13,7 +13,7 @@ describe('CursorHandler', () => {
     let textEditor;
     const sleep = testUtils.sleep;
     const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
-    const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
+    // const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
     const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
     // const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
@@ -67,7 +67,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(8), true);
 
             await cursorHandler.moveCursorTo(textEditor, 8, 7, false);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[8, 7]]);
@@ -81,7 +80,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(8), true);
 
             await cursorHandler.moveCursorTo(textEditor, 8, 7, true);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
@@ -95,7 +93,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(8), true);
 
             await cursorHandler.moveCursorTo(textEditor, 8, 7, true);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 8, 7]]);
@@ -109,7 +106,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(8), true);
 
             await cursorHandler.moveCursorTo(textEditor, 8, 7, false);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[8, 7]]);
@@ -123,7 +119,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(999), false);
 
             await cursorHandler.moveCursorTo(textEditor, 999, 0, false);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[999, 0]]);
@@ -137,7 +132,6 @@ describe('CursorHandler', () => {
             assert.strictEqual(visibleLines0.includes(7), false);
 
             await cursorHandler.moveCursorTo(textEditor, 7, 3, false);
-            await waitForReveal();
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
@@ -1270,10 +1264,8 @@ describe('CursorHandler', () => {
                 edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
             });
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 9));
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
             await cursorHandler.cursorLastPosition(textEditor);
-            await waitForScroll(vlines0[0]);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
@@ -1288,10 +1280,8 @@ describe('CursorHandler', () => {
                 edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
             });
             cursorHandler.setMarkedPosition(textEditor, new vscode.Position(555, 8));
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
             await cursorHandler.cursorLastPosition(textEditor);
-            await waitForScroll(vlines0[0]);
 
             let pos = cursorHandler.getMarkedPosition(textEditor);
             assert.notStrictEqual(pos, null);
