@@ -262,17 +262,21 @@ const CursorHandler = function(modeHandler) {
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
-    const cursorFullPageDown = function(textEditor) {
+    const cursorFullPageDown = async function(textEditor) {
+        let promises = [];
         if (!EditUtil.isLastLineVisible(textEditor)) {
-            exec('scrollPageDown');
+            promises.push(exec('scrollPageDown'));
         }
-        cursorFullPageDownImpl(textEditor);
+        promises.push(cursorFullPageDownImpl(textEditor));
+        await Promise.all(promises);
     };
-    const cursorFullPageDownSelect = function(textEditor) {
+    const cursorFullPageDownSelect = async function(textEditor) {
+        let promises = [];
         if (!EditUtil.isLastLineVisible(textEditor)) {
-            exec('scrollPageDown');
+            promises.push(exec('scrollPageDown'));
         }
-        cursorFullPageDownSelectImpl(textEditor);
+        promises.push(cursorFullPageDownSelectImpl(textEditor));
+        await Promise.all(promises);
     };
     const cursorPageUp = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {

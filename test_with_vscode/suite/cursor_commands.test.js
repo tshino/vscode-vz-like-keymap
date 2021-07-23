@@ -409,9 +409,7 @@ describe('CursorHandler', () => {
             let cursor = 500;
             let pos0 = EditUtil.getLowerBoundLineIndex(vlines0, cursor);
 
-            cursorHandler.cursorFullPageDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorFullPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             let current = textEditor.selections[0].active;
@@ -423,11 +421,8 @@ describe('CursorHandler', () => {
         });
         it('should extend selection', async () => {
             await selectRange(500, 5, 503, 7);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorFullPageDown(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(503, 7);
+            await cursorHandler.cursorFullPageDown(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections[0].anchor.line, 500);
@@ -442,8 +437,7 @@ describe('CursorHandler', () => {
             let cursor = 1000 - Math.max(1, halfPage - 2);
             await locateCursor(cursor, 0, null);
 
-            cursorHandler.cursorFullPageDown(textEditor);
-            await waitForCursor(cursor, 0);
+            await cursorHandler.cursorFullPageDown(textEditor);
             await sleep(20);
             await sleep(20);
             await sleep(20);
@@ -491,10 +485,7 @@ describe('CursorHandler', () => {
             let cursor = 500;
             let pos0 = EditUtil.getLowerBoundLineIndex(vlines0, cursor);
 
-            cursorHandler.cursorFullPageDownSelect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorFullPageDownSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             let current = textEditor.selections[0].active;
