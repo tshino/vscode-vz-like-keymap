@@ -371,9 +371,7 @@ describe('CursorHandler', () => {
             let cursor = 500;
             let pos0 = EditUtil.getLowerBoundLineIndex(vlines0, cursor);
 
-            cursorHandler.cursorFullPageUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
+            await cursorHandler.cursorFullPageUp(textEditor);
 
             assert.strictEqual(mode.inSelection(), false);
             let current = textEditor.selections[0].active;
@@ -385,11 +383,8 @@ describe('CursorHandler', () => {
         });
         it('should extend selection', async () => {
             await selectRange(500, 5, 503, 7);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
-            cursorHandler.cursorFullPageUp(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(503, 7);
+            await cursorHandler.cursorFullPageUp(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             assert.strictEqual(textEditor.selections[0].anchor.line, 500);
@@ -460,10 +455,7 @@ describe('CursorHandler', () => {
             let cursor = 500;
             let pos0 = EditUtil.getLowerBoundLineIndex(vlines0, cursor);
 
-            cursorHandler.cursorFullPageUpSelect(textEditor);
-            await waitForScroll(vlines0[0]);
-            await waitForCursor(cursor, 5);
-            await waitForStartSelection();
+            await cursorHandler.cursorFullPageUpSelect(textEditor);
 
             assert.strictEqual(mode.inSelection(), true);
             let current = textEditor.selections[0].active;
