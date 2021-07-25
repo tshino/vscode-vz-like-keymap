@@ -23,6 +23,11 @@ const exec = function(commands, index = 0, textEditor = null) {
 };
 
 const kbMacroHandler = keyboard_macro.getInstance();
+const registerTextEditorCommand0 = function(context, name, func) {
+    context.subscriptions.push(
+        vscode.commands.registerTextEditorCommand('vz.' + name, func)
+    );
+};
 const registerTextEditorCommand = function(context, name, func) {
     const command = 'vz.' + name;
     context.subscriptions.push(
@@ -45,6 +50,7 @@ const CursorHandler = function(modeHandler) {
     };
     const cancelAll = function(tasks) { invokeAll(tasks, null); };
 
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
@@ -104,6 +110,28 @@ const CursorHandler = function(modeHandler) {
                 res(null);
             }, timeout);
         });
+    };
+
+    let reentryGuard = null;
+    const makeGuardedCommand = function(name, func) {
+        const guardedCommand = async function(textEditor, edit) {
+            if (reentryGuard === name) {
+                return;
+            }
+            reentryGuard = name;
+            kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
+            await func(textEditor, edit);
+            reentryGuard = null;
+        };
+        return guardedCommand;
+    };
+    const waitForEndOfGuardedCommand = async function() { // test purpose only
+        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
+            await sleep(10);
+        }
+        if (reentryGuard !== null) {
+            console.log('*** debug: Guarded command still be running unexpectedly')
+        }
     };
 
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
@@ -223,12 +251,14 @@ const CursorHandler = function(modeHandler) {
             await promise;
         }
     };
-    const cursorHalfPageUp = async function(textEditor, _edit) {
+    const cursorHalfPageUpImpl = async function(textEditor, _edit) {
         await cursorHalfPageUpCommon(textEditor, mode.inSelection());
     };
-    const cursorHalfPageDown = async function(textEditor, _edit) {
+    const cursorHalfPageDownImpl = async function(textEditor, _edit) {
         await cursorHalfPageDownCommon(textEditor, mode.inSelection());
     };
+    const cursorHalfPageUp = makeGuardedCommand('cursorHalfPageUp', cursorHalfPageUpImpl);
+    const cursorHalfPageDown = makeGuardedCommand('cursorHalfPageDown', cursorHalfPageDownImpl);
     const cursorHalfPageUpSelect = async function(textEditor, _edit) {
         await cursorHalfPageUpCommon(textEditor, true);
     };
@@ -272,14 +302,14 @@ const CursorHandler = function(modeHandler) {
     };
     const cursorPageUp = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageUp(textEditor);
+            return cursorHalfPageUpImpl(textEditor);
         } else {
             return cursorFullPageUp(textEditor);
         }
     };
     const cursorPageDown = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageDown(textEditor);
+            return cursorHalfPageDownImpl(textEditor);
         } else {
             return cursorFullPageDown(textEditor);
         }
@@ -569,8 +599,8 @@ const CursorHandler = function(modeHandler) {
 
     const registerCommands = function(context) {
         setupListeners(context);
-        registerTextEditorCommand(context, 'cursorHalfPageUp', cursorHalfPageUp);
-        registerTextEditorCommand(context, 'cursorHalfPageDown', cursorHalfPageDown);
+        registerTextEditorCommand0(context, 'cursorHalfPageUp', cursorHalfPageUp);
+        registerTextEditorCommand0(context, 'cursorHalfPageDown', cursorHalfPageDown);
         registerTextEditorCommand(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
         registerTextEditorCommand(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
         registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
@@ -613,6 +643,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'tagJump', tagJump);
     };
     return {
+        waitForEndOfGuardedCommand, // test purpose only
         makeCursorCommand,
         registerCursorCommand,
         moveCursorToWithoutScroll,

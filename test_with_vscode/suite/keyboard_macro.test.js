@@ -47,6 +47,7 @@ describe('KeyboardMacro', () => {
                 await vscode.commands.executeCommand(cmd);
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
+                await cursorHandler.waitForEndOfGuardedCommand();
             } else if (cmd[0] === 'edit') {
                 mode.expectSync();
                 let lastCount = editHandler.getEditsFreeCounter();
@@ -80,6 +81,7 @@ describe('KeyboardMacro', () => {
                 }
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
+                await cursorHandler.waitForEndOfGuardedCommand();
             }
             for (let j = 0; j < 10 && !mode.synchronized(); j++) {
                 await sleep(10);
@@ -455,7 +457,8 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(deltaScrollReplay, deltaScroll);
             assert.strictEqual(deltaCursorReplay, deltaCursor);
         });
-        it('should scroll multiple half pages up/down', async () => {
+        */
+       it('should scroll multiple half pages up/down', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             const commands = [
                 'vz.cursorHalfPageDown',
@@ -480,7 +483,44 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(deltaScrollReplay, deltaScroll);
             assert.strictEqual(deltaCursorReplay, deltaCursor);
         });
-        */
+        it('should prevent reentry (cursorHalfPageUp)', async () => {
+            await resetCursor(500, 5);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.cursorHalfPageUp');
+            let p2 = vscode.commands.executeCommand('vz.cursorHalfPageUp');
+            await p1;
+            await p2;
+            await cursorHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.cursorHalfPageUp'
+            ]);
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+
+            await resetCursor(600, 5);
+            await kb_macro.replay(textEditor);
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaCursor, deltaCursorReplay);
+        });
+        it('should prevent reentry (cursorHalfPageDown)', async () => {
+            await resetCursor(500, 5);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.cursorHalfPageDown');
+            let p2 = vscode.commands.executeCommand('vz.cursorHalfPageDown');
+            await p1;
+            await p2;
+            await cursorHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.cursorHalfPageDown'
+            ]);
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+
+            await resetCursor(600, 5);
+            await kb_macro.replay(textEditor);
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaCursor, deltaCursorReplay);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {
