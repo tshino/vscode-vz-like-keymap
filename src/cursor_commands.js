@@ -158,7 +158,11 @@ const CursorHandler = function(modeHandler) {
         await Promise.all(promises);
     };
 
-    const cursorHalfPageUpImpl = async function(textEditor, select) {
+    const cursorHalfPageUpCommon = async function(textEditor, select) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let currIndex = EditUtil.getLowerBoundLineIndex(vlines, curr.line);
@@ -191,7 +195,11 @@ const CursorHandler = function(modeHandler) {
             await promise;
         }
     };
-    const cursorHalfPageDownImpl = async function(textEditor, select) {
+    const cursorHalfPageDownCommon = async function(textEditor, select) {
+        mode.sync(textEditor);
+        if (mode.inSelection() && mode.inBoxSelection()) {
+            mode.resetBoxSelection();
+        }
         let curr = textEditor.selection.active;
         let vlines = EditUtil.enumVisibleLines(textEditor);
         let lineCount = textEditor.document.lineCount;
@@ -216,32 +224,16 @@ const CursorHandler = function(modeHandler) {
         }
     };
     const cursorHalfPageUp = async function(textEditor, _edit) {
-        mode.sync(textEditor);
-        if (mode.inSelection() && mode.inBoxSelection()) {
-            mode.resetBoxSelection();
-        }
-        await cursorHalfPageUpImpl(textEditor, mode.inSelection());
+        await cursorHalfPageUpCommon(textEditor, mode.inSelection());
     };
     const cursorHalfPageDown = async function(textEditor, _edit) {
-        mode.sync(textEditor);
-        if (mode.inSelection() && mode.inBoxSelection()) {
-            mode.resetBoxSelection();
-        }
-        await cursorHalfPageDownImpl(textEditor, mode.inSelection());
+        await cursorHalfPageDownCommon(textEditor, mode.inSelection());
     };
     const cursorHalfPageUpSelect = async function(textEditor, _edit) {
-        mode.sync(textEditor);
-        if (mode.inSelection() && mode.inBoxSelection()) {
-            mode.resetBoxSelection();
-        }
-        await cursorHalfPageUpImpl(textEditor, true);
+        await cursorHalfPageUpCommon(textEditor, true);
     };
     const cursorHalfPageDownSelect = async function(textEditor, _edit) {
-        mode.sync(textEditor);
-        if (mode.inSelection() && mode.inBoxSelection()) {
-            mode.resetBoxSelection();
-        }
-        await cursorHalfPageDownImpl(textEditor, true);
+        await cursorHalfPageDownCommon(textEditor, true);
     };
 
     const cursorFullPageUp = makeCursorCommand(
