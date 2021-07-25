@@ -268,7 +268,7 @@ const CursorHandler = function(modeHandler) {
     const cursorHalfPageUpSelect = makeGuardedCommand('cursorHalfPageUpSelect', cursorHalfPageUpSelectImpl);
     const cursorHalfPageDownSelect = makeGuardedCommand('cursorHalfPageDownSelect', cursorHalfPageDownSelectImpl);
 
-    const cursorFullPageUp = makeCursorCommand(
+    const cursorFullPageUpImpl = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUp'],
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
@@ -302,11 +302,13 @@ const CursorHandler = function(modeHandler) {
         promises.push(cursorFullPageDownSelectImpl(textEditor));
         await Promise.all(promises);
     };
+    const cursorFullPageUp = makeGuardedCommand('cursorFullPageUp', cursorFullPageUpImpl);
+
     const cursorPageUp = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
             return cursorHalfPageUpImpl(textEditor);
         } else {
-            return cursorFullPageUp(textEditor);
+            return cursorFullPageUpImpl(textEditor);
         }
     };
     const cursorPageDown = function(textEditor) {
@@ -605,6 +607,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand0(context, 'cursorHalfPageDown', cursorHalfPageDown);
         registerTextEditorCommand0(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
         registerTextEditorCommand0(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
+        registerTextEditorCommand0(context, 'cursorFullPageUp', cursorFullPageUp);
         registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
         registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);
