@@ -257,14 +257,16 @@ const CursorHandler = function(modeHandler) {
     const cursorHalfPageDownImpl = async function(textEditor, _edit) {
         await cursorHalfPageDownCommon(textEditor, mode.inSelection());
     };
-    const cursorHalfPageUp = makeGuardedCommand('cursorHalfPageUp', cursorHalfPageUpImpl);
-    const cursorHalfPageDown = makeGuardedCommand('cursorHalfPageDown', cursorHalfPageDownImpl);
-    const cursorHalfPageUpSelect = async function(textEditor, _edit) {
+    const cursorHalfPageUpSelectImpl = async function(textEditor, _edit) {
         await cursorHalfPageUpCommon(textEditor, true);
     };
-    const cursorHalfPageDownSelect = async function(textEditor, _edit) {
+    const cursorHalfPageDownSelectImpl = async function(textEditor, _edit) {
         await cursorHalfPageDownCommon(textEditor, true);
     };
+    const cursorHalfPageUp = makeGuardedCommand('cursorHalfPageUp', cursorHalfPageUpImpl);
+    const cursorHalfPageDown = makeGuardedCommand('cursorHalfPageDown', cursorHalfPageDownImpl);
+    const cursorHalfPageUpSelect = makeGuardedCommand('cursorHalfPageUpSelect', cursorHalfPageUpSelectImpl);
+    const cursorHalfPageDownSelect = makeGuardedCommand('cursorHalfPageDownSelect', cursorHalfPageDownSelectImpl);
 
     const cursorFullPageUp = makeCursorCommand(
         ['scrollPageUp', 'cursorPageUp'],
@@ -316,14 +318,14 @@ const CursorHandler = function(modeHandler) {
     };
     const cursorPageUpSelect = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageUpSelect(textEditor);
+            return cursorHalfPageUpSelectImpl(textEditor);
         } else {
             return cursorFullPageUpSelect(textEditor);
         }
     };
     const cursorPageDownSelect = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageDownSelect(textEditor);
+            return cursorHalfPageDownSelectImpl(textEditor);
         } else {
             return cursorFullPageDownSelect(textEditor);
         }
@@ -601,8 +603,8 @@ const CursorHandler = function(modeHandler) {
         setupListeners(context);
         registerTextEditorCommand0(context, 'cursorHalfPageUp', cursorHalfPageUp);
         registerTextEditorCommand0(context, 'cursorHalfPageDown', cursorHalfPageDown);
-        registerTextEditorCommand(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
-        registerTextEditorCommand(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
+        registerTextEditorCommand0(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
+        registerTextEditorCommand0(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
         registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
         registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);

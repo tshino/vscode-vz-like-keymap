@@ -521,6 +521,46 @@ describe('KeyboardMacro', () => {
             let deltaCursorReplay = textEditor.selections[0].active.line - 600;
             assert.strictEqual(deltaCursor, deltaCursorReplay);
         });
+        it('should prevent reentry (cursorHalfPageUpSelect)', async () => {
+            await resetCursor(500, 5);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.cursorHalfPageUpSelect');
+            let p2 = vscode.commands.executeCommand('vz.cursorHalfPageUpSelect');
+            await p1;
+            await p2;
+            await cursorHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.cursorHalfPageUpSelect'
+            ]);
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+
+            await resetCursor(600, 5);
+            await kb_macro.replay(textEditor);
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaCursor, deltaCursorReplay);
+            assert.strictEqual(mode.inSelection(), true);
+        });
+        it('should prevent reentry (cursorHalfPageDownSelect)', async () => {
+            await resetCursor(500, 5);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.cursorHalfPageDownSelect');
+            let p2 = vscode.commands.executeCommand('vz.cursorHalfPageDownSelect');
+            await p1;
+            await p2;
+            await cursorHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.cursorHalfPageDownSelect'
+            ]);
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+
+            await resetCursor(600, 5);
+            await kb_macro.replay(textEditor);
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaCursor, deltaCursorReplay);
+            assert.strictEqual(mode.inSelection(), true);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {
