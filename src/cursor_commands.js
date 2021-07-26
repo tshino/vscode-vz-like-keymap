@@ -273,7 +273,7 @@ const CursorHandler = function(modeHandler) {
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorColumnSelectPageUp']
     );
-    const cursorFullPageDownImpl = makeCursorCommand(
+    const cursorFullPageDownWithoutScroll = makeCursorCommand(
         ['cursorPageDown'],
         ['cursorPageDownSelect'],
         ['cursorColumnSelectPageDown']
@@ -286,12 +286,12 @@ const CursorHandler = function(modeHandler) {
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
-    const cursorFullPageDown = async function(textEditor) {
+    const cursorFullPageDownImpl = async function(textEditor) {
         let promises = [];
         if (!EditUtil.isLastLineVisible(textEditor)) {
             promises.push(exec('scrollPageDown'));
         }
-        promises.push(cursorFullPageDownImpl(textEditor));
+        promises.push(cursorFullPageDownWithoutScroll(textEditor));
         await Promise.all(promises);
     };
     const cursorFullPageDownSelect = async function(textEditor) {
@@ -303,6 +303,7 @@ const CursorHandler = function(modeHandler) {
         await Promise.all(promises);
     };
     const cursorFullPageUp = makeGuardedCommand('cursorFullPageUp', cursorFullPageUpImpl);
+    const cursorFullPageDown = makeGuardedCommand('cursorFullPageDown', cursorFullPageDownImpl);
 
     const cursorPageUp = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
@@ -315,7 +316,7 @@ const CursorHandler = function(modeHandler) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
             return cursorHalfPageDownImpl(textEditor);
         } else {
-            return cursorFullPageDown(textEditor);
+            return cursorFullPageDownImpl(textEditor);
         }
     };
     const cursorPageUpSelect = function(textEditor) {
@@ -608,6 +609,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand0(context, 'cursorHalfPageUpSelect', cursorHalfPageUpSelect);
         registerTextEditorCommand0(context, 'cursorHalfPageDownSelect', cursorHalfPageDownSelect);
         registerTextEditorCommand0(context, 'cursorFullPageUp', cursorFullPageUp);
+        registerTextEditorCommand0(context, 'cursorFullPageDown', cursorFullPageDown);
         registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
         registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);
