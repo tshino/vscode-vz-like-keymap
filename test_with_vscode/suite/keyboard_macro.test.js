@@ -667,6 +667,25 @@ describe('KeyboardMacro', () => {
             let deltaCursorReplay = textEditor.selections[0].active.line - 400;
             assert.strictEqual(deltaCursor, deltaCursorReplay);
         });
+        it('should prevent reentry (cursorFullPageUpSelect)', async () => {
+            await resetCursor(500, 5);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.cursorFullPageUpSelect');
+            let p2 = vscode.commands.executeCommand('vz.cursorFullPageUpSelect');
+            await p1;
+            await p2;
+            await cursorHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.cursorFullPageUpSelect'
+            ]);
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+
+            await resetCursor(600, 5);
+            await kb_macro.replay(textEditor);
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaCursor, deltaCursorReplay);
+        });
     });
     describe('toggleSelection', () => {
         before(async () => {
