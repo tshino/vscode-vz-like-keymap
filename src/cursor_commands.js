@@ -282,7 +282,7 @@ const CursorHandler = function(modeHandler) {
         ['scrollPageUp', 'cursorPageUpSelect'],
         ['scrollPageUp', 'cursorPageUpSelect']
     );
-    const cursorFullPageDownSelectImpl = makeCursorCommand(
+    const cursorFullPageDownSelectWithoutScroll = makeCursorCommand(
         ['cursorPageDownSelect'],
         ['cursorPageDownSelect']
     );
@@ -294,17 +294,18 @@ const CursorHandler = function(modeHandler) {
         promises.push(cursorFullPageDownWithoutScroll(textEditor));
         await Promise.all(promises);
     };
-    const cursorFullPageDownSelect = async function(textEditor) {
+    const cursorFullPageDownSelectImpl = async function(textEditor) {
         let promises = [];
         if (!EditUtil.isLastLineVisible(textEditor)) {
             promises.push(exec('scrollPageDown'));
         }
-        promises.push(cursorFullPageDownSelectImpl(textEditor));
+        promises.push(cursorFullPageDownSelectWithoutScroll(textEditor));
         await Promise.all(promises);
     };
     const cursorFullPageUp = makeGuardedCommand('cursorFullPageUp', cursorFullPageUpImpl);
     const cursorFullPageDown = makeGuardedCommand('cursorFullPageDown', cursorFullPageDownImpl);
     const cursorFullPageUpSelect = makeGuardedCommand('cursorFullPageUpSelect', cursorFullPageUpSelectImpl);
+    const cursorFullPageDownSelect = makeGuardedCommand('cursorFullPageDownSelect', cursorFullPageDownSelectImpl);
 
     const cursorPageUp = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
@@ -331,7 +332,7 @@ const CursorHandler = function(modeHandler) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
             return cursorHalfPageDownSelectImpl(textEditor);
         } else {
-            return cursorFullPageDownSelect(textEditor);
+            return cursorFullPageDownSelectImpl(textEditor);
         }
     };
     const cursorViewTop = async function(textEditor, _edit) {
@@ -612,6 +613,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand0(context, 'cursorFullPageUp', cursorFullPageUp);
         registerTextEditorCommand0(context, 'cursorFullPageDown', cursorFullPageDown);
         registerTextEditorCommand0(context, 'cursorFullPageUpSelect', cursorFullPageUpSelect);
+        registerTextEditorCommand0(context, 'cursorFullPageDownSelect', cursorFullPageDownSelect);
         registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
         registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);
