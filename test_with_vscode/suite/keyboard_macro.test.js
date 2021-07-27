@@ -629,6 +629,31 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(deltaScrollReplay, deltaScroll);
             assert.strictEqual(deltaCursorReplay, deltaCursor);
         });
+        it('should scroll multiple full pages up/down', async () => {
+            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
+            const commands = [
+                'vz.cursorFullPageDown',
+                'vz.cursorFullPageDown',
+                'vz.cursorFullPageUp',
+                'vz.cursorFullPageUp',
+                'vz.cursorFullPageUp'
+            ];
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+            await recordThroughExecution(commands);
+            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
+            let deltaCursor = textEditor.selections[0].active.line - 500;
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(deltaScroll < 0, true);
+            assert.strictEqual(deltaScroll, deltaCursor);
+
+            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            await kb_macro.replay(textEditor);
+            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
+            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
+            assert.strictEqual(deltaScrollReplay, deltaScroll);
+            assert.strictEqual(deltaCursorReplay, deltaCursor);
+        });
         it('should prevent reentry (cursorFullPageUp)', async () => {
             await resetCursor(500, 5);
             kb_macro.startRecording(textEditor);
