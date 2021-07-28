@@ -406,76 +406,52 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[6, 7]]);
         });
     });
+    const testScrollPage = async function(commands, dir) {
+        const up = dir === 'Up';
+        await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
+        let vlines0 = EditUtil.enumVisibleLines(textEditor);
+        await recordThroughExecution(commands);
+        let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
+        let deltaCursor = textEditor.selections[0].active.line - 500;
+        assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+        if (up) {
+            assert.strictEqual(deltaScroll < 0, true);
+        } else {
+            assert.strictEqual(deltaScroll > 0, true);
+        }
+        assert.strictEqual(deltaScroll, deltaCursor);
+
+        const lineToReplayAt = up ? 600 : 400;
+        await resetCursor(lineToReplayAt, 5, vscode.TextEditorRevealType.InCenter);
+        let vlines1 = EditUtil.enumVisibleLines(textEditor);
+        await kb_macro.replay(textEditor);
+        let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
+        let deltaCursorReplay = textEditor.selections[0].active.line - lineToReplayAt;
+        assert.strictEqual(deltaScrollReplay, deltaScroll);
+        assert.strictEqual(deltaCursorReplay, deltaCursor);
+    };
     describe('cursorHalfPageUp, cursorHalfPageDown', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
         it('should scroll a half page up', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorHalfPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should scroll a half page down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorHalfPageDown'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll > 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(400, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 400;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Down');
         });
         it('should scroll multiple half pages up/down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorHalfPageDown',
                 'vz.cursorHalfPageDown',
                 'vz.cursorHalfPageUp',
                 'vz.cursorHalfPageUp',
                 'vz.cursorHalfPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should prevent reentry (cursorHalfPageUp)', async () => {
             await resetCursor(500, 5);
@@ -561,71 +537,23 @@ describe('KeyboardMacro', () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
         it('should scroll a full page up', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorFullPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should scroll a full page down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorFullPageDown'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll > 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(400, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 400;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Down');
         });
         it('should scroll multiple full pages up/down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorFullPageDown',
                 'vz.cursorFullPageDown',
                 'vz.cursorFullPageUp',
                 'vz.cursorFullPageUp',
                 'vz.cursorFullPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should prevent reentry (cursorFullPageUp)', async () => {
             await resetCursor(500, 5);
@@ -709,71 +637,23 @@ describe('KeyboardMacro', () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
         it('should scroll a half/full page up', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should scroll a half/full page down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorPageDown'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll > 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(400, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 400;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Down');
         });
         it('should scroll multiple half/full pages up/down', async () => {
-            await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
-            const commands = [
+            await testScrollPage([
                 'vz.cursorPageDown',
                 'vz.cursorPageDown',
                 'vz.cursorPageUp',
                 'vz.cursorPageUp',
                 'vz.cursorPageUp'
-            ];
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-            await recordThroughExecution(commands);
-            let deltaScroll = EditUtil.enumVisibleLines(textEditor)[0] - vlines0[0];
-            let deltaCursor = textEditor.selections[0].active.line - 500;
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(deltaScroll < 0, true);
-            assert.strictEqual(deltaScroll, deltaCursor);
-
-            await resetCursor(600, 5, vscode.TextEditorRevealType.InCenter);
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            await kb_macro.replay(textEditor);
-            let deltaScrollReplay = EditUtil.enumVisibleLines(textEditor)[0] - vlines1[0];
-            let deltaCursorReplay = textEditor.selections[0].active.line - 600;
-            assert.strictEqual(deltaScrollReplay, deltaScroll);
-            assert.strictEqual(deltaCursorReplay, deltaCursor);
+            ], 'Up');
         });
         it('should prevent reentry (cursorPageUp)', async () => {
             await resetCursor(500, 5);
