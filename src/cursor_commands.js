@@ -307,20 +307,20 @@ const CursorHandler = function(modeHandler) {
     const cursorFullPageUpSelect = makeGuardedCommand('cursorFullPageUpSelect', cursorFullPageUpSelectImpl);
     const cursorFullPageDownSelect = makeGuardedCommand('cursorFullPageDownSelect', cursorFullPageDownSelectImpl);
 
-    const cursorPageUp = function(textEditor) {
+    const cursorPageUp = makeGuardedCommand('cursorPageUp', async function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageUpImpl(textEditor);
+            await cursorHalfPageUpImpl(textEditor);
         } else {
-            return cursorFullPageUpImpl(textEditor);
+            await cursorFullPageUpImpl(textEditor);
         }
-    };
-    const cursorPageDown = function(textEditor) {
+    });
+    const cursorPageDown = makeGuardedCommand('cursorPageDown', async function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
-            return cursorHalfPageDownImpl(textEditor);
+            await cursorHalfPageDownImpl(textEditor);
         } else {
-            return cursorFullPageDownImpl(textEditor);
+            await cursorFullPageDownImpl(textEditor);
         }
-    };
+    });
     const cursorPageUpSelect = function(textEditor) {
         if ('Half' === vscode.workspace.getConfiguration('vzKeymap').get('scrollPageSize')) {
             return cursorHalfPageUpSelectImpl(textEditor);
@@ -614,8 +614,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand0(context, 'cursorFullPageDown', cursorFullPageDown);
         registerTextEditorCommand0(context, 'cursorFullPageUpSelect', cursorFullPageUpSelect);
         registerTextEditorCommand0(context, 'cursorFullPageDownSelect', cursorFullPageDownSelect);
-        registerTextEditorCommand(context, 'cursorPageUp', cursorPageUp);
-        registerTextEditorCommand(context, 'cursorPageDown', cursorPageDown);
+        registerTextEditorCommand0(context, 'cursorPageUp', cursorPageUp);
+        registerTextEditorCommand0(context, 'cursorPageDown', cursorPageDown);
         registerTextEditorCommand(context, 'cursorPageUpSelect', cursorPageUpSelect);
         registerTextEditorCommand(context, 'cursorPageDownSelect', cursorPageDownSelect);
         registerTextEditorCommand(context, 'cursorViewTop', cursorViewTop);
