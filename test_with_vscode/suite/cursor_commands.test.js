@@ -13,9 +13,6 @@ describe('CursorHandler', () => {
     let textEditor;
     const sleep = testUtils.sleep;
     const isCursorVisible = () => testUtils.isCursorVisible(textEditor);
-    // const waitForReveal = async () => await testUtils.waitForReveal(textEditor);
-    // const waitForStartSelection = async () => await testUtils.waitForStartSelection(mode);
-    // const waitForEndSelection = async () => await testUtils.waitForEndSelection(mode);
     const resetCursor = async (line, character,  revealType=vscode.TextEditorRevealType.Default) => {
         await testUtils.resetCursor(textEditor, mode, line, character, revealType);
     };
@@ -28,19 +25,6 @@ describe('CursorHandler', () => {
     const selectRanges = async (ranges) => {
         await testUtils.selectRanges(textEditor, mode, ranges);
     };
-    // const waitForScroll = async (prevTop) => {
-        // while (EditUtil.enumVisibleLines(textEditor)[0] === prevTop) {
-            // await sleep(10);
-        // }
-    // };
-    // const waitForCursor = async (prevLine, prevCharacter) => {
-        // while (
-            // textEditor.selections[textEditor.selections.length - 1].active.line === prevLine &&
-            // textEditor.selections[textEditor.selections.length - 1].active.character === prevCharacter
-        // ) {
-            // await sleep(1);
-        // }
-    // };
     const selectionsAsArray = function() {
         return testUtils.selectionsToArray(textEditor.selections);
     };
