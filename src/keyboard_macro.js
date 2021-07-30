@@ -212,6 +212,7 @@ const KeyboardMacro = function(modeHandler) {
                 await textEditor.edit(edit => {
                     for (let i = 0; i < selections.length; i++) {
                         let pos = selections[i].active;
+                        let removedLineCount = 0;
                         if (0 < numDeleteLeft) {
                             let range = new vscode.Range(
                                 pos.translate({ characterDelta: -numDeleteLeft }),
