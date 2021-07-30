@@ -199,6 +199,7 @@ const KeyboardMacro = function(modeHandler) {
         // };
         const makeInsertUniformText2 = function(text, numDeleteLeft) {
             // FIXME: may fail if the text constains any line breaks
+            // FIXME: may fail if the selected range contains any line breaks
             return async (textEditor) => {
                 let selections = Array.from(textEditor.selections);
                 const bottomToTop = 1 < selections.length && selections[0].start.isAfter(selections[1].start);
@@ -220,14 +221,19 @@ const KeyboardMacro = function(modeHandler) {
                         } else if (!selections[i].isEmpty) {
                             edit.delete(selections[i]);
                             pos = selections[i].start;
+                            removedLineCount = selections[i].end.line - selections[i].start.line;
                         }
                         edit.insert(pos, text);
+                        lineOffset += numLF;
                         if (numLF === 0) {
-                            pos = pos.translate({ characterDelta: text.length - numDeleteLeft });
+                            pos = pos.translate({
+                                lineDelta: lineOffset,
+                                characterDelta: text.length - numDeleteLeft
+                            });
                         } else {
-                            lineOffset += numLF;
                             pos = new vscode.Position(pos.line + lineOffset, lenLastLine);
                         }
+                        lineOffset -= removedLineCount;
                         selections[i] = new vscode.Selection(pos, pos);
                     }
                 });
@@ -286,10 +292,20 @@ const KeyboardMacro = function(modeHandler) {
                 if (sameRange) {
                     // Pure insertion of a single line of text or,
                     // replacing (possibly multiple) selected range(s) with a text
-                    let expectedSelections = changes.map(chg => {
-                        let pos = chg.range.start.translate({ characterDelta: chg.text.length });
-                        return new vscode.Selection(pos, pos);
-                    });
+                    let expectedSelections = (() => {
+                        let sels = [], lineOffset = 0;
+                        for (let i = 0; i < changes.length; i++) {
+                            let chg = changes[i];
+                            let pos = chg.range.start.translate({
+                                lineDelta: lineOffset,
+                                characterDelta: chg.text.length
+                            });
+                            // lineOffset += Array.from(chg.text).filter(c => c === '\n').length;
+                            lineOffset -= chg.range.end.line - chg.range.start.line;
+                            sels[i] = new vscode.Selection(pos, pos);
+                        }
+                        return sels;
+                    })();
                     const numDeleteLeft = 0;
                     const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
                     pushIfRecording('<insert-uniform-text>', insertUniformText, expectedSelections);
