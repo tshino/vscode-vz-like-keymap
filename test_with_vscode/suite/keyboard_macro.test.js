@@ -1784,7 +1784,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '    ');
             assert.deepStrictEqual(selectionsAsArray(), [[3, 4]]);
         });
-        it('should insert space characters (TAB by command)', async () => {
+        it('should insert space characters (TAB command)', async () => {
             await resetCursor(1, 0);
             await recordThroughExecution([
                 'tab'
@@ -1801,7 +1801,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(Array.from(line).every(ch => ch === ' ' || ch === '\t'), true);
             assert.deepStrictEqual(selectionsAsArray(), [[3, line.length]]);
         });
-        it('should insert space characters at middle of a line (TAB by command)', async () => {
+        it('should insert space characters at middle of a line (TAB command)', async () => {
             await resetCursor(6, 2);
             await recordThroughExecution([
                 'tab'
@@ -1860,7 +1860,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd    e');
             assert.deepStrictEqual(selectionsAsArray(), [[4, 4], [5, 8], [6, 8]]);
         });
-        it('should insert space characters (multi-cursor; TAB by command)', async () => {
+        it('should insert space characters (multi-cursor; TAB command)', async () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0], [3, 0, 3, 0]]);
             await recordThroughExecution([
                 'tab'
@@ -1921,7 +1921,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd    ');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 8]]);
         });
-        it('should replace selected range with space characters (TAB by command)', async () => {
+        it('should replace selected range with space characters (TAB command)', async () => {
             await selectRange(5, 2, 5, 4);
             await recordThroughExecution([
                 'tab'
@@ -1937,6 +1937,43 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(3 < line.length, true);
             assert.strictEqual(Array.from(line.slice(2, -1)).every(ch => ch === ' ' || ch === '\t'), true);
             assert.deepStrictEqual(selectionsAsArray(), [[6, line.length - 1]]);
+        });
+        it('should replace selected range which contains a line break with a space character', async () => {
+            await selectRange(5, 2, 6, 4);
+            await recordThroughExecution([
+                ['type', { text: ' ' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'ab e');
+            await assertDocumentLineCount(10);
+
+            await selectRange(6, 1, 7, 3);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(9);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'a de');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 2]]);
+        });
+        it('should replace selected range which contains a line break with space characters (4TAB by edit)', async () => {
+            await selectRange(5, 0, 6, 2);
+            await recordThroughExecution([
+                ['edit', edit => {
+                    edit.replace(textEditor.selections[0], '    ');
+                }, [5, 4]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            await assertDocumentLineCount(10);
+
+            await selectRange(6, 4, 7, 2);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(9);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd    cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 8]]);
         });
     });
     describe('type (Enter)', () => {
