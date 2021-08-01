@@ -1975,6 +1975,33 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd    cde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 8]]);
         });
+        it('should insert spaces (indent) to each line of selected range which contains a line break (indent by TAB command)', async () => {
+            await selectRange(5, 2, 6, 4);
+            await recordThroughExecution([
+                'tab'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<indent>'
+            ]);
+            let line5 = textEditor.document.lineAt(5).text;
+            let line6 = textEditor.document.lineAt(6).text;
+            assert.strictEqual(5 < line5.length, true);
+            assert.strictEqual(line5, line6);
+            assert.strictEqual(Array.from(line5.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line5.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, line5.length - 3, 6, line5.length - 1]]);
+
+            await selectRange(7, 2, 8, 4);
+            await kb_macro.replay(textEditor);
+            let line7 = textEditor.document.lineAt(7).text;
+            let line8 = textEditor.document.lineAt(8).text;
+            assert.strictEqual(5 < line7.length, true);
+            assert.strictEqual(line7, line8);
+            assert.strictEqual(Array.from(line7.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line7.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, line7.length - 3, 8, line7.length - 1]]);
+        });
+        // TODO: add tests for outdent
     });
     describe('type (Enter)', () => {
         beforeEach(async () => {

@@ -260,6 +260,40 @@ const KeyboardMacro = function(modeHandler) {
                 }
             };
         };
+        const isIndentOrOutdent = function(changes) {
+            if (changes.length === 0) {
+                return false;
+            }
+            const allChangesAtLineStart = changes.every(chg => chg.range.start.character === 0);
+            if (!allChangesAtLineStart) {
+                return false;
+            }
+            const isUniformText = changes.every(chg => chg.text === changes[0].text);
+            if (!isUniformText) {
+                return false;
+            }
+            const isUniformRangeLength = changes.every(chg => chg.rangeLength === changes[0].rangeLength);
+            if (!isUniformRangeLength) {
+                return false;
+            }
+            const text = changes[0].text;
+            if (0 < text.length) {
+                if (0 !== changes[0].rangeLength) {
+                    return false;
+                }
+                const isWhiteSpace = Array.from(text).every(c => (c === ' ' || c === '\t'));
+                if (isWhiteSpace) {
+                    return true;
+                }
+                return false;
+            } else {
+                if (0 === changes[0].rangeLength) {
+                    return false;
+                }
+                // FIXME: The deleted text should contain only white spaces.
+                return true;
+            }
+        };
         const isBracketCompletionWithSelection = function(selections, changes) {
             if (changes.length === 0) {
                 return false;
@@ -287,7 +321,7 @@ const KeyboardMacro = function(modeHandler) {
                 let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
                 let uniformText = changes.every((chg) => chg.text === changes[0].text);
                 if (!uniformText) {
-                    // console.log('unhandled edit event (2)');
+                    // console.log('*** unhandled edit event (2)');
                     return;
                 }
                 if (sameRange) {
@@ -315,27 +349,21 @@ const KeyboardMacro = function(modeHandler) {
                 }
                 const emptySelection = EditUtil.rangesAllEmpty(selections);
                 const uniformRangeLength = changes.every((chg) => chg.rangeLength === changes[0].rangeLength);
-                if (!emptySelection || !uniformRangeLength) {
-                    // console.log('selections: ' + selectionsToString(selections));
-                    // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
-                    // console.log('unhandled edit event (3):', emptySelection, uniformRangeLength);
-                    return;
+                if (emptySelection && uniformRangeLength) {
+                    const cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
+                    if (cursorAtEndOfRange) {
+                        // Text insertion/replacement by code completion or maybe IME.
+                        // It starts with removing one or more already inserted characters
+                        // followed by inserting complete word(s).
+                        const numDeleteLeft = changes[0].rangeLength;
+                        const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
+                        pushIfRecording('<insert-uniform-text>', insertUniformText);
+                        mode.expectSync();
+                        return;
+                    }
                 }
-                const cursorAtEndOfRange = selections.every((sel, i) => sel.active.isEqual(changes[i].range.end));
-                if (cursorAtEndOfRange) {
-                    // Text insertion/replacement by code completion or maybe IME.
-                    // It starts with removing one or more already inserted characters
-                    // followed by inserting complete word(s).
-                    const numDeleteLeft = changes[0].rangeLength;
-                    const insertUniformText = makeInsertUniformText2(changes[0].text, numDeleteLeft);
-                    pushIfRecording('<insert-uniform-text>', insertUniformText);
-                    mode.expectSync();
-                    return;
-                }
-                // console.log('selections: ' + selectionsToString(selections));
-                // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
-                // console.log('unhandled edit event (4):');
-            } else if (isBracketCompletionWithSelection(selections, changes)) {
+            }
+            if (isBracketCompletionWithSelection(selections, changes)) {
                 // Possibility: typing an opening bracket with a range of text selected,
                 // caused brack completion around the selected text
                 let text = changes[0].text;
@@ -347,12 +375,29 @@ const KeyboardMacro = function(modeHandler) {
                 );
                 mode.expectSync();
                 return;
-            } else {
-                // console.log('selections: ' + selectionsToString(selections));
-                // console.log('changes ' + changes.map(chg => chg.text));
-                // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
-                // console.log('unhandled edit event (1)');
             }
+            if (isIndentOrOutdent(changes)) {
+                if (0 < changes[0].text.length) {
+                    pushIfRecording(
+                        '<indent>',
+                        async function(_textEditor, _edit) {
+                            await vscode.commands.executeCommand('editor.action.indentLines');
+                        }
+                    );
+                } else {
+                    pushIfRecording(
+                        '<outdent>',
+                        async function(_textEditor, _edit) {
+                            await vscode.commands.executeCommand('editor.action.outdentLines');
+                        }
+                    );
+                }
+                return;
+            }
+            // console.log('*** unhandled edit event (1)');
+            // console.log('selections: ' + selectionsToString(selections));
+            // console.log('changes ' + changes.map(chg => chg.text));
+            // console.log('ranges: ' + rangesToString(changes.map(chg => chg.range)));
         };
         return {
             processOnChangeDocument
