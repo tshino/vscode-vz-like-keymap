@@ -1568,7 +1568,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Cde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 1]]);
         });
-        it('should replace single selection containing line break(s) with a text', async () => {
+        it('should replace single selection containing line break(s) with a text (case 1)', async () => {
             await selectRange(1, 0, 2, 0);
             await recordThroughExecution([
                 ['type', { text: 'X' }]
@@ -1587,7 +1587,43 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Xcde');
             assert.deepStrictEqual(selectionsAsArray(), [[6, 1]]);
         });
-        it('should replace multiple selections each with a text', async () => {
+        it('should replace single selection containing line break(s) with a text (case 2)', async () => {
+            await selectRange(5, 2, 6, 3);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'abXde');
+            await assertDocumentLineCount(10);
+
+            await selectRange(8, 4, 9, 0);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(9);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abcdX');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 5]]);
+        });
+        it('should replace single selection containing line break(s) with a text (case 3)', async () => {
+            await selectRange(6, 2, 5, 3);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'abcXcde');
+            await assertDocumentLineCount(10);
+
+            await selectRange(7, 3, 6, 2);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(9);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abXde');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 3]]);
+        });
+        it('should replace multiple selections each with a text (case 1)', async () => {
             await selectRanges([[5, 0, 5, 3], [6, 0, 6, 3]]);
             await recordThroughExecution([
                 ['type', { text: 'X' }]
@@ -1606,7 +1642,26 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'aXde');
             assert.deepStrictEqual(selectionsAsArray(), [[7, 2], [8, 2]]);
         });
-        it('should replace multiple selections containing line breaks each with a text', async () => {
+        it('should replace multiple selections each with a text (case 2)', async () => {
+            await selectRanges([[6, 0, 6, 3], [5, 0, 5, 3]]);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'Xde');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'Xde');
+
+            await selectRanges([[8, 1, 8, 3], [7, 1, 7, 3]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'aXde');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'aXde');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 2], [7, 2]]);
+        });
+        it('should replace multiple selections containing line breaks each with a text (case 1)', async () => {
             await selectRanges([[1, 0, 2, 0], [3, 0, 4, 0]]);
             await recordThroughExecution([
                 ['type', { text: 'X' }]
@@ -1626,6 +1681,46 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'aXde');
             assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'aXde');
             assert.deepStrictEqual(selectionsAsArray(), [[3, 2], [4, 2]]);
+        });
+        it('should replace multiple selections containing line breaks each with a text (case 2)', async () => {
+            await selectRanges([[5, 4, 6, 1], [7, 4, 8, 1]]);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'abcdXbcde');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcdXbcde');
+
+            await selectRanges([[1, 0, 2, 0], [3, 0, 4, 0]]);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'X');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'X');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
+        });
+        it('should replace multiple selections containing line breaks each with a text (case 3)', async () => {
+            await selectRanges([[7, 4, 8, 1], [5, 4, 6, 1]]);
+            await recordThroughExecution([
+                ['type', { text: 'X' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, 'abcdXbcde');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcdXbcde');
+
+            await selectRanges([[3, 0, 4, 0], [1, 0, 2, 0]]);
+            await kb_macro.replay(textEditor);
+            await assertDocumentLineCount(7);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'X');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'X');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 1], [1, 1]]);
         });
     });
     describe('type (space/TAB)', () => {
