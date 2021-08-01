@@ -2029,6 +2029,25 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'e');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
         });
+        it('should insert line breaks (with a selected range which contains a line break)', async () => {
+            await selectRange(1, 2, 2, 1);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'bc');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+
+            await selectRange(7, 4, 8, 2);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'abcd');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 0]]);
+        });
         it('should insert line breaks (with selected ranges)', async () => {
             await selectRanges([[1, 1, 1, 2], [2, 1, 2, 2]]);
             await recordThroughExecution([
@@ -2048,6 +2067,54 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'ab');
             assert.deepStrictEqual(textEditor.document.lineAt(10).text, 'e');
             assert.deepStrictEqual(selectionsAsArray(), [[8, 0], [10, 0]]);
+        });
+        it('should insert line breaks (with selected ranges with line breaks) (case 1)', async () => {
+            await selectRanges([[1, 2, 2, 1], [3, 2, 4, 1]]);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'bc');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'bc');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0], [4, 0]]);
+
+            await selectRanges([[6, 4, 7, 2], [8, 4, 9, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'cde');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abcd');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, 'cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0], [9, 0]]);
+        });
+        it('should insert line breaks (with selected ranges with line breaks) (case 2)', async () => {
+            await selectRanges([[3, 2, 4, 1], [1, 2, 2, 1]]);
+            await recordThroughExecution([
+                ['type', { text: '\n' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'bc');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'bc');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0], [2, 0]]);
+
+            await selectRanges([[8, 4, 9, 2], [6, 4, 7, 2]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'abcd');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, 'cde');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, 'abcd');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, 'cde');
+            assert.deepStrictEqual(selectionsAsArray(), [[9, 0], [7, 0]]);
         });
         it('should insert a line break with possible auto indent', async () => {
             await resetCursor(10, 8);
