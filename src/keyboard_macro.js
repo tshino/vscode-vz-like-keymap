@@ -384,6 +384,7 @@ const KeyboardMacro = function(modeHandler) {
                             await vscode.commands.executeCommand('editor.action.indentLines');
                         }
                     );
+                    mode.expectSync();
                 } else {
                     pushIfRecording(
                         '<outdent>',
@@ -391,6 +392,7 @@ const KeyboardMacro = function(modeHandler) {
                             await vscode.commands.executeCommand('editor.action.outdentLines');
                         }
                     );
+                    mode.expectSync();
                 }
                 return;
             }

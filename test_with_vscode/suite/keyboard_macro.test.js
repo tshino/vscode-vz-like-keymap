@@ -2003,6 +2003,62 @@ describe('KeyboardMacro', () => {
         });
         // TODO: add tests for outdent
     });
+    describe('type (indent/outdent)', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '\n'.repeat(5) +
+                'abcde\n'.repeat(5) +
+                '    abcde\n'.repeat(5)
+            );
+        });
+        it('should insert spaces (indent; single-line)', async () => {
+            await resetCursor(5, 3);
+            await recordThroughExecution([
+                'editor.action.indentLines'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<indent>'
+            ]);
+            let line5 = textEditor.document.lineAt(5).text;
+            assert.strictEqual(5 < line5.length, true);
+            assert.strictEqual(Array.from(line5.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line5.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, line5.length - 2]]);
+
+            await resetCursor(7, 4);
+            await kb_macro.replay(textEditor);
+            let line7 = textEditor.document.lineAt(7).text;
+            assert.strictEqual(5 < line7.length, true);
+            assert.strictEqual(Array.from(line7.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line7.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, line7.length - 1]]);
+        });
+        it('should remove spaces (outdent; single-line)', async () => {
+            await resetCursor(10, 5);
+            await recordThroughExecution([
+                'editor.action.outdentLines'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<outdent>'
+            ]);
+            let line10 = textEditor.document.lineAt(10).text;
+            assert.strictEqual(9 > line10.length, true);
+            assert.strictEqual(5 <= line10.length, true);
+            assert.strictEqual(Array.from(line10.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line10.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[10, line10.length - 4]]);
+
+            await resetCursor(12, 7);
+            await kb_macro.replay(textEditor);
+            let line12 = textEditor.document.lineAt(12).text;
+            assert.strictEqual(9 > line12.length, true);
+            assert.strictEqual(5 <= line12.length, true);
+            assert.strictEqual(Array.from(line12.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(line12.slice(-5), 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[12, line12.length - 2]]);
+        });
+    });
     describe('type (Enter)', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
