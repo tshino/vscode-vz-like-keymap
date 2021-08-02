@@ -268,31 +268,37 @@ const KeyboardMacro = function(modeHandler) {
             if (!allChangesAtLineStart) {
                 return false;
             }
-            const isUniformText = changes.every(chg => chg.text === changes[0].text);
-            if (!isUniformText) {
+            const allChangesSingleLine = changes.every(chg => (
+                chg.range.start.line === chg.range.end.line
+            ));
+            if (!allChangesSingleLine) {
                 return false;
             }
-            const isUniformRangeLength = changes.every(chg => chg.rangeLength === changes[0].rangeLength);
-            if (!isUniformRangeLength) {
+            const editDelta = changes[0].text.length - changes[0].rangeLength;
+            const isUniformEditDelta = changes.every(chg => (
+                chg.text.length - chg.rangeLength === editDelta
+            ));
+            if (!isUniformEditDelta) {
                 return false;
             }
-            const text = changes[0].text;
-            if (0 < text.length) {
-                if (0 !== changes[0].rangeLength) {
-                    return false;
-                }
+            if (0 < editDelta) {
+                const text = changes[0].text.slice(0, editDelta);
                 const isWhiteSpace = Array.from(text).every(c => (c === ' ' || c === '\t'));
-                if (isWhiteSpace) {
-                    return true;
-                }
-                return false;
-            } else {
-                if (0 === changes[0].rangeLength) {
+                if (!isWhiteSpace) {
                     return false;
                 }
-                // FIXME: The deleted text should contain only white spaces.
-                return true;
+                const isUniformText = changes.every(chg => (
+                    chg.text.slice(0, editDelta) === text
+                ));
+                if (!isUniformText) {
+                    return false;
+                }
+                return true; // indent
+            } else if (0 > editDelta) {
+                // FIXME: The deleted text should consist of only white spaces.
+                return true; // outdent
             }
+            return false;
         };
         const isBracketCompletionWithSelection = function(selections, changes) {
             if (changes.length === 0) {
