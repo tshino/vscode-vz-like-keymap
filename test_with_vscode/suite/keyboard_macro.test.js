@@ -2012,6 +2012,22 @@ describe('KeyboardMacro', () => {
                 '        abcde\n'.repeat(5)
             );
         });
+        const checkForInsertedIndent = function(line, originalText) {
+            const n = originalText.length;
+            const text = textEditor.document.lineAt(line).text;
+            assert.strictEqual(n < text.length, true);
+            assert.strictEqual(Array.from(text.slice(0, -n)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(text.slice(-n), originalText);
+            return text.length;
+        };
+        const checkForRemovedIndent = function(line, originalText) {
+            const n = originalText.length;
+            const text = textEditor.document.lineAt(line).text;
+            assert.strictEqual(n > text.length, true);
+            assert.strictEqual(Array.from(originalText.slice(0, -text.length)).every(ch => ch === ' ' || ch === '\t'), true);
+            assert.strictEqual(originalText.slice(-text.length), text);
+            return text.length;
+        };
         it('should insert spaces (indent; single-line)', async () => {
             await resetCursor(5, 3);
             await recordThroughExecution([
@@ -2020,19 +2036,13 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 '<indent>'
             ]);
-            let line5 = textEditor.document.lineAt(5).text;
-            assert.strictEqual(5 < line5.length, true);
-            assert.strictEqual(Array.from(line5.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line5.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[5, line5.length - 2]]);
+            const len5 = checkForInsertedIndent(5, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, len5 - 2]]);
 
             await resetCursor(7, 4);
             await kb_macro.replay(textEditor);
-            let line7 = textEditor.document.lineAt(7).text;
-            assert.strictEqual(5 < line7.length, true);
-            assert.strictEqual(Array.from(line7.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line7.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[7, line7.length - 1]]);
+            const len7 = checkForInsertedIndent(7, 'abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[7, len7 - 1]]);
         });
         it('should remove spaces (outdent; single-line)', async () => {
             await resetCursor(10, 5);
@@ -2042,21 +2052,13 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 '<outdent>'
             ]);
-            let line10 = textEditor.document.lineAt(10).text;
-            assert.strictEqual(9 > line10.length, true);
-            assert.strictEqual(5 <= line10.length, true);
-            assert.strictEqual(Array.from(line10.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line10.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[10, line10.length - 4]]);
+            const len10 = checkForRemovedIndent(10, '    abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[10, len10 - 4]]);
 
             await resetCursor(12, 7);
             await kb_macro.replay(textEditor);
-            let line12 = textEditor.document.lineAt(12).text;
-            assert.strictEqual(9 > line12.length, true);
-            assert.strictEqual(5 <= line12.length, true);
-            assert.strictEqual(Array.from(line12.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line12.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[12, line12.length - 2]]);
+            const len12 = checkForRemovedIndent(12, '    abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[12, len12 - 2]]);
         });
         it('should insert spaces (indent; multi-line)', async () => {
             await selectRange(9, 3, 10, 7);
@@ -2066,27 +2068,15 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 '<indent>'
             ]);
-            let line9 = textEditor.document.lineAt(9).text;
-            let line10 = textEditor.document.lineAt(10).text;
-            assert.strictEqual(5 < line9.length, true);
-            assert.strictEqual(9 < line10.length, true);
-            assert.strictEqual(Array.from(line9.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(Array.from(line10.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line9.slice(-5), 'abcde');
-            assert.strictEqual(line10.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[9, line9.length - 2, 10, line10.length - 2]]);
+            const len9 = checkForInsertedIndent(9, 'abcde');
+            const len10 = checkForInsertedIndent(10, '    abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[9, len9 - 2, 10, len10 - 2]]);
 
             await selectRange(14, 7, 15, 11);
             await kb_macro.replay(textEditor);
-            let line14 = textEditor.document.lineAt(14).text;
-            let line15 = textEditor.document.lineAt(15).text;
-            assert.strictEqual(9 < line14.length, true);
-            assert.strictEqual(13 < line15.length, true);
-            assert.strictEqual(Array.from(line14.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(Array.from(line15.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line14.slice(-5), 'abcde');
-            assert.strictEqual(line15.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[14, line14.length - 2, 15, line15.length - 2]]);
+            const len14 = checkForInsertedIndent(14, '    abcde');
+            const len15 = checkForInsertedIndent(15, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2, 15, len15 - 2]]);
         });
         it('should remove spaces (outdent; multi-line)', async () => {
             await selectRange(14, 7, 15, 11);
@@ -2096,29 +2086,15 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 '<outdent>'
             ]);
-            let line14 = textEditor.document.lineAt(14).text;
-            let line15 = textEditor.document.lineAt(15).text;
-            assert.strictEqual(9 > line14.length, true);
-            assert.strictEqual(5 <= line14.length, true);
-            assert.strictEqual(13 > line15.length, true);
-            assert.strictEqual(5 <= line15.length, true);
-            assert.strictEqual(Array.from(line14.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(Array.from(line15.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line14.slice(-5), 'abcde');
-            assert.strictEqual(line15.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[14, line14.length - 2, 15, line15.length - 2]]);
+            const len14 = checkForRemovedIndent(14, '    abcde');
+            const len15 = checkForRemovedIndent(15, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2, 15, len15 - 2]]);
 
             await selectRange(16, 9, 17, 11);
             await kb_macro.replay(textEditor);
-            let line16 = textEditor.document.lineAt(16).text;
-            let line17 = textEditor.document.lineAt(17).text;
-            assert.strictEqual(13 > line16.length, true);
-            assert.strictEqual(13 > line17.length, true);
-            assert.strictEqual(Array.from(line16.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(Array.from(line17.slice(0, -5)).every(ch => ch === ' ' || ch === '\t'), true);
-            assert.strictEqual(line16.slice(-5), 'abcde');
-            assert.strictEqual(line17.slice(-5), 'abcde');
-            assert.deepStrictEqual(selectionsAsArray(), [[16, line16.length - 4, 17, line17.length - 2]]);
+            const len16 = checkForRemovedIndent(16, '        abcde');
+            const len17 = checkForRemovedIndent(17, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[16, len16 - 4, 17, len17 - 2]]);
         });
     });
     describe('type (Enter)', () => {
