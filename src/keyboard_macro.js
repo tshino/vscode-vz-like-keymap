@@ -323,13 +323,9 @@ const KeyboardMacro = function(modeHandler) {
             // console.log('#changes ' + changes.map(chg => chg.text));
             let selections = Array.from(vscode.window.activeTextEditor.selections);
             selections.sort((a, b) => a.start.compareTo(b.start));
-            if (0 < changes.length && changes.length === selections.length) {
+            const uniformText = changes.every((chg) => chg.text === changes[0].text);
+            if (0 < changes.length && changes.length === selections.length && uniformText) {
                 let sameRange = changes.every((chg, i) => selections[i].isEqual(chg.range));
-                let uniformText = changes.every((chg) => chg.text === changes[0].text);
-                if (!uniformText) {
-                    // console.log('*** unhandled edit event (2)');
-                    return;
-                }
                 if (sameRange) {
                     // Pure insertion of a single line of text or,
                     // replacing (possibly multiple) selected range(s) with a text

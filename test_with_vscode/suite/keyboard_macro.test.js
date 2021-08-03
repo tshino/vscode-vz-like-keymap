@@ -2096,6 +2096,42 @@ describe('KeyboardMacro', () => {
             const len17 = checkForRemovedIndent(17, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[16, len16 - 4, 17, len17 - 2]]);
         });
+        it('should insert spaces (indent; multi-cursor)', async () => {
+            await selectRanges([[9, 3, 9, 3], [10, 7, 10, 7]]);
+            await recordThroughExecution([
+                'editor.action.indentLines'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<indent>'
+            ]);
+            const len9 = checkForInsertedIndent(9, 'abcde');
+            const len10 = checkForInsertedIndent(10, '    abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[9, len9 - 2], [10, len10 - 2]]);
+
+            await selectRanges([[14, 7, 14, 7], [15, 11, 15, 11]]);
+            await kb_macro.replay(textEditor);
+            const len14 = checkForInsertedIndent(14, '    abcde');
+            const len15 = checkForInsertedIndent(15, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2], [15, len15 - 2]]);
+        });
+        it('should remove spaces (outdent; multi-cursor)', async () => {
+            await selectRanges([[14, 7, 14, 7], [15, 11, 15, 11]]);
+            await recordThroughExecution([
+                'editor.action.outdentLines'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<outdent>'
+            ]);
+            const len14 = checkForRemovedIndent(14, '    abcde');
+            const len15 = checkForRemovedIndent(15, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2], [15, len15 - 2]]);
+
+            await selectRanges([[16, 9, 16, 9], [17, 11, 17, 11]]);
+            await kb_macro.replay(textEditor);
+            const len16 = checkForRemovedIndent(16, '        abcde');
+            const len17 = checkForRemovedIndent(17, '        abcde');
+            assert.deepStrictEqual(selectionsAsArray(), [[16, len16 - 4], [17, len17 - 2]]);
+        });
     });
     describe('type (Enter)', () => {
         beforeEach(async () => {
