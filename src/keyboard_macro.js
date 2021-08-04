@@ -293,10 +293,10 @@ const KeyboardMacro = function(modeHandler) {
                 if (!isUniformText) {
                     return false;
                 }
-                return true; // indent
+                return 'indent';
             } else if (0 > editDelta) {
                 // FIXME: The deleted text should consist of only white spaces.
-                return true; // outdent
+                return 'outdent';
             }
             return false;
         };
@@ -378,8 +378,9 @@ const KeyboardMacro = function(modeHandler) {
                 mode.expectSync();
                 return;
             }
-            if (isIndentOrOutdent(changes)) {
-                if (0 < changes[0].text.length) {
+            const indentOrOutdent = isIndentOrOutdent(changes);
+            if (indentOrOutdent !== false) {
+                if (indentOrOutdent === 'indent') {
                     pushIfRecording(
                         '<indent>',
                         async function(_textEditor, _edit) {

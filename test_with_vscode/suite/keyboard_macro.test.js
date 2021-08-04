@@ -2012,6 +2012,20 @@ describe('KeyboardMacro', () => {
                 '        abcde\n'.repeat(5)
             );
         });
+        const checkIfRecordedCommandIs = function(command) {
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                command
+            ]);
+        };
+        const checkIfRecordedCommandIsIn = function(command_candidates) {
+            const recorded = kb_macro.getRecordedCommandNames();
+            const index = command_candidates.indexOf(recorded[0]);
+            if (0 < index) {
+                assert.deepStrictEqual(recorded, [command_candidates[index]]);
+            } else {
+                assert.deepStrictEqual(recorded, [command_candidates[0]]);
+            }
+        };
         const checkForInsertedIndent = function(line, originalText) {
             const n = originalText.length;
             const text = textEditor.document.lineAt(line).text;
@@ -2028,14 +2042,10 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(originalText.slice(-text.length), text);
             return text.length;
         };
-        it('should insert spaces (indent; single-line)', async () => {
+        it('should insert spaces (indent; single-line) (case 1)', async () => {
             await resetCursor(5, 3);
-            await recordThroughExecution([
-                'editor.action.indentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<indent>'
-            ]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
             const len5 = checkForInsertedIndent(5, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[5, len5 - 2]]);
 
@@ -2044,14 +2054,15 @@ describe('KeyboardMacro', () => {
             const len7 = checkForInsertedIndent(7, 'abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[7, len7 - 1]]);
         });
-        it('should remove spaces (outdent; single-line)', async () => {
+        it('should insert spaces (indent; single-line) (case 2)', async () => {
+            await resetCursor(6, 0);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIsIn(['<indent>', '<insert-uniform-text>']);
+        });
+        it('should remove spaces (outdent; single-line) (case 1)', async () => {
             await resetCursor(10, 5);
-            await recordThroughExecution([
-                'editor.action.outdentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<outdent>'
-            ]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
             const len10 = checkForRemovedIndent(10, '    abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[10, len10 - 4]]);
 
@@ -2060,14 +2071,15 @@ describe('KeyboardMacro', () => {
             const len12 = checkForRemovedIndent(12, '    abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[12, len12 - 2]]);
         });
-        it('should insert spaces (indent; multi-line)', async () => {
+        it('should remove spaces (outdent; single-line) (case 2)', async () => {
+            await resetCursor(11, 0);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should insert spaces (indent; multi-line) (case 1)', async () => {
             await selectRange(9, 3, 10, 7);
-            await recordThroughExecution([
-                'editor.action.indentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<indent>'
-            ]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
             const len9 = checkForInsertedIndent(9, 'abcde');
             const len10 = checkForInsertedIndent(10, '    abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[9, len9 - 2, 10, len10 - 2]]);
@@ -2078,14 +2090,20 @@ describe('KeyboardMacro', () => {
             const len15 = checkForInsertedIndent(15, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2, 15, len15 - 2]]);
         });
-        it('should remove spaces (outdent; multi-line)', async () => {
+        it('should insert spaces (indent; multi-line) (case 2)', async () => {
+            await selectRange(9, 0, 10, 0);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
+        });
+        it('should insert spaces (indent; multi-line) (case 3)', async () => {
+            await selectRange(9, 0, 12, 0);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
+        });
+        it('should remove spaces (outdent; multi-line) (case 1)', async () => {
             await selectRange(14, 7, 15, 11);
-            await recordThroughExecution([
-                'editor.action.outdentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<outdent>'
-            ]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
             const len14 = checkForRemovedIndent(14, '    abcde');
             const len15 = checkForRemovedIndent(15, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2, 15, len15 - 2]]);
@@ -2096,14 +2114,20 @@ describe('KeyboardMacro', () => {
             const len17 = checkForRemovedIndent(17, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[16, len16 - 4, 17, len17 - 2]]);
         });
-        it('should insert spaces (indent; multi-cursor)', async () => {
+        it('should remove spaces (outdent; multi-line) (case 2)', async () => {
+            await selectRange(14, 0, 15, 0);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should remove spaces (outdent; multi-line) (case 3)', async () => {
+            await selectRange(14, 0, 17, 0);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should insert spaces (indent; multi-cursor) (case 1)', async () => {
             await selectRanges([[9, 3, 9, 3], [10, 7, 10, 7]]);
-            await recordThroughExecution([
-                'editor.action.indentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<indent>'
-            ]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
             const len9 = checkForInsertedIndent(9, 'abcde');
             const len10 = checkForInsertedIndent(10, '    abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[9, len9 - 2], [10, len10 - 2]]);
@@ -2114,14 +2138,25 @@ describe('KeyboardMacro', () => {
             const len15 = checkForInsertedIndent(15, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2], [15, len15 - 2]]);
         });
-        it('should remove spaces (outdent; multi-cursor)', async () => {
+        it('should insert spaces (indent; multi-cursor) (case 2)', async () => {
+            await selectRanges([[9, 0, 9, 0], [10, 0, 10, 0]]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
+        });
+        it('should insert spaces (indent; multi-cursor) (case 3)', async () => {
+            await selectRanges([[8, 0, 8, 0], [9, 0, 9, 0]]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIsIn(['<indent>', '<insert-uniform-text>']);
+        });
+        it('should insert spaces (indent; multi-cursor) (case 4)', async () => {
+            await selectRanges([[10, 0, 10, 0], [11, 0, 11, 0]]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            checkIfRecordedCommandIs('<indent>');
+        });
+        it('should remove spaces (outdent; multi-cursor) (case 1)', async () => {
             await selectRanges([[14, 7, 14, 7], [15, 11, 15, 11]]);
-            await recordThroughExecution([
-                'editor.action.outdentLines'
-            ]);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                '<outdent>'
-            ]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
             const len14 = checkForRemovedIndent(14, '    abcde');
             const len15 = checkForRemovedIndent(15, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[14, len14 - 2], [15, len15 - 2]]);
@@ -2131,6 +2166,21 @@ describe('KeyboardMacro', () => {
             const len16 = checkForRemovedIndent(16, '        abcde');
             const len17 = checkForRemovedIndent(17, '        abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[16, len16 - 4], [17, len17 - 2]]);
+        });
+        it('should remove spaces (outdent; multi-cursor) (case 2)', async () => {
+            await selectRanges([[14, 0, 14, 0], [15, 0, 15, 0]]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should remove spaces (outdent; multi-cursor) (case 3)', async () => {
+            await selectRanges([[13, 0, 13, 0], [14, 0, 14, 0]]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should remove spaces (outdent; multi-cursor) (case 4)', async () => {
+            await selectRanges([[15, 0, 15, 0], [16, 0, 16, 0]]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            checkIfRecordedCommandIs('<outdent>');
         });
     });
     describe('type (Enter)', () => {
