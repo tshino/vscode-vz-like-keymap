@@ -2658,6 +2658,24 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123 abcde');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 9]]);
         });
+        it('should not crash if it replays in unexpected condition', async () => {
+            await resetCursor(5, 3);
+            await recordThroughExecution([
+                ['edit', edit => {
+                    edit.replace(new vscode.Selection(5, 0, 5, 3), '123456');
+                }, [5, 6]]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>'
+            ]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '123456 ');
+
+            await resetCursor(1, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 6]]);
+        });
     });
     describe('type + IME', () => {
         beforeEach(async () => {

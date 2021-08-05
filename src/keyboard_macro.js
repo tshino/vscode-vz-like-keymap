@@ -198,8 +198,6 @@ const KeyboardMacro = function(modeHandler) {
         //     };
         // };
         const makeInsertUniformText2 = function(text, numDeleteLeft) {
-            // FIXME: may fail if the text constains any line breaks
-            // FIXME: may fail if the selected range contains any line breaks
             return async (textEditor) => {
                 let selections = Array.from(textEditor.selections);
                 const bottomToTop = 1 < selections.length && selections[0].start.isAfter(selections[1].start);
@@ -215,7 +213,10 @@ const KeyboardMacro = function(modeHandler) {
                         let removedLineCount = 0;
                         if (0 < numDeleteLeft) {
                             let range = new vscode.Range(
-                                pos.translate({ characterDelta: -numDeleteLeft }),
+                                new vscode.Position(
+                                    pos.line,
+                                    Math.max(0, pos.character - numDeleteLeft)
+                                ),
                                 pos
                             );
                             edit.delete(range);
@@ -227,10 +228,10 @@ const KeyboardMacro = function(modeHandler) {
                         edit.insert(pos, text);
                         lineOffset += numLF;
                         if (numLF === 0) {
-                            pos = pos.translate({
-                                lineDelta: lineOffset,
-                                characterDelta: text.length - numDeleteLeft
-                            });
+                            pos = new vscode.Position(
+                                pos.line + lineOffset,
+                                Math.max(0, pos.character - numDeleteLeft) + text.length
+                            );
                         } else {
                             pos = new vscode.Position(pos.line + lineOffset, lenLastLine);
                         }
