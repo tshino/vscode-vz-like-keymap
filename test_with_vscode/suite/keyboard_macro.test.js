@@ -2153,6 +2153,12 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(['editor.action.indentLines']);
             checkIfRecordedCommandIs('<indent>');
         });
+        it('should insert spaces (indent; multi-cursor) (case 5)', async () => {
+            await selectRanges([[10, 4, 10, 4], [11, 4, 11, 4]]);
+            await recordThroughExecution(['editor.action.indentLines']);
+            // FIXME: should not be <insert-uniform-text> if possible to distinguish
+            checkIfRecordedCommandIsIn(['<indent>', '<insert-uniform-text>']);
+        });
         it('should remove spaces (outdent; multi-cursor) (case 1)', async () => {
             await selectRanges([[14, 7, 14, 7], [15, 11, 15, 11]]);
             await recordThroughExecution(['editor.action.outdentLines']);
@@ -2181,6 +2187,12 @@ describe('KeyboardMacro', () => {
             await selectRanges([[15, 0, 15, 0], [16, 0, 16, 0]]);
             await recordThroughExecution(['editor.action.outdentLines']);
             checkIfRecordedCommandIs('<outdent>');
+        });
+        it('should remove spaces (outdent; multi-cursor) (case 5)', async () => {
+            await selectRanges([[15, 8, 15, 8], [16, 8, 16, 8]]);
+            await recordThroughExecution(['editor.action.outdentLines']);
+            // FIXME: should not be <insert-uniform-text> if possible to distinguish
+            checkIfRecordedCommandIsIn(['<outdent>', '<insert-uniform-text>']);
         });
     });
     describe('type (Enter)', () => {
