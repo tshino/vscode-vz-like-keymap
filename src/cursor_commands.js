@@ -177,11 +177,11 @@ const CursorHandler = function(modeHandler) {
         textEditor.selections = newSelections;
         let promises = [];
         if (reveal) {
-            promises.push(waitForScrollTimeout(() => {}, 100).catch(() => {}));
+            promises.push(waitForScrollTimeout(() => {}, 200).catch(() => {}));
             textEditor.revealRange(new vscode.Range(cursor, cursor));
         }
         if (expectSelectionChangeCallback) {
-            promises.push(mode.waitForSyncTimeout(100).catch(() => {}));
+            promises.push(mode.waitForSyncTimeout(200).catch(() => {}));
         }
         await Promise.all(promises);
     };
