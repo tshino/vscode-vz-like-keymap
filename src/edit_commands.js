@@ -884,13 +884,19 @@ const EditHandler = function(modeHandler) {
     const undo = makeGuardedCommand(
         'undo',
         async function(_textEditor, _edit) {
+            expectEdits();
+            mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:undo');
+            endExpectEdits();
         }
     );
     const redo = makeGuardedCommand(
         'redo',
         async function(_textEditor, _edit) {
+            expectEdits();
+            mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:redo');
+            endExpectEdits();
         }
     );
     const registerCommands = function(context) {
