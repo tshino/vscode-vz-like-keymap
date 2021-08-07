@@ -2857,6 +2857,17 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 2]]);
         });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 2);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            let p1 = editHandler.undo(textEditor);
+            let p2 = editHandler.undo(textEditor);
+            await p1;
+            await p2;
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 2]]);
+        });
     });
     describe('redo', () => {
         beforeEach(async () => {
@@ -2895,6 +2906,19 @@ describe('EditHandler', () => {
             await editHandler.redo(textEditor);
 
             assert.strictEqual(textEditor.document.lineAt(0).text, '123456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(0, 0);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.undo(textEditor);
+            await editHandler.undo(textEditor);
+            let p1 = editHandler.redo(textEditor);
+            let p2 = editHandler.redo(textEditor);
+            await p1;
+            await p2;
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
     });
