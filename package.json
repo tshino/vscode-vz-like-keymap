@@ -669,22 +669,42 @@
             {
                 "key": "ctrl+k ctrl+u",
                 "command": "undo",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+            },
+            {
+                "key": "ctrl+k ctrl+u",
+                "command": "vz.undo",
+                "when": "editorTextFocus && !editorReadonly && vz.keyboardMacroRecording"
             },
             {
                 "key": "ctrl+k u",
                 "command": "undo",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+            },
+            {
+                "key": "ctrl+k u",
+                "command": "vz.undo",
+                "when": "editorTextFocus && !editorReadonly && vz.keyboardMacroRecording"
             },
             {
                 "key": "alt+backspace",
                 "command": "undo",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+            },
+            {
+                "key": "alt+backspace",
+                "command": "vz.undo",
+                "when": "editorTextFocus && !editorReadonly && vz.keyboardMacroRecording"
             },
             {
                 "key": "shift+alt+backspace",
                 "command": "redo",
-                "when": "editorTextFocus && !editorReadonly"
+                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+            },
+            {
+                "key": "shift+alt+backspace",
+                "command": "vz.redo",
+                "when": "editorTextFocus && !editorReadonly && vz.keyboardMacroRecording"
             },
             {
                 "key": "ctrl+q ctrl+f",

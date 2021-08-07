@@ -881,6 +881,18 @@ const EditHandler = function(modeHandler) {
             endExpectEdits();
         }
     );
+    const undo = makeGuardedCommand(
+        'undo',
+        async function(_textEditor, _edit) {
+            await vscode.commands.executeCommand('default:undo');
+        }
+    );
+    const redo = makeGuardedCommand(
+        'redo',
+        async function(_textEditor, _edit) {
+            await vscode.commands.executeCommand('default:redo');
+        }
+    );
     const registerCommands = function(context) {
         setupListeners(context);
         registerTextEditorCommand(context, 'clipboardCutAndPush', clipboardCutAndPush);
@@ -901,6 +913,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'copyLinesDown', copyLinesDown);
         registerTextEditorCommand(context, 'transformCase', transformCase);
         registerTextEditorCommand(context, 'insertPath', insertPath);
+        registerTextEditorCommand(context, 'undo', undo);
+        registerTextEditorCommand(context, 'redo', redo);
     };
     return {
         getEditsFreeCounter, // for testing purpose
@@ -939,7 +953,9 @@ const EditHandler = function(modeHandler) {
         copyLinesDown,
         transformCase,
         insertPath,
-        registerCommands
+        registerCommands,
+        undo,
+        redo
     };
 };
 

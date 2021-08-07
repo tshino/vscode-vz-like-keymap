@@ -2816,4 +2816,59 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
         });
     });
+    describe('undo', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123\n' +
+                    '123456\n' +
+                    '123456789\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should revert the last edit (cut)', async () => {
+            await resetCursor(1, 2);
+            await editHandler.clipboardCutAndPush(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+
+            await editHandler.undo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+        });
+    });
+    describe('redo', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    '123\n' +
+                    '123456\n' +
+                    '123456789\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should reproduce the last undo-ed edit (cut)', async () => {
+            await resetCursor(1, 0);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.undo(textEditor);
+
+            await editHandler.redo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
+        });
+    });
 });
