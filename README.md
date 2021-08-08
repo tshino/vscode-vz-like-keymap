@@ -7,14 +7,16 @@
 
 Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code拡張です。
 
-- 50以上のショートカットキーに対応し、VZとほぼ同等の基本操作を実現。
-- 寛容な2ストロークキー。VZと同様に2文字目でCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
-- テキストスタック機能に対応。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
-- 選択モード（CTRL+B）と矩形選択モード（CTRL+K B）も再現。
-- 削除文字スタック機能もあり、DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
-- 半画面スクロールも可能（設定で切り替え）。
-- タグジャンプ機能（SHIFT+F10）。
-- リスト操作でもVZ風のキーが使用可能（EXPLORERのファイル選択、推測入力の候補リストなど）。
+- ダイアモンドカーソルを始めVZと同等のほとんどの基本操作をカバー。
+- スタック式のクリップボードを再現。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
+- トグル式の選択モード（CTRL+B）と矩形選択モード（CTRL+K B）も再現。
+- 削除文字列のストック機能もサポート。DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
+- キーボードマクロ機能も実現。キー操作を記録して繰り返し再生できる。
+- ページスクロール時に画面内のカーソル位置が移動しない挙動を再現。
+- 半画面スクロールも可能（設定で全画面と半画面を切り替え）。
+- タグジャンプ機能（SHIFT+F10）もサポート。
+- 2ストロークキーはVZと同様に2文字目でCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
+- VS Code内のリスト操作でもVZ風のキーが使用可能。例えばEXPLORERのファイル選択、推測入力の候補リストなど。
 - いくつか設定オプションあり。設定で "vz" を検索してみてください。
 
 ## 対応キー一覧
@@ -60,13 +62,6 @@ Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code
 | CTRL+K C | ペースト（テキストスタックを保持） |
 | CTRL+K Y | クリップボードとテキストスタックをクリア |
 
-### 履歴操作
-
-| キー | 機能 |
-| ---- | ---- |
-| CTRL+K U, ALT+Backspace | 元に戻す（Undo） |
-| SHIFT+ALT+Backspace | やり直し（Redo） |
-
 ### 検索、置換
 
 | キー | 機能 |
@@ -77,6 +72,20 @@ Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code
 | CTRL+R, PageUp, CTRL+C, PageDown | 前方（後方）の検索結果へ移動 |
 | CTRL+M | 次の検索結果へ移動、または置換を1つ実行 |
 | CTRL+Q O | 置換を1つ実行 |
+
+### 履歴操作
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+K U, ALT+Backspace | 元に戻す（Undo） |
+| SHIFT+ALT+Backspace | やり直し（Redo） |
+
+### キーボードマクロ
+
+| キー | 機能 |
+| ---- | ---- |
+| CTRL+_ | キー操作の記録開始、キャンセル |
+| CTRL+^ | キー操作の記録終了、記録したキー操作の再生 |
 
 ### ウィンドウ操作
 
@@ -104,11 +113,11 @@ Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code
 | CTRL+I | CTRL+Space | 補完候補を表示（IntelliSense） |
 | CTRL+K CTRL+C | CTRL+/ | 行コメントの切り替え |
 
-## 再現性の詳細
+## 再現度の詳細
 
 Vz KeymapではVZエディタと同様に2ストロークキーの2文字目でCTRLキーを押すか離すかを区別しません。VS Codeのキー定義ではこれが区別されるため、Vz Keymapはすべての2ストロークキーを2通りずつ登録しています。
 
-VZエディタの選択モードはちょっと特殊な機能で、単純なキー割り当てでは実現できません。CTRL+Bで選択モードを開始したあとは、普通の（SHIFTキーなしの）カーソルキーで範囲選択ができる必要があるからです。
+VZエディタの選択モードはトグル式のため、VS Codeにおいては単純なキー割り当てでは実現できません。CTRL+Bで選択モードを開始したあとは、普通の（SHIFTキーなしの）カーソルキーで範囲選択ができる必要があるからです。
 このため、Vz Keymapでは内部で選択モード状態を保持してカーソルキーの動作を変えています。
 また、keybindings.json の'when'節では、Vz Keymapが選択モード中かどうかを判定する 'vz.inSelectionMode' という変数が使えるようにしてあります。
 元からある変数 'editorHasSelection' と 'vz.inSelectionMode' は、選択範囲が空（選択モードを開始した直後）でも真になるかどうか、という違いがあります。
@@ -119,19 +128,23 @@ VZエディタの選択モードはちょっと特殊な機能で、単純なキ
 このVS Code拡張では、VZエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
 代わりに、ALT+F Sで保存（メインメニューのFile > Save）のようにアクセラレータキーで代用することをお薦めします。
 
+キーボードマクロ機能はキー操作そのものを記録する機能ではなく、キー操作によって呼び出されたVz Keymapのコマンドを内部的に記録する仕組みです。そのため、Vz Keymap以外のコマンド実行などは記録されないことに注意してください。
+
 
 #### English
 # Vz Keymap for VS Code
 
 This is a Visual Studio Code extension which provides a keymap similar to good old VZ Editor.
 
-- More than 50 shortcuts to provide basic experience which is almost identical to VZ Editor
-- Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
-- Text stack (push/pop to the clibboard) is supported for actions Cut, Copy and Paste
-- Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
+- Covers the basic experience which is almost identical to VZ Editor
+- Emulates the Text stack (push/pop to the clibboard) with Cut, Copy and Paste
+- Toogle-style Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
 - Undelete stack (Ctrl+U to restore deleted characters)
+- Keyboard macro (record/replay keyboard sequence)
+- Page scroll doesn't move the cursor position in the view
 - Half-page scroll as an option
 - Tag jump (Shift+F10)
+- Permissive two-stroke keys (e.g. Ctrl+Q Ctrl+X is equivalent to Ctrl+Q X)
 - List view operation with VZ-style cursor keys (e.g. selecting files on Explorer, selecting Suggestion)
 - Some options are available (search for 'vz' in the Settings)
 
@@ -178,13 +191,6 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+K C | Paste (keep text stack) |
 | Ctrl+K Y | Clear clipboard and text stack |
 
-### Undo, Redo
-
-| Key | Function |
-| --- | -------- |
-| Ctrl+K U, Alt+Backspace | Undo |
-| Shift+Alt+Backspace | Redo |
-
 ### Search
 
 | Key | Function |
@@ -195,6 +201,20 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous/next match |
 | Ctrl+M | Find next match/Replace one match |
 | Ctrl+Q O | Replace one match |
+
+### Undo, Redo
+
+| Key | Function |
+| --- | -------- |
+| Ctrl+K U, Alt+Backspace | Undo |
+| Shift+Alt+Backspace | Redo |
+
+### Keyboard Macro
+
+| Key | Function |
+| --- | -------- |
+| CTRL+_ | Start/cancel recording key sequence |
+| CTRL+^ | Finish recording key sequence, Replay recorded key sequence |
 
 ### Window Management
 
@@ -237,3 +257,6 @@ For example, the result of Ctrl+F which moves the cursor to the next word may di
 
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
+
+The keyboard macro doesn't record the keyboard inputs itself, instead, it records the commands of Vz Keymap invoked internally by the keyboard input.
+Thus, please notified that it can't record execution of commands other than Vz Keymap.
