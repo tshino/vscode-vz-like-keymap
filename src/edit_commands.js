@@ -883,20 +883,28 @@ const EditHandler = function(modeHandler) {
     );
     const undo = makeGuardedCommand(
         'undo',
-        async function(_textEditor, _edit) {
+        async function(textEditor, _edit) {
             expectEdits();
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:undo');
             endExpectEdits();
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
         }
     );
     const redo = makeGuardedCommand(
         'redo',
-        async function(_textEditor, _edit) {
+        async function(textEditor, _edit) {
             expectEdits();
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:redo');
             endExpectEdits();
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
         }
     );
     const registerCommands = function(context) {
