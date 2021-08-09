@@ -2843,6 +2843,17 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
         });
+        it('should revert the last edit (cut with selection)', async () => {
+            await selectRange(1, 1, 1, 5);
+            await editHandler.clipboardCutAndPush(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '16');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
+
+            await editHandler.undo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1, 1, 5]]);
+        });
         it('should revert the last edits (cut x2)', async () => {
             await resetCursor(0, 2);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -2867,6 +2878,33 @@ describe('EditHandler', () => {
             await p2;
             assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 2]]);
+        });
+        it('should revert the last edit (paste)', async () => {
+            await resetCursor(1, 2);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await resetCursor(0, 0);
+            await editHandler.clipboardPopAndPaste(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+
+            await editHandler.undo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123');
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should revert the last edit (paste with selection)', async () => {
+            await selectRange(0, 2, 1, 3);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await selectRange(1, 2, 1, 6);
+            await editHandler.clipboardPopAndPaste(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123');
+            assert.strictEqual(textEditor.document.lineAt(2).text, '123789');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
+
+            await editHandler.undo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123456789');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2, 1, 6]]);
         });
     });
     describe('redo', () => {
@@ -2895,6 +2933,16 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123456789');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0]]);
         });
+        it('should reproduce the last undo-ed edit (cut with selection)', async () => {
+            await selectRange(1, 1, 1, 5);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await editHandler.undo(textEditor);
+
+            await editHandler.redo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '16');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
+        });
         it('should reproduce the last undo-ed edits (cut x2)', async () => {
             await resetCursor(0, 0);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -2920,6 +2968,31 @@ describe('EditHandler', () => {
             await p2;
             assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should reproduce the last undo-ed edit (paste)', async () => {
+            await resetCursor(1, 2);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await resetCursor(0, 0);
+            await editHandler.clipboardPopAndPaste(textEditor);
+            await editHandler.undo(textEditor);
+
+            await editHandler.redo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            // assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should reproduce the last undo-ed edit (paste with selection)', async () => {
+            await selectRange(0, 2, 1, 3);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await selectRange(1, 2, 1, 6);
+            await editHandler.clipboardPopAndPaste(textEditor);
+            await editHandler.undo(textEditor);
+
+            await editHandler.redo(textEditor);
+
+            assert.strictEqual(textEditor.document.lineAt(1).text, '123');
+            assert.strictEqual(textEditor.document.lineAt(2).text, '123789');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 3]]);
         });
     });
 });
