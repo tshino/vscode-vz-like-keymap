@@ -4474,5 +4474,58 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, '');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
         });
+        it('should reproduce the last undo-ed edit (cut with selection)', async () => {
+            await selectRange(1, 1, 1, 5);
+            const commands = [
+                'vz.clipboardCutAndPush',
+                'vz.undo',
+                'vz.redo'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '16');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
+
+            await selectRange(3, 1, 3, 2);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(3).text, 'ac');
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 1]]);
+        });
+        it('should reproduce the last undo-ed edit (paste)', async () => {
+            await resetCursor(1, 0);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await resetCursor(2, 0);
+            const commands = [
+                'vz.clipboardPaste',
+                'vz.undo',
+                'vz.redo'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '123456');
+
+            await resetCursor(4, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, '123456');
+        });
+        it('should reproduce the last undo-ed edit (paste with selection)', async () => {
+            await selectRange(1, 1, 1, 5);
+            await editHandler.clipboardCutAndPush(textEditor);
+            await selectRange(2, 4, 2, 8);
+            const commands = [
+                'vz.clipboardPaste',
+                'vz.undo',
+                'vz.redo'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(textEditor.document.lineAt(2).text, '123423459');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 8]]);
+
+            await selectRange(4, 2, 4, 4);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(textEditor.document.lineAt(4).text, 'ab2345ef');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 6]]);
+        });
     });
 });
