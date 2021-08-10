@@ -24,11 +24,12 @@ const SearchHandler = function(modeHandler) {
     const find = function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     };
-    const selectWordToFind = function(textEditor, _edit) {
+    const selectWordToFind = async function(textEditor, _edit) {
         if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
-            exec(['cursorWordEndRightSelect', 'actions.find']);
+            await vscode.commands.executeCommand('cursorWordEndRightSelect');
+            await vscode.commands.executeCommand('actions.find');
         } else {
-            exec(['actions.find']);
+            await vscode.commands.executeCommand('actions.find');
         }
     };
     const expandWordToFind = function(textEditor, _edit) {
@@ -61,6 +62,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };
     return {
+        selectWordToFind,
         registerCommands
     };
 };
