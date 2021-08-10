@@ -53,6 +53,12 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
             // FIXME: check that findWidget is visible (but it seems not possible to test)
         });
+        it('should not change selection if it is not empty', async () => {
+            await selectRange(2, 0, 2, 3);
+
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3]]);
+        });
     });
     describe('expandWordToFind', () => {
         beforeEach(async () => {
@@ -81,6 +87,12 @@ describe('SearchHandler', () => {
 
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 14]]);
+        });
+        it('should select a word when a part of the word is selected', async () => {
+            await selectRange(2, 0, 2, 3);
+
+            await searchHandler.expandWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
         });
     });
 });
