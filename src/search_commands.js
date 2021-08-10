@@ -32,7 +32,7 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('actions.find');
         }
     };
-    const expandWordToFind = function(textEditor, _edit) {
+    const expandWordToFind = async function(textEditor, _edit) {
         let sel = textEditor.selection;
         if (1 < textEditor.selections.length || sel.anchor.line !== sel.active.line) {
             return;
@@ -44,7 +44,8 @@ const SearchHandler = function(modeHandler) {
         if (EditUtil.isCursorAtEndOfLine(textEditor)) {
             return;
         }
-        exec(['cursorWordEndRightSelect', 'actions.find']);
+        await vscode.commands.executeCommand('cursorWordEndRightSelect');
+        await vscode.commands.executeCommand('actions.find');
     };
     const closeFindWidget = function(textEditor, _edit) {
         textEditor.selection = new vscode.Selection(
@@ -63,6 +64,7 @@ const SearchHandler = function(modeHandler) {
     };
     return {
         selectWordToFind,
+        expandWordToFind,
         registerCommands
     };
 };

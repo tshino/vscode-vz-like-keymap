@@ -37,9 +37,9 @@ describe('SearchHandler', () => {
                     '\n' +
                     'abcdef abcdef\n' +
                     '\n' +
-                    'abcdef\n' +
+                    'xyz abcdef 123\n' +
                     '\n' +
-                    'abcdef\n'
+                    'abcdef xyz\n'
                 ),
                 vscode.EndOfLine.CRLF
             );
@@ -48,9 +48,39 @@ describe('SearchHandler', () => {
         });
         it('should select the word the cursor is on and open findWidget', async () => {
             await resetCursor(2, 0);
-            await searchHandler.selectWordToFind(textEditor);
 
+            await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
+            // FIXME: check that findWidget is visible (but it seems not possible to test)
+        });
+    });
+    describe('expandWordToFind', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    '\n' +
+                    'abcdef abcdef\n' +
+                    '\n' +
+                    'xyz abcdef 123\n' +
+                    '\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should select multiple words starting from the cursor position and open findWidget', async () => {
+            await selectRange(4, 0, 4, 3);
+
+            await searchHandler.expandWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
+            // FIXME: check that findWidget is visible (but it seems not possible to test)
+
+            await searchHandler.expandWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 14]]);
         });
     });
 });
