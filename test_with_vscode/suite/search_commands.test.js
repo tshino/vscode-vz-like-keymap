@@ -94,5 +94,14 @@ describe('SearchHandler', () => {
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
         });
+        it('should prevent reentry', async () => {
+            await selectRange(4, 0, 4, 3);
+            let p1 = searchHandler.expandWordToFind(textEditor);
+            let p2 = searchHandler.expandWordToFind(textEditor);
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
+        });
     });
 });

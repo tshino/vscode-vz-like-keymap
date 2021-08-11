@@ -1,8 +1,10 @@
 "use strict";
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
+const keyboard_macro = require("./keyboard_macro.js");
 const EditUtil = require("./edit_util.js");
 
+const kbMacroHandler = keyboard_macro.getInstance();
 const exec = function(commands, index = 0) {
     if (typeof commands === 'string') {
         commands = [ commands ];
@@ -21,32 +23,60 @@ const registerTextEditorCommand = function(context, name, func) {
 const SearchHandler = function(modeHandler) {
     const mode = modeHandler;
 
+    let reentryGuard = null;
+    const makeGuardedCommand = function(name, func) {
+        const guardedCommand = async function(textEditor, edit) {
+            if (reentryGuard === name) {
+                return;
+            }
+            reentryGuard = name;
+            kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
+            await func(textEditor, edit);
+            reentryGuard = null;
+        };
+        return guardedCommand;
+    };
+    const waitForEndOfGuardedCommand = async function() { // test purpose only
+        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
+            await sleep(10);
+        }
+        if (reentryGuard !== null) {
+            console.log('*** debug: Guarded command still be running unexpectedly')
+        }
+    };
+
     const find = function(_textEditor, _edit) {
         exec(['closeFindWidget', 'actions.find']);
     };
-    const selectWordToFind = async function(textEditor, _edit) {
-        if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
+    const selectWordToFind = makeGuardedCommand(
+        'selectWordToFind',
+        async function(textEditor, _edit) {
+            if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
+                await vscode.commands.executeCommand('cursorWordEndRightSelect');
+                await vscode.commands.executeCommand('actions.find');
+            } else {
+                await vscode.commands.executeCommand('actions.find');
+            }
+        }
+    );
+    const expandWordToFind = makeGuardedCommand(
+        'expandWordToFind',
+        async function(textEditor, _edit) {
+            let sel = textEditor.selection;
+            if (1 < textEditor.selections.length || sel.anchor.line !== sel.active.line) {
+                return;
+            }
+            if (sel.anchor.character > sel.active.character) {
+                sel = new vscode.Selection(sel.active, sel.anchor);
+                textEditor.selection = sel;
+            }
+            if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+                return;
+            }
             await vscode.commands.executeCommand('cursorWordEndRightSelect');
             await vscode.commands.executeCommand('actions.find');
-        } else {
-            await vscode.commands.executeCommand('actions.find');
         }
-    };
-    const expandWordToFind = async function(textEditor, _edit) {
-        let sel = textEditor.selection;
-        if (1 < textEditor.selections.length || sel.anchor.line !== sel.active.line) {
-            return;
-        }
-        if (sel.anchor.character > sel.active.character) {
-            sel = new vscode.Selection(sel.active, sel.anchor);
-            textEditor.selection = sel;
-        }
-        if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-            return;
-        }
-        await vscode.commands.executeCommand('cursorWordEndRightSelect');
-        await vscode.commands.executeCommand('actions.find');
-    };
+    );
     const closeFindWidget = function(textEditor, _edit) {
         textEditor.selection = new vscode.Selection(
             textEditor.selection.start,
@@ -63,6 +93,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };
     return {
+        waitForEndOfGuardedCommand, // for testing purpose
         selectWordToFind,
         expandWordToFind,
         registerCommands

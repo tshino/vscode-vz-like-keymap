@@ -6,6 +6,7 @@ const mode_handler = require("./../../src/mode_handler.js");
 const keyboard_macro = require("./../../src/keyboard_macro.js");
 const edit_commands = require("./../../src/edit_commands.js");
 const cursor_commands = require("./../../src/cursor_commands.js");
+const search_commands = require("./../../src/search_commands.js");
 const EditUtil = require("./../../src/edit_util.js");
 
 
@@ -14,6 +15,7 @@ describe('KeyboardMacro', () => {
     const kb_macro = keyboard_macro.getInstance();
     const editHandler = edit_commands.getInstance();
     const cursorHandler = cursor_commands.getInstance();
+    const searchHandler = search_commands.getInstance();
 
     let textEditor;
     const sleep = testUtils.sleep;
@@ -41,6 +43,7 @@ describe('KeyboardMacro', () => {
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
                 await cursorHandler.waitForEndOfGuardedCommand();
+                await searchHandler.waitForEndOfGuardedCommand();
             } else if (cmd[0] === 'edit') {
                 mode.expectSync();
                 let lastCount = editHandler.getEditsFreeCounter();
@@ -75,6 +78,7 @@ describe('KeyboardMacro', () => {
                 await sleep(30);
                 await editHandler.waitForEndOfGuardedCommand();
                 await cursorHandler.waitForEndOfGuardedCommand();
+                await searchHandler.waitForEndOfGuardedCommand();
             }
             for (let j = 0; j < 10 && !mode.synchronized(); j++) {
                 await sleep(10);
@@ -4526,6 +4530,48 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(textEditor.document.lineAt(4).text, 'ab2345ef');
             assert.deepStrictEqual(selectionsAsArray(), [[4, 6]]);
+        });
+    });
+    describe('selectWordToFind, expandWordToFind', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should select the word the cursor is on and open findWidget', async () => {
+            await resetCursor(1, 0);
+            const commands = ['vz.selectWordToFind'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+            // FIXME: we can't check findWidget visibility due to lack of such API.
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await resetCursor(2, 4);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
+        });
+        it('should select multiple words starting from the cursor position and open findWidget', async () => {
+            await selectRange(2, 0, 2, 3);
+            const commands = ['vz.expandWordToFind'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
+            // FIXME: we can't check findWidget visibility due to lack of such API.
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await selectRange(1, 0, 1, 6);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 13]]);
         });
     });
 });
