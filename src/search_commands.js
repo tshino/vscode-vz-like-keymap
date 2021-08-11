@@ -53,8 +53,13 @@ const SearchHandler = function(modeHandler) {
         'selectWordToFind',
         async function(textEditor, _edit) {
             if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
+                mode.expectSync();
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.find');
+                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                    await sleep(10);
+                }
+                mode.sync(textEditor);
             } else {
                 await vscode.commands.executeCommand('actions.find');
             }
@@ -67,17 +72,29 @@ const SearchHandler = function(modeHandler) {
             if (sel.anchor.line !== sel.active.line) {
                 return;
             }
+            let expectSync = false;
             if (sel.anchor.character > sel.active.character) {
                 let sels = Array.from(textEditor.selections).map(
                     sel => new vscode.Selection(sel.start, sel.end)
                 );
                 textEditor.selections = sels;
+                mode.expectSync();
+                expectSync = true;
             }
-            if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-                return;
+            if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
+                if (!expectSync) {
+                    mode.expectSync();
+                    expectSync = true;
+                }
+                await vscode.commands.executeCommand('cursorWordEndRightSelect');
+                await vscode.commands.executeCommand('actions.find');
             }
-            await vscode.commands.executeCommand('cursorWordEndRightSelect');
-            await vscode.commands.executeCommand('actions.find');
+            if (expectSync) {
+                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                    await sleep(10);
+                }
+                mode.sync(textEditor);
+            }
         }
     );
     const closeFindWidget = function(textEditor, _edit) {

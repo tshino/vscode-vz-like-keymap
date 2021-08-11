@@ -43,6 +43,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should select the word the cursor is on and open findWidget (case 1)', async () => {
             await resetCursor(2, 0);
