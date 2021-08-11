@@ -23,6 +23,7 @@ const registerTextEditorCommand = function(context, name, func) {
 const SearchHandler = function(modeHandler) {
     const mode = modeHandler;
 
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     let reentryGuard = null;
     const makeGuardedCommand = function(name, func) {
         const guardedCommand = async function(textEditor, edit) {
@@ -63,12 +64,14 @@ const SearchHandler = function(modeHandler) {
         'expandWordToFind',
         async function(textEditor, _edit) {
             let sel = textEditor.selection;
-            if (1 < textEditor.selections.length || sel.anchor.line !== sel.active.line) {
+            if (sel.anchor.line !== sel.active.line) {
                 return;
             }
             if (sel.anchor.character > sel.active.character) {
-                sel = new vscode.Selection(sel.active, sel.anchor);
-                textEditor.selection = sel;
+                let sels = Array.from(textEditor.selections).map(
+                    sel => new vscode.Selection(sel.start, sel.end)
+                );
+                textEditor.selections = sels;
             }
             if (EditUtil.isCursorAtEndOfLine(textEditor)) {
                 return;
