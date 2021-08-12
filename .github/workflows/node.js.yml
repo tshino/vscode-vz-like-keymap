@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        node-version: [12.x]
+        node-version: [14.x]
 
     runs-on: ${{ matrix.os }}
 
@@ -28,9 +28,9 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - name: Run integration tests
+    - name: Run integration tests (Linux)
       run: xvfb-run -a npm run test_with_vscode
       if: runner.os == 'Linux'
-    - name: Run integration tests
+    - name: Run integration tests (Windows, macOS)
       run: npm run test_with_vscode
       if: runner.os != 'Linux'
