@@ -31,8 +31,12 @@ const SearchHandler = function(modeHandler) {
                 return;
             }
             reentryGuard = name;
-            kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
-            await func(textEditor, edit);
+            try {
+                kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
+                await func(textEditor, edit);
+            } catch (error) {
+                console.log('*** debug: unhandled exception in execution of command vz.%s', name);
+            }
             reentryGuard = null;
         };
         return guardedCommand;
