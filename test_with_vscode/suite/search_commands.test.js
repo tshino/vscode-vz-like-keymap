@@ -169,4 +169,92 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
         });
     });
+    describe('findPreviousMatch', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should find and select previous match of finding', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.findPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+
+            await searchHandler.findPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+        });
+        it('should not move cursor if no other match found', async () => {
+            await resetCursor(2, 11);
+            await searchHandler.selectWordToFind(textEditor); // '123'
+
+            await searchHandler.findPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+            let p1 = searchHandler.findPreviousMatch(textEditor);
+            let p2 = searchHandler.findPreviousMatch(textEditor);
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+        });
+    });
+    describe('findNextMatch', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should find and select next match of finding', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.findNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
+
+            await searchHandler.findNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);
+        });
+        it('should not move cursor if no other match found', async () => {
+            await resetCursor(2, 11);
+            await searchHandler.selectWordToFind(textEditor); // '123'
+
+            await searchHandler.findNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
+        });
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+            let p1 = searchHandler.findNextMatch(textEditor);
+            let p2 = searchHandler.findNextMatch(textEditor);
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
+        });
+    });
 });

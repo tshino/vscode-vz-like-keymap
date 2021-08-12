@@ -123,7 +123,7 @@ const CursorHandler = function(modeHandler) {
                 kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
                 await func(textEditor, edit);
             } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.%s', name);
+                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
             }
             reentryGuard = null;
         };

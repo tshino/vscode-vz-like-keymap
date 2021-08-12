@@ -4732,4 +4732,49 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
         });
     });
+    describe('findPreviousMatch, findNextMatch', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should find and select previous match of finding', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            const commands = ['vz.findPreviousMatch', 'vz.findPreviousMatch'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await resetCursor(3, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
+        });
+        it('should find and select next match of finding', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            const commands = ['vz.findNextMatch', 'vz.findNextMatch'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await resetCursor(0, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
+        });
+    });
 });

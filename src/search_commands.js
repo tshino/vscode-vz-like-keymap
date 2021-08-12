@@ -35,7 +35,7 @@ const SearchHandler = function(modeHandler) {
                 kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
                 await func(textEditor, edit);
             } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.%s', name);
+                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
             }
             reentryGuard = null;
         };
@@ -101,6 +101,28 @@ const SearchHandler = function(modeHandler) {
             }
         }
     );
+    const findPreviousMatch = makeGuardedCommand(
+        'findPreviousMatch',
+        async function(textEditor, _edit) {
+            mode.expectSync(); // may not happen
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+        }
+    );
+    const findNextMatch = makeGuardedCommand(
+        'findNextMatch',
+        async function(textEditor, _edit) {
+            mode.expectSync(); // may not happen
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+        }
+    );
     const closeFindWidget = function(textEditor, _edit) {
         textEditor.selection = new vscode.Selection(
             textEditor.selection.start,
@@ -114,12 +136,16 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'find', find);
         registerTextEditorCommand(context, 'selectWordToFind', selectWordToFind);
         registerTextEditorCommand(context, 'expandWordToFind', expandWordToFind);
+        registerTextEditorCommand(context, 'findPreviousMatch', findPreviousMatch);
+        registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };
     return {
         waitForEndOfGuardedCommand, // for testing purpose
         selectWordToFind,
         expandWordToFind,
+        findPreviousMatch,
+        findNextMatch,
         registerCommands
     };
 };

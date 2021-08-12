@@ -748,27 +748,27 @@
             },
             {
                 "key": "pageup",
-                "command": "editor.action.previousMatchFindAction",
+                "command": "vz.findPreviousMatch",
                 "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+r",
-                "command": "editor.action.previousMatchFindAction",
+                "command": "vz.findPreviousMatch",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+m",
-                "command": "editor.action.nextMatchFindAction",
+                "command": "vz.findNextMatch",
                 "when": "editorFocus && findInputFocussed"
             },
             {
                 "key": "pagedown",
-                "command": "editor.action.nextMatchFindAction",
+                "command": "vz.findNextMatch",
                 "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+c",
-                "command": "editor.action.nextMatchFindAction",
+                "command": "vz.findNextMatch",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
