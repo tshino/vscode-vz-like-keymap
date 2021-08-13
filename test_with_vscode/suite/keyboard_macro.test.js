@@ -4814,4 +4814,41 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
         });
     });
+    describe('closeFindWidget', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should close findWidget', async () => {
+            await resetCursor(2, 3);
+            await searchHandler.find(textEditor);
+            const commands = ['vz.closeFindWidget'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            // FIXME: check that findWidget is not visible (but it seems not possible to test)
+            await resetCursor(2, 5);
+            await kb_macro.replay(textEditor);
+        });
+        it('should prevent reentry', async () => {
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.closeFindWidget');
+            let p2 = vscode.commands.executeCommand('vz.closeFindWidget');
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.closeFindWidget']);
+        });
+    });
 });

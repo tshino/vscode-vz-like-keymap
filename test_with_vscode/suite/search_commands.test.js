@@ -280,4 +280,27 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
         });
     });
+    describe('closeFindWidget', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should close findWidget', async () => {
+            await resetCursor(2, 3);
+            await searchHandler.find(textEditor);
+
+            await searchHandler.closeFindWidget(textEditor);
+            // FIXME: check that findWidget is not visible (but it seems not possible to test)
+        });
+    });
 });

@@ -127,14 +127,17 @@ const SearchHandler = function(modeHandler) {
             mode.sync(textEditor);
         }
     );
-    const closeFindWidget = function(textEditor, _edit) {
-        textEditor.selection = new vscode.Selection(
-            textEditor.selection.start,
-            textEditor.selection.start
-        );
-        mode.resetSelection(textEditor);
-        exec(['closeFindWidget']);
-    };
+    const closeFindWidget = makeGuardedCommand(
+        'closeFindWidget',
+        async function(textEditor, _edit) {
+            textEditor.selection = new vscode.Selection(
+                textEditor.selection.start,
+                textEditor.selection.start
+            );
+            mode.resetSelection(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        }
+    );
 
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'find', find);
@@ -151,6 +154,7 @@ const SearchHandler = function(modeHandler) {
         expandWordToFind,
         findPreviousMatch,
         findNextMatch,
+        closeFindWidget,
         registerCommands
     };
 };
