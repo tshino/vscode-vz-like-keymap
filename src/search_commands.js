@@ -50,9 +50,13 @@ const SearchHandler = function(modeHandler) {
         }
     };
 
-    const find = function(_textEditor, _edit) {
-        exec(['closeFindWidget', 'actions.find']);
-    };
+    const find = makeGuardedCommand(
+        'find',
+        async function(_textEditor, _edit) {
+            await vscode.commands.executeCommand('closeFindWidget');
+            await vscode.commands.executeCommand('actions.find');
+        }
+    );
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
         async function(textEditor, _edit) {
@@ -142,6 +146,7 @@ const SearchHandler = function(modeHandler) {
     };
     return {
         waitForEndOfGuardedCommand, // for testing purpose
+        find,
         selectWordToFind,
         expandWordToFind,
         findPreviousMatch,
