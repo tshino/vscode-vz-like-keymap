@@ -971,9 +971,9 @@ const EditHandler = function(modeHandler) {
         copyLinesDown,
         transformCase,
         insertPath,
-        registerCommands,
         undo,
-        redo
+        redo,
+        registerCommands
     };
 };
 

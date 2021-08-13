@@ -72,7 +72,7 @@ const ModeHandler = function() {
             setTimeout(() => {
                 res(false);
             }, timeout);
-        })
+        });
     };
     return {
         inSelection: function() { return mode !== MODE_NORMAL; },
