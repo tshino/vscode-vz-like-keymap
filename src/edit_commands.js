@@ -32,6 +32,9 @@ const EditHandler = function(modeHandler) {
         }
         editsExpected = false;
     };
+    const cancelExpectEdits = function() {
+        editsExpected = false;
+    };
     const getEditsFreeCounter = function() {
         return editsFreeCounter;
     };
@@ -888,10 +891,10 @@ const EditHandler = function(modeHandler) {
     const undo = makeGuardedCommand(
         'undo',
         async function(textEditor, _edit) {
-            expectEdits();
+            expectEdits(); // may not happen
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:undo');
-            endExpectEdits();
+            cancelExpectEdits();
             for (let i = 0; i < 5 && !mode.synchronized(); i++) {
                 await sleep(10);
             }
@@ -901,10 +904,10 @@ const EditHandler = function(modeHandler) {
     const redo = makeGuardedCommand(
         'redo',
         async function(textEditor, _edit) {
-            expectEdits();
+            expectEdits(); // may not happen
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:redo');
-            endExpectEdits();
+            cancelExpectEdits();
             for (let i = 0; i < 5 && !mode.synchronized(); i++) {
                 await sleep(10);
             }
@@ -935,6 +938,8 @@ const EditHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'redo', redo);
     };
     return {
+        expectEdits,
+        cancelExpectEdits,
         getEditsFreeCounter, // for testing purpose
         clearUndeleteStack, // for testing purpose
         readUndeleteStack, // for testing purpose

@@ -293,6 +293,33 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
         });
     });
+    describe('replaceOne', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should replace next match of search word with replace word', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await searchHandler.findReplace(textEditor);
+
+            // FIXME: We should test the method triggers a replace action, but we can't.
+            // Because we cannot set any text to the replace input on the findWidget with provided vscode API AFAIK.
+            // So we just invoke the method without any assertion, only expecting that it doesn't throw.
+            await searchHandler.replaceOne(textEditor);
+        });
+    });
     describe('closeFindWidget', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

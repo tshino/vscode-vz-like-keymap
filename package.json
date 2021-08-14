@@ -773,17 +773,17 @@
             },
             {
                 "key": "ctrl+m",
-                "command": "editor.action.replaceOne",
+                "command": "vz.replaceOne",
                 "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
                 "key": "ctrl+q ctrl+o",
-                "command": "editor.action.replaceOne",
+                "command": "vz.replaceOne",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q o",
-                "command": "editor.action.replaceOne",
+                "command": "vz.replaceOne",
                 "when": "editorFocus && findWidgetVisible"
             },
             {

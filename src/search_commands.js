@@ -2,6 +2,7 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const keyboard_macro = require("./keyboard_macro.js");
+const edit_commands = require("./edit_commands.js");
 const EditUtil = require("./edit_util.js");
 
 const kbMacroHandler = keyboard_macro.getInstance();
@@ -22,6 +23,7 @@ const registerTextEditorCommand = function(context, name, func) {
 
 const SearchHandler = function(modeHandler) {
     const mode = modeHandler;
+    const editHandler = edit_commands.getInstance();
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     let reentryGuard = null;
@@ -133,6 +135,19 @@ const SearchHandler = function(modeHandler) {
             mode.sync(textEditor);
         }
     );
+    const replaceOne = makeGuardedCommand(
+        'replaceOne',
+        async function(textEditor, _edit) {
+            editHandler.expectEdits(); // may not happen
+            mode.expectSync(); // may not happen
+            await vscode.commands.executeCommand('editor.action.replaceOne');
+            editHandler.cancelExpectEdits();
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+        }
+    );
     const closeFindWidget = makeGuardedCommand(
         'closeFindWidget',
         async function(textEditor, _edit) {
@@ -152,6 +167,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'expandWordToFind', expandWordToFind);
         registerTextEditorCommand(context, 'findPreviousMatch', findPreviousMatch);
         registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
+        registerTextEditorCommand(context, 'replaceOne', replaceOne);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };
     return {
@@ -162,6 +178,7 @@ const SearchHandler = function(modeHandler) {
         expandWordToFind,
         findPreviousMatch,
         findNextMatch,
+        replaceOne,
         closeFindWidget,
         registerCommands
     };

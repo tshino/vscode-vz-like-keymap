@@ -4841,6 +4841,49 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
         });
     });
+    describe('replaceOne', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should replace next match of search word with replace word', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await searchHandler.findReplace(textEditor);
+            const commands = ['vz.replaceOne'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            // FIXME: We should test the method triggers a replace action, but we can't.
+            // Because we cannot set any text to the replace input on the findWidget with provided vscode API AFAIK.
+            // So we just invoke the method without any assertion, only expecting that it doesn't throw.
+            await resetCursor(2, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'xyz'
+            await searchHandler.findReplace(textEditor);
+            await kb_macro.replay(textEditor);
+        });
+        it('should prevent reentry', async () => {
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.replaceOne');
+            let p2 = vscode.commands.executeCommand('vz.replaceOne');
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.replaceOne']);
+        });
+    });
     describe('closeFindWidget', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
