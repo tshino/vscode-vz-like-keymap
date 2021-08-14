@@ -747,6 +747,11 @@
                 "when": "historyNavigationEnabled && historyNavigationWidget"
             },
             {
+                "key": "shift+enter",
+                "command": "vz.findPreviousMatch",
+                "when": "editorFocus && findInputFocussed"
+            },
+            {
                 "key": "pageup",
                 "command": "vz.findPreviousMatch",
                 "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
@@ -755,6 +760,11 @@
                 "key": "ctrl+r",
                 "command": "vz.findPreviousMatch",
                 "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "enter",
+                "command": "vz.findNextMatch",
+                "when": "editorFocus && findInputFocussed"
             },
             {
                 "key": "ctrl+m",
@@ -770,6 +780,11 @@
                 "key": "ctrl+c",
                 "command": "vz.findNextMatch",
                 "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "enter",
+                "command": "vz.replaceOne",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
                 "key": "ctrl+m",
