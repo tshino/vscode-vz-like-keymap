@@ -31,12 +31,7 @@ describe('SearchHandler', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
-                (
-                    'abcdef\n' +
-                    'abcdef abcdef\n' +
-                    'xyz abcdef 123\n' +
-                    'abcdef xyz\n'
-                ),
+                'abcdef',
                 vscode.EndOfLine.CRLF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
@@ -44,8 +39,26 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should open findWidget', async () => {
-            await resetCursor(2, 3);
+            await resetCursor(0, 3);
             await searchHandler.find(textEditor);
+
+            // FIXME: check that findWidget is visible (but it seems not possible to test)
+        });
+    });
+    describe('findReplace', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'abcdef',
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should open findWidget with replace input', async () => {
+            await resetCursor(0, 3);
+            await searchHandler.findReplace(textEditor);
 
             // FIXME: check that findWidget is visible (but it seems not possible to test)
         });

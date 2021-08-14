@@ -4536,12 +4536,7 @@ describe('KeyboardMacro', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
-                (
-                    'abcdef\n' +
-                    'abcdef abcdef\n' +
-                    'xyz abcdef 123\n' +
-                    'abcdef xyz\n'
-                ),
+                'abcdef',
                 vscode.EndOfLine.CRLF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
@@ -4549,13 +4544,13 @@ describe('KeyboardMacro', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should open findWidget', async () => {
-            await resetCursor(2, 3);
+            await resetCursor(0, 3);
             const commands = ['vz.find'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             // FIXME: check that findWidget is visible (but it seems not possible to test)
-            await resetCursor(2, 5);
+            await resetCursor(0, 5);
             await kb_macro.replay(textEditor);
         });
         it('should prevent reentry', async () => {
@@ -4567,6 +4562,38 @@ describe('KeyboardMacro', () => {
             await searchHandler.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.find']);
+        });
+    });
+    describe('findReplace', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'abcdef',
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should open findWidget with replace input', async () => {
+            await resetCursor(0, 3);
+            const commands = ['vz.findReplace'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            // FIXME: check that findWidget is visible (but it seems not possible to test)
+            await resetCursor(0, 5);
+            await kb_macro.replay(textEditor);
+        });
+        it('should prevent reentry', async () => {
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.findReplace');
+            let p2 = vscode.commands.executeCommand('vz.findReplace');
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findReplace']);
         });
     });
     describe('selectWordToFind, expandWordToFind', () => {

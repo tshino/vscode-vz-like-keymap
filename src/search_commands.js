@@ -57,6 +57,12 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('actions.find');
         }
     );
+    const findReplace = makeGuardedCommand(
+        'findReplace',
+        async function(_textEditor, _edit) {
+            await vscode.commands.executeCommand('editor.action.startFindReplaceAction');
+        }
+    );
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
         async function(textEditor, _edit) {
@@ -141,6 +147,7 @@ const SearchHandler = function(modeHandler) {
 
     const registerCommands = function(context) {
         registerTextEditorCommand(context, 'find', find);
+        registerTextEditorCommand(context, 'findReplace', findReplace);
         registerTextEditorCommand(context, 'selectWordToFind', selectWordToFind);
         registerTextEditorCommand(context, 'expandWordToFind', expandWordToFind);
         registerTextEditorCommand(context, 'findPreviousMatch', findPreviousMatch);
@@ -150,6 +157,7 @@ const SearchHandler = function(modeHandler) {
     return {
         waitForEndOfGuardedCommand, // for testing purpose
         find,
+        findReplace,
         selectWordToFind,
         expandWordToFind,
         findPreviousMatch,
