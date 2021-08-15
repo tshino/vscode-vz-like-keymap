@@ -70,15 +70,19 @@ const EditHandler = function(modeHandler) {
                         isLeftward: false,
                         text: p[1].slice(0, c.rangeLength)
                     });
+                    continue;
                 } else if (c.range.end.isEqual(p[0])) {
-                    deleted.push({
-                        isLeftward: true,
-                        text: p[1].slice(p[1].length - c.rangeLength)
-                    });
-                } else {
-                    // not matched
-                    return;
+                    if (c.rangeLength <= p[1].length) {
+                        deleted.push({
+                            isLeftward: true,
+                            text: p[1].slice(p[1].length - c.rangeLength)
+                        });
+                        continue;
+                    }
                 }
+                // not matched
+                // console.log('*** unmatched delete event');
+                return;
             }
             for (let i = 0; i < deleted.length; i++) {
                 deleted[i].text = EditUtil.normalizeEOL(deleted[i].text);
