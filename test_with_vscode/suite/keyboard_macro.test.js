@@ -3756,6 +3756,60 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[5, 10]]);
         });
     });
+    describe('clipboardPaste and auto indent', () => {
+        let documentLanguage = '';
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'function foo() {\n' +
+                    '    const a = 10;\n' +
+                    '    const b = 100;\n' +
+                    '}\n' +
+                    'function bar() {\n' +
+                    '    const c = 1000;\n' +
+                    '    const d = 10000;\n' +
+                    '}\n' +
+                    'const e = 100000;\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            documentLanguage = textEditor.document.languageId; // likely 'plaintext'
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, 'javascript');
+        });
+        afterEach(async () => {
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
+        });
+        it('should paste a line of text and triggers auto-indent', async () => {
+            await resetCursor(0, 0);
+            const commands = [
+                'vz.clipboardCopyAndPush',
+                'vz.cursorDown',
+                'vz.cursorDown',
+                'vz.clipboardPaste'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            let line2 = textEditor.document.lineAt(2).text;
+            let line3 = textEditor.document.lineAt(3).text;
+            assert.strictEqual(line2, '    function foo() {');
+            assert.strictEqual(line3.slice(-14), 'const b = 100;');
+            assert.strictEqual(4 < line3.length - 14, true);
+            assert.strictEqual(Array.from(line3.slice(0, -14)).every(ch => ch === ' '), true);
+
+            await resetCursor(5, 0);
+            await kb_macro.replay(textEditor);
+            let line7 = textEditor.document.lineAt(7).text;
+            let line8 = textEditor.document.lineAt(8).text;
+            assert.strictEqual(line7, '    function bar() {');
+            assert.strictEqual(line8.slice(-16), 'const d = 10000;');
+            assert.strictEqual(4 < line8.length - 16, true);
+            assert.strictEqual(Array.from(line8.slice(0, -16)).every(ch => ch === ' '), true);
+        });
+    });
     describe('clipboardClearStack', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
