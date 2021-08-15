@@ -7,16 +7,16 @@
 
 Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code拡張です。
 
-- ダイアモンドカーソルを始めVZと同等のほとんどの基本操作をカバー。
+- ダイアモンドカーソルを始めとするVZのほとんどの基本操作をカバー（ESC系とファンクションキー以外）。
 - スタック式のクリップボードを再現。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
 - トグル式の選択モード（CTRL+B）と矩形選択モード（CTRL+K B）も再現。
-- 削除文字列のストック機能もサポート。DeleteやBackspaceで消した文字をCTRL+Uで取り出せる。
+- 削除文字列のストック機能もサポート。DeleteやBackspaceで消した文字列をCTRL+Uで取り出せる。
 - キーボードマクロ機能も実現。キー操作を記録して繰り返し再生できる。
 - ページスクロール時に画面内のカーソル位置が移動しない挙動を再現。
-- 半画面スクロールも可能（設定で全画面と半画面を切り替え）。
+- 設定で全画面/半画面スクロールを選択可能。
 - タグジャンプ機能（SHIFT+F10）もサポート。
-- 2ストロークキーはVZと同様に2文字目でCTRLキーを押しても離してもOK。例えばCTRL+Q CTRL+XとCTRL+Q Xは同じ扱い。
-- VS Code内のリスト操作でもVZ風のキーが使用可能。例えばEXPLORERのファイル選択、推測入力の候補リストなど。
+- 2ストロークキーの2文字目はVZと同様にCTRLキーを押しても離してもOK。
+- VS Code内のリスト操作でもVZ風のキーが使用可能。例えばファイル選択や推測候補リストなどでダイアモンドカーソルが使える。
 - いくつか設定オプションあり。設定で "vz" を検索してみてください。
 
 ## 対応キー一覧
@@ -125,10 +125,11 @@ VZエディタの選択モードはトグル式のため、VS Codeにおいて�
 いくつかのショートカットキーはVS Codeの対応する機能に直接割り当てられますが、その挙動はVZエディタと異なる場合があります。
 例えば次の単語へカーソルを移動するCTRL+Fは、VS CodeとVZエディタで単語境界の判定が異なるため、動きも異なります。
 
-このVS Code拡張では、VZエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
+Vz Keymapでは、VZエディタのESCキーで始まる2ストロークキー（例えばESC Sで保存など）は定義しません。これはVS Codeに元からある短押しの（普通の）ESCキーの機能を壊さないようにするためです。
 代わりに、ALT+F Sで保存（メインメニューのFile > Save）のようにアクセラレータキーで代用することをお薦めします。
 
-キーボードマクロ機能はキー操作そのものを記録する機能ではなく、キー操作によって呼び出されたVz Keymapのコマンドを内部的に記録する仕組みです。そのため、Vz Keymap以外のコマンド実行などは記録されないことに注意してください。
+キーボードマクロ機能は文字入力だけでなく、カーソル移動、選択、スクロール、削除やカット&ペースト、検索、置換、さらにUndoとRedoなど、Vz Keymapが提供するほぼすべてのキー操作を記録し再生できます。
+ただしこれはキー入力そのものを直接記録するのではなく、キー入力によって呼び出されたVz Keymapのコマンドを内部的に記録する仕組みです。そのため、Vz Keymap以外のコマンド実行などは記録されないことに注意してください。
 
 
 #### English
@@ -136,7 +137,7 @@ VZエディタの選択モードはトグル式のため、VS Codeにおいて�
 
 This is a Visual Studio Code extension which provides a keymap similar to good old VZ Editor.
 
-- Covers the basic experience which is almost identical to VZ Editor
+- Covers the basic experience which is almost identical to VZ Editor (except ESC-* and function keys)
 - Emulates the Text stack (push/pop to the clibboard) with Cut, Copy and Paste
 - Toogle-style Selection mode (toggle by Ctrl+B) and Column selection mode (toggle by Ctrk+K B)
 - Undelete stack (Ctrl+U to restore deleted characters)
@@ -258,5 +259,6 @@ For example, the result of Ctrl+F which moves the cursor to the next word may di
 This extension does not provide any two-stroke shortcut keys starting from ESC key, such as ESC S to save the document, to avoid breaking existing functionalities of ESC key that are single-stroke.
 Instead, it is recommended to use acceleration keys such as Alt+F S to save the document.
 
-The keyboard macro doesn't record the keyboard inputs itself, instead, it records the commands of Vz Keymap invoked internally by the keyboard input.
-Thus, please notified that it can't record execution of commands other than Vz Keymap.
+The keyboard macro function can record and replay keyboard operations not only character input but also almost all keyboard operations provided by Vz Keymap such as cursor movement, selection, scrolling, delete, cut & paste, search, replace and even undo and redo.
+However it doesn't record the keyboard inputs itself directly, instead, it records the commands of Vz Keymap invoked internally by the keyboard input.
+Thus, please be notified that it can't record the execution of commands other than Vz Keymap.
