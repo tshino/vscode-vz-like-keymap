@@ -85,6 +85,16 @@
                     "default": true,
                     "description": "On: Scroll Down / Off: Undo (VS Code default)"
                 },
+                "vzKeymap.ctrl+_": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "On: Start/Cancel Recording Keyboard Macro / Off: unassigned (VS Code default)"
+                },
+                "vzKeymap.ctrl+^": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "On: Record/Replay Keyboard Macro / Off: unassigned (VS Code default)"
+                },
                 "vzKeymap.shift+F10": {
                     "type": "boolean",
                     "default": true,
@@ -834,22 +844,22 @@
             {
                 "key": "ctrl+oem_102",
                 "command": "vz.startRecording",
-                "when": "editorTextFocus && !vz.keyboardMacroRecording"
+                "when": "config.vzKeymap.ctrl+_ && editorTextFocus && !vz.keyboardMacroRecording"
             },
             {
                 "key": "ctrl+oem_102",
                 "command": "vz.cancelRecording",
-                "when": "editorTextFocus && vz.keyboardMacroRecording"
+                "when": "config.vzKeymap.ctrl+_ && editorTextFocus && vz.keyboardMacroRecording"
             },
             {
                 "key": "ctrl+oem_7",
                 "command": "vz.finishRecording",
-                "when": "editorTextFocus && vz.keyboardMacroRecording"
+                "when": "config.vzKeymap.ctrl+^ && editorTextFocus && vz.keyboardMacroRecording"
             },
             {
                 "key": "ctrl+oem_7",
                 "command": "vz.replay",
-                "when": "editorTextFocus && !vz.keyboardMacroRecording"
+                "when": "config.vzKeymap.ctrl+^ && editorTextFocus && !vz.keyboardMacroRecording"
             },
             {
                 "key": "alt+y",
