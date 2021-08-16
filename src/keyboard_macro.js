@@ -9,7 +9,7 @@ const registerTextEditorCommand = function(context, name, func) {
     );
 };
 
-// EXPERIMENTAL: keyboard macro recording and replay
+// Keyboard macro recording and replay
 const KeyboardMacro = function(modeHandler) {
     const mode = modeHandler;
     let recording = false;
