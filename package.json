@@ -2,7 +2,7 @@
     "name": "vz-like-keymap",
     "displayName": "Vz Keymap",
     "description": "A keymap similar to Vz Editor",
-    "version": "0.15.0",
+    "version": "0.16.0",
     "publisher": "tshino",
     "engines": {
         "vscode": "^1.59.0"

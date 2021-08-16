@@ -2,10 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
-- [WIP] New: Keyboard macro recording and replay
-  - Ctrl+_ for start or cancel recording.
-  - Ctrl+^ for finish recording or replay recorded sequence.
+### [0.16.0] - 2021-08-17
+- Added the Keyboard Macro function which is the final big piece of this extension:
+  - Ctrl+_ for start or cancel recording keyboard sequence.
+  - Ctrl+^ for finish recording or replay the recorded sequence.
 - Improved:
   - The 'when' clause of Escape to cancel box-selection mode.
   - The behavior of Undelete (Utrl+U) of Delete left half of line with non-empty selection range.
