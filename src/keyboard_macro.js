@@ -137,6 +137,9 @@ const KeyboardMacro = function(modeHandler) {
             );
             if (isUniformCursorMotion) {
                 const cursorUniformMotion = makeCursorUniformMotion(delta);
+                // console.log('<<< cursor-uniform-motion (' + delta + ') >>>');
+                // console.log('expected: ' + selectionsToString(expected));
+                // console.log('current: ' + selectionsToString(current));
                 pushIfRecording('<cursor-uniform-motion>', cursorUniformMotion);
                 return true;
             }
