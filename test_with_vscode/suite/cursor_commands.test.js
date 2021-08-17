@@ -1315,4 +1315,46 @@ describe('CursorHandler', () => {
             );
         });
     });
+    describe('tagJumpImpl', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                'hello.txt\n' +
+                'include "abc.hpp"'
+            );
+        });
+        const makeStatFunc = function(validPaths) {
+            return async function(uri) {
+                let str = uri.toString();
+                if (validPaths.includes(str)) {
+                    return { // FileStat
+                        type: vscode.FileType.File
+                    };
+                }
+                throw undefined; // no entry
+            };
+        };
+        it('should find valid path through testing all combinations of folders and file names', async () => {
+            const folders = [
+                new vscode.Uri('file', '', '/workspace/f1', '', ''),
+                new vscode.Uri('file', '', '/workspace/f2', '', '')
+            ];
+            const validPaths = [
+                'file:///workspace/f2/abc.hpp'
+            ];
+            await resetCursor(1, 2);
+            let result = await new Promise(resolve => {
+                cursorHandler.tagJumpImpl(
+                    textEditor,
+                    folders,
+                    makeStatFunc(validPaths),
+                    (uri, line) => {
+                        resolve([uri, line]);
+                    }
+                );
+            });
+            assert.deepStrictEqual(result[0].toString(), 'file:///workspace/f2/abc.hpp');
+            assert.strictEqual(result[1], 0);
+        });
+    });
 });
