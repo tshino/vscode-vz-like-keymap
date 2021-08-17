@@ -578,8 +578,7 @@ const CursorHandler = function(modeHandler) {
         }
         return candidates;
     };
-    const tagJump = function(textEditor) {
-        let folders = getBaseFolders(textEditor);
+    const tagJumpImpl = function(textEditor, folders, statFunc, openFunc) {
         let names = getFileNames(textEditor);
         let candidates = makeTagCandidates(folders, names);
         let index = 0;
@@ -594,10 +593,10 @@ const CursorHandler = function(modeHandler) {
                 tryNext();
                 return;
             }
-            vscode.workspace.fs.stat(uri).then(function(stat) {
+            statFunc(uri).then(function(stat) {
                 if (stat.type === vscode.FileType.File ||
                     stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
-                    openTextDocument(uri, line);
+                    openFunc(uri, line);
                 } else {
                     tryNext();
                 }
@@ -606,6 +605,12 @@ const CursorHandler = function(modeHandler) {
             });
         };
         tryNext();
+    };
+    const tagJump = function(textEditor) {
+        const folders = getBaseFolders(textEditor);
+        const statFunc = vscode.workspace.fs.stat;
+        const openFunc = openTextDocument;
+        tagJumpImpl(textEditor, folders, statFunc, openFunc);
     };
 
     const registerCommands = function(context) {
@@ -694,6 +699,7 @@ const CursorHandler = function(modeHandler) {
         cursorLastPosition,
         getFileNames,
         makeTagCandidates,
+        tagJumpImpl,
         registerCommands
     };
 };
