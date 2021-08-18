@@ -1323,9 +1323,10 @@ describe('CursorHandler', () => {
                 'include "abc.hpp"'
             );
         });
-        const makeStatFunc = function(validPaths) {
+        const makeStatFunc = function(validPaths, log) {
             return async function(uri) {
                 let str = uri.toString();
+                log.push(str);
                 if (validPaths.includes(str)) {
                     return { // FileStat
                         type: vscode.FileType.File
@@ -1340,21 +1341,64 @@ describe('CursorHandler', () => {
                 new vscode.Uri('file', '', '/workspace/f2', '', '')
             ];
             const validPaths = [
-                'file:///workspace/f2/abc.hpp'
+                'file:///workspace/f1/abc.hpp'
             ];
             await resetCursor(1, 2);
-            let result = await new Promise(resolve => {
+            const statLog = [];
+            let result = await new Promise((resolve, reject) => {
                 cursorHandler.tagJumpImpl(
                     textEditor,
                     folders,
-                    makeStatFunc(validPaths),
+                    makeStatFunc(validPaths, statLog),
                     (uri, line) => {
                         resolve([uri, line]);
+                    },
+                    () => {
+                        reject();
                     }
                 );
             });
-            assert.deepStrictEqual(result[0].toString(), 'file:///workspace/f2/abc.hpp');
+            assert.deepStrictEqual(result[0].toString(), 'file:///workspace/f1/abc.hpp');
             assert.strictEqual(result[1], 0);
+            assert.deepStrictEqual(statLog, [
+                'file:///workspace/f1/include',
+                'file:///workspace/f2/include',
+                'file:///workspace/f1/abc.hpp'
+            ]);
+        });
+        it('should fail if no valid path is found', async () => {
+            const folders = [
+                new vscode.Uri('file', '', '/workspace/f1', '', ''),
+                new vscode.Uri('file', '', '/workspace/f2', '', '')
+            ];
+            const validPaths = [];
+            await resetCursor(1, 2);
+            const statLog = [];
+            let promise = new Promise((resolve, reject) => {
+                cursorHandler.tagJumpImpl(
+                    textEditor,
+                    folders,
+                    makeStatFunc(validPaths, statLog),
+                    (uri, line) => {
+                        resolve([uri, line]);
+                    },
+                    () => {
+                        reject('not found');
+                    }
+                );
+            });
+            try {
+                await promise;
+                assert(false, 'result should not be returned');
+            } catch (error) {
+                assert.strictEqual(error, 'not found');
+            }
+            assert.deepStrictEqual(statLog, [
+                'file:///workspace/f1/include',
+                'file:///workspace/f2/include',
+                'file:///workspace/f1/abc.hpp',
+                'file:///workspace/f2/abc.hpp'
+            ]);
         });
     });
 });

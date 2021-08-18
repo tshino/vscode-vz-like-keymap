@@ -578,12 +578,13 @@ const CursorHandler = function(modeHandler) {
         }
         return candidates;
     };
-    const tagJumpImpl = function(textEditor, folders, statFunc, openFunc) {
+    const tagJumpImpl = function(textEditor, folders, statFunc, openFunc, failFunc) {
         let names = getFileNames(textEditor);
         let candidates = makeTagCandidates(folders, names);
         let index = 0;
         let tryNext = function() {
             if (index >= candidates.length) {
+                failFunc();
                 return;
             }
             let cand = candidates[index++];
@@ -610,7 +611,8 @@ const CursorHandler = function(modeHandler) {
         const folders = getBaseFolders(textEditor);
         const statFunc = vscode.workspace.fs.stat;
         const openFunc = openTextDocument;
-        tagJumpImpl(textEditor, folders, statFunc, openFunc);
+        const failFunc = () => {};
+        tagJumpImpl(textEditor, folders, statFunc, openFunc, failFunc);
     };
 
     const registerCommands = function(context) {
