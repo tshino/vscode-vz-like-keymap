@@ -1315,7 +1315,7 @@ describe('CursorHandler', () => {
             );
         });
     });
-    describe('tagJumpImpl', () => {
+    describe('findTagJumpTarget', () => {
         before(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -1345,21 +1345,14 @@ describe('CursorHandler', () => {
             ];
             await resetCursor(1, 2);
             const statLog = [];
-            let result = await new Promise((resolve, reject) => {
-                cursorHandler.tagJumpImpl(
-                    textEditor,
-                    folders,
-                    makeStatFunc(validPaths, statLog),
-                    (uri, line) => {
-                        resolve([uri, line]);
-                    },
-                    () => {
-                        reject();
-                    }
-                );
-            });
-            assert.deepStrictEqual(result[0].toString(), 'file:///workspace/f1/abc.hpp');
-            assert.strictEqual(result[1], 0);
+            let target = await cursorHandler.findTagJumpTarget(
+                textEditor,
+                folders,
+                makeStatFunc(validPaths, statLog)
+            );
+            assert.strictEqual(target !== null, true);
+            assert.strictEqual(target.uri.toString(), 'file:///workspace/f1/abc.hpp');
+            assert.strictEqual(target.line, 0);
             assert.deepStrictEqual(statLog, [
                 'file:///workspace/f1/include',
                 'file:///workspace/f2/include',
@@ -1374,25 +1367,12 @@ describe('CursorHandler', () => {
             const validPaths = [];
             await resetCursor(1, 2);
             const statLog = [];
-            let promise = new Promise((resolve, reject) => {
-                cursorHandler.tagJumpImpl(
-                    textEditor,
-                    folders,
-                    makeStatFunc(validPaths, statLog),
-                    (uri, line) => {
-                        resolve([uri, line]);
-                    },
-                    () => {
-                        reject('not found');
-                    }
-                );
-            });
-            try {
-                await promise;
-                assert(false, 'result should not be returned');
-            } catch (error) {
-                assert.strictEqual(error, 'not found');
-            }
+            let target = await cursorHandler.findTagJumpTarget(
+                textEditor,
+                folders,
+                makeStatFunc(validPaths, statLog)
+            );
+            assert.strictEqual(target, null);
             assert.deepStrictEqual(statLog, [
                 'file:///workspace/f1/include',
                 'file:///workspace/f2/include',

@@ -578,7 +578,7 @@ const CursorHandler = function(modeHandler) {
         }
         return candidates;
     };
-    const tagJumpImpl = async function(textEditor, folders, statFunc, openFunc, failFunc) {
+    const findTagJumpTarget = async function(textEditor, folders, statFunc) {
         let names = getFileNames(textEditor);
         let candidates = makeTagCandidates(folders, names);
         for (let index = 0; index < candidates.length; index++) {
@@ -592,8 +592,10 @@ const CursorHandler = function(modeHandler) {
                 let stat = await statFunc(uri);
                 if (stat.type === vscode.FileType.File ||
                     stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
-                    openFunc(uri, line);
-                    return;
+                    return {
+                        uri,
+                        line
+                    };
                 } else { // not a file (directory)
                     continue;
                 }
@@ -601,14 +603,15 @@ const CursorHandler = function(modeHandler) {
                 continue;
             }
         }
-        failFunc();
+        return null;
     };
-    const tagJump = function(textEditor) {
+    const tagJump = async function(textEditor) {
         const folders = getBaseFolders(textEditor);
         const statFunc = vscode.workspace.fs.stat;
-        const openFunc = openTextDocument;
-        const failFunc = () => {};
-        tagJumpImpl(textEditor, folders, statFunc, openFunc, failFunc);
+        const target = await findTagJumpTarget(textEditor, folders, statFunc);
+        if (target) {
+            openTextDocument(target.uri, target.line);
+        }
     };
 
     const registerCommands = function(context) {
@@ -697,7 +700,7 @@ const CursorHandler = function(modeHandler) {
         cursorLastPosition,
         getFileNames,
         makeTagCandidates,
-        tagJumpImpl,
+        findTagJumpTarget,
         registerCommands
     };
 };
