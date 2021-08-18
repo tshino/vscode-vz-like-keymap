@@ -578,34 +578,30 @@ const CursorHandler = function(modeHandler) {
         }
         return candidates;
     };
-    const tagJumpImpl = function(textEditor, folders, statFunc, openFunc, failFunc) {
+    const tagJumpImpl = async function(textEditor, folders, statFunc, openFunc, failFunc) {
         let names = getFileNames(textEditor);
         let candidates = makeTagCandidates(folders, names);
-        let index = 0;
-        let tryNext = function() {
-            if (index >= candidates.length) {
-                failFunc();
-                return;
-            }
-            let cand = candidates[index++];
+        for (let index = 0; index < candidates.length; index++) {
+            let cand = candidates[index];
             let line = cand.line;
             let uri = tag_jump.makeFileUri(cand.folder, cand.name);
             if (!uri) {
-                tryNext();
-                return;
+                continue;
             }
-            statFunc(uri).then(function(stat) {
+            try {
+                let stat = await statFunc(uri);
                 if (stat.type === vscode.FileType.File ||
                     stat.type === (vscode.FileType.File | vscode.FileType.SymbolicLink)) {
                     openFunc(uri, line);
-                } else {
-                    tryNext();
+                    return;
+                } else { // not a file (directory)
+                    continue;
                 }
-            }, function(_e) { // No entry
-                tryNext();
-            });
-        };
-        tryNext();
+            } catch (_e) { // no entry
+                continue;
+            }
+        }
+        failFunc();
     };
     const tagJump = function(textEditor) {
         const folders = getBaseFolders(textEditor);
