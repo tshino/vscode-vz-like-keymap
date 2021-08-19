@@ -1316,61 +1316,91 @@ describe('CursorHandler', () => {
         });
     });
     describe('findTagJumpTarget', () => {
-        const makeStatFunc = function(validPaths, log) {
+        const VALID_FILES = [
+            'file:///workspace1/util.h',
+            'file:///workspace2/doc/hello.txt'
+        ];
+        const VALID_DIRS = [
+            'file:///workspace1',
+            'file:///workspace2',
+            'file:///workspace2/doc'
+        ];
+        const makeStatFunc = function(log) {
             return async function(uri) {
                 let str = uri.toString();
                 log.push(str);
-                if (validPaths.includes(str)) {
+                if (VALID_FILES.includes(str)) {
                     return { // FileStat
                         type: vscode.FileType.File
+                    };
+                }
+                if (VALID_DIRS.includes(str)) {
+                    return { // FileStat
+                        type: vscode.FileType.Directory
                     };
                 }
                 throw undefined; // no entry
             };
         };
-        it('should find valid path through testing all combinations of folders and file names', async () => {
+        it('should find valid path through testing all combinations of folders and file names (case 1)', async () => {
             const folders = [
-                new vscode.Uri('file', '', '/workspace/f1', '', ''),
-                new vscode.Uri('file', '', '/workspace/f2', '', '')
+                new vscode.Uri('file', '', '/workspace1', '', ''),
+                new vscode.Uri('file', '', '/workspace2', '', '')
             ];
-            const names = ['include', 'abc.hpp'];
-            const validPaths = [
-                'file:///workspace/f1/abc.hpp'
-            ];
+            const names = ['#include', 'util.h'];
             const statLog = [];
             let target = await cursorHandler.findTagJumpTarget(
                 folders,
                 names,
-                makeStatFunc(validPaths, statLog)
+                makeStatFunc(statLog)
             );
             assert.strictEqual(target !== null, true);
-            assert.strictEqual(target.uri.toString(), 'file:///workspace/f1/abc.hpp');
+            assert.strictEqual(target.uri.toString(), 'file:///workspace1/util.h');
             assert.strictEqual(target.line, 0);
             assert.deepStrictEqual(statLog, [
-                'file:///workspace/f1/include',
-                'file:///workspace/f2/include',
-                'file:///workspace/f1/abc.hpp'
+                'file:///workspace1/%23include',
+                'file:///workspace2/%23include',
+                'file:///workspace1/util.h'
+            ]);
+        });
+        it('should find valid path through testing all combinations of folders and file names (case 2)', async () => {
+            const folders = [
+                new vscode.Uri('file', '', '/workspace1', '', ''),
+                new vscode.Uri('file', '', '/workspace2', '', '')
+            ];
+            const names = ['doc/hello.txt', '123', 'chapter', '2'];
+            const statLog = [];
+            let target = await cursorHandler.findTagJumpTarget(
+                folders,
+                names,
+                makeStatFunc(statLog)
+            );
+            assert.strictEqual(target !== null, true);
+            assert.strictEqual(target.uri.toString(), 'file:///workspace2/doc/hello.txt');
+            assert.strictEqual(target.line, 123);
+            assert.deepStrictEqual(statLog, [
+                'file:///workspace1/doc/hello.txt',
+                'file:///workspace2/doc/hello.txt'
             ]);
         });
         it('should fail if no valid path is found', async () => {
             const folders = [
-                new vscode.Uri('file', '', '/workspace/f1', '', ''),
-                new vscode.Uri('file', '', '/workspace/f2', '', '')
+                new vscode.Uri('file', '', '/workspace1', '', ''),
+                new vscode.Uri('file', '', '/workspace2', '', '')
             ];
-            const names = ['include', 'abc.hpp'];
-            const validPaths = [];
+            const names = ['doc', 'hello.txt'];
             const statLog = [];
             let target = await cursorHandler.findTagJumpTarget(
                 folders,
                 names,
-                makeStatFunc(validPaths, statLog)
+                makeStatFunc(statLog)
             );
             assert.strictEqual(target, null);
             assert.deepStrictEqual(statLog, [
-                'file:///workspace/f1/include',
-                'file:///workspace/f2/include',
-                'file:///workspace/f1/abc.hpp',
-                'file:///workspace/f2/abc.hpp'
+                'file:///workspace1/doc',
+                'file:///workspace2/doc',
+                'file:///workspace1/hello.txt',
+                'file:///workspace2/hello.txt'
             ]);
         });
     });
