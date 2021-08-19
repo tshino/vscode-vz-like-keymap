@@ -578,8 +578,7 @@ const CursorHandler = function(modeHandler) {
         }
         return candidates;
     };
-    const findTagJumpTarget = async function(textEditor, folders, statFunc) {
-        let names = getFileNames(textEditor);
+    const findTagJumpTarget = async function(folders, names, statFunc) {
         let candidates = makeTagCandidates(folders, names);
         for (let index = 0; index < candidates.length; index++) {
             let cand = candidates[index];
@@ -607,8 +606,9 @@ const CursorHandler = function(modeHandler) {
     };
     const tagJump = async function(textEditor) {
         const folders = getBaseFolders(textEditor);
+        const names = getFileNames(textEditor);
         const statFunc = vscode.workspace.fs.stat;
-        const target = await findTagJumpTarget(textEditor, folders, statFunc);
+        const target = await findTagJumpTarget(folders, names, statFunc);
         if (target) {
             openTextDocument(target.uri, target.line);
         }

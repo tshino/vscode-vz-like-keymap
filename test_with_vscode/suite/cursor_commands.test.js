@@ -1316,13 +1316,6 @@ describe('CursorHandler', () => {
         });
     });
     describe('findTagJumpTarget', () => {
-        before(async () => {
-            await testUtils.resetDocument(
-                textEditor,
-                'hello.txt\n' +
-                'include "abc.hpp"'
-            );
-        });
         const makeStatFunc = function(validPaths, log) {
             return async function(uri) {
                 let str = uri.toString();
@@ -1340,14 +1333,14 @@ describe('CursorHandler', () => {
                 new vscode.Uri('file', '', '/workspace/f1', '', ''),
                 new vscode.Uri('file', '', '/workspace/f2', '', '')
             ];
+            const names = ['include', 'abc.hpp'];
             const validPaths = [
                 'file:///workspace/f1/abc.hpp'
             ];
-            await resetCursor(1, 2);
             const statLog = [];
             let target = await cursorHandler.findTagJumpTarget(
-                textEditor,
                 folders,
+                names,
                 makeStatFunc(validPaths, statLog)
             );
             assert.strictEqual(target !== null, true);
@@ -1364,12 +1357,12 @@ describe('CursorHandler', () => {
                 new vscode.Uri('file', '', '/workspace/f1', '', ''),
                 new vscode.Uri('file', '', '/workspace/f2', '', '')
             ];
+            const names = ['include', 'abc.hpp'];
             const validPaths = [];
-            await resetCursor(1, 2);
             const statLog = [];
             let target = await cursorHandler.findTagJumpTarget(
-                textEditor,
                 folders,
+                names,
                 makeStatFunc(validPaths, statLog)
             );
             assert.strictEqual(target, null);
