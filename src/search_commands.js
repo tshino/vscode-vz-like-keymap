@@ -104,6 +104,12 @@ const SearchHandler = function(modeHandler) {
             }
         }
     );
+    const findStart = makeGuardedCommand(
+        'findStart',
+        async function(_textEditor, _edit) {
+            await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        }
+    );
     const findPreviousMatch = makeGuardedCommand(
         'findPreviousMatch',
         async function(textEditor, _edit) {
@@ -156,6 +162,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findReplace', findReplace);
         registerTextEditorCommand(context, 'selectWordToFind', selectWordToFind);
         registerTextEditorCommand(context, 'expandWordToFind', expandWordToFind);
+        registerTextEditorCommand(context, 'findStart', findStart);
         registerTextEditorCommand(context, 'findPreviousMatch', findPreviousMatch);
         registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
