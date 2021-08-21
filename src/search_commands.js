@@ -121,6 +121,19 @@ const SearchHandler = function(modeHandler) {
             mode.sync(textEditor);
         }
     );
+    const findStartPreviousMatch = makeGuardedCommand(
+        'findStartPreviousMatch',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            mode.expectSync(); // may not happen
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+            await promise;
+        }
+    );
     const findNextMatch = makeGuardedCommand(
         'findNextMatch',
         async function(textEditor, _edit) {
@@ -130,6 +143,19 @@ const SearchHandler = function(modeHandler) {
                 await sleep(10);
             }
             mode.sync(textEditor);
+        }
+    );
+    const findStartNextMatch = makeGuardedCommand(
+        'findStartNextMatch',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            mode.expectSync(); // may not happen
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+            await promise;
         }
     );
     const replaceOne = makeGuardedCommand(
@@ -164,7 +190,9 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'expandWordToFind', expandWordToFind);
         registerTextEditorCommand(context, 'findStart', findStart);
         registerTextEditorCommand(context, 'findPreviousMatch', findPreviousMatch);
+        registerTextEditorCommand(context, 'findStartPreviousMatch', findStartPreviousMatch);
         registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
+        registerTextEditorCommand(context, 'findStartNextMatch', findStartNextMatch);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };

@@ -782,6 +782,16 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "pageup",
+                "command": "vz.findStartPreviousMatch",
+                "when": "editorFocus && findInputFocussed"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "vz.findStartPreviousMatch",
+                "when": "editorFocus && findInputFocussed"
+            },
+            {
                 "key": "pagedown",
                 "command": "vz.findNextMatch",
                 "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
@@ -790,6 +800,16 @@
                 "key": "ctrl+c",
                 "command": "vz.findNextMatch",
                 "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "pagedown",
+                "command": "vz.findStartNextMatch",
+                "when": "editorFocus && findInputFocussed"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "vz.findStartNextMatch",
+                "when": "editorFocus && findInputFocussed"
             },
             {
                 "key": "enter",
