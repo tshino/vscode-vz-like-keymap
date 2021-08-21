@@ -89,7 +89,7 @@ const CursorHandler = function(modeHandler) {
         );
     };
 
-    const waitForScrollTimeout = async function(task, timeout=200) {
+    const waitForScrollTimeout = async function(task, timeout=300) {
         return new Promise((resolve, reject) => {
             let res = async function(textEditor) {
                 if (textEditor) {
@@ -181,7 +181,7 @@ const CursorHandler = function(modeHandler) {
         textEditor.selections = newSelections;
         let promises = [];
         if (reveal) {
-            promises.push(waitForScrollTimeout(() => {}, 200).catch(() => {}));
+            promises.push(waitForScrollTimeout(() => {}).catch(() => {}));
             textEditor.revealRange(new vscode.Range(cursor, cursor));
         }
         if (expectSelectionChangeCallback) {
