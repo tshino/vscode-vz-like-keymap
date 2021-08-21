@@ -2,6 +2,13 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- [WIP] Updated Find and Replace key bindings and behaviors to fix usability issues:
+  - Ctrl+M or Enter in the find input on the findWidget:
+    - Start Finding Mode and move focus to the document so you can both find matches and edit around there.
+  - Ctrl+M or Enter in the replace input on the findWidget:
+    - Execute replace one match and keep focus on the replace input.
+
 ### [0.16.0] - 2021-08-17
 - Added the Keyboard Macro function which is the final big piece of this extension:
   - Ctrl+_ for start or cancel recording keyboard sequence.
