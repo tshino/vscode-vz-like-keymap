@@ -174,6 +174,7 @@ const SearchHandler = function(modeHandler) {
         findReplace,
         selectWordToFind,
         expandWordToFind,
+        findStart,
         findPreviousMatch,
         findNextMatch,
         replaceOne,

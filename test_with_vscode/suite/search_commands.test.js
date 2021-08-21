@@ -205,6 +205,31 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
         });
     });
+    describe('findStart', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should move keyboard focus from findWidget to the document', async () => {
+            await resetCursor(0, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.findStart(textEditor);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        })
+    });
     describe('findPreviousMatch', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

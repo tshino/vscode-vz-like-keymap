@@ -4850,6 +4850,46 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
         });
     });
+    describe('findStart', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should move keyboard focus from findWidget to the document', async () => {
+            await resetCursor(0, 0);
+            const commands = ['vz.selectWordToFind', 'vz.findStart'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(2, 0);
+            await kb_macro.replay(textEditor);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        })
+        it('should prevent reentry', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+            kb_macro.startRecording(textEditor);
+            let p1 = vscode.commands.executeCommand('vz.findStart');
+            let p2 = vscode.commands.executeCommand('vz.findStart');
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            kb_macro.finishRecording();
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findStart']);
+        });
+    });
     describe('findPreviousMatch, findNextMatch', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
