@@ -823,17 +823,17 @@
             },
             {
                 "key": "ctrl+s",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+d",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+b",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
