@@ -230,7 +230,7 @@ describe('SearchHandler', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         })
     });
-    describe('findPreviousMatch', () => {
+    describe('findPreviousMatch findStartPreviousMatch', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -246,7 +246,7 @@ describe('SearchHandler', () => {
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
         });
-        it('should find and select previous match of finding', async () => {
+        it('should find and select previous match of finding (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
 
@@ -256,14 +256,33 @@ describe('SearchHandler', () => {
             await searchHandler.findPreviousMatch(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
         });
-        it('should not move cursor if no other match found', async () => {
+        it('should find and select previous match of finding (with Start)', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.findStartPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+
+            await searchHandler.findPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+        });
+        it('should not move cursor if no other match found (no Start)', async () => {
             await resetCursor(2, 11);
             await searchHandler.selectWordToFind(textEditor); // '123'
 
             await searchHandler.findPreviousMatch(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
         });
-        it('should prevent reentry', async () => {
+        it('should not move cursor if no other match found (with Start)', async () => {
+            await resetCursor(2, 11);
+            await searchHandler.selectWordToFind(textEditor); // '123'
+
+            await searchHandler.findStartPreviousMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should prevent reentry (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findPreviousMatch(textEditor);
@@ -273,8 +292,18 @@ describe('SearchHandler', () => {
             await searchHandler.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
         });
+        it('should prevent reentry (with Start)', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+            let p1 = searchHandler.findStartPreviousMatch(textEditor);
+            let p2 = searchHandler.findStartPreviousMatch(textEditor);
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
+        });
     });
-    describe('findNextMatch', () => {
+    describe('findNextMatch findStartNextMatch', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -290,7 +319,7 @@ describe('SearchHandler', () => {
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
         });
-        it('should find and select next match of finding', async () => {
+        it('should find and select next match of finding (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
 
@@ -300,18 +329,47 @@ describe('SearchHandler', () => {
             await searchHandler.findNextMatch(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);
         });
-        it('should not move cursor if no other match found', async () => {
+        it('should find and select next match of finding (with Start)', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.findStartNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+
+            await searchHandler.findNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);
+        });
+        it('should not move cursor if no other match found (no Start)', async () => {
             await resetCursor(2, 11);
             await searchHandler.selectWordToFind(textEditor); // '123'
 
             await searchHandler.findNextMatch(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
         });
-        it('should prevent reentry', async () => {
+        it('should not move cursor if no other match found (with Start)', async () => {
+            await resetCursor(2, 11);
+            await searchHandler.selectWordToFind(textEditor); // '123'
+
+            await searchHandler.findStartNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should prevent reentry (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findNextMatch(textEditor);
             let p2 = searchHandler.findNextMatch(textEditor);
+            await p1;
+            await p2;
+            await searchHandler.waitForEndOfGuardedCommand();
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
+        });
+        it('should prevent reentry (with Start)', async () => {
+            await resetCursor(1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+            let p1 = searchHandler.findStartNextMatch(textEditor);
+            let p2 = searchHandler.findStartNextMatch(textEditor);
             await p1;
             await p2;
             await searchHandler.waitForEndOfGuardedCommand();

@@ -4890,7 +4890,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findStart']);
         });
     });
-    describe('findPreviousMatch, findNextMatch', () => {
+    describe('findPreviousMatch, findStartPreviousMatch, findNextMatch, findStartNextMatch', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -4909,7 +4909,7 @@ describe('KeyboardMacro', () => {
         it('should find and select previous match of finding', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findPreviousMatch', 'vz.findPreviousMatch'];
+            const commands = ['vz.findStartPreviousMatch', 'vz.findPreviousMatch'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
@@ -4923,7 +4923,7 @@ describe('KeyboardMacro', () => {
         it('should find and select next match of finding', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findNextMatch', 'vz.findNextMatch'];
+            const commands = ['vz.findStartNextMatch', 'vz.findNextMatch'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);

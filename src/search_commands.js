@@ -204,7 +204,9 @@ const SearchHandler = function(modeHandler) {
         expandWordToFind,
         findStart,
         findPreviousMatch,
+        findStartPreviousMatch,
         findNextMatch,
+        findStartNextMatch,
         replaceOne,
         closeFindWidget,
         registerCommands
