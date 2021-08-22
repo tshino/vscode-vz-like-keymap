@@ -110,51 +110,43 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         }
     );
+    const findPreviousMatchImpl = async function(textEditor, _edit) {
+        mode.expectSync(); // may not happen
+        await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+            await sleep(10);
+        }
+        mode.sync(textEditor);
+    };
     const findPreviousMatch = makeGuardedCommand(
         'findPreviousMatch',
-        async function(textEditor, _edit) {
-            mode.expectSync(); // may not happen
-            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
-        }
+        findPreviousMatchImpl
     );
     const findStartPreviousMatch = makeGuardedCommand(
         'findStartPreviousMatch',
         async function(textEditor, _edit) {
             let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            mode.expectSync(); // may not happen
-            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
+            await findPreviousMatchImpl(textEditor);
             await promise;
         }
     );
+    const findNextMatchImpl = async function(textEditor, _edit) {
+        mode.expectSync(); // may not happen
+        await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+            await sleep(10);
+        }
+        mode.sync(textEditor);
+    };
     const findNextMatch = makeGuardedCommand(
         'findNextMatch',
-        async function(textEditor, _edit) {
-            mode.expectSync(); // may not happen
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
-        }
+        findNextMatchImpl
     );
     const findStartNextMatch = makeGuardedCommand(
         'findStartNextMatch',
         async function(textEditor, _edit) {
             let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            mode.expectSync(); // may not happen
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
+            await findNextMatchImpl(textEditor);
             await promise;
         }
     );
