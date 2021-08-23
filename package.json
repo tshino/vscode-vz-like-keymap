@@ -833,13 +833,8 @@
             },
             {
                 "key": "ctrl+f",
-                "command": "vz.findReplace",
-                "when": "editorFocus && findWidgetVisible && findInputFocussed"
-            },
-            {
-                "key": "ctrl+f",
-                "command": "vz.find",
-                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
+                "command": "vz.findStart",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+s",
