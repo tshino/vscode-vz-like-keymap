@@ -790,6 +790,82 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
         });
     });
+    describe('cursorTop', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to top of the document', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorTop(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should do nothing if cursor is already at top of the document', async () => {
+            await resetCursor(0, 0);
+
+            await cursorHandler.cursorTop(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorTop(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 0, 0]]);
+        });
+        it('should cancel box-selection mode', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+
+            await cursorHandler.cursorTop(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 0, 0]]);
+        });
+    });
+    describe('cursorBottom', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to end of the document', async () => {
+            await resetCursor(5, 5);
+
+            await cursorHandler.cursorBottom(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+        });
+        it('should do nothing if cursor is already at end of the document', async () => {
+            await resetCursor(0, 0);
+
+            await cursorHandler.cursorBottom(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorBottom(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 7, 10, 0]]);
+        });
+        it('should cancel box-selection mode', async () => {
+            await selectRanges([[3, 3, 3, 5]]);
+
+            await cursorHandler.cursorBottom(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 10, 0]]);
+        });
+    });
     describe('scrollLineUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));

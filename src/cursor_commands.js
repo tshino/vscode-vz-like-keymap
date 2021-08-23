@@ -376,6 +376,8 @@ const CursorHandler = function(modeHandler) {
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
     const cursorLineStart = makeCursorCommand('cursorLineStart', cursorLineStartSelect);
     const cursorLineEnd = makeCursorCommand('cursorLineEnd', cursorLineEndSelect);
+    const cursorTop = makeCursorCommand('cursorTop', 'cursorTopSelect');
+    const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
     const scrollLineUp = function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         let res1 = exec(['scrollLineUp']);
@@ -642,8 +644,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorLineEnd', cursorLineEnd);
         registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
         registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
-        registerCursorCommand(context, 'cursorTop', 'cursorTopSelect');
-        registerCursorCommand(context, 'cursorBottom', 'cursorBottomSelect');
+        registerTextEditorCommand(context, 'cursorTop', cursorTop);
+        registerTextEditorCommand(context, 'cursorBottom', cursorBottom);
         registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
         registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
         registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
@@ -687,6 +689,8 @@ const CursorHandler = function(modeHandler) {
         cursorRight,
         cursorUp,
         cursorDown,
+        cursorTop,
+        cursorBottom,
         scrollLineUp,
         scrollLineUpUnselect,
         scrollLineDown,
