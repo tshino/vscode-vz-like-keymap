@@ -118,18 +118,11 @@ const SearchHandler = function(modeHandler) {
         }
         mode.sync(textEditor);
     };
-    const findPreviousMatch = makeGuardedCommand(
-        'findPreviousMatch',
-        findPreviousMatchImpl
-    );
-    const findStartPreviousMatch = makeGuardedCommand(
-        'findStartPreviousMatch',
-        async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            await findPreviousMatchImpl(textEditor);
-            await promise;
-        }
-    );
+    const findStartPreviousMatchImpl = async function(textEditor, _edit) {
+        let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        await findPreviousMatchImpl(textEditor);
+        await promise;
+    };
     const findNextMatchImpl = async function(textEditor, _edit) {
         mode.expectSync(); // may not happen
         await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
@@ -138,18 +131,16 @@ const SearchHandler = function(modeHandler) {
         }
         mode.sync(textEditor);
     };
-    const findNextMatch = makeGuardedCommand(
-        'findNextMatch',
-        findNextMatchImpl
-    );
-    const findStartNextMatch = makeGuardedCommand(
-        'findStartNextMatch',
-        async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            await findNextMatchImpl(textEditor);
-            await promise;
-        }
-    );
+    const findStartNextMatchImpl = async function(textEditor, _edit) {
+        let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        await findNextMatchImpl(textEditor);
+        await promise;
+    };
+    const findPreviousMatch = makeGuardedCommand('findPreviousMatch', findPreviousMatchImpl);
+    const findStartPreviousMatch = makeGuardedCommand('findStartPreviousMatch', findStartPreviousMatchImpl);
+    const findNextMatch = makeGuardedCommand('findNextMatch', findNextMatchImpl);
+    const findStartNextMatch = makeGuardedCommand('findStartNextMatch', findStartNextMatchImpl);
+
     const replaceOne = makeGuardedCommand(
         'replaceOne',
         async function(textEditor, _edit) {
