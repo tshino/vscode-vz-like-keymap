@@ -866,6 +866,32 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 10, 0]]);
         });
     });
+    describe('cursorTopUnselect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to top of the document', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorTopUnselect(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+    });
+    describe('cursorBottomUnselect', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to end of the document', async () => {
+            await selectRange(7, 7, 7, 10);
+
+            await cursorHandler.cursorBottomUnselect(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+        });
+    });
     describe('scrollLineUp', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));

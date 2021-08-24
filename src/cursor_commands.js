@@ -378,6 +378,22 @@ const CursorHandler = function(modeHandler) {
     const cursorLineEnd = makeCursorCommand('cursorLineEnd', cursorLineEndSelect);
     const cursorTop = makeCursorCommand('cursorTop', 'cursorTopSelect');
     const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
+    const cursorTopUnselect = async function(textEditor, _edit) {
+        mode.expectSync();
+        if (mode.inSelection()) {
+            await vscode.commands.executeCommand('cancelSelection');
+            mode.resetSelection(textEditor);
+        }
+        await vscode.commands.executeCommand('cursorTop');
+    };
+    const cursorBottomUnselect = async function(textEditor, _edit) {
+        mode.expectSync();
+        if (mode.inSelection()) {
+            await vscode.commands.executeCommand('cancelSelection');
+            mode.resetSelection(textEditor);
+        }
+        await vscode.commands.executeCommand('cursorBottom');
+    };
     const scrollLineUp = function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         let res1 = exec(['scrollLineUp']);
@@ -646,6 +662,8 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
         registerTextEditorCommand(context, 'cursorTop', cursorTop);
         registerTextEditorCommand(context, 'cursorBottom', cursorBottom);
+        registerTextEditorCommand(context, 'cursorTopUnselect', cursorTopUnselect);
+        registerTextEditorCommand(context, 'cursorBottomUnselect', cursorBottomUnselect);
         registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
         registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
         registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
@@ -691,6 +709,8 @@ const CursorHandler = function(modeHandler) {
         cursorDown,
         cursorTop,
         cursorBottom,
+        cursorTopUnselect,
+        cursorBottomUnselect,
         scrollLineUp,
         scrollLineUpUnselect,
         scrollLineDown,
