@@ -320,38 +320,18 @@
             },
             {
                 "key": "ctrl+q ctrl+r",
-                "command": "cursorTop",
-                "when": "editorFocus"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
                 "command": "vz.cursorTop",
                 "when": "editorTextFocus"
             },
             {
                 "key": "ctrl+q r",
-                "command": "cursorTop",
-                "when": "editorFocus"
-            },
-            {
-                "key": "ctrl+q r",
                 "command": "vz.cursorTop",
                 "when": "editorTextFocus"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "cursorBottom",
-                "when": "editorFocus"
             },
             {
                 "key": "ctrl+q ctrl+c",
                 "command": "vz.cursorBottom",
                 "when": "editorTextFocus"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "cursorBottom",
-                "when": "editorFocus"
             },
             {
                 "key": "ctrl+q c",
@@ -845,6 +825,26 @@
                 "key": "ctrl+d",
                 "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "vz.cursorTopUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "vz.cursorTopUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "vz.cursorBottomUnselect",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "vz.cursorBottomUnselect",
+                "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+b",
