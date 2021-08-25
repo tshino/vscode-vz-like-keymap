@@ -376,6 +376,36 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
         });
     });
+    describe('findStartCursorTop', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to top of the document', async () => {
+            await selectRange(7, 7, 7, 10);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorTop(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartCursorBottom', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to end of the document', async () => {
+            await selectRange(7, 7, 7, 10);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorBottom(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

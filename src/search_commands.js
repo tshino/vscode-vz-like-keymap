@@ -227,6 +227,8 @@ const SearchHandler = function(modeHandler) {
         findStartPreviousMatch,
         findNextMatch,
         findStartNextMatch,
+        findStartCursorTop,
+        findStartCursorBottom,
         replaceOne,
         closeFindWidget,
         registerCommands
