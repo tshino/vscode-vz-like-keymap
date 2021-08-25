@@ -854,7 +854,7 @@
             {
                 "key": "escape",
                 "command": "vz.closeFindWidget",
-                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+                "when": "editorFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && findWidgetVisible"
             },
             {
                 "key": "ctrl+oem_102",
