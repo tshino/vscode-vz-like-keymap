@@ -277,28 +277,6 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
         });
-        it('should cancel selection and move cursor to top of a document', async () => {
-            await selectRange(5, 5, 6, 4);
-            const commands = ['vz.cursorTopUnselect'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-
-            await selectRange(3, 7, 3, 9);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
-        });
-        it('should cancel selection and move cursor to bottom of a document', async () => {
-            await selectRange(5, 5, 6, 4);
-            const commands = ['vz.cursorBottomUnselect'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-
-            await selectRange(3, 7, 3, 9);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
-        });
         it('should make selection range while moving cursor (*arrow-select)', async () => {
             await resetCursor(3, 3);
             const commands = [
