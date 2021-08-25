@@ -141,6 +141,41 @@ const SearchHandler = function(modeHandler) {
     const findNextMatch = makeGuardedCommand('findNextMatch', findNextMatchImpl);
     const findStartNextMatch = makeGuardedCommand('findStartNextMatch', findStartNextMatchImpl);
 
+    const findStartCursorTop = makeGuardedCommand(
+        'findStartCursorTop',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            mode.expectSync();
+            if (mode.inSelection()) {
+                await vscode.commands.executeCommand('cancelSelection');
+                mode.resetSelection(textEditor);
+            }
+            await vscode.commands.executeCommand('cursorTop');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+            await promise;
+        }
+    );
+    const findStartCursorBottom = makeGuardedCommand(
+        'findStartCursorBottom',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            mode.expectSync();
+            if (mode.inSelection()) {
+                await vscode.commands.executeCommand('cancelSelection');
+                mode.resetSelection(textEditor);
+            }
+            await vscode.commands.executeCommand('cursorBottom');
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+            await promise;
+        }
+    );
+
     const replaceOne = makeGuardedCommand(
         'replaceOne',
         async function(textEditor, _edit) {
@@ -176,6 +211,8 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartPreviousMatch', findStartPreviousMatch);
         registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
         registerTextEditorCommand(context, 'findStartNextMatch', findStartNextMatch);
+        registerTextEditorCommand(context, 'findStartCursorTop', findStartCursorTop);
+        registerTextEditorCommand(context, 'findStartCursorBottom', findStartCursorBottom);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };

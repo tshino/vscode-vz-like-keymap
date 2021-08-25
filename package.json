@@ -828,22 +828,22 @@
             },
             {
                 "key": "ctrl+q ctrl+r",
-                "command": "vz.cursorTopUnselect",
+                "command": "vz.findStartCursorTop",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q r",
-                "command": "vz.cursorTopUnselect",
+                "command": "vz.findStartCursorTop",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+c",
-                "command": "vz.cursorBottomUnselect",
+                "command": "vz.findStartCursorBottom",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q c",
-                "command": "vz.cursorBottomUnselect",
+                "command": "vz.findStartCursorBottom",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
