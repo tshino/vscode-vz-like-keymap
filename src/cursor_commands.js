@@ -378,14 +378,14 @@ const CursorHandler = function(modeHandler) {
     const cursorLineEnd = makeCursorCommand('cursorLineEnd', cursorLineEndSelect);
     const cursorTop = makeCursorCommand('cursorTop', 'cursorTopSelect');
     const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
-    const scrollLineUp = function(textEditor, _edit) {
+    const scrollLineUp = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         let res1 = exec(['scrollLineUp']);
         if (0 < textEditor.selection.active.line) {
-            let res2 = cursorUp(textEditor);
-            return res1.then(() => res2);
+            await cursorUp(textEditor);
+            await res1;
         } else {
-            return res1;
+            await res1;
         }
     };
     const cancelSelection = async function(textEditor) {
@@ -400,19 +400,21 @@ const CursorHandler = function(modeHandler) {
             mode.resetSelection(textEditor);
         }
     };
-    const scrollLineUpUnselect = function(textEditor) {
-        return exec([cancelSelection, scrollLineUp], 0, textEditor);
+    const scrollLineUpUnselect = async function(textEditor) {
+        await cancelSelection(textEditor);
+        await scrollLineUp(textEditor);
     };
-    const scrollLineDown = function(textEditor, _edit) {
+    const scrollLineDown = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
             let res1 = exec(['scrollLineDown']);
-            let res2 = cursorDown(textEditor);
-            return res1.then(() => res2);
+            await cursorDown(textEditor);
+            await res1;
         }
     };
-    const scrollLineDownUnselect = function(textEditor) {
-        return exec([cancelSelection, scrollLineDown], 0, textEditor);
+    const scrollLineDownUnselect = async function(textEditor) {
+        await cancelSelection(textEditor);
+        await scrollLineDown(textEditor);
     };
 
     const registerToggleSelectionCommand = function(context, name, isBox) {
