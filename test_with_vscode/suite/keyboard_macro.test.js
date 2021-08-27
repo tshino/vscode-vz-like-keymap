@@ -398,21 +398,6 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
         });
-        it('should stop selection mode and move cursor one line up/down with scroll', async () => {
-            await selectRange(5, 1, 5, 7);
-            const commands = [
-                'vz.scrollLineDownUnselect',
-                'vz.scrollLineUpUnselect',
-                'vz.scrollLineUpUnselect'
-            ];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-
-            await selectRange(7, 4, 7, 7);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[6, 7]]);
-        });
     });
     const testScrollPage = async function(commands, dir) {
         const up = dir === 'Up';
@@ -799,7 +784,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(1, 2);
             const commands = [
                 'vz.toggleSelection',
-                'vz.scrollLineUpUnselect'
+                'vz.findStartScrollLineUp'
             ];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
@@ -979,9 +964,9 @@ describe('KeyboardMacro', () => {
         it('should start and stop selection mode (scroll-line-up-unselect -> toggle -> scroll-line-down-unselect)', async () => {
             await resetCursor(1, 1);
             const commands = [
-                'vz.scrollLineUpUnselect',
+                'vz.findStartScrollLineUp',
                 'vz.toggleSelection',
-                'vz.scrollLineDownUnselect'
+                'vz.findStartScrollLineDown'
             ];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
@@ -1172,10 +1157,10 @@ describe('KeyboardMacro', () => {
             await resetCursor(1, 1);
             const commands = [
                 'vz.toggleSelection',
-                'vz.scrollLineUpUnselect',
+                'vz.findStartScrollLineUp',
                 'vz.toggleSelection',
-                'vz.scrollLineDownUnselect',
-                'vz.scrollLineDownUnselect'
+                'vz.findStartScrollLineDown',
+                'vz.findStartScrollLineDown'
             ];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
@@ -4993,6 +4978,33 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartScrollLineUp, findStartScrollLineDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                '0 12 345 6789\n'.repeat(10)
+            );
+        });
+        it('should cancel selection and move cursor one line up/down with scroll', async () => {
+            await selectRange(5, 2, 5, 8);
+            await searchHandler.selectWordToFind(textEditor);
+            const commands = [
+                'vz.findStartScrollLineDown',
+                'vz.findStartScrollLineUp',
+                'vz.findStartScrollLineUp'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(7, 5, 7, 8);
+            await searchHandler.selectWordToFind(textEditor);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 8]]);
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });

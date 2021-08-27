@@ -400,10 +400,6 @@ const CursorHandler = function(modeHandler) {
             mode.resetSelection(textEditor);
         }
     };
-    const scrollLineUpUnselect = async function(textEditor) {
-        await cancelSelection(textEditor);
-        await scrollLineUp(textEditor);
-    };
     const scrollLineDown = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
@@ -411,10 +407,6 @@ const CursorHandler = function(modeHandler) {
             await cursorDown(textEditor);
             await res1;
         }
-    };
-    const scrollLineDownUnselect = async function(textEditor) {
-        await cancelSelection(textEditor);
-        await scrollLineDown(textEditor);
     };
 
     const registerToggleSelectionCommand = function(context, name, isBox) {
@@ -655,9 +647,7 @@ const CursorHandler = function(modeHandler) {
         registerCursorCommand(context, 'cursorHomeSelect', 'cursorHomeSelect');
         registerCursorCommand(context, 'cursorEndSelect', 'cursorEndSelect');
         registerTextEditorCommand(context, 'scrollLineUp', scrollLineUp);
-        registerTextEditorCommand(context, 'scrollLineUpUnselect', scrollLineUpUnselect);
         registerTextEditorCommand(context, 'scrollLineDown', scrollLineDown);
-        registerTextEditorCommand(context, 'scrollLineDownUnselect', scrollLineDownUnselect);
         registerToggleSelectionCommand(context, 'toggleSelection', false);
         registerToggleSelectionCommand(context, 'toggleBoxSelection', true);
         registerTextEditorCommand(context, 'stopBoxSelection', stopBoxSelection);
@@ -694,9 +684,7 @@ const CursorHandler = function(modeHandler) {
         cursorTop,
         cursorBottom,
         scrollLineUp,
-        scrollLineUpUnselect,
         scrollLineDown,
-        scrollLineDownUnselect,
         stopBoxSelection,
         reverseSelection,
         jumpToBracket,
