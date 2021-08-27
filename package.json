@@ -224,19 +224,9 @@
                 "when": "editorFocus && config.vzKeymap.ctrl+W"
             },
             {
-                "key": "ctrl+w",
-                "command": "vz.scrollLineUpUnselect",
-                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+W"
-            },
-            {
                 "key": "shift+pageup",
                 "command": "vz.scrollLineUp",
                 "when": "editorFocus"
-            },
-            {
-                "key": "shift+pageup",
-                "command": "vz.scrollLineUpUnselect",
-                "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+z",
@@ -244,19 +234,9 @@
                 "when": "editorFocus && config.vzKeymap.ctrl+Z"
             },
             {
-                "key": "ctrl+z",
-                "command": "vz.scrollLineDownUnselect",
-                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+Z"
-            },
-            {
                 "key": "shift+pagedown",
                 "command": "vz.scrollLineDown",
                 "when": "editorFocus"
-            },
-            {
-                "key": "shift+pagedown",
-                "command": "vz.scrollLineDownUnselect",
-                "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+s",
@@ -864,6 +844,26 @@
             {
                 "key": "ctrl+q c",
                 "command": "vz.findStartCursorBottom",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "vz.findStartScrollLineUp",
+                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+W"
+            },
+            {
+                "key": "shift+pageup",
+                "command": "vz.findStartScrollLineUp",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "vz.findStartScrollLineDown",
+                "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+Z"
+            },
+            {
+                "key": "shift+pagedown",
+                "command": "vz.findStartScrollLineDown",
                 "when": "editorFocus && findWidgetVisible"
             },
             {
