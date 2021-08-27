@@ -960,60 +960,6 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[500, 5, 501, 7]]);
         });
     });
-    describe('scrollLineUpUnselect', () => {
-        before(async () => {
-            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
-        });
-        it('should scroll up and move cursor up one line', async () => {
-            await resetCursor(500, 5);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-
-            await cursorHandler.scrollLineUpUnselect(textEditor);
-
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.strictEqual(vlines1[0], vlines0[0] - 1);
-            assert.deepStrictEqual(selectionsAsArray(), [[499, 5]]);
-        });
-        it('should cancel selection', async () => {
-            await selectRange(500, 5, 500, 7);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-
-            await cursorHandler.scrollLineUpUnselect(textEditor);
-
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.strictEqual(vlines1[0], vlines0[0] - 1);
-            assert.deepStrictEqual(selectionsAsArray(), [[499, 7]]);
-        });
-    });
-    describe('scrollLineDownUnselect', () => {
-        before(async () => {
-            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
-        });
-        it('should scroll down and move cursor down one line', async () => {
-            await resetCursor(500, 5);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-
-            await cursorHandler.scrollLineDownUnselect(textEditor);
-
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.strictEqual(vlines1[0], vlines0[0] + 1);
-            assert.deepStrictEqual(selectionsAsArray(), [[501, 5]]);
-        });
-        it('should cancel selection', async () => {
-            await selectRange(500, 5, 500, 7);
-            let vlines0 = EditUtil.enumVisibleLines(textEditor);
-
-            await cursorHandler.scrollLineDownUnselect(textEditor);
-
-            let vlines1 = EditUtil.enumVisibleLines(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.strictEqual(vlines1[0], vlines0[0] + 1);
-            assert.deepStrictEqual(selectionsAsArray(), [[501, 7]]);
-        });
-    });
     describe('stopBoxSelection', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(textEditor,
