@@ -267,6 +267,8 @@ const SearchHandler = function(modeHandler) {
         findStartNextMatch,
         findStartCursorTop,
         findStartCursorBottom,
+        findStartScrollLineUp,
+        findStartScrollLineDown,
         replaceOne,
         closeFindWidget,
         registerCommands

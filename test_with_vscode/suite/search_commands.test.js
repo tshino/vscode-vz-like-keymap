@@ -4,6 +4,7 @@ const vscode = require('vscode');
 const testUtils = require("./testUtils.js");
 const mode_handler = require("./../../src/mode_handler.js");
 const search_commands = require("./../../src/search_commands.js");
+const EditUtil = require("./../../src/edit_util.js");
 
 describe('SearchHandler', () => {
     const mode = mode_handler.getInstance();
@@ -404,6 +405,62 @@ describe('SearchHandler', () => {
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[10, 0]]);
             // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartScrollLineUp', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll up and move cursor up one line', async () => {
+            await resetCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            await searchHandler.findStartScrollLineUp(textEditor);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(vlines1[0], vlines0[0] - 1);
+            assert.deepStrictEqual(selectionsAsArray(), [[499, 5]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel selection', async () => {
+            await selectRange(500, 5, 500, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            await searchHandler.findStartScrollLineUp(textEditor);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(vlines1[0], vlines0[0] - 1);
+            assert.deepStrictEqual(selectionsAsArray(), [[499, 7]]);
+        });
+    });
+    describe('findStartScrollLineDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
+        });
+        it('should scroll down and move cursor down one line', async () => {
+            await resetCursor(500, 5);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            await searchHandler.findStartScrollLineDown(textEditor);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(vlines1[0], vlines0[0] + 1);
+            assert.deepStrictEqual(selectionsAsArray(), [[501, 5]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel selection', async () => {
+            await selectRange(500, 5, 500, 7);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            await searchHandler.findStartScrollLineDown(textEditor);
+
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(vlines1[0], vlines0[0] + 1);
+            assert.deepStrictEqual(selectionsAsArray(), [[501, 7]]);
         });
     });
     describe('replaceOne', () => {
