@@ -753,43 +753,43 @@
             },
             {
                 "key": "pageup",
-                "command": "vz.findPreviousMatch",
-                "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
+                "command": "vz.findStartPreviousMatch",
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
             },
             {
                 "key": "ctrl+r",
-                "command": "vz.findPreviousMatch",
-                "when": "editorFocus && findWidgetVisible"
+                "command": "vz.findStartPreviousMatch",
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
             },
             {
                 "key": "pageup",
-                "command": "vz.findStartPreviousMatch",
-                "when": "editorFocus && findInputFocussed"
+                "command": "vz.findPreviousMatch",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
                 "key": "ctrl+r",
-                "command": "vz.findStartPreviousMatch",
-                "when": "editorFocus && findInputFocussed"
-            },
-            {
-                "key": "pagedown",
-                "command": "vz.findNextMatch",
-                "when": "editorFocus && findWidgetVisible && !suggestWidgetVisible"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "vz.findNextMatch",
-                "when": "editorFocus && findWidgetVisible"
+                "command": "vz.findPreviousMatch",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
                 "key": "pagedown",
                 "command": "vz.findStartNextMatch",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
             },
             {
                 "key": "ctrl+c",
                 "command": "vz.findStartNextMatch",
-                "when": "editorFocus && findInputFocussed"
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
+            },
+            {
+                "key": "pagedown",
+                "command": "vz.findNextMatch",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "vz.findNextMatch",
+                "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
             },
             {
                 "key": "enter",
