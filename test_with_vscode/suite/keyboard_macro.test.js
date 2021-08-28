@@ -4593,6 +4593,9 @@ describe('KeyboardMacro', () => {
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
         });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
         it('should open findWidget', async () => {
             await resetCursor(0, 3);
             const commands = ['vz.find'];
@@ -4623,6 +4626,9 @@ describe('KeyboardMacro', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should open findWidget with replace input', async () => {
@@ -4660,6 +4666,9 @@ describe('KeyboardMacro', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should select the word the cursor is on and open findWidget (case 1)', async () => {
@@ -4862,6 +4871,9 @@ describe('KeyboardMacro', () => {
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
         });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
         it('should move keyboard focus from findWidget to the document', async () => {
             await resetCursor(0, 0);
             const commands = ['vz.selectWordToFind', 'vz.findStart'];
@@ -4900,6 +4912,9 @@ describe('KeyboardMacro', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should find and select previous match of finding', async () => {
@@ -4947,6 +4962,9 @@ describe('KeyboardMacro', () => {
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
         });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
         it('should cancel selection and move cursor to top of a document', async () => {
             await selectRange(1, 7, 1, 13);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
@@ -4988,6 +5006,10 @@ describe('KeyboardMacro', () => {
                 textEditor,
                 '0 12 345 6789\n'.repeat(10)
             );
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should cancel selection and move cursor one line up/down with scroll', async () => {
             await selectRange(5, 2, 5, 8);
@@ -5023,6 +5045,9 @@ describe('KeyboardMacro', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should replace next match of search word with replace word', async () => {
