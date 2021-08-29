@@ -754,7 +754,7 @@
             {
                 "key": "pageup",
                 "command": "vz.findStartPreviousMatch",
-                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+r",
@@ -774,7 +774,7 @@
             {
                 "key": "pagedown",
                 "command": "vz.findStartNextMatch",
-                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed"
+                "when": "editorFocus && findWidgetVisible && !replaceInputFocussed && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+c",
