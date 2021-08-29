@@ -159,6 +159,14 @@ const SearchHandler = function(modeHandler) {
             await promise;
         };
     };
+    const findStartCursorLeft = makeGuardedCommand(
+        'findStartCursorLeft',
+        makeFindStartCursorImpl(cursorHandler.cursorLeft)
+    );
+    const findStartCursorRight = makeGuardedCommand(
+        'findStartCursorRight',
+        makeFindStartCursorImpl(cursorHandler.cursorRight)
+    );
     const findStartCursorTop = makeGuardedCommand(
         'findStartCursorTop',
         makeFindStartCursorImpl(async function(_textEditor, _edit) {
@@ -173,15 +181,11 @@ const SearchHandler = function(modeHandler) {
     );
     const findStartScrollLineUp = makeGuardedCommand(
         'findStartScrollLineUp',
-        makeFindStartCursorImpl(async function(textEditor, _edit) {
-            await cursorHandler.scrollLineUp(textEditor);
-        })
+        makeFindStartCursorImpl(cursorHandler.scrollLineUp)
     );
     const findStartScrollLineDown = makeGuardedCommand(
         'findStartScrollLineDown',
-        makeFindStartCursorImpl(async function(textEditor, _edit) {
-            await cursorHandler.scrollLineDown(textEditor);
-        })
+        makeFindStartCursorImpl(cursorHandler.scrollLineDown)
     );
 
     const replaceOne = makeGuardedCommand(
@@ -219,6 +223,8 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartPreviousMatch', findStartPreviousMatch);
         registerTextEditorCommand(context, 'findNextMatch', findNextMatch);
         registerTextEditorCommand(context, 'findStartNextMatch', findStartNextMatch);
+        registerTextEditorCommand(context, 'findStartCursorLeft', findStartCursorLeft);
+        registerTextEditorCommand(context, 'findStartCursorRight', findStartCursorRight);
         registerTextEditorCommand(context, 'findStartCursorTop', findStartCursorTop);
         registerTextEditorCommand(context, 'findStartCursorBottom', findStartCursorBottom);
         registerTextEditorCommand(context, 'findStartScrollLineUp', findStartScrollLineUp);

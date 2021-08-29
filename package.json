@@ -818,13 +818,23 @@
             },
             {
                 "key": "ctrl+s",
-                "command": "vz.findStart",
-                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+                "command": "vz.findStartCursorLeft",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "left",
+                "command": "vz.findStartCursorLeft",
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+d",
-                "command": "vz.findStart",
-                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+                "command": "vz.findStartCursorRight",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "right",
+                "command": "vz.findStartCursorRight",
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+r",
