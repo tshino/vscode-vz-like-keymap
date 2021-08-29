@@ -4946,6 +4946,60 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
         });
     });
+    describe('findStartCursorLeft, findStartCursorRight', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abcdef\n' +
+                    'abcdef abcdef\n' +
+                    'xyz abcdef 123\n' +
+                    'abcdef xyz\n'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should cancel selection and move cursor left one character', async () => {
+            await selectRange(1, 7, 1, 13);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            const commands = ['vz.findStartCursorLeft'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 12]]);
+
+            await selectRange(2, 4, 2, 10);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel selection and move cursor right one character', async () => {
+            await selectRange(1, 0, 1, 6);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            const commands = ['vz.findStartCursorRight'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+
+            await selectRange(2, 4, 2, 10);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('findStartCursorTop, findStartCursorBottom', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
