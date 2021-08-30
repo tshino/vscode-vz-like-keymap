@@ -812,9 +812,14 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "ctrl+a",
+                "command": "vz.findStartCursorWordStartLeft",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
                 "key": "ctrl+f",
-                "command": "vz.findStart",
-                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+                "command": "vz.findStartCursorWordStartRight",
+                "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+s",

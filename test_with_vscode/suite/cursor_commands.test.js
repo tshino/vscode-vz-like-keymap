@@ -790,6 +790,7 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
         });
     });
+    // TODO: add tests for cursorWordStartLeft, cursorWordStartRight
     describe('cursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));

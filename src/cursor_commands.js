@@ -374,6 +374,8 @@ const CursorHandler = function(modeHandler) {
     const cursorRight = makeCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
     const cursorDown = makeCursorCommand('cursorDown', 'cursorDownSelect', 'cursorColumnSelectDown');
+    const cursorWordStartLeft = makeCursorCommand('cursorWordStartLeft', 'cursorWordStartLeftSelect');
+    const cursorWordStartRight = makeCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
     const cursorLineStart = makeCursorCommand('cursorLineStart', cursorLineStartSelect);
     const cursorLineEnd = makeCursorCommand('cursorLineEnd', cursorLineEndSelect);
     const cursorTop = makeCursorCommand('cursorTop', 'cursorTopSelect');
@@ -632,8 +634,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorRight', cursorRight);
         registerTextEditorCommand(context, 'cursorUp', cursorUp);
         registerTextEditorCommand(context, 'cursorDown', cursorDown);
-        registerCursorCommand(context, 'cursorWordStartLeft', 'cursorWordStartLeftSelect');
-        registerCursorCommand(context, 'cursorWordStartRight', 'cursorWordStartRightSelect');
+        registerTextEditorCommand(context, 'cursorWordStartLeft', cursorWordStartLeft);
+        registerTextEditorCommand(context, 'cursorWordStartRight', cursorWordStartRight);
         registerTextEditorCommand(context, 'cursorLineStart', cursorLineStart);
         registerTextEditorCommand(context, 'cursorLineEnd', cursorLineEnd);
         registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
@@ -681,6 +683,8 @@ const CursorHandler = function(modeHandler) {
         cursorRight,
         cursorUp,
         cursorDown,
+        cursorWordStartLeft,
+        cursorWordStartRight,
         cursorTop,
         cursorBottom,
         scrollLineUp,

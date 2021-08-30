@@ -5000,6 +5000,7 @@ describe('KeyboardMacro', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
     });
+    // TODO: add tests for findStartCursorWordStartLeft, findStartCursorWordStartRight
     describe('findStartCursorTop, findStartCursorBottom', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
