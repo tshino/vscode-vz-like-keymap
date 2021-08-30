@@ -812,16 +812,6 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
-                "key": "ctrl+a",
-                "command": "vz.findStartCursorWordStartLeft",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
-            },
-            {
-                "key": "ctrl+f",
-                "command": "vz.findStartCursorWordStartRight",
-                "when": "editorFocus && findWidgetVisible"
-            },
-            {
                 "key": "ctrl+s",
                 "command": "vz.findStartCursorLeft",
                 "when": "editorFocus && findWidgetVisible"
@@ -840,6 +830,36 @@
                 "key": "right",
                 "command": "vz.findStartCursorRight",
                 "when": "editorTextFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "vz.findStartCursorUp",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
+                "key": "up",
+                "command": "vz.findStartCursorUp",
+                "when": "editorTextFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "vz.findStartCursorDown",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
+                "key": "down",
+                "command": "vz.findStartCursorDown",
+                "when": "editorTextFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "vz.findStartCursorWordStartLeft",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+f",
+                "command": "vz.findStartCursorWordStartRight",
+                "when": "editorFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+r",
