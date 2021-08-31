@@ -408,7 +408,36 @@ describe('SearchHandler', () => {
         });
     });
     // TODO: add tests for findStartCursorUp, findStartCursorDown
-    // TODO: add tests for findStartCursorWordStartLeft, findStartCursorWordStartRight
+    describe('findStartCursorWordStartLeft', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to the last word start', async () => {
+            await selectRange(1, 3, 1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorWordStartLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartCursorWordStartRight', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor to the next word start', async () => {
+            await selectRange(1, 3, 1, 7);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorWordStartRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 11]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('findStartCursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));

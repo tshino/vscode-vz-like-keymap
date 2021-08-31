@@ -790,7 +790,48 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 3, 3, 5], [4, 3, 4, 5]]);
         });
     });
-    // TODO: add tests for cursorWordStartLeft, cursorWordStartRight
+    describe('cursorWordStartLeft', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
+        });
+        it('should move cursor to the last word start', async () => {
+            await resetCursor(1, 7);
+
+            await cursorHandler.cursorWordStartLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(2, 11, 2, 7);
+
+            await cursorHandler.cursorWordStartLeft(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 2]]);
+        });
+    });
+    describe('cursorWordStartRight', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
+        });
+        it('should move cursor to the next word start', async () => {
+            await resetCursor(1, 7);
+
+            await cursorHandler.cursorWordStartRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 11]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(2, 2, 2, 7);
+
+            await cursorHandler.cursorWordStartRight(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 2, 2, 11]]);
+        });
+    });
     describe('cursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
