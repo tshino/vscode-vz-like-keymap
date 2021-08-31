@@ -407,7 +407,36 @@ describe('SearchHandler', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
     });
-    // TODO: add tests for findStartCursorUp, findStartCursorDown
+    describe('findStartCursorUp', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor up one line', async () => {
+            await selectRange(5, 2, 5, 5);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorUp(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartCursorDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should cancel selection and move cursor down one line', async () => {
+            await selectRange(5, 2, 5, 5);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorDown(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('findStartCursorWordStartLeft', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));

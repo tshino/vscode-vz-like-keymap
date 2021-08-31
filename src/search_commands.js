@@ -265,6 +265,8 @@ const SearchHandler = function(modeHandler) {
         findStartNextMatch,
         findStartCursorLeft,
         findStartCursorRight,
+        findStartCursorUp,
+        findStartCursorDown,
         findStartCursorWordStartLeft,
         findStartCursorWordStartRight,
         findStartCursorTop,

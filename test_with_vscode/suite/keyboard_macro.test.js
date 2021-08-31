@@ -5000,7 +5000,51 @@ describe('KeyboardMacro', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
     });
-    // TODO: add tests for findStartCursorUp, findStartCursorDown
+    describe('findStartCursorUp, findStartCursorDown', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should cancel selection and move cursor up one line', async () => {
+            await selectRange(5, 2, 5, 5);
+            await searchHandler.selectWordToFind(textEditor);
+            const commands = ['vz.findStartCursorUp'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+
+            await selectRange(2, 4, 2, 10);
+            await searchHandler.selectWordToFind(textEditor);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel selection and move cursor down one line', async () => {
+            await selectRange(5, 2, 5, 5);
+            await searchHandler.selectWordToFind(textEditor);
+            const commands = ['vz.findStartCursorDown'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
+
+            await selectRange(2, 4, 2, 10);
+            await searchHandler.selectWordToFind(textEditor);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 10]]);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('findStartCursorWordStartLeft, findStartCursorWordStartRight', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
