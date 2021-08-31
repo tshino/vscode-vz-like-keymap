@@ -862,6 +862,26 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "ctrl+q ctrl+s",
+                "command": "vz.findStartCursorLineStart",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q s",
+                "command": "vz.findStartCursorLineStart",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ctrl+d",
+                "command": "vz.findStartCursorLineEnd",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q d",
+                "command": "vz.findStartCursorLineEnd",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
                 "key": "ctrl+q ctrl+r",
                 "command": "vz.findStartCursorTop",
                 "when": "editorFocus && findWidgetVisible"

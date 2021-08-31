@@ -467,6 +467,7 @@ describe('SearchHandler', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
     });
+    // TODO: add tests for findStartCursorLineStart, findStartCursorLineEnd
     describe('findStartCursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
