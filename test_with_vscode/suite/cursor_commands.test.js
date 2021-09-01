@@ -832,6 +832,48 @@ describe('CursorHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 2, 2, 11]]);
         });
     });
+    describe('cursorHome', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to beginning of current display line', async () => {
+            await resetCursor(7, 5);
+
+            await cursorHandler.cursorHome(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 5, 4, 5);
+
+            await cursorHandler.cursorHome(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 0]]);
+        });
+    });
+    describe('cursorEnd', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to end of current display line', async () => {
+            await resetCursor(7, 5);
+
+            await cursorHandler.cursorEnd(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 10]]);
+        });
+        it('should extend selection', async () => {
+            await selectRange(7, 5, 4, 5);
+
+            await cursorHandler.cursorEnd(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 4, 10]]);
+        });
+    });
     describe('cursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));

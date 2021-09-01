@@ -882,6 +882,36 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "home",
+                "command": "vz.findStartCursorHome",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
+                "key": "end",
+                "command": "vz.findStartCursorEnd",
+                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+q [",
+                "command": "vz.findStartCursorHome",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ctrl+[",
+                "command": "vz.findStartCursorHome",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ]",
+                "command": "vz.findStartCursorEnd",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ctrl+]",
+                "command": "vz.findStartCursorEnd",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
                 "key": "ctrl+q ctrl+r",
                 "command": "vz.findStartCursorTop",
                 "when": "editorFocus && findWidgetVisible"

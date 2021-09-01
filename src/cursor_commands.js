@@ -378,6 +378,8 @@ const CursorHandler = function(modeHandler) {
     const cursorWordStartRight = makeCursorCommand('cursorWordStartRight', 'cursorWordStartRightSelect');
     const cursorLineStart = makeCursorCommand('cursorLineStart', cursorLineStartSelect);
     const cursorLineEnd = makeCursorCommand('cursorLineEnd', cursorLineEndSelect);
+    const cursorHome = makeCursorCommand('cursorHome', 'cursorHomeSelect');
+    const cursorEnd = makeCursorCommand('cursorEnd', 'cursorEndSelect');
     const cursorTop = makeCursorCommand('cursorTop', 'cursorTopSelect');
     const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
     const scrollLineUp = async function(textEditor, _edit) {
@@ -638,8 +640,8 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorWordStartRight', cursorWordStartRight);
         registerTextEditorCommand(context, 'cursorLineStart', cursorLineStart);
         registerTextEditorCommand(context, 'cursorLineEnd', cursorLineEnd);
-        registerCursorCommand(context, 'cursorHome', 'cursorHomeSelect');
-        registerCursorCommand(context, 'cursorEnd', 'cursorEndSelect');
+        registerTextEditorCommand(context, 'cursorHome', cursorHome);
+        registerTextEditorCommand(context, 'cursorEnd', cursorEnd);
         registerTextEditorCommand(context, 'cursorTop', cursorTop);
         registerTextEditorCommand(context, 'cursorBottom', cursorBottom);
         registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
@@ -685,6 +687,8 @@ const CursorHandler = function(modeHandler) {
         cursorDown,
         cursorWordStartLeft,
         cursorWordStartRight,
+        cursorHome,
+        cursorEnd,
         cursorTop,
         cursorBottom,
         scrollLineUp,

@@ -191,6 +191,14 @@ const SearchHandler = function(modeHandler) {
         'findStartCursorLineEnd',
         makeFindStartCursorImpl(cursorHandler.cursorLineEnd)
     );
+    const findStartCursorHome = makeGuardedCommand(
+        'findStartCursorHome',
+        makeFindStartCursorImpl(cursorHandler.cursorHome)
+    );
+    const findStartCursorEnd = makeGuardedCommand(
+        'findStartCursorEnd',
+        makeFindStartCursorImpl(cursorHandler.cursorEnd)
+    );
     const findStartCursorTop = makeGuardedCommand(
         'findStartCursorTop',
         makeFindStartCursorImpl(async function(_textEditor, _edit) {
@@ -255,6 +263,8 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartCursorWordStartRight', findStartCursorWordStartRight);
         registerTextEditorCommand(context, 'findStartCursorLineStart', findStartCursorLineStart);
         registerTextEditorCommand(context, 'findStartCursorLineEnd', findStartCursorLineEnd);
+        registerTextEditorCommand(context, 'findStartCursorHome', findStartCursorHome);
+        registerTextEditorCommand(context, 'findStartCursorEnd', findStartCursorEnd);
         registerTextEditorCommand(context, 'findStartCursorTop', findStartCursorTop);
         registerTextEditorCommand(context, 'findStartCursorBottom', findStartCursorBottom);
         registerTextEditorCommand(context, 'findStartScrollLineUp', findStartScrollLineUp);
