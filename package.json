@@ -834,7 +834,7 @@
             {
                 "key": "ctrl+e",
                 "command": "vz.findStartCursorUp",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "up",
@@ -844,7 +844,7 @@
             {
                 "key": "ctrl+x",
                 "command": "vz.findStartCursorDown",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "down",
@@ -854,7 +854,7 @@
             {
                 "key": "ctrl+a",
                 "command": "vz.findStartCursorWordStartLeft",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+f",
@@ -884,12 +884,12 @@
             {
                 "key": "home",
                 "command": "vz.findStartCursorHome",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "end",
                 "command": "vz.findStartCursorEnd",
-                "when": "editorFocus && findWidgetVisible && !findInputFocussed && !replaceInputFocussed"
+                "when": "editorTextFocus && findWidgetVisible"
             },
             {
                 "key": "ctrl+q [",
