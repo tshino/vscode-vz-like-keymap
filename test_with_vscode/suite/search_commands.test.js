@@ -497,7 +497,36 @@ describe('SearchHandler', () => {
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
     });
-    // TODO: add tests for findStartCursorHome and findStartCursorEnd
+    describe('findStartCursorHome', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to beginning of current display line', async () => {
+            await selectRange(7, 2, 7, 5);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorHome(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
+    describe('findStartCursorEnd', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+        });
+        it('should move cursor to end of current display line', async () => {
+            await selectRange(7, 2, 7, 5);
+            await searchHandler.selectWordToFind(textEditor);
+
+            await searchHandler.findStartCursorEnd(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 10]]);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+    });
     describe('findStartCursorTop', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));

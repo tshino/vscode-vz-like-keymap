@@ -291,6 +291,8 @@ const SearchHandler = function(modeHandler) {
         findStartCursorWordStartRight,
         findStartCursorLineStart,
         findStartCursorLineEnd,
+        findStartCursorHome,
+        findStartCursorEnd,
         findStartCursorTop,
         findStartCursorBottom,
         findStartScrollLineUp,
