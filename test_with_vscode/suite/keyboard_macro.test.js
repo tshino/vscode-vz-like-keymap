@@ -1724,12 +1724,18 @@ describe('KeyboardMacro', () => {
         });
     });
     describe('type (space/TAB)', () => {
+        let documentLanguage = '';
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
                 '\n'.repeat(5) +
                 'abcde\n'.repeat(5)
             );
+            documentLanguage = textEditor.document.languageId; // likely 'plaintext'
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, 'plaintext');
+        });
+        afterEach(async () => {
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
         });
         it('should insert space characters', async () => {
             await resetCursor(1, 0);
@@ -2003,6 +2009,7 @@ describe('KeyboardMacro', () => {
         });
     });
     describe('type (indent/outdent)', () => {
+        let documentLanguage = '';
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -2011,6 +2018,11 @@ describe('KeyboardMacro', () => {
                 '    abcde\n'.repeat(5) +
                 '        abcde\n'.repeat(5)
             );
+            documentLanguage = textEditor.document.languageId; // likely 'plaintext'
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, 'javascript');
+        });
+        afterEach(async () => {
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
         });
         const checkIfRecordedCommandIs = function(command) {
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
@@ -2196,6 +2208,7 @@ describe('KeyboardMacro', () => {
         });
     });
     describe('type (Enter)', () => {
+        let documentLanguage = '';
         beforeEach(async () => {
             await testUtils.resetDocument(
                 textEditor,
@@ -2203,6 +2216,11 @@ describe('KeyboardMacro', () => {
                 'abcde\n'.repeat(5) +
                 '    1234\n'.repeat(5)
             );
+            documentLanguage = textEditor.document.languageId; // likely 'plaintext'
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, 'plaintext');
+        });
+        afterEach(async () => {
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
         });
         it('should insert a line break', async () => {
             await resetCursor(1, 2);
