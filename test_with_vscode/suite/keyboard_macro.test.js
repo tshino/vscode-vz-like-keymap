@@ -4964,6 +4964,21 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
         });
     });
+    const testRecordingFindStartCursorXXX = async function(commands, expectedSelection) {
+        await searchHandler.selectWordToFind(textEditor);
+        await recordThroughExecution(commands);
+        assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+        assert.strictEqual(mode.inSelection(), false);
+        assert.deepStrictEqual(selectionsAsArray(), expectedSelection);
+    };
+    const testReplayFindStartCursorXXX = async function(expectedSelection) {
+        await searchHandler.selectWordToFind(textEditor);
+        await kb_macro.replay(textEditor);
+        assert.strictEqual(mode.inSelection(), false);
+        assert.deepStrictEqual(selectionsAsArray(), expectedSelection);
+        // FIXME: check that findWidget is still visible (but it seems not possible to test)
+        // FIXME: check that the focus is on the document (but it seems not possible to test)
+    };
     describe('findStartCursorLeft, findStartCursorRight', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
@@ -4985,42 +5000,22 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor left one character', async () => {
             await selectRange(1, 7, 1, 13);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findStartCursorLeft'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 12]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLeft'], [[1, 12]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 9]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 9]]);
         });
         it('should cancel selection and move cursor right one character', async () => {
             await selectRange(1, 0, 1, 6);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findStartCursorRight'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorRight'], [[1, 7]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 11]]);
         });
     });
-    describe('findStartCursorUp, findStartCursorDown', () => {
+    describe('findStartCursorXXX', () => {
         before(async () => {
-            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
+            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
             await vscode.commands.executeCommand('closeFindWidget');
@@ -5028,168 +5023,61 @@ describe('KeyboardMacro', () => {
         after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
-        it('should cancel selection and move cursor up one line', async () => {
+        it('should cancel selection and move cursor up one line (findStartCursorUp)', async () => {
             await selectRange(5, 2, 5, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorUp'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorUp'], [[4, 5]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[1, 10]]);
         });
-        it('should cancel selection and move cursor down one line', async () => {
+        it('should cancel selection and move cursor down one line (findStartCursorDown)', async () => {
             await selectRange(5, 2, 5, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorDown'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorDown'], [[6, 5]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 10]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[3, 10]]);
         });
-    });
-    describe('findStartCursorWordStartLeft, findStartCursorWordStartRight', () => {
-        before(async () => {
-            await testUtils.resetDocument(textEditor, 'a weak ago today\n'.repeat(10));
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        after(async () => {
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        it('should cancel selection and move cursor to the last word start', async () => {
+        it('should cancel selection and move cursor to the last word start (findStartCursorWordStartLeft)', async () => {
             await selectRange(1, 3, 1, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorWordStartLeft'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartLeft'], [[1, 2]]);
 
             await selectRange(2, 4, 2, 11);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 7]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 7]]);
         });
-        it('should cancel selection and move cursor to the next word start', async () => {
+        it('should cancel selection and move cursor to the next word start (findStartCursorWordStartRight)', async () => {
             await selectRange(1, 3, 1, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorWordStartRight'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 11]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartRight'], [[1, 11]]);
 
             await selectRange(2, 2, 2, 7);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 11]]);
         });
-    });
-    describe('findStartCursorLineStart, findStartCursorLineEnd', () => {
-        before(async () => {
-            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        after(async () => {
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        it('should cancel selection and move cursor to beginning of current line', async () => {
+        it('should cancel selection and move cursor to beginning of current line (findStartCursorLineStart)', async () => {
             await selectRange(7, 5, 4, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorLineStart'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineStart'], [[4, 0]]);
 
             await selectRange(2, 2, 2, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 0]]);
         });
-        it('should cancel selection and move cursor to end of current line', async () => {
+        it('should cancel selection and move cursor to end of current line (findStartCursorLineEnd)', async () => {
             await selectRange(7, 5, 4, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorLineEnd'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 10]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineEnd'], [[4, 16]]);
 
             await selectRange(2, 2, 2, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 10]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 16]]);
         });
-    });
-    describe('findStartCursorHome, findStartCursorEnd', () => {
-        before(async () => {
-            await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(10));
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        after(async () => {
-            await vscode.commands.executeCommand('closeFindWidget');
-        });
-        it('should cancel selection and move cursor to beginning of current display line', async () => {
+        it('should cancel selection and move cursor to beginning of current display line (findStartCursorHome)', async () => {
             await selectRange(7, 2, 7, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorHome'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorHome'], [[7, 0]]);
 
             await selectRange(2, 2, 2, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 0]]);
         });
-        it('should cancel selection and move cursor to end of current display line', async () => {
+        it('should cancel selection and move cursor to end of current display line (findStartCursorEnd)', async () => {
             await selectRange(7, 2, 7, 5);
-            await searchHandler.selectWordToFind(textEditor);
-            const commands = ['vz.findStartCursorEnd'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[7, 10]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorEnd'], [[7, 16]]);
 
             await selectRange(2, 2, 2, 7);
-            await searchHandler.selectWordToFind(textEditor);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 10]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[2, 16]]);
         });
     });
     describe('findStartCursorTop, findStartCursorBottom', () => {
@@ -5213,37 +5101,17 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor to top of a document', async () => {
             await selectRange(1, 7, 1, 13);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findStartCursorTop'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorTop'], [[0, 0]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[0, 0]]);
         });
         it('should cancel selection and move cursor to bottom of a document', async () => {
             await selectRange(1, 7, 1, 13);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            const commands = ['vz.findStartCursorBottom'];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorBottom'], [[4, 0]]);
 
             await selectRange(2, 4, 2, 10);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
-            // FIXME: check that findWidget is still visible (but it seems not possible to test)
-            // FIXME: check that the focus is on the document (but it seems not possible to test)
+            await testReplayFindStartCursorXXX([[4, 0]]);
         });
     });
     describe('findStartScrollLineUp, findStartScrollLineDown', () => {
