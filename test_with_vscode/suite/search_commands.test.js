@@ -528,5 +528,12 @@ describe('SearchHandler', () => {
             await searchHandler.closeFindWidget(textEditor);
             // FIXME: check that findWidget is not visible (but it seems not possible to test)
         });
+        it('should cancel selection and locate the cursor to beginning of the last selection', async () => {
+            await selectRange(1, 7, 1, 13);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+
+            await searchHandler.closeFindWidget(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+        });
     });
 });

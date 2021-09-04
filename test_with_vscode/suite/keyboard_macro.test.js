@@ -5219,14 +5219,24 @@ describe('KeyboardMacro', () => {
         });
         it('should close findWidget', async () => {
             await resetCursor(2, 3);
-            await searchHandler.find(textEditor);
-            const commands = ['vz.closeFindWidget'];
+            const commands = ['vz.find', 'vz.closeFindWidget'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
             // FIXME: check that findWidget is not visible (but it seems not possible to test)
             await resetCursor(2, 5);
             await kb_macro.replay(textEditor);
+        });
+        it('should cancel selection and locate the cursor to beginning of the last selection', async () => {
+            await selectRange(1, 7, 1, 13);
+            const commands = ['vz.selectWordToFind', 'vz.closeFindWidget'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+
+            await selectRange(2, 11, 2, 14);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
         });
         it('should prevent reentry', async () => {
             kb_macro.startRecording(textEditor);
