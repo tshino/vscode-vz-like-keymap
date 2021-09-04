@@ -223,13 +223,21 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should move keyboard focus from findWidget to the document', async () => {
-            await resetCursor(0, 0);
-            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            await resetCursor(4, 0);
+            await searchHandler.find(textEditor);
 
             await searchHandler.findStart(textEditor);
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
-        })
+        });
+        it('should reverse the direction of current selection', async () => {
+            await resetCursor(0, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+
+            await searchHandler.findStart(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
+        });
     });
     describe('findPreviousMatch findStartPreviousMatch', () => {
         beforeEach(async () => {

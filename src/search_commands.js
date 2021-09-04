@@ -106,10 +106,18 @@ const SearchHandler = function(modeHandler) {
             }
         }
     );
+    const flipSelectionBackward = function(textEditor) {
+        textEditor.selections = Array.from(textEditor.selections).map(
+            sel => new vscode.Selection(sel.end, sel.start)
+        );
+    };
     const findStart = makeGuardedCommand(
         'findStart',
-        async function(_textEditor, _edit) {
+        async function(textEditor, _edit) {
             await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            if (!textEditor.selection.isEmpty) {
+                flipSelectionBackward(textEditor);
+            }
         }
     );
     const findPreviousMatchImpl = async function(textEditor, _edit) {

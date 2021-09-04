@@ -4893,8 +4893,8 @@ describe('KeyboardMacro', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should move keyboard focus from findWidget to the document', async () => {
-            await resetCursor(0, 0);
-            const commands = ['vz.selectWordToFind', 'vz.findStart'];
+            await resetCursor(4, 0);
+            const commands = ['vz.find', 'vz.findStart'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
@@ -4902,7 +4902,18 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
-        })
+        });
+        it('should reverse the direction of current selection', async () => {
+            await resetCursor(0, 0);
+            const commands = ['vz.selectWordToFind', 'vz.findStart'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
+
+            await resetCursor(2, 11);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 14, 2, 11]]);
+        });
         it('should prevent reentry', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
