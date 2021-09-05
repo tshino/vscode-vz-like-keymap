@@ -5011,17 +5011,17 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor left one character', async () => {
             await selectRange(1, 7, 1, 13);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorLeft'], [[1, 12]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLeft'], [[1, 6]]);
 
             await selectRange(2, 4, 2, 10);
-            await testReplayFindStartCursorXXX([[2, 9]]);
+            await testReplayFindStartCursorXXX([[2, 3]]);
         });
         it('should cancel selection and move cursor right one character', async () => {
             await selectRange(1, 0, 1, 6);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorRight'], [[1, 7]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorRight'], [[1, 1]]);
 
             await selectRange(2, 4, 2, 10);
-            await testReplayFindStartCursorXXX([[2, 11]]);
+            await testReplayFindStartCursorXXX([[2, 5]]);
         });
     });
     describe('findStartCursorXXX', () => {
@@ -5036,41 +5036,41 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor up one line (findStartCursorUp)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorUp'], [[4, 5]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorUp'], [[4, 2]]);
 
             await selectRange(2, 4, 2, 10);
-            await testReplayFindStartCursorXXX([[1, 10]]);
+            await testReplayFindStartCursorXXX([[1, 4]]);
         });
         it('should cancel selection and move cursor down one line (findStartCursorDown)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorDown'], [[6, 5]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorDown'], [[6, 2]]);
 
             await selectRange(2, 4, 2, 10);
-            await testReplayFindStartCursorXXX([[3, 10]]);
+            await testReplayFindStartCursorXXX([[3, 4]]);
         });
         it('should cancel selection and move cursor to the last word start (findStartCursorWordStartLeft)', async () => {
-            await selectRange(1, 3, 1, 7);
+            await selectRange(1, 7, 1, 10);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartLeft'], [[1, 2]]);
 
-            await selectRange(2, 4, 2, 11);
-            await testReplayFindStartCursorXXX([[2, 7]]);
+            await selectRange(2, 4, 2, 9);
+            await testReplayFindStartCursorXXX([[2, 2]]);
         });
         it('should cancel selection and move cursor to the next word start (findStartCursorWordStartRight)', async () => {
             await selectRange(1, 3, 1, 7);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartRight'], [[1, 11]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartRight'], [[1, 7]]);
 
             await selectRange(2, 2, 2, 7);
-            await testReplayFindStartCursorXXX([[2, 11]]);
+            await testReplayFindStartCursorXXX([[2, 7]]);
         });
         it('should cancel selection and move cursor to beginning of current line (findStartCursorLineStart)', async () => {
-            await selectRange(7, 5, 4, 5);
+            await selectRange(4, 5, 7, 5);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorLineStart'], [[4, 0]]);
 
             await selectRange(2, 2, 2, 7);
             await testReplayFindStartCursorXXX([[2, 0]]);
         });
         it('should cancel selection and move cursor to end of current line (findStartCursorLineEnd)', async () => {
-            await selectRange(7, 5, 4, 5);
+            await selectRange(4, 5, 7, 5);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorLineEnd'], [[4, 16]]);
 
             await selectRange(2, 2, 2, 7);
@@ -5092,10 +5092,10 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor to top of current visible area (findStartCursorViewTop)', async () => {
             await selectRange(7, 2, 7, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewTop'], [[0, 5]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewTop'], [[0, 2]]);
 
             await selectRange(2, 2, 2, 7);
-            await testReplayFindStartCursorXXX([[0, 7]]);
+            await testReplayFindStartCursorXXX([[0, 2]]);
         });
         it('should cancel selection and move cursor to bottom of current visible area (findStartCursorViewBottom)', async () => {
             await selectRange(7, 2, 7, 5);
@@ -5165,7 +5165,7 @@ describe('KeyboardMacro', () => {
             await searchHandler.selectWordToFind(textEditor);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[6, 8]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });

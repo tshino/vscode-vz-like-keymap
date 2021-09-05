@@ -400,34 +400,34 @@ describe('SearchHandler', () => {
         });
         it('should cancel selection and move cursor left one character (findStartCursorLeft)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testFindStartCursorXXX(searchHandler.findStartCursorLeft, [[5, 4]]);
+            await testFindStartCursorXXX(searchHandler.findStartCursorLeft, [[5, 1]]);
         });
         it('should cancel selection and move cursor right one character (findStartCursorRight)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testFindStartCursorXXX(searchHandler.findStartCursorRight, [[5, 6]]);
+            await testFindStartCursorXXX(searchHandler.findStartCursorRight, [[5, 3]]);
         });
         it('should cancel selection and move cursor up one line (findStartCursorUp)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testFindStartCursorXXX(searchHandler.findStartCursorUp, [[4, 5]]);
+            await testFindStartCursorXXX(searchHandler.findStartCursorUp, [[4, 2]]);
         });
         it('should cancel selection and move cursor down one line (findStartCursorDown)', async () => {
             await selectRange(5, 2, 5, 5);
-            await testFindStartCursorXXX(searchHandler.findStartCursorDown, [[6, 5]]);
+            await testFindStartCursorXXX(searchHandler.findStartCursorDown, [[6, 2]]);
         });
         it('should cancel selection and move cursor to the last word start (findStartCursorWordStartLeft)', async () => {
-            await selectRange(1, 3, 1, 7);
+            await selectRange(1, 7, 1, 10);
             await testFindStartCursorXXX(searchHandler.findStartCursorWordStartLeft, [[1, 2]]);
         });
         it('should cancel selection and move cursor to the next word start (findStartCursorWordStartRight)', async () => {
-            await selectRange(1, 3, 1, 7);
-            await testFindStartCursorXXX(searchHandler.findStartCursorWordStartRight, [[1, 11]]);
+            await selectRange(1, 2, 1, 6);
+            await testFindStartCursorXXX(searchHandler.findStartCursorWordStartRight, [[1, 7]]);
         });
         it('should cancel selection and move cursor to beginning of current line (findStartCursorLineStart)', async () => {
-            await selectRange(7, 5, 4, 5);
+            await selectRange(4, 5, 7, 5);
             await testFindStartCursorXXX(searchHandler.findStartCursorLineStart, [[4, 0]]);
         });
         it('should cancel selection and move cursor to end of current line (findStartCursorLineEnd)', async () => {
-            await selectRange(7, 5, 4, 5);
+            await selectRange(4, 5, 7, 5);
             await testFindStartCursorXXX(searchHandler.findStartCursorLineEnd, [[4, 16]]);
         });
         it('should move cursor to beginning of current display line (findStartCursorHome)', async () => {
@@ -448,7 +448,7 @@ describe('SearchHandler', () => {
         });
         it('should cancel selection and move cursor to top of current visible area (findStartCursorViewTop)', async () => {
             await selectRange(7, 3, 7, 8);
-            await testFindStartCursorXXX(searchHandler.findStartCursorViewTop, [[0, 8]]);
+            await testFindStartCursorXXX(searchHandler.findStartCursorViewTop, [[0, 3]]);
         });
         it('should cancel selection and move cursor to bottom of current visible area (findStartCursorViewBottom)', async () => {
             await selectRange(7, 3, 7, 8);
@@ -476,7 +476,7 @@ describe('SearchHandler', () => {
         });
         it('should cancel selection (findStartScrollLineUp)', async () => {
             await selectRange(500, 5, 500, 7);
-            await testFindStartScrollLineXXX(searchHandler.findStartScrollLineUp, -1, [[499, 7]]);
+            await testFindStartScrollLineXXX(searchHandler.findStartScrollLineUp, -1, [[499, 5]]);
         });
         it('should scroll down and move cursor down one line (findStartScrollLineDown)', async () => {
             await resetCursor(500, 5);
@@ -484,7 +484,7 @@ describe('SearchHandler', () => {
         });
         it('should cancel selection (findStartScrollLineDown)', async () => {
             await selectRange(500, 5, 500, 7);
-            await testFindStartScrollLineXXX(searchHandler.findStartScrollLineDown, 1, [[501, 7]]);
+            await testFindStartScrollLineXXX(searchHandler.findStartScrollLineDown, 1, [[501, 5]]);
         });
     });
     describe('replaceOne', () => {

@@ -127,19 +127,6 @@ const SearchHandler = function(modeHandler) {
             mode.resetSelection(textEditor);
         }
     };
-    const cancelMatchSelection2 = async function(textEditor) {
-        if (mode.inSelection()) {
-            if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
-                mode.expectSync();
-                await vscode.commands.executeCommand('cancelSelection');
-                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                    await sleep(10);
-                }
-                mode.sync(textEditor);
-            }
-            mode.resetSelection(textEditor);
-        }
-    };
 
     const findStart = makeGuardedCommand(
         'findStart',
@@ -189,7 +176,7 @@ const SearchHandler = function(modeHandler) {
     const makeFindStartCursorImpl = function(funcBody) {
         return async function(textEditor, _edit) {
             let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            await cancelMatchSelection2(textEditor);
+            await cancelMatchSelection(textEditor);
             await funcBody(textEditor);
             await promise;
         };
