@@ -5090,6 +5090,20 @@ describe('KeyboardMacro', () => {
             await selectRange(2, 2, 2, 7);
             await testReplayFindStartCursorXXX([[2, 16]]);
         });
+        it('should cancel selection and move cursor to top of current visible area (findStartCursorViewTop)', async () => {
+            await selectRange(7, 2, 7, 5);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewTop'], [[0, 5]]);
+
+            await selectRange(2, 2, 2, 7);
+            await testReplayFindStartCursorXXX([[0, 7]]);
+        });
+        it('should cancel selection and move cursor to bottom of current visible area (findStartCursorViewBottom)', async () => {
+            await selectRange(7, 2, 7, 5);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewBottom'], [[10, 0]]);
+
+            await selectRange(2, 2, 2, 7);
+            await testReplayFindStartCursorXXX([[10, 0]]);
+        });
     });
     describe('findStartCursorTop, findStartCursorBottom', () => {
         beforeEach(async () => {

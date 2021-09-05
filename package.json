@@ -932,6 +932,26 @@
                 "when": "editorFocus && findWidgetVisible"
             },
             {
+                "key": "ctrl+q ctrl+e",
+                "command": "vz.findStartCursorViewTop",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q e",
+                "command": "vz.findStartCursorViewTop",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q ctrl+x",
+                "command": "vz.findStartCursorViewBottom",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
+                "key": "ctrl+q x",
+                "command": "vz.findStartCursorViewBottom",
+                "when": "editorFocus && findWidgetVisible"
+            },
+            {
                 "key": "ctrl+w",
                 "command": "vz.findStartScrollLineUp",
                 "when": "editorFocus && findWidgetVisible && config.vzKeymap.ctrl+W"

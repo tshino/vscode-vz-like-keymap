@@ -446,6 +446,14 @@ describe('SearchHandler', () => {
             await selectRange(7, 7, 7, 10);
             await testFindStartCursorXXX(searchHandler.findStartCursorBottom, [[10, 0]]);
         });
+        it('should cancel selection and move cursor to top of current visible area (findStartCursorViewTop)', async () => {
+            await selectRange(7, 3, 7, 8);
+            await testFindStartCursorXXX(searchHandler.findStartCursorViewTop, [[0, 8]]);
+        });
+        it('should cancel selection and move cursor to bottom of current visible area (findStartCursorViewBottom)', async () => {
+            await selectRange(7, 3, 7, 8);
+            await testFindStartCursorXXX(searchHandler.findStartCursorViewBottom, [[10, 0]]);
+        });
     });
     describe('findStartScrollLineXXX', () => {
         before(async () => {

@@ -222,6 +222,14 @@ const SearchHandler = function(modeHandler) {
         'findStartCursorBottom',
         makeFindStartCursorImpl(cursorHandler.cursorBottom)
     );
+    const findStartCursorViewTop = makeGuardedCommand(
+        'findStartCursorViewTop',
+        makeFindStartCursorImpl(cursorHandler.cursorViewTop)
+    );
+    const findStartCursorViewBottom = makeGuardedCommand(
+        'findStartCursorViewBottom',
+        makeFindStartCursorImpl(cursorHandler.cursorViewBottom)
+    );
     const findStartScrollLineUp = makeGuardedCommand(
         'findStartScrollLineUp',
         makeFindStartCursorImpl(cursorHandler.scrollLineUp)
@@ -286,6 +294,8 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartCursorEnd', findStartCursorEnd);
         registerTextEditorCommand(context, 'findStartCursorTop', findStartCursorTop);
         registerTextEditorCommand(context, 'findStartCursorBottom', findStartCursorBottom);
+        registerTextEditorCommand(context, 'findStartCursorViewTop', findStartCursorViewTop);
+        registerTextEditorCommand(context, 'findStartCursorViewBottom', findStartCursorViewBottom);
         registerTextEditorCommand(context, 'findStartScrollLineUp', findStartScrollLineUp);
         registerTextEditorCommand(context, 'findStartScrollLineDown', findStartScrollLineDown);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
@@ -314,6 +324,8 @@ const SearchHandler = function(modeHandler) {
         findStartCursorEnd,
         findStartCursorTop,
         findStartCursorBottom,
+        findStartCursorViewTop,
+        findStartCursorViewBottom,
         findStartScrollLineUp,
         findStartScrollLineDown,
         replaceOne,
