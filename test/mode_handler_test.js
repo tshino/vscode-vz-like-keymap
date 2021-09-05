@@ -705,6 +705,13 @@ describe('mode_handler', function() {
                 mode.sync(editor);
                 assert.strictEqual(mode.synchronized(), true);
             });
+            it('should still be true when sync() called multiple times', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                mode.sync(editor);
+                assert.strictEqual(mode.synchronized(), true);
+            });
             it('should become false when expectSync() called', function() {
                 const editor = TextEditorMock();
                 mode.initialize(editor);
@@ -717,6 +724,23 @@ describe('mode_handler', function() {
                 mode.initialize(editor);
                 mode.sync(editor);
                 mode.expectSync();
+                mode.sync(editor);
+                assert.strictEqual(mode.synchronized(), true);
+            });
+            it('should still be false after expectSync(2) then sync() called once', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                mode.expectSync(2);
+                mode.sync(editor);
+                assert.strictEqual(mode.synchronized(), false);
+            });
+            it('should be true after expectSync(2) then sync() called twice', function() {
+                const editor = TextEditorMock();
+                mode.initialize(editor);
+                mode.sync(editor);
+                mode.expectSync(2);
+                mode.sync(editor);
                 mode.sync(editor);
                 assert.strictEqual(mode.synchronized(), true);
             });

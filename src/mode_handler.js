@@ -8,7 +8,7 @@ const ModeHandler = function() {
     let lastSelectionAnchor = null;
     let onStartSelection = null;
     let onResetSelection = null;
-    let synchronized = false;
+    let expectedSyncCount = 1;
     let toBeResolved = [];
     const startSelection = function(textEditor, box) {
         mode = box ? MODE_BOX_SELECTION : MODE_SELECTION;
@@ -43,7 +43,9 @@ const ModeHandler = function() {
             !lastSelectionAnchor.isEqual(textEditor.selection.anchor)) {
             resetSelection(textEditor);
         }
-        synchronized = true;
+        if (0 < expectedSyncCount) {
+            expectedSyncCount -= 1;
+        }
         if (0 < toBeResolved.length) {
             toBeResolved.forEach(res => res(true));
             toBeResolved.length = 0;
@@ -52,13 +54,13 @@ const ModeHandler = function() {
     const initialize = function(textEditor) {
         resetSelection(textEditor);
         sync(textEditor);
-        synchronized = false;
+        expectedSyncCount = 1;
     };
-    const expectSync = function() {
-        synchronized = false;
+    const expectSync = function(count=1) {
+        expectedSyncCount = count;
     };
     const waitForSyncTimeout = function(timeout=100) {
-        synchronized = false;
+        expectedSyncCount = 1;
         return new Promise((resolve, reject) => {
             let res = (resolved) => {
                 let m = resolved ? resolve : reject;
@@ -86,7 +88,7 @@ const ModeHandler = function() {
         initialize: initialize,
         expectSync,
         waitForSyncTimeout,
-        synchronized: function() { return synchronized; },
+        synchronized: function() { return expectedSyncCount === 0; },
     };
 };
 

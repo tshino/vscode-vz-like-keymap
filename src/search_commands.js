@@ -116,7 +116,12 @@ const SearchHandler = function(modeHandler) {
         async function(textEditor, _edit) {
             await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
             if (!textEditor.selection.isEmpty) {
+                mode.expectSync();
                 flipSelectionBackward(textEditor);
+                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                    await sleep(10);
+                }
+                mode.sync(textEditor);
             }
         }
     );
@@ -154,16 +159,18 @@ const SearchHandler = function(modeHandler) {
     const makeFindStartCursorImpl = function(funcBody) {
         return async function(textEditor, _edit) {
             let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
-            mode.expectSync();
             if (mode.inSelection()) {
-                await vscode.commands.executeCommand('cancelSelection');
+                if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
+                    mode.expectSync();
+                    await vscode.commands.executeCommand('cancelSelection');
+                    for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                        await sleep(10);
+                    }
+                    mode.sync(textEditor);
+                }
                 mode.resetSelection(textEditor);
             }
             await funcBody(textEditor);
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
             await promise;
         };
     };
@@ -209,15 +216,11 @@ const SearchHandler = function(modeHandler) {
     );
     const findStartCursorTop = makeGuardedCommand(
         'findStartCursorTop',
-        makeFindStartCursorImpl(async function(_textEditor, _edit) {
-            await vscode.commands.executeCommand('cursorTop');
-        })
+        makeFindStartCursorImpl(cursorHandler.cursorTop)
     );
     const findStartCursorBottom = makeGuardedCommand(
         'findStartCursorBottom',
-        makeFindStartCursorImpl(async function(_textEditor, _edit) {
-            await vscode.commands.executeCommand('cursorBottom');
-        })
+        makeFindStartCursorImpl(cursorHandler.cursorBottom)
     );
     const findStartScrollLineUp = makeGuardedCommand(
         'findStartScrollLineUp',
@@ -232,7 +235,7 @@ const SearchHandler = function(modeHandler) {
         'replaceOne',
         async function(textEditor, _edit) {
             editHandler.expectEdits(); // may not happen
-            mode.expectSync(); // may not happen
+            mode.expectSync(2); // may not happen but may happen at most twice (replace and find-next)
             await vscode.commands.executeCommand('editor.action.replaceOne');
             editHandler.cancelExpectEdits();
             for (let i = 0; i < 5 && !mode.synchronized(); i++) {
@@ -244,12 +247,20 @@ const SearchHandler = function(modeHandler) {
     const closeFindWidget = makeGuardedCommand(
         'closeFindWidget',
         async function(textEditor, _edit) {
-            textEditor.selection = new vscode.Selection(
-                textEditor.selection.start,
-                textEditor.selection.start
-            );
+            let promise = vscode.commands.executeCommand('closeFindWidget');
+            if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
+                mode.expectSync();
+                textEditor.selections = [new vscode.Selection(
+                    textEditor.selections[0].start,
+                    textEditor.selections[0].start
+                )];
+                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                    await sleep(10);
+                }
+                mode.sync(textEditor);
+            }
             mode.resetSelection(textEditor);
-            await vscode.commands.executeCommand('closeFindWidget');
+            await promise;
         }
     );
 
