@@ -4952,13 +4952,13 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.findStartPreviousMatch', 'vz.findPreviousMatch'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(3, 0);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
             await kb_macro.replay(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 13, 1, 7]]);
         });
         it('should find and select next match of finding', async () => {
             await resetCursor(1, 7);
@@ -4966,13 +4966,13 @@ describe('KeyboardMacro', () => {
             const commands = ['vz.findStartNextMatch', 'vz.findNextMatch'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 0, 3, 6]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 6, 3, 0]]);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(0, 0);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
             await kb_macro.replay(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 13, 1, 7]]);
         });
     });
     const testRecordingFindStartCursorXXX = async function(commands, expectedSelection) {
