@@ -107,11 +107,12 @@ const SearchHandler = function(modeHandler) {
         }
     );
     const flipSelectionBackward = async function(textEditor) {
-        if (!textEditor.selection.isEmpty) {
+        const flipped = Array.from(textEditor.selections).map(
+            sel => new vscode.Selection(sel.end, sel.start)
+        );
+        if (!EditUtil.isEqualSelections(textEditor.selections, flipped)) {
             mode.expectSync();
-            textEditor.selections = Array.from(textEditor.selections).map(
-                sel => new vscode.Selection(sel.end, sel.start)
-            );
+            textEditor.selections = flipped;
             for (let i = 0; i < 5 && !mode.synchronized(); i++) {
                 await sleep(10);
             }
