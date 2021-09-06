@@ -110,7 +110,69 @@ describe('EditUtil', function() {
         });
     });
     describe('isEqualSelections', function() {
-        // TODO
+        it('should return true iff two selections are equal', function() {
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(2, 3))]
+                ),
+                true
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(4, 5))]
+                ),
+                false
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(2, 5))]
+                ),
+                false
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(4, 3))]
+                ),
+                false
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3), PositionMock(4, 5))],
+                    [SelectionMock(PositionMock(2, 3), PositionMock(4, 5))]
+                ),
+                true
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(2, 3), PositionMock(4, 5))]
+                ),
+                false
+            );
+            assert.strictEqual( // equal range but different selection
+                EditUtil.isEqualSelections(
+                    [SelectionMock(PositionMock(4, 5), PositionMock(2, 3))],
+                    [SelectionMock(PositionMock(2, 3), PositionMock(4, 5))]
+                ),
+                false
+            );
+            assert.strictEqual(
+                EditUtil.isEqualSelections(
+                    [
+                        SelectionMock(PositionMock(4, 5), PositionMock(4, 7))
+                    ],
+                    [
+                        SelectionMock(PositionMock(4, 5), PositionMock(4, 7)),
+                        SelectionMock(PositionMock(5, 5), PositionMock(5, 7))
+                    ]
+                ),
+                false
+            );
+        });
     });
     describe('topmostSelection', function() {
         it('should find the topmost selection from passed selection array which is ordered in either ascending or descending', function() {

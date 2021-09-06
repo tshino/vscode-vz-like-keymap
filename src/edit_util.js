@@ -49,7 +49,12 @@ EditUtil.sortRangesInAscending = function(ranges) {
 EditUtil.isEqualSelections = function(selections1, selections2) {
     return (
         selections1.length === selections2.length &&
-        selections1.every((sel, i) => sel.isEqual(selections2[i]))
+        selections1.every(
+            (sel, i) => (
+                sel.anchor.isEqual(selections2[i].anchor) &&
+                sel.active.isEqual(selections2[i].active)
+            )
+        )
     );
 };
 
