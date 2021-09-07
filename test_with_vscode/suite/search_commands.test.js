@@ -460,6 +460,7 @@ describe('SearchHandler', () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
         const testFindStartScrollLineXXX = async function(func, deltaLine, expectedSelection) {
+            await searchHandler.selectWordToFind(textEditor);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
             await func(textEditor);
