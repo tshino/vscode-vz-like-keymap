@@ -5189,21 +5189,24 @@ describe('KeyboardMacro', () => {
         after(async () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
-        it('should replace next match of search word with replace word', async () => {
+        it('should replace a match of current search word with replace word and find next match', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
             await searchHandler.findReplace(textEditor);
             const commands = ['vz.replaceOne'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 4]]);
 
             // FIXME: We should test the method triggers a replace action, but we can't.
             // Because we cannot set any text to the replace input on the findWidget with provided vscode API AFAIK.
-            // So we just invoke the method without any assertion, only expecting that it doesn't throw.
+            // So we just invoke the method without any assertion about replacement action, only expecting that it doesn't throw.
             await resetCursor(2, 0);
             await searchHandler.selectWordToFind(textEditor); // 'xyz'
             await searchHandler.findReplace(textEditor);
             await kb_macro.replay(textEditor);
+            // But we can test the result of the action of finding next match expected after the replace action.
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 10, 3, 7]]);
         });
         it('should prevent reentry', async () => {
             kb_macro.startRecording(textEditor);

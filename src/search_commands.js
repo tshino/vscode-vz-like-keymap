@@ -261,6 +261,7 @@ const SearchHandler = function(modeHandler) {
                 await sleep(10);
             }
             mode.sync(textEditor);
+            await flipSelectionBackward(textEditor);
         }
     );
     const closeFindWidget = makeGuardedCommand(
