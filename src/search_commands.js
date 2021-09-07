@@ -18,6 +18,17 @@ const SearchHandler = function(modeHandler) {
     const editHandler = edit_commands.getInstance();
     const cursorHandler = cursor_commands.getInstance();
 
+    let selectingMatch = false;
+
+    const setupListeners = function(context) {
+        context.subscriptions.push(
+            vscode.window.onDidChangeTextEditorSelection(function(event) {
+                if (event.textEditor === vscode.window.activeTextEditor) {
+                    selectingMatch = false;
+                }
+            })
+        );
+    };
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     let reentryGuard = null;
     const makeGuardedCommand = function(name, func) {
@@ -72,6 +83,9 @@ const SearchHandler = function(modeHandler) {
             } else {
                 await vscode.commands.executeCommand('actions.find');
             }
+            if (!textEditor.selection.isEmpty) {
+                selectingMatch = true;
+            }
         }
     );
     const expandWordToFind = makeGuardedCommand(
@@ -104,6 +118,9 @@ const SearchHandler = function(modeHandler) {
                 }
                 mode.sync(textEditor);
             }
+            if (!textEditor.selection.isEmpty) {
+                selectingMatch = true;
+            }
         }
     );
     const flipSelectionBackward = async function(textEditor) {
@@ -117,6 +134,9 @@ const SearchHandler = function(modeHandler) {
                 await sleep(10);
             }
             mode.sync(textEditor);
+        }
+        if (!textEditor.selections[0].isEmpty) {
+            selectingMatch = true;
         }
     };
     const cancelMatchSelection = async function(textEditor) {
@@ -133,6 +153,7 @@ const SearchHandler = function(modeHandler) {
                 mode.sync(textEditor);
             }
             mode.resetSelection(textEditor);
+            selectingMatch = false;
         }
     };
 
@@ -270,10 +291,12 @@ const SearchHandler = function(modeHandler) {
             let promise = vscode.commands.executeCommand('closeFindWidget');
             await cancelMatchSelection(textEditor);
             await promise;
+            selectingMatch = false;
         }
     );
 
     const registerCommands = function(context) {
+        setupListeners(context);
         registerTextEditorCommand(context, 'find', find);
         registerTextEditorCommand(context, 'findReplace', findReplace);
         registerTextEditorCommand(context, 'selectWordToFind', selectWordToFind);
@@ -304,6 +327,7 @@ const SearchHandler = function(modeHandler) {
     };
     return {
         waitForEndOfGuardedCommand, // for testing purpose
+        isSelectingMatch: function() { return selectingMatch; }, // for testing purpose
         find,
         findReplace,
         selectWordToFind,
