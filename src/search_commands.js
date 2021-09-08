@@ -139,21 +139,26 @@ const SearchHandler = function(modeHandler) {
             selectingMatch = true;
         }
     };
+    const cancelSelection = async function(textEditor) {
+        if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
+            mode.expectSync();
+            textEditor.selections = [new vscode.Selection(
+                textEditor.selections[0].start,
+                textEditor.selections[0].start
+            )];
+            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+                await sleep(10);
+            }
+            mode.sync(textEditor);
+        }
+        if (mode.inSelection()) {
+            mode.resetSelection(textEditor);
+        }
+        selectingMatch = false;
+    };
     const cancelMatchSelection = async function(textEditor) {
         if (mode.inSelection() && selectingMatch) {
-            if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
-                mode.expectSync();
-                textEditor.selections = [new vscode.Selection(
-                    textEditor.selections[0].start,
-                    textEditor.selections[0].start
-                )];
-                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                    await sleep(10);
-                }
-                mode.sync(textEditor);
-            }
-            mode.resetSelection(textEditor);
-            selectingMatch = false;
+            await cancelSelection(textEditor);
         }
     };
 
@@ -271,6 +276,15 @@ const SearchHandler = function(modeHandler) {
         makeFindStartCursorImpl(cursorHandler.scrollLineDown)
     );
 
+    const findStartCancelSelection = makeGuardedCommand(
+        'findStartCancelSelection',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            await cancelSelection(textEditor);
+            await promise;
+        }
+    );
+
     const replaceOne = makeGuardedCommand(
         'replaceOne',
         async function(textEditor, _edit) {
@@ -322,6 +336,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartCursorViewBottom', findStartCursorViewBottom);
         registerTextEditorCommand(context, 'findStartScrollLineUp', findStartScrollLineUp);
         registerTextEditorCommand(context, 'findStartScrollLineDown', findStartScrollLineDown);
+        registerTextEditorCommand(context, 'findStartCancelSelection', findStartCancelSelection);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };

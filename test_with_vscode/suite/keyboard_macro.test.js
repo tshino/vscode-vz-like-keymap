@@ -5205,6 +5205,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
     });
+    // TODO: add tests for findStartCancelSelection
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

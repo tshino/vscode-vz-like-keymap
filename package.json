@@ -973,17 +973,17 @@
             },
             {
                 "key": "ctrl+b",
-                "command": "vz.findStart",
+                "command": "vz.findStartCancelSelection",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+k ctrl+b",
-                "command": "vz.findStart",
+                "command": "vz.findStartCancelSelection",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+k b",
-                "command": "vz.findStart",
+                "command": "vz.findStartCancelSelection",
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {

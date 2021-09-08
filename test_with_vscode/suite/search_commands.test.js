@@ -620,6 +620,7 @@ describe('SearchHandler', () => {
             await testWithoutMatch(searchHandler.findStartScrollLineDown, 1, [[500, 2, 501, 7]]);
         });
     });
+    // TODO: add tests for findStartCancelSelection
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
