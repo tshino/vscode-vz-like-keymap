@@ -780,20 +780,6 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[5, 5, 4, 5]]);
         });
-        it('should start and stop selection mode (toggle -> scroll-line-up-unselect)', async () => {
-            await resetCursor(1, 2);
-            const commands = [
-                'vz.toggleSelection',
-                'vz.findStartScrollLineUp'
-            ];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-
-            await resetCursor(5, 5);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
-        });
     });
     describe('toggleSelection and cursor (* -> toggle -> *)', () => {
         before(async () => {
@@ -960,21 +946,6 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 5, 5, 5]]);
-        });
-        it('should start and stop selection mode (scroll-line-up-unselect -> toggle -> scroll-line-down-unselect)', async () => {
-            await resetCursor(1, 1);
-            const commands = [
-                'vz.findStartScrollLineUp',
-                'vz.toggleSelection',
-                'vz.findStartScrollLineDown'
-            ];
-            await recordThroughExecution(commands);
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-
-            await resetCursor(5, 5);
-            await kb_macro.replay(textEditor);
-            assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[5, 5]]);
         });
     });
     describe('toggleSelection and cursor (toggle -> * -> toggle -> *)', () => {
@@ -5216,6 +5187,23 @@ describe('KeyboardMacro', () => {
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
+        it('should not cancel selection if it is not a match', async () => {
+            await selectRange(5, 2, 5, 8);
+            const commands = [
+                'vz.findStartScrollLineDown',
+                'vz.findStartScrollLineUp',
+                'vz.findStartScrollLineUp'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await selectRange(7, 5, 7, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 6, 8]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
     });
     describe('replaceOne', () => {
         beforeEach(async () => {
@@ -5306,6 +5294,19 @@ describe('KeyboardMacro', () => {
             await selectRange(2, 11, 2, 14);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should not cancel selection if it is not a match', async () => {
+            await selectRange(1, 7, 1, 13);
+            const commands = ['vz.closeFindWidget'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 1, 13]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await selectRange(2, 11, 2, 14);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
         it('should prevent reentry', async () => {

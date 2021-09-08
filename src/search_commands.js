@@ -140,7 +140,7 @@ const SearchHandler = function(modeHandler) {
         }
     };
     const cancelMatchSelection = async function(textEditor) {
-        if (mode.inSelection()) {
+        if (mode.inSelection() && selectingMatch) {
             if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
                 mode.expectSync();
                 textEditor.selections = [new vscode.Selection(
