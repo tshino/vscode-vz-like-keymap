@@ -688,12 +688,12 @@
             },
             {
                 "key": "ctrl+q ctrl+f",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed"
             },
             {
                 "key": "ctrl+q f",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed"
             },
             {
@@ -718,12 +718,12 @@
             },
             {
                 "key": "ctrl+q ctrl+a",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && replaceInputFocussed"
             },
             {
                 "key": "ctrl+q a",
-                "command": "vz.closeFindWidget",
+                "command": "vz.findStart",
                 "when": "editorFocus && replaceInputFocussed"
             },
             {
