@@ -70,7 +70,6 @@ Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code
 | CTRL+Q A | 置換 |
 | CTRL+L | 選択して検索 |
 | CTRL+R, PageUp, CTRL+C, PageDown | 前方（後方）の検索結果へ移動 |
-| CTRL+M | 次の検索結果へ移動、または置換を1つ実行 |
 | CTRL+Q O | 置換を1つ実行 |
 
 ### 履歴操作
@@ -113,7 +112,7 @@ Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code
 | CTRL+I | CTRL+Space | 補完候補を表示（IntelliSense） |
 | CTRL+K CTRL+C | CTRL+/ | 行コメントの切り替え |
 
-## 再現度の詳細
+## VZエディタとの違いと注意点
 
 Vz KeymapではVZエディタと同様に2ストロークキーの2文字目でCTRLキーを押すか離すかを区別しません。VS Codeのキー定義ではこれが区別されるため、Vz Keymapはすべての2ストロークキーを2通りずつ登録しています。
 
@@ -130,6 +129,25 @@ Vz Keymapでは、VZエディタのESCキーで始まる2ストロークキー�
 
 キーボードマクロ機能は文字入力だけでなく、カーソル移動、選択、スクロール、削除やカット&ペースト、検索、置換、さらにUndoとRedoなど、Vz Keymapが提供するほぼすべてのキー操作を記録し再生できます。
 ただしこれはキー入力そのものを直接記録するのではなく、キー入力によって呼び出されたVz Keymapのコマンドを内部的に記録する仕組みです。そのため、Vz Keymap以外のコマンド実行などは記録されないことに注意してください。
+
+## 検索と置換の操作について
+
+- 検索
+  - CTRL+Q F（検索）で検索ウィジェットを開き、検索文字列を入力してENTERまたはCTRL+Mで確定して下さい。
+  - このとき検索ウィジェットは表示されたままですが、キーボードフォーカスがドキュメントに戻っているので、CTRL+R（前候補）とCTRL+C（次候補）で検索結果にジャンプしながら通常の操作でテキスト編集もできます。
+  - ESCなどで検索ウィジェットを閉じれば、検索モードは終了します。
+  - 備考:
+    - CTRL+Q Fの代わりにCTRL+L（文字列を選択して検索）でも検索ウィジェットが開きます。この場合はカーソル位置にある文字列（単語）が検索文字列として設定されます。ここでCTRL+Lを繰り返せばカーソル位置から取得する文字列を単語単位で伸ばしていくことができます。オリジナルのVZエディタに近い動作を再現しています。
+    - 検索ウィジェットにフォーカスがあるときに、CTRL+Mなどで検索文字列を確定する操作を省略して、いきなりCTRL+C（次候補）などのキーで検索を開始することもできます。その時点でキーボードフォーカスがドキュメントに移ります。
+- 置換
+  - CTRL+Q A（置換）で検索置換ウィジェットを開き、検索文字列と置換文字列を入力します。
+  - 検索文字列を入力したあと置換文字列の入力に移るときにはTABを使います。SHIFT+TABで戻ることもできます。
+  - キーボードフォーカスが置換文字列の入力欄にある状態で、ENTERまたはCTRL+Mを押すと置換が1つ実行され、カーソルは次の候補に進みます。
+  - カーソルの位置にある候補を置換しないでスキップするときはCTRL+C（次候補）が使えます。
+  - ESCで検索置換ウィジェットを閉じることができます。
+  - 備考:
+    - 上記の操作を実現するため、キーボードフォーカスが置換文字列にあるときのCTRL+R（前候補）とCTRL+C（次候補）はキーボードフォーカスをウィジェットに残したまま検索を実行するようになっています。
+    - CTRL+Q Oでも置換を実行できます。この方法はキーボードフォーカスがドキュメントにあるときでも有効です。
 
 
 #### English
@@ -200,7 +218,6 @@ This is a Visual Studio Code extension which provides a keymap similar to good o
 | Ctrl+Q A | Replace |
 | Ctrl+L | Select word to find |
 | Ctrl+R, PageUp, Ctrl+C, PageDown | Find previous/next match |
-| Ctrl+M | Find next match/Replace one match |
 | Ctrl+Q O | Replace one match |
 
 ### Undo, Redo
@@ -262,3 +279,22 @@ Instead, it is recommended to use acceleration keys such as Alt+F S to save the 
 The keyboard macro function can record and replay keyboard operations not only character input but also almost all keyboard operations provided by Vz Keymap such as cursor movement, selection, scrolling, delete, cut & paste, search, replace and even undo and redo.
 However it doesn't record the keyboard inputs itself directly, instead, it records the commands of Vz Keymap invoked internally by the keyboard input.
 Thus, please be notified that it can't record the execution of commands other than Vz Keymap.
+
+## How to use Find and Replace
+
+- Find
+  - Press Ctrl+Q F (Find) to open the find widget, input your search string, and press Enter or Ctrl+M to confirm.
+  - At this moment the find widget should still be open, but keyboard focus has moved back to the document, so you can edit the document in a normal way while also you move around by Ctrl+R (Previous match) and Ctrl+C (Next match).
+  - Press ESC to close the find widget and finish the finding mode.
+  - Note:
+    - CTRL+Q Fの代わりにCTRL+L（文字列を選択して検索）でも検索ウィジェットが開きます。この場合はカーソル位置にある文字列（単語）が検索文字列として設定されます。ここでCTRL+Lを繰り返せばカーソル位置から取得する文字列を単語単位で伸ばしていくことができます。オリジナルのVZエディタに近い動作を再現しています。
+    - 検索ウィジェットにフォーカスがあるときに、CTRL+Mなどで検索文字列を確定する操作を省略して、いきなりCTRL+C（次候補）などのキーで検索を開始することもできます。その時点でキーボードフォーカスがドキュメントに移ります。
+- Replace
+  - Press Ctrl+Q A (Replace) to open the find and replace widget, input your search string and your replacement string.
+  - You can use TAB when you move from search string input to replacement string input. Also, you can use Shift+TAB to go back.
+  - While keyboard focus is on replacement string input, press Enter or Ctrl+M to execute one replacement and jump to the next match.
+  - You can skip applying the replacement to the match at current cursor position by pressing Ctrl+C (Next match).
+  - Press ESC to close the find and replace widget and finish the replacement mode.
+  - Note:
+    - 上記の操作を実現するため、キーボードフォーカスが置換文字列にあるときのCTRL+R（前候補）とCTRL+C（次候補）はキーボードフォーカスをウィジェットに残したまま検索を実行するようになっています。
+    - CTRL+Q Oでも置換を実行できます。この方法はキーボードフォーカスがドキュメントにあるときでも有効です。
