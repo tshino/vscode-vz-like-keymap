@@ -284,17 +284,17 @@ Thus, please be notified that it can't record the execution of commands other th
 
 - Find
   - Press Ctrl+Q F (Find) to open the find widget, input your search string, and press Enter or Ctrl+M to confirm.
-  - At this moment the find widget should still be open, but keyboard focus has moved back to the document, so you can edit the document in a normal way while also you move around by Ctrl+R (Previous match) and Ctrl+C (Next match).
+  - At this moment the find widget should still be open, but the keyboard focus has moved back to the document, so you can edit the document in a normal way while also you move around by Ctrl+R (Previous match) and Ctrl+C (Next match).
   - Press ESC to close the find widget and finish the finding mode.
   - Note:
-    - CTRL+Q Fの代わりにCTRL+L（文字列を選択して検索）でも検索ウィジェットが開きます。この場合はカーソル位置にある文字列（単語）が検索文字列として設定されます。ここでCTRL+Lを繰り返せばカーソル位置から取得する文字列を単語単位で伸ばしていくことができます。オリジナルのVZエディタに近い動作を再現しています。
-    - 検索ウィジェットにフォーカスがあるときに、CTRL+Mなどで検索文字列を確定する操作を省略して、いきなりCTRL+C（次候補）などのキーで検索を開始することもできます。その時点でキーボードフォーカスがドキュメントに移ります。
+    - Ctrl+L (Select Word to Find) instead of Ctrl+Q F is also available for opening the find widget, and in this case, the string (word) which starts from the location of the cursor is set as the new search string. If you repeat pressing Ctrl+L here, you can make the string longer by the word repeatedly. It simulates a similar behavior as the original VZ Editor.
+    - When the keyboard focus is on the find widget, you can also skip the confirmation step like pressing Ctrl+M, and immediately start searching matches by pressing Ctrl+C (Next match) for instance. Either way, the keyboard focus will move to the document.
 - Replace
   - Press Ctrl+Q A (Replace) to open the find and replace widget, input your search string and your replacement string.
   - You can use TAB when you move from search string input to replacement string input. Also, you can use Shift+TAB to go back.
-  - While keyboard focus is on replacement string input, press Enter or Ctrl+M to execute one replacement and jump to the next match.
+  - While the keyboard focus is on replacement string input, press Enter or Ctrl+M to execute one replacement and jump to the next match.
   - You can skip applying the replacement to the match at current cursor position by pressing Ctrl+C (Next match).
   - Press ESC to close the find and replace widget and finish the replacement mode.
   - Note:
-    - 上記の操作を実現するため、キーボードフォーカスが置換文字列にあるときのCTRL+R（前候補）とCTRL+C（次候補）はキーボードフォーカスをウィジェットに残したまま検索を実行するようになっています。
-    - CTRL+Q Oでも置換を実行できます。この方法はキーボードフォーカスがドキュメントにあるときでも有効です。
+    - In order to achieve the above way of operations, the keyboard focus is retained on the find widget when you press Ctrl+R (Previous match) or Ctrl+C (Next match) with the focus on the replacement string input.
+    - You can also use CtrL+Q O to execute the replacement. This way is available even the keyboard focus is on the document.
