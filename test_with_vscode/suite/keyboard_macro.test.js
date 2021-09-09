@@ -5205,7 +5205,83 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
     });
-    // TODO: add tests for findStartCancelSelection
+    describe('findStartCancelSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'What a waste of time!\n'.repeat(10));
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        after(async () => {
+            await vscode.commands.executeCommand('closeFindWidget');
+        });
+        it('should cancel selection of a match', async () => {
+            await resetCursor(3, 7);
+            const commands = [
+                'vz.selectWordToFind',
+                'vz.findStartCancelSelection'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await resetCursor(4, 5);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 5]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            // FIXME: check that findWidget is still visible (but it seems not possible to test)
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel non-match selection', async () => {
+            await selectRange(3, 7, 3, 12);
+            const commands = ['vz.findStartCancelSelection'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await selectRange(4, 2, 4, 6);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 2]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should retain selection if it is already empty', async () => {
+            await resetCursor(7, 5);
+            const commands = ['vz.findStartCancelSelection'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await resetCursor(8, 3);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 3]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should cance selection mode if the selection is already empty', async () => {
+            await resetCursor(8, 3);
+            mode.startSelection(textEditor, false);
+            assert.strictEqual(mode.inSelection(), true);
+            const commands = ['vz.findStartCancelSelection'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 3]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await resetCursor(2, 5);
+            mode.startSelection(textEditor, false);
+            assert.strictEqual(mode.inSelection(), true);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 5]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+    });
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

@@ -620,7 +620,53 @@ describe('SearchHandler', () => {
             await testWithoutMatch(searchHandler.findStartScrollLineDown, 1, [[500, 2, 501, 7]]);
         });
     });
-    // TODO: add tests for findStartCancelSelection
+    describe('findStartCancelSelection', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor, 'What a waste of time!\n'.repeat(10));
+        });
+        it('should cancel selection of a match', async () => {
+            await resetCursor(3, 7);
+            await searchHandler.selectWordToFind(textEditor); // 'waste'
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7, 3, 12]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await searchHandler.findStartCancelSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            // FIXME: check that the focus is on the document (but it seems not possible to test)
+        });
+        it('should cancel non-match selection', async () => {
+            await selectRange(3, 7, 3, 12);
+
+            await searchHandler.findStartCancelSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should retain selection if it is already empty', async () => {
+            await resetCursor(7, 5);
+
+            await searchHandler.findStartCancelSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 5]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should cance selection mode if the selection is already empty', async () => {
+            await resetCursor(8, 3);
+            mode.startSelection(textEditor, false);
+            assert.strictEqual(mode.inSelection(), true);
+
+            await searchHandler.findStartCancelSelection(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 3]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+    });
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

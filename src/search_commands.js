@@ -368,6 +368,7 @@ const SearchHandler = function(modeHandler) {
         findStartCursorViewBottom,
         findStartScrollLineUp,
         findStartScrollLineDown,
+        findStartCancelSelection,
         replaceOne,
         closeFindWidget,
         registerCommands
