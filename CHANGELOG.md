@@ -3,12 +3,14 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
-- [WIP] Updated Find and Replace key bindings and behaviors to improve usability:
-  - Ctrl+M or Enter at the find input on the findWidget:
-    - Start Finding Mode and move focus to the document so you can both find matches and edit around there.
-  - Ctrl+M or Enter at the replace input on the findWidget:
-    - Execute replace one match and keep focus on the replace input.
-  - Ctrl+Q F and Ctrl+Q A are also able to move focus between the document and the findWidget.
+- 検索と置換のキーバインドと挙動を改善しました
+  - 新しい操作方法の詳細はREADMEの「検索と置換の操作について」を参照してください。
+  - CTRL+R（前候補）またはCTR+C（次候補）でジャンプした直後のカーソル位置を検索文字列の末尾から先頭に変更しました。VZエディタの挙動に近づけています。
+  - CTRL+Q F（検索）およびCTRL+Q A（置換）によりキーボードフォーカスを検索ウィジェットとドキュメントの間で切り替えられるようにしました。
+- Updated Find and Replace key bindings and behaviors to improve usability:
+  - See 'How to use Find and Replace' in the README for the details of the new behavior.
+  - Changed the cursor position after the jump by Ctrl+R (Previous match) or Ctrl+C (Next match) from the end of the match to the beginning of one. It simulates a similar behavior as the original VZ Editor.
+  - With Ctrl+Q F (Find) and Ctrl+Q A (Replace), now you can switch the keyboard focus between the find widget and the document.
 
 ### [0.16.0] - 2021-08-17
 - Added the Keyboard Macro function which is the final big piece of this extension:
