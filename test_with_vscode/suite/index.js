@@ -9,6 +9,7 @@ function run() {
         ui: 'bdd',
         color: true
     });
+    mocha.timeout(5000);
 
     const testsRoot = path.resolve(__dirname, '..');
 
