@@ -56,6 +56,12 @@ const SearchHandler = function(modeHandler) {
         }
     };
 
+    const waitForSynchronizedShort = async function(mode, textEditor) {
+        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
+            await sleep(10);
+        }
+        mode.sync(textEditor);
+    };
     const find = makeGuardedCommand(
         'find',
         async function(_textEditor, _edit) {
@@ -76,10 +82,7 @@ const SearchHandler = function(modeHandler) {
                 mode.expectSync();
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.find');
-                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                    await sleep(10);
-                }
-                mode.sync(textEditor);
+                await waitForSynchronizedShort(mode, textEditor);
             } else {
                 await vscode.commands.executeCommand('actions.find');
             }
@@ -113,10 +116,7 @@ const SearchHandler = function(modeHandler) {
                 await vscode.commands.executeCommand('actions.find');
             }
             if (expectSync) {
-                for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                    await sleep(10);
-                }
-                mode.sync(textEditor);
+                await waitForSynchronizedShort(mode, textEditor);
             }
             if (!textEditor.selection.isEmpty) {
                 selectingMatch = true;
@@ -130,10 +130,7 @@ const SearchHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, flipped)) {
             mode.expectSync();
             textEditor.selections = flipped;
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
+            await waitForSynchronizedShort(mode, textEditor);
         }
         if (!textEditor.selections[0].isEmpty) {
             selectingMatch = true;
@@ -146,10 +143,7 @@ const SearchHandler = function(modeHandler) {
                 textEditor.selections[0].start,
                 textEditor.selections[0].start
             )];
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
+            await waitForSynchronizedShort(mode, textEditor);
         }
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
@@ -173,10 +167,7 @@ const SearchHandler = function(modeHandler) {
     const findPreviousMatchImpl = async function(textEditor, _edit) {
         mode.expectSync(); // may not happen
         await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
-        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-            await sleep(10);
-        }
-        mode.sync(textEditor);
+        await waitForSynchronizedShort(mode, textEditor);
         await flipSelectionBackward(textEditor);
     };
     const findStartPreviousMatchImpl = async function(textEditor, _edit) {
@@ -187,10 +178,7 @@ const SearchHandler = function(modeHandler) {
     const findNextMatchImpl = async function(textEditor, _edit) {
         mode.expectSync(); // may not happen
         await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-            await sleep(10);
-        }
-        mode.sync(textEditor);
+        await waitForSynchronizedShort(mode, textEditor);
         await flipSelectionBackward(textEditor);
     };
     const findStartNextMatchImpl = async function(textEditor, _edit) {
@@ -292,10 +280,7 @@ const SearchHandler = function(modeHandler) {
             mode.expectSync(2); // may not happen but may happen at most twice (replace and find-next)
             await vscode.commands.executeCommand('editor.action.replaceOne');
             editHandler.cancelExpectEdits();
-            for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-                await sleep(10);
-            }
-            mode.sync(textEditor);
+            await waitForSynchronizedShort(mode, textEditor);
             await flipSelectionBackward(textEditor);
         }
     );
