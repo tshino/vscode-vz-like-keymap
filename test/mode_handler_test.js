@@ -763,6 +763,17 @@ describe('mode_handler', function() {
                 let result = await ret;
                 assert.strictEqual(result, 'fullfill');
             });
+            it('should fullfill immediately if already synchronized', async function() {
+                mode.sync(editor);
+                let ret = mode.waitForSyncTimeout(10).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                let result = await ret;
+                assert.strictEqual(result, 'fullfill');
+            });
             it('should reject when time passed without sync() call', async function() {
                 let ret = mode.waitForSyncTimeout(30).then(
                     () => 'fullfill'
@@ -819,6 +830,18 @@ describe('mode_handler', function() {
                 mode.sync(editor);
                 let result2 = await promise2;
                 assert.strictEqual(result2, 'fullfill2');
+            });
+            it('should reject when time passed with only onw sync() call where two calls expected', async function() {
+                mode.expectSync(2);
+                let ret = mode.waitForSyncTimeout(100).then(
+                    () => 'fullfill'
+                ).catch(
+                    () => 'reject'
+                );
+
+                mode.sync(editor);
+                let result = await ret;
+                assert.strictEqual(result, 'reject');
             });
         });
     });

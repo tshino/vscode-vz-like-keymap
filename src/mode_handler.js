@@ -46,7 +46,7 @@ const ModeHandler = function() {
         if (0 < expectedSyncCount) {
             expectedSyncCount -= 1;
         }
-        if (0 < toBeResolved.length) {
+        if (expectedSyncCount === 0 && 0 < toBeResolved.length) {
             let list = Array.from(toBeResolved);
             toBeResolved.length = 0;
             list.forEach(res => res(true));
@@ -61,8 +61,11 @@ const ModeHandler = function() {
         expectedSyncCount = count;
     };
     const waitForSyncTimeout = function(timeout=100) {
-        expectedSyncCount = 1;
         return new Promise((resolve, reject) => {
+            if (expectedSyncCount === 0) {
+                resolve();
+                return;
+            }
             let res = (resolved) => {
                 let m = resolved ? resolve : reject;
                 if (m) {

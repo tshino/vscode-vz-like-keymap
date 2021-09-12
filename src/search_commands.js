@@ -57,8 +57,8 @@ const SearchHandler = function(modeHandler) {
     };
 
     const waitForSynchronizedShort = async function(mode, textEditor) {
-        for (let i = 0; i < 5 && !mode.synchronized(); i++) {
-            await sleep(10);
+        if (!mode.synchronized()) {
+            await mode.waitForSyncTimeout(50).catch(() => {});
         }
         mode.sync(textEditor);
     };
