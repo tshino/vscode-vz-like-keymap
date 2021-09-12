@@ -57,9 +57,7 @@ const SearchHandler = function(modeHandler) {
     };
 
     const waitForSynchronizedShort = async function(mode, textEditor) {
-        if (!mode.synchronized()) {
-            await mode.waitForSyncTimeout(50).catch(() => {});
-        }
+        await mode.waitForSyncTimeout(50).catch(() => {});
         mode.sync(textEditor);
     };
     const find = makeGuardedCommand(
