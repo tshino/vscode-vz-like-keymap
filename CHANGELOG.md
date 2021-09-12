@@ -2,6 +2,10 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- [作業中] Visual Studio Code Web（ブラウザで動くVS Code）に対応しました
+
+
 ### [0.17.0] - 2021-09-10
 - 検索と置換のキーバインドと挙動を改善しました
   - 新しい操作方法の詳細はREADMEの「検索と置換の操作について」を参照してください。

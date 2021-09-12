@@ -25,9 +25,11 @@
         "*"
     ],
     "main": "./src/extension.js",
+    "browser": "./dist/web/extension.js",
     "scripts": {
         "test": "mocha",
-        "test_with_vscode": "node ./test_with_vscode/runTest.js"
+        "test_with_vscode": "node ./test_with_vscode/runTest.js",
+        "watch-web": "webpack --watch --config ./build/web-extension.webpack.config.js"
     },
     "contributes": {
         "configuration": {
@@ -1185,6 +1187,9 @@
     },
     "devDependencies": {
         "mocha": "^9.1.1",
-        "vscode-test": "^1.6.1"
+        "vscode-test": "^1.6.1",
+        "webpack": "^5.52.1",
+        "webpack-cli": "^4.8.0",
+        "process": "^0.11.10"
     }
 }
