@@ -47,8 +47,9 @@ const ModeHandler = function() {
             expectedSyncCount -= 1;
         }
         if (0 < toBeResolved.length) {
-            toBeResolved.forEach(res => res(true));
+            let list = Array.from(toBeResolved);
             toBeResolved.length = 0;
+            list.forEach(res => res(true));
         }
     };
     const initialize = function(textEditor) {

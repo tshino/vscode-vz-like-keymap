@@ -763,7 +763,7 @@ describe('mode_handler', function() {
                 let result = await ret;
                 assert.strictEqual(result, 'fullfill');
             });
-            it('should reject when time passed without sync() called', async function() {
+            it('should reject when time passed without sync() call', async function() {
                 let ret = mode.waitForSyncTimeout(30).then(
                     () => 'fullfill'
                 ).catch(
@@ -773,7 +773,7 @@ describe('mode_handler', function() {
                 let result = await ret;
                 assert.strictEqual(result, 'reject');
             });
-            it('should reject when time passed before sync() called', async function() {
+            it('should reject when time passed before sync() call', async function() {
                 let ret = mode.waitForSyncTimeout(30).then(
                     () => 'fullfill'
                 ).catch(
@@ -796,6 +796,29 @@ describe('mode_handler', function() {
                 await sleep(100);
                 let result = await ret;
                 assert.strictEqual(result, 'fullfill');
+            });
+            it('should handle nested call', async function() {
+                let promise2 = null;
+                let promise1 = mode.waitForSyncTimeout(30).then(
+                    () => {
+                        promise2 = mode.waitForSyncTimeout(30).then(
+                            () => 'fullfill2'
+                        ).catch(
+                            () => 'reject2'
+                        );
+                        return 'fullfill1';
+                    }
+                ).catch(
+                    () => 'reject1'
+                );
+
+                mode.sync(editor);
+                let result1 = await promise1;
+                assert.strictEqual(result1, 'fullfill1');
+                assert(promise2 !== null);
+                mode.sync(editor);
+                let result2 = await promise2;
+                assert.strictEqual(result2, 'fullfill2');
             });
         });
     });
