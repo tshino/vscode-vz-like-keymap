@@ -517,7 +517,7 @@ const CursorHandler = function(modeHandler) {
     const currentCursorPosition = function(textEditor) {
         let last = textEditor.selections.length - 1;
         return textEditor.selections[last].active;
-    }
+    };
     const markPosition = function(textEditor, _edit) {
         let current = currentCursorPosition(textEditor);
         setMarkedPosition(textEditor, current);
