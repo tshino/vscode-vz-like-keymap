@@ -275,7 +275,7 @@ const EditHandler = function(modeHandler) {
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
             }
-            await mode.waitForSyncTimeout(50).catch(() => {});
+            await mode.waitForSyncTimeout(100).catch(() => {});
         } else {
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
@@ -382,7 +382,7 @@ const EditHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
             textEditor.selections = newSelections;
-            await mode.waitForSyncTimeout(50).catch(() => {});
+            await mode.waitForSyncTimeout(100).catch(() => {});
         } else {
             mode.sync(textEditor);
         }
@@ -432,7 +432,7 @@ const EditHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
             textEditor.selections = newSelections;
-            await mode.waitForSyncTimeout(50).catch(() => {});
+            await mode.waitForSyncTimeout(100).catch(() => {});
         } else {
             mode.sync(textEditor);
         }
@@ -729,7 +729,7 @@ const EditHandler = function(modeHandler) {
             }
             endExpectEdits();
             if (selectionsWillChange || resetSelection) {
-                await mode.waitForSyncTimeout(50).catch(() => {});
+                await mode.waitForSyncTimeout(100).catch(() => {});
             }
         }
     );
@@ -889,7 +889,7 @@ const EditHandler = function(modeHandler) {
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:undo');
             cancelExpectEdits();
-            await mode.waitForSyncTimeout(50).catch(() => {});
+            await mode.waitForSyncTimeout(100).catch(() => {});
             mode.sync(textEditor);
         }
     );
@@ -900,7 +900,7 @@ const EditHandler = function(modeHandler) {
             mode.expectSync(); // may not happen
             await vscode.commands.executeCommand('default:redo');
             cancelExpectEdits();
-            await mode.waitForSyncTimeout(50).catch(() => {});
+            await mode.waitForSyncTimeout(100).catch(() => {});
             mode.sync(textEditor);
         }
     );

@@ -68,7 +68,7 @@ const KeyboardMacro = function(modeHandler) {
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
                 await cmd[1](textEditor);
-                await mode.waitForSyncTimeout(50).catch(() => {});
+                await mode.waitForSyncTimeout(200).catch(() => {});
                 if (!mode.synchronized()) {
                     console.log('*** debug: Missing expected selection change')
                     mode.sync(textEditor);
@@ -251,7 +251,7 @@ const KeyboardMacro = function(modeHandler) {
                     if (1 < selections.length) {
                         mode.startSelection(textEditor, true);
                     }
-                    await mode.waitForSyncTimeout(50).catch(() => {});
+                    await mode.waitForSyncTimeout(200).catch(() => {});
                 } else {
                     if (1 < selections.length) {
                         mode.startSelection(textEditor, true);
