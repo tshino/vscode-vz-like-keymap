@@ -58,7 +58,6 @@ const KeyboardMacro = function(modeHandler) {
             // console.log('recording finished');
         }
     };
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     let reentryGuard = null;
     const replay = async function(textEditor) {
         if (!recording) {
@@ -69,9 +68,7 @@ const KeyboardMacro = function(modeHandler) {
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
                 await cmd[1](textEditor);
-                for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-                    await sleep(5);
-                }
+                await mode.waitForSyncTimeout(50).catch(() => {});
                 if (!mode.synchronized()) {
                     console.log('*** debug: Missing expected selection change')
                     mode.sync(textEditor);
@@ -254,9 +251,7 @@ const KeyboardMacro = function(modeHandler) {
                     if (1 < selections.length) {
                         mode.startSelection(textEditor, true);
                     }
-                    for (let i = 0; i < 10 && !mode.synchronized(); i++) {
-                        await sleep(5);
-                    }
+                    await mode.waitForSyncTimeout(50).catch(() => {});
                 } else {
                     if (1 < selections.length) {
                         mode.startSelection(textEditor, true);
