@@ -67,10 +67,14 @@ const KeyboardMacro = function(modeHandler) {
             reentryGuard = 'replay';
             for (let i = 0; i < recordedCommands.length; i++) {
                 const cmd = recordedCommands[i];
-                await cmd[1](textEditor);
-                await mode.waitForSyncTimeout(200).catch(() => {});
+                try {
+                    await cmd[1](textEditor);
+                    await mode.waitForSyncTimeout(200).catch(() => {});
+                } catch (error) {
+                    console.log('*** debug: unhandled exception in execution of command ' + cmd[0], error);
+                }
                 if (!mode.synchronized()) {
-                    console.log('*** debug: Missing expected selection change')
+                    console.log('*** debug: Missing expected selection change in command ' + cmd[0]);
                     mode.sync(textEditor);
                 }
             }
