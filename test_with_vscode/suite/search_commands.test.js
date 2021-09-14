@@ -5,6 +5,7 @@ const testUtils = require("./testUtils.js");
 const mode_handler = require("./../../src/mode_handler.js");
 const search_commands = require("./../../src/search_commands.js");
 const EditUtil = require("./../../src/edit_util.js");
+const CommandUtil = require("./../../src/command_util.js");
 
 describe('SearchHandler', () => {
     const mode = mode_handler.getInstance();
@@ -220,7 +221,7 @@ describe('SearchHandler', () => {
             let p2 = searchHandler.expandWordToFind(textEditor);
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
         });
     });
@@ -326,7 +327,7 @@ describe('SearchHandler', () => {
             let p2 = searchHandler.findPreviousMatch(textEditor);
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
@@ -337,7 +338,7 @@ describe('SearchHandler', () => {
             let p2 = searchHandler.findStartPreviousMatch(textEditor);
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
@@ -406,7 +407,7 @@ describe('SearchHandler', () => {
             let p2 = searchHandler.findNextMatch(textEditor);
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 4]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
@@ -417,7 +418,7 @@ describe('SearchHandler', () => {
             let p2 = searchHandler.findStartNextMatch(textEditor);
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 4]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });

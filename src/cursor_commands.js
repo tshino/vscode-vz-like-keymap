@@ -1,6 +1,7 @@
 "use strict";
 const vscode = require("vscode");
 const EditUtil = require("./edit_util.js");
+const CommandUtil = require("./command_util.js");
 const tag_jump = require("./tag_jump.js");
 const mode_handler = require("./mode_handler.js");
 const keyboard_macro = require("./keyboard_macro.js");
@@ -49,8 +50,8 @@ const CursorHandler = function(modeHandler) {
         }
     };
     const cancelAll = function(tasks) { invokeAll(tasks, null); };
+    const makeGuardedCommand = CommandUtil.makeGuardedCommand;
 
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
@@ -111,33 +112,6 @@ const CursorHandler = function(modeHandler) {
             }, timeout);
         });
     };
-
-    let reentryGuard = null;
-    const makeGuardedCommand = function(name, func) {
-        const guardedCommand = async function(textEditor, edit) {
-            if (reentryGuard === name) {
-                return;
-            }
-            reentryGuard = name;
-            try {
-                kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
-                await func(textEditor, edit);
-            } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
-            }
-            reentryGuard = null;
-        };
-        return guardedCommand;
-    };
-    const waitForEndOfGuardedCommand = async function() { // test purpose only
-        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
-            await sleep(10);
-        }
-        if (reentryGuard !== null) {
-            console.log('*** debug: Guarded command still be running unexpectedly')
-        }
-    };
-
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
         return function(textEditor, _edit) {
             mode.sync(textEditor);
@@ -666,7 +640,6 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'tagJump', tagJump);
     };
     return {
-        waitForEndOfGuardedCommand, // test purpose only
         makeCursorCommand,
         registerCursorCommand,
         moveCursorToWithoutScroll,

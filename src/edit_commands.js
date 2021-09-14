@@ -2,6 +2,7 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
+const CommandUtil = require("./command_util.js");
 const keyboard_macro = require("./keyboard_macro.js");
 
 const kbMacroHandler = keyboard_macro.getInstance();
@@ -20,7 +21,7 @@ const EditHandler = function(modeHandler) {
     let editsConfirmed = false;
     let missingExpectedEditsCount = 0;
 
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+    const makeGuardedCommand = CommandUtil.makeGuardedCommand;
     const expectEdits = function() {
         editsExpected = true;
         editsConfirmed = false;
@@ -216,31 +217,7 @@ const EditHandler = function(modeHandler) {
     const getTextStackLength = function() {
         return textStack.length;
     };
-    let reentryGuard = null;
-    const makeGuardedCommand = function(name, func) {
-        const guardedCommand = async function(textEditor, edit) {
-            if (reentryGuard === name) {
-                return;
-            }
-            reentryGuard = name;
-            try {
-                kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
-                await func(textEditor, edit);
-            } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
-            }
-            reentryGuard = null;
-        };
-        return guardedCommand;
-    };
-    const waitForEndOfGuardedCommand = async function() { // test purpose only
-        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
-            await sleep(10);
-        }
-        if (reentryGuard !== null) {
-            console.log('*** debug: Guarded command still be running unexpectedly')
-        }
-    };
+
     const cutAndPushImpl = async function(textEditor, useTextStack = true) {
         let [ranges, isLineMode] = makeCutCopyRanges(textEditor);
         let text = readText(textEditor, ranges);
@@ -942,7 +919,6 @@ const EditHandler = function(modeHandler) {
         makeCutCopyRanges,
         clearTextStack, // for testing purpose
         getTextStackLength, // for testing purpose
-        waitForEndOfGuardedCommand, // for testing purpose
         clipboardCutAndPush,
         clipboardCut,
         clipboardCopyAndPush,

@@ -1,12 +1,11 @@
 "use strict";
 const vscode = require("vscode");
+const EditUtil = require("./edit_util.js");
+const CommandUtil = require("./command_util.js");
 const mode_handler = require("./mode_handler.js");
-const keyboard_macro = require("./keyboard_macro.js");
 const edit_commands = require("./edit_commands.js");
 const cursor_commands = require("./cursor_commands.js");
-const EditUtil = require("./edit_util.js");
 
-const kbMacroHandler = keyboard_macro.getInstance();
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand('vz.' + name, func)
@@ -29,33 +28,7 @@ const SearchHandler = function(modeHandler) {
             })
         );
     };
-    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-    let reentryGuard = null;
-    const makeGuardedCommand = function(name, func) {
-        const guardedCommand = async function(textEditor, edit) {
-            if (reentryGuard === name) {
-                return;
-            }
-            reentryGuard = name;
-            try {
-                kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
-                await func(textEditor, edit);
-            } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
-            }
-            reentryGuard = null;
-        };
-        return guardedCommand;
-    };
-    const waitForEndOfGuardedCommand = async function() { // test purpose only
-        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
-            await sleep(10);
-        }
-        if (reentryGuard !== null) {
-            console.log('*** debug: Guarded command still be running unexpectedly')
-        }
-    };
-
+    const makeGuardedCommand = CommandUtil.makeGuardedCommand;
     const waitForSynchronizedShort = async function(mode, textEditor) {
         await mode.waitForSyncTimeout(200).catch(() => {});
         mode.sync(textEditor);
@@ -324,7 +297,6 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };
     return {
-        waitForEndOfGuardedCommand, // for testing purpose
         isSelectingMatch: function() { return selectingMatch; }, // for testing purpose
         find,
         findReplace,

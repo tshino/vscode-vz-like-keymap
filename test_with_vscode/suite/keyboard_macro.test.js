@@ -8,6 +8,7 @@ const edit_commands = require("./../../src/edit_commands.js");
 const cursor_commands = require("./../../src/cursor_commands.js");
 const search_commands = require("./../../src/search_commands.js");
 const EditUtil = require("./../../src/edit_util.js");
+const CommandUtil = require("./../../src/command_util.js");
 
 
 describe('KeyboardMacro', () => {
@@ -41,9 +42,7 @@ describe('KeyboardMacro', () => {
             if (typeof cmd === 'string') {
                 await vscode.commands.executeCommand(cmd);
                 await sleep(30);
-                await editHandler.waitForEndOfGuardedCommand();
-                await cursorHandler.waitForEndOfGuardedCommand();
-                await searchHandler.waitForEndOfGuardedCommand();
+                await CommandUtil.waitForEndOfGuardedCommand();
             } else if (cmd[0] === 'edit') {
                 mode.expectSync();
                 let lastCount = editHandler.getEditsFreeCounter();
@@ -76,9 +75,7 @@ describe('KeyboardMacro', () => {
                     await sleep(10);
                 }
                 await sleep(30);
-                await editHandler.waitForEndOfGuardedCommand();
-                await cursorHandler.waitForEndOfGuardedCommand();
-                await searchHandler.waitForEndOfGuardedCommand();
+                await CommandUtil.waitForEndOfGuardedCommand();
             }
             for (let j = 0; j < 10 && !mode.synchronized(); j++) {
                 await sleep(10);
@@ -431,7 +428,7 @@ describe('KeyboardMacro', () => {
         let p2 = vscode.commands.executeCommand(command);
         await p1;
         await p2;
-        await cursorHandler.waitForEndOfGuardedCommand();
+        await CommandUtil.waitForEndOfGuardedCommand();
         kb_macro.finishRecording();
         assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
             command
@@ -3089,7 +3086,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCutAndPush'
@@ -3265,7 +3262,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardCut');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCut'
@@ -3320,7 +3317,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardCopyAndPush');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCopyAndPush'
@@ -3459,7 +3456,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardCopy');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardCopy'
@@ -3513,7 +3510,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardPopAndPaste');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardPopAndPaste'
@@ -3679,7 +3676,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.clipboardPaste');
             await p1;
             await p2;
-            await editHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
                 'vz.clipboardPaste'
@@ -4601,7 +4598,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.find');
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.find']);
         });
@@ -4636,7 +4633,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.findReplace');
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findReplace']);
         });
@@ -4928,7 +4925,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.findStart');
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findStart']);
         });
@@ -5328,7 +5325,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.replaceOne');
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.replaceOne']);
         });
@@ -5392,7 +5389,7 @@ describe('KeyboardMacro', () => {
             let p2 = vscode.commands.executeCommand('vz.closeFindWidget');
             await p1;
             await p2;
-            await searchHandler.waitForEndOfGuardedCommand();
+            await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.closeFindWidget']);
         });
