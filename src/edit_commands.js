@@ -6,11 +6,6 @@ const CommandUtil = require("./command_util.js");
 const keyboard_macro = require("./keyboard_macro.js");
 
 const kbMacroHandler = keyboard_macro.getInstance();
-const registerTextEditorCommand = function(context, name, func) {
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.' + name, func)
-    );
-};
 
 const EditHandler = function(modeHandler) {
     const mode = modeHandler;
@@ -22,6 +17,7 @@ const EditHandler = function(modeHandler) {
     let missingExpectedEditsCount = 0;
 
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
+    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
     const expectEdits = function() {
         editsExpected = true;
         editsConfirmed = false;

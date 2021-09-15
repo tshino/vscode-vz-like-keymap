@@ -6,12 +6,6 @@ const mode_handler = require("./mode_handler.js");
 const edit_commands = require("./edit_commands.js");
 const cursor_commands = require("./cursor_commands.js");
 
-const registerTextEditorCommand = function(context, name, func) {
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.' + name, func)
-    );
-};
-
 const SearchHandler = function(modeHandler) {
     const mode = modeHandler;
     const editHandler = edit_commands.getInstance();
@@ -29,6 +23,7 @@ const SearchHandler = function(modeHandler) {
         );
     };
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
+    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
     const waitForSynchronizedShort = async function(mode, textEditor) {
         await mode.waitForSyncTimeout(200).catch(() => {});
         mode.sync(textEditor);
