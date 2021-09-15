@@ -162,10 +162,9 @@ const EditHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
             textEditor.selections = newSelections;
-            await mode.waitForSyncTimeout(100).catch(() => {});
-        } else {
-            mode.sync(textEditor);
+            await mode.waitForSyncTimeout(150).catch(() => {});
         }
+        mode.sync(textEditor);
     };
     const readText = function(textEditor, ranges) {
         let texts = ranges.map((range) => {
@@ -248,13 +247,13 @@ const EditHandler = function(modeHandler) {
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
             }
-            await mode.waitForSyncTimeout(100).catch(() => {});
+            await mode.waitForSyncTimeout(150).catch(() => {});
         } else {
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
             }
-            mode.sync(textEditor);
         }
+        mode.sync(textEditor);
         if (!EditUtil.enumVisibleLines(textEditor).includes(textEditor.selections[0].active.line)) {
             let newCursorPos = textEditor.selections[0].active;
             textEditor.revealRange(
