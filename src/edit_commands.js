@@ -856,6 +856,8 @@ const EditHandler = function(modeHandler) {
             mode.expectSync();
             let path = textEditor.document.fileName;
             await vscode.commands.executeCommand('paste', { text: path });
+            await mode.waitForSyncTimeout(100).catch(() => {});
+            mode.sync(textEditor);
             endExpectEdits();
         }
     );
