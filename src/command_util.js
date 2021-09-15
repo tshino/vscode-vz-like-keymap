@@ -13,11 +13,12 @@ const CommandUtil = (function() {
                 return;
             }
             reentryGuard = name;
+            const commandName = 'vz.' + name;
             try {
-                kbMacroHandler.pushIfRecording('vz.' + name, guardedCommand);
+                kbMacroHandler.pushIfRecording(commandName, guardedCommand);
                 await func(textEditor, edit);
             } catch (error) {
-                console.log('*** debug: unhandled exception in execution of command vz.' + name, error);
+                console.log('*** debug: unhandled exception in execution of command ' + commandName, error);
             }
             reentryGuard = null;
         };
