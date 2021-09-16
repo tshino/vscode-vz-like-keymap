@@ -1,13 +1,14 @@
 "use strict";
 const vscode = require("vscode");
-const keyboard_macro = require("./keyboard_macro.js");
-
-const kbMacroHandler = keyboard_macro.getInstance();
 
 const CommandUtil = (function() {
     let reentryGuard = null;
+    let commandListener = null;
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+    const setCommandListener = function(listener) {
+        commandListener = listener;
+    };
     const makeGuardedCommand = function(name, func) {
         const commandName = 'vz.' + name;
         const guardedCommand = async function(textEditor, edit) {
@@ -16,7 +17,9 @@ const CommandUtil = (function() {
             }
             reentryGuard = name;
             try {
-                kbMacroHandler.pushIfRecording(commandName, guardedCommand);
+                if (commandListener) {
+                    commandListener(commandName, guardedCommand);
+                }
                 await func(textEditor, edit);
             } catch (error) {
                 console.log('*** debug: unhandled exception in execution of command ' + commandName, error);
@@ -40,6 +43,7 @@ const CommandUtil = (function() {
     };
 
     return {
+        setCommandListener,
         makeGuardedCommand,
         waitForEndOfGuardedCommand, // test purpose only
         registerTextEditorCommand

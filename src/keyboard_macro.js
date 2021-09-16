@@ -2,6 +2,7 @@
 const vscode = require("vscode");
 const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
+const CommandUtil = require("./command_util.js");
 
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
@@ -417,6 +418,8 @@ const KeyboardMacro = function(modeHandler) {
         registerTextEditorCommand(context, 'cancelRecording', cancelRecording);
         registerTextEditorCommand(context, 'finishRecording', finishRecording);
         registerTextEditorCommand(context, 'replay', replay);
+
+        CommandUtil.setCommandListener(pushIfRecording);
     };
 
     return {
