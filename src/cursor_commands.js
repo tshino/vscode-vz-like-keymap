@@ -24,9 +24,9 @@ const exec = function(commands, index = 0, textEditor = null) {
 };
 
 const kbMacroHandler = keyboard_macro.getInstance();
-const registerTextEditorCommand0 = CommandUtil.registerTextEditorCommand;
+const registerTextEditorCommand0 = CommandUtil.makeRegisterTextEditorCommand(vscode);
 const registerTextEditorCommand = function(context, name, func) {
-    CommandUtil.registerTextEditorCommand(context, name, function(textEditor, edit) {
+    registerTextEditorCommand0(context, name, function(textEditor, edit) {
         kbMacroHandler.pushIfRecording(CommandUtil.CommandPrefix + name, func);
         return func(textEditor, edit);
     });

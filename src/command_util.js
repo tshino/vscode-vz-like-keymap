@@ -1,5 +1,4 @@
 "use strict";
-const vscode = require("vscode");
 
 const CommandUtil = (function() {
     let reentryGuard = null;
@@ -37,10 +36,12 @@ const CommandUtil = (function() {
             console.log('*** debug: Guarded command still be running unexpectedly')
         }
     };
-    const registerTextEditorCommand = function(context, name, func) {
-        context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand(CommandPrefix + name, func)
-        );
+    const makeRegisterTextEditorCommand = function(vscode) {
+        return function(context, name, func) {
+            context.subscriptions.push(
+                vscode.commands.registerTextEditorCommand(CommandPrefix + name, func)
+            );
+        };
     };
 
     return {
@@ -48,7 +49,7 @@ const CommandUtil = (function() {
         setCommandListener,
         makeGuardedCommand,
         waitForEndOfGuardedCommand, // test purpose only
-        registerTextEditorCommand
+        makeRegisterTextEditorCommand
     }
 })();
 

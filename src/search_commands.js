@@ -23,7 +23,7 @@ const SearchHandler = function(modeHandler) {
         );
     };
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
-    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
+    const registerTextEditorCommand = CommandUtil.makeRegisterTextEditorCommand(vscode);
     const waitForSynchronizedShort = async function(mode, textEditor) {
         await mode.waitForSyncTimeout(200).catch(() => {});
         mode.sync(textEditor);

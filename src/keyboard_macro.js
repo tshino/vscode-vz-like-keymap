@@ -12,7 +12,7 @@ const KeyboardMacro = function(modeHandler) {
     let onStartRecording = null;
     let onStopRecording = null;
 
-    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
+    const registerTextEditorCommand = CommandUtil.makeRegisterTextEditorCommand(vscode);
     const pushIfRecording = function(command, func, expectedSelections) {
         if (recording) {
             recordedCommands.push([command, func]);

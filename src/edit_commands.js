@@ -17,7 +17,7 @@ const EditHandler = function(modeHandler) {
     let missingExpectedEditsCount = 0;
 
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
-    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
+    const registerTextEditorCommand = CommandUtil.makeRegisterTextEditorCommand(vscode);
     const expectEdits = function() {
         editsExpected = true;
         editsConfirmed = false;
