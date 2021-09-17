@@ -6,7 +6,7 @@ const CommandUtil = require("./command_util.js");
 
 const registerTextEditorCommand = function(context, name, func) {
     context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.' + name, func)
+        vscode.commands.registerTextEditorCommand(CommandUtil.CommandPrefix + name, func)
     );
 };
 

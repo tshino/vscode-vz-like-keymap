@@ -26,11 +26,11 @@ const exec = function(commands, index = 0, textEditor = null) {
 const kbMacroHandler = keyboard_macro.getInstance();
 const registerTextEditorCommand0 = function(context, name, func) {
     context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand('vz.' + name, func)
+        vscode.commands.registerTextEditorCommand(CommandUtil.CommandPrefix + name, func)
     );
 };
 const registerTextEditorCommand = function(context, name, func) {
-    const command = 'vz.' + name;
+    const command = CommandUtil.CommandPrefix + name;
     context.subscriptions.push(
         vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
             kbMacroHandler.pushIfRecording(command, func);

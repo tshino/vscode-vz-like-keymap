@@ -6,11 +6,12 @@ const CommandUtil = (function() {
     let commandListener = null;
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+    const CommandPrefix = 'vz.';
     const setCommandListener = function(listener) {
         commandListener = listener;
     };
     const makeGuardedCommand = function(name, func) {
-        const commandName = 'vz.' + name;
+        const commandName = CommandPrefix + name;
         const guardedCommand = async function(textEditor, edit) {
             if (reentryGuard === name) {
                 return;
@@ -38,11 +39,12 @@ const CommandUtil = (function() {
     };
     const registerTextEditorCommand = function(context, name, func) {
         context.subscriptions.push(
-            vscode.commands.registerTextEditorCommand('vz.' + name, func)
+            vscode.commands.registerTextEditorCommand(CommandPrefix + name, func)
         );
     };
 
     return {
+        CommandPrefix,
         setCommandListener,
         makeGuardedCommand,
         waitForEndOfGuardedCommand, // test purpose only
