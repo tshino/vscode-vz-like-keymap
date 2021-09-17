@@ -4,12 +4,6 @@ const mode_handler = require("./mode_handler.js");
 const EditUtil = require("./edit_util.js");
 const CommandUtil = require("./command_util.js");
 
-const registerTextEditorCommand = function(context, name, func) {
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand(CommandUtil.CommandPrefix + name, func)
-    );
-};
-
 // Keyboard macro recording and replay
 const KeyboardMacro = function(modeHandler) {
     const mode = modeHandler;
@@ -18,6 +12,7 @@ const KeyboardMacro = function(modeHandler) {
     let onStartRecording = null;
     let onStopRecording = null;
 
+    const registerTextEditorCommand = CommandUtil.registerTextEditorCommand;
     const pushIfRecording = function(command, func, expectedSelections) {
         if (recording) {
             recordedCommands.push([command, func]);
