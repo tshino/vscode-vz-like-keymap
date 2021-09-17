@@ -26,13 +26,10 @@ const exec = function(commands, index = 0, textEditor = null) {
 const kbMacroHandler = keyboard_macro.getInstance();
 const registerTextEditorCommand0 = CommandUtil.registerTextEditorCommand;
 const registerTextEditorCommand = function(context, name, func) {
-    const command = CommandUtil.CommandPrefix + name;
-    context.subscriptions.push(
-        vscode.commands.registerTextEditorCommand(command, function(textEditor, edit) {
-            kbMacroHandler.pushIfRecording(command, func);
-            return func(textEditor, edit);
-        })
-    );
+    CommandUtil.registerTextEditorCommand(context, name, function(textEditor, edit) {
+        kbMacroHandler.pushIfRecording(CommandUtil.CommandPrefix + name, func);
+        return func(textEditor, edit);
+    });
 };
 
 const CursorHandler = function(modeHandler) {
