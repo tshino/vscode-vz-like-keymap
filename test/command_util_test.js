@@ -3,6 +3,7 @@ const assert = require('assert');
 const CommandUtil = require("./../src/command_util.js");
 
 describe('CommandUtil', function() {
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
     describe('CommandPrefix', function() {
         it('should be a string', function() {
             assert.strictEqual(typeof CommandUtil.CommandPrefix, 'string');
@@ -27,8 +28,46 @@ describe('CommandUtil', function() {
             assert.strictEqual(typeof retval, 'function');
             await retval();
             assert.deepStrictEqual(logs, ['invoked']);
+            await retval();
+            assert.deepStrictEqual(logs, ['invoked', 'invoked']);
         });
-        // TODO: add more tests for makeGuardedCommand
+        it('should return a function that is non-reentrant', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'name',
+                async function() {
+                    logs.push('begin');
+                    await sleep(30);
+                    logs.push('end');
+                }
+            );
+
+            await retval();
+            await retval();
+            assert.deepStrictEqual(logs, ['begin', 'end', 'begin', 'end']);
+
+            logs.length = 0;
+            const p1 = retval();
+            const p2 = retval();
+            await p1;
+            await p2;
+            assert.deepStrictEqual(logs, ['begin', 'end']);
+        });
+        it('should return a function that handles exceptions raised from the given function', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'func',
+                function() {
+                    logs.push('begin');
+                    throw '(expected exception)';
+                    logs.push('end');
+                }
+            );
+
+            await retval();
+            await retval();
+            assert.deepStrictEqual(logs, ['begin', 'begin']);
+        });
     });
     describe('setCommandListener', function() {
         beforeEach(async () => {
