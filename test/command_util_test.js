@@ -17,6 +17,9 @@ describe('CommandUtil', function() {
         beforeEach(async () => {
             CommandUtil.setCommandListener(null);
         });
+        after(async () => {
+            CommandUtil.setCommandListener(null);
+        });
         it('should return a function that calls given function', async () => {
             const logs = [];
             const retval = CommandUtil.makeGuardedCommand(
@@ -111,6 +114,56 @@ describe('CommandUtil', function() {
             ]);
         });
     });
-    // TODO: add tests for waitForEndOfGuardedCommand
+    describe('waitForEndOfGuardedCommand', function() {
+        beforeEach(async () => {
+            CommandUtil.setCommandListener(null);
+        });
+        after(async () => {
+            CommandUtil.setCommandListener(null);
+        });
+        it('should block until no guarded commands are running', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'name',
+                async function() {
+                    logs.push('begin');
+                    await sleep(50);
+                    logs.push('end');
+                }
+            );
+
+            const p1 = retval();
+            logs.push('waiting');
+            await CommandUtil.waitForEndOfGuardedCommand();
+            logs.push('finished');
+            await p1;
+            assert.deepStrictEqual(logs, [
+                'begin', 'waiting', 'end', 'finished'
+            ]);
+        });
+        it('should return immediately if no guarded commands are running', async () => {
+            await CommandUtil.waitForEndOfGuardedCommand();
+        });
+        it('should timeout in case something is wrong in guarded commands', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'name',
+                async function() {
+                    logs.push('begin');
+                    await sleep(1000);
+                    logs.push('end');
+                }
+            );
+
+            const p1 = retval();
+            logs.push('waiting');
+            await CommandUtil.waitForEndOfGuardedCommand();
+            logs.push('finished');
+            await p1;
+            assert.deepStrictEqual(logs, [
+                'begin', 'waiting', 'finished', 'end'
+            ]);
+        });
+    });
     // TODO: add tests for makeRegisterTextEditorCommand
 });
