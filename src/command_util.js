@@ -29,8 +29,11 @@ const CommandUtil = (function() {
         return guardedCommand;
     };
     const waitForEndOfGuardedCommand = async function() {
-        for (let i = 0; i < 50 && reentryGuard !== null; i++) {
+        for (let i = 0; i < 5 && reentryGuard !== null; i++) {
             await sleep(10);
+        }
+        for (let i = 0; i < 5 && reentryGuard !== null; i++) {
+            await sleep(80);
         }
         if (reentryGuard !== null) {
             console.log('*** debug: Guarded command still be running unexpectedly')
