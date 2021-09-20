@@ -2367,6 +2367,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.getUndeleteStack().length, 1);
         });
     });
+    // TODO: add tests for editHandler.enter command.
     describe('insertLineBefore', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

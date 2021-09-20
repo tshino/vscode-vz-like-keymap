@@ -2404,6 +2404,7 @@ describe('KeyboardMacro', () => {
             }
         });
     });
+    // TODO: add tests for 'vz.enter' command.
     describe('insertLineBefore', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
