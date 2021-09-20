@@ -165,5 +165,39 @@ describe('CommandUtil', function() {
             ]);
         });
     });
+    describe('makeRegisterTextEditorCommand', function() {
+        it('should return a function that perform registration of text editor commands', async () => {
+            const logs = [];
+            const vscode = {
+                commands: {
+                    registerTextEditorCommand: function(name, func) {
+                        logs.push(['reg', name, func]);
+                        return 'sub:' + name;
+                    }
+                }
+            };
+            const context = {
+                subscriptions: {
+                    push: function(x) {
+                        logs.push(['cxt', x]);
+                    }
+                }
+            };
+            const cmd1 = function() {};
+            const cmd2 = function() {};
+
+            const retval = CommandUtil.makeRegisterTextEditorCommand(vscode);
+            assert.deepStrictEqual(logs, []);
+
+            retval(context, 'cmd1', cmd1);
+            retval(context, 'cmd2', cmd2);
+            assert.deepStrictEqual(logs, [
+                ['reg', CommandUtil.CommandPrefix + 'cmd1', cmd1],
+                ['cxt', 'sub:' + CommandUtil.CommandPrefix + 'cmd1'],
+                ['reg', CommandUtil.CommandPrefix + 'cmd2', cmd2],
+                ['cxt', 'sub:' + CommandUtil.CommandPrefix + 'cmd2']
+            ]);
+        });
+    });
     // TODO: add tests for makeRegisterTextEditorCommand
 });
