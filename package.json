@@ -527,11 +527,13 @@
             },
             {
                 "key": "ctrl+m",
-                "command": "type",
-                "args": {
-                    "text": "\n"
-                },
-                "when": "editorTextFocus && !editorReadonly"
+                "command": "vz.enter",
+                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+            },
+            {
+                "key": "enter",
+                "command": "vz.enter",
+                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
             },
             {
                 "key": "ctrl+n",
