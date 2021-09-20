@@ -3,8 +3,12 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
-- [作業中] Visual Studio Code Web（ブラウザで動くVS Code）に対応しました
-
+- [作業中] Visual Studio Code Web（ブラウザで動くVS Code）に対応しました。
+- 修正:
+  - 検索ウィジェット上のCTRL+E（前履歴）およびCTRL+X（次履歴）が効かなくなっていたのを修正しました。
+- [WIP] Added support of Web Extension (VS Code on browsers).
+- Fixed:
+  - On the find widget, Ctrl+E (Previous in History) and Ctrl+X (Next in History) were not working.
 
 ### [0.17.0] - 2021-09-10
 - 検索と置換のキーバインドと挙動を改善しました

@@ -731,12 +731,12 @@
             {
                 "key": "ctrl+e",
                 "command": "history.showPrevious",
-                "when": "historyNavigationEnabled && historyNavigationWidget"
+                "when": "historyNavigationBackwardsEnabled && historyNavigationWidget"
             },
             {
                 "key": "ctrl+x",
                 "command": "history.showNext",
-                "when": "historyNavigationEnabled && historyNavigationWidget"
+                "when": "historyNavigationForwardsEnabled && historyNavigationWidget"
             },
             {
                 "key": "enter",
