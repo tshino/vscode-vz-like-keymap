@@ -2387,7 +2387,7 @@ describe('EditHandler', () => {
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
         });
-        it('should insert line-break', async () => {
+        it('should insert line-break at start of a line', async () => {
             await resetCursor(1, 0);
             await editHandler.enter(textEditor);
 
@@ -2395,6 +2395,62 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abcdef');
+        });
+        it('should insert line-break at middle of a line', async () => {
+            await resetCursor(1, 3);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abc');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'def');
+        });
+        it('should insert line-break at end of a line', async () => {
+            await resetCursor(1, 6);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'abcdef');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, 'abcdefghi');
+        });
+        it('should insert line-break at start of a line with auto-indent', async () => {
+            await resetCursor(4, 4);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    ');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    jklmno');
+        });
+        it('should insert line-break at middle of a line with auto-indent', async () => {
+            await resetCursor(4, 7);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    jkl');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    mno');
+        });
+        it('should insert line-break at end of a line with auto-indent', async () => {
+            await resetCursor(4, 10);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    jklmno');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    ');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '    jklmnopqr');
+        });
+        it('should insert line-break at end of document', async () => {
+            await resetCursor(6, 3);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[7, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'stu');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '');
         });
         // TODO: add more tests for editHandler.enter command.
     });
