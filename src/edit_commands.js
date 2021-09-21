@@ -946,6 +946,7 @@ const EditHandler = function(modeHandler) {
         deleteAllLeft,
         deleteAllRight,
         undelete,
+        enter,
         insertLineBefore,
         copyLinesDown,
         transformCase,

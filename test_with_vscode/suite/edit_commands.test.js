@@ -2367,7 +2367,37 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(editHandler.getUndeleteStack().length, 1);
         });
     });
-    // TODO: add tests for editHandler.enter command.
+    describe('enter', () => {
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abc\n' +
+                    'abcdef\n' +
+                    'abcdefghi\n' +
+                    '    jkl\n' +
+                    '    jklmno\n' +
+                    '    jklmnopqr\n' +
+                    'stu'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+        });
+        it('should insert line-break', async () => {
+            await resetCursor(1, 0);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'abcdef');
+        });
+        // TODO: add more tests for editHandler.enter command.
+    });
     describe('insertLineBefore', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
