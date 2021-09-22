@@ -5280,6 +5280,7 @@ describe('KeyboardMacro', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
     });
+    // TODO: add tests for findStartEnter command.
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

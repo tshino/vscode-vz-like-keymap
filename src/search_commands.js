@@ -238,6 +238,15 @@ const SearchHandler = function(modeHandler) {
             await promise;
         }
     );
+    const findStartEnter = makeGuardedCommand(
+        'findStartEnter',
+        async function(textEditor, _edit) {
+            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            await cancelMatchSelection(textEditor);
+            await editHandler.enterImpl(textEditor);
+            await promise;
+        }
+    );
 
     const replaceOne = makeGuardedCommand(
         'replaceOne',
@@ -288,6 +297,7 @@ const SearchHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'findStartScrollLineUp', findStartScrollLineUp);
         registerTextEditorCommand(context, 'findStartScrollLineDown', findStartScrollLineDown);
         registerTextEditorCommand(context, 'findStartCancelSelection', findStartCancelSelection);
+        registerTextEditorCommand(context, 'findStartEnter', findStartEnter);
         registerTextEditorCommand(context, 'replaceOne', replaceOne);
         registerTextEditorCommand(context, 'closeFindWidget', closeFindWidget);
     };

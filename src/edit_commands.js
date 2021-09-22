@@ -682,15 +682,16 @@ const EditHandler = function(modeHandler) {
         'undelete',
         undeleteImpl
     );
+    const enterImpl = async function(_textEditor, _edit) {
+        expectEdits();
+        mode.expectSync();
+        await vscode.commands.executeCommand('default:type', { text: '\n' });
+        endExpectEdits();
+        await mode.waitForSyncTimeout(100).catch(() => {});
+    };
     const enter = makeGuardedCommand(
         'enter',
-        async function(_textEditor, _edit) {
-            expectEdits();
-            mode.expectSync();
-            await vscode.commands.executeCommand('default:type', { text: '\n' });
-            endExpectEdits();
-            await mode.waitForSyncTimeout(100).catch(() => {});
-        }
+        enterImpl
     );
     const insertLineBefore = makeGuardedCommand(
         'insertLineBefore',
@@ -947,6 +948,7 @@ const EditHandler = function(modeHandler) {
         deleteAllRight,
         undelete,
         enter,
+        enterImpl,
         insertLineBefore,
         copyLinesDown,
         transformCase,
