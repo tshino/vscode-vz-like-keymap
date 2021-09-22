@@ -2452,7 +2452,38 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(6).text, 'stu');
             assert.deepStrictEqual(textEditor.document.lineAt(7).text, '');
         });
-        // TODO: add more tests for editHandler.enter command.
+        it('should replace selected range with a line-break', async () => {
+            await selectRange(1, 2, 1, 4);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, 'ab');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, 'ef');
+        });
+        it('should replace selected range with a line-break and perform auto-indent', async () => {
+            await selectRange(4, 6, 4, 8);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    jk');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    no');
+        });
+        it('should insert a line-break at each position of multi-cursor', async () => {
+            await selectRanges([[3, 5, 3, 5], [4, 5, 4, 5], [5, 5, 5, 5]]);
+            await editHandler.enter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 4], [6, 4], [8, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    kl');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '    klmno');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '    klmnopqr');
+        });
     });
     describe('insertLineBefore', () => {
         beforeEach(async () => {
