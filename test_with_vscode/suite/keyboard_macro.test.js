@@ -2404,7 +2404,100 @@ describe('KeyboardMacro', () => {
             }
         });
     });
-    // TODO: add tests for 'vz.enter' command.
+    describe('enter', () => {
+        let documentLanguage = '';
+        beforeEach(async () => {
+            await testUtils.resetDocument(
+                textEditor,
+                (
+                    'abc\n' +
+                    'abcdef\n' +
+                    'abcdefghi\n' +
+                    '    jkl\n' +
+                    '    jklmno\n' +
+                    '    jklmnopqr\n' +
+                    'stu'
+                ),
+                vscode.EndOfLine.CRLF
+            );
+            editHandler.clearTextStack();
+            editHandler.clearUndeleteStack();
+            textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
+            mode.initialize(textEditor);
+            documentLanguage = textEditor.document.languageId; // likely 'plaintext'
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, 'plaintext');
+        });
+        afterEach(async () => {
+            await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
+        });
+        it('should insert line-break at start of a line', async () => {
+            await resetCursor(1, 0);
+            const commands = [
+                'vz.enter'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(3, 0);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, 'abcdefghi');
+        });
+        it('should insert line-break at middle of a line with auto-indent', async () => {
+            await resetCursor(3, 6);
+            const commands = [
+                'vz.enter',
+                'vz.enter'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await resetCursor(6, 7);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[8, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '    jkl');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '    ');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '    mno');
+        });
+        it('should replace selected range with a line-break and perform auto-indent', async () => {
+            await selectRange(3, 5, 3, 6);
+            const commands = [
+                'vz.enter'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRange(5, 6, 5, 8);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    jk');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '    no');
+        });
+        it('should insert a line-break at each position of multi-cursor', async () => {
+            await selectRanges([[1, 5, 1, 5], [2, 5, 2, 5]]);
+            const commands = [
+                'vz.enter'
+            ];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+
+            await selectRanges([[5, 5, 5, 5], [6, 5, 6, 5], [7, 5, 7, 5]]);
+            await kb_macro.replay(textEditor);
+            assert.strictEqual(mode.inSelection(), true);
+            assert.strictEqual(mode.inBoxSelection(), true);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 4], [8, 4], [10, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(6).text, '    kl');
+            assert.deepStrictEqual(textEditor.document.lineAt(7).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(8).text, '    klmno');
+            assert.deepStrictEqual(textEditor.document.lineAt(9).text, '    j');
+            assert.deepStrictEqual(textEditor.document.lineAt(10).text, '    klmnopqr');
+        });
+    });
     describe('insertLineBefore', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(
