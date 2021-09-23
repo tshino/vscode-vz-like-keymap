@@ -991,6 +991,16 @@
                 "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
             },
             {
+                "key": "ctrl+m",
+                "command": "vz.findStartEnter",
+                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+            },
+            {
+                "key": "enter",
+                "command": "vz.findStartEnter",
+                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+            },
+            {
                 "key": "escape",
                 "command": "vz.closeFindWidget",
                 "when": "editorFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && findWidgetVisible"

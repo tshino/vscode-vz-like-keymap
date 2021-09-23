@@ -656,7 +656,7 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
-        it('should cance selection mode if the selection is already empty', async () => {
+        it('should cancel selection mode if the selection is already empty', async () => {
             await resetCursor(8, 3);
             mode.startSelection(textEditor, false);
             assert.strictEqual(mode.inSelection(), true);
@@ -668,7 +668,25 @@ describe('SearchHandler', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
     });
-    // TODO: add tests for findStartEnter command.
+    describe('findStartEnter', () => {
+        before(async () => {
+            await testUtils.resetDocument(textEditor,
+                'To infinity\n'.repeat(3) +
+                '    and beyond!\n'.repeat(3)
+            );
+        });
+        it('should cancel selection of a match and insert line-break at middle of a line with auto-indent', async () => {
+            await selectRange(4, 8, 4, 15);
+            await searchHandler.selectWordToFind(textEditor); // 'beyond!'
+
+            await searchHandler.findStartEnter(textEditor);
+
+            assert.strictEqual(mode.inSelection(), false);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 4]]);
+            assert.deepStrictEqual(textEditor.document.lineAt(4).text, '    and ');
+            assert.deepStrictEqual(textEditor.document.lineAt(5).text, '    beyond!');
+        });
+    });
     describe('replaceOne', () => {
         beforeEach(async () => {
             await testUtils.resetDocument(

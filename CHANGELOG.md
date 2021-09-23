@@ -6,10 +6,12 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - [作業中] Visual Studio Code Web（ブラウザで動くVS Code）に対応しました。
 - 修正:
   - キーボードマクロで改行（CTRL+MまたはENTER）が記録されない場合がある問題を修正しました。
+  - 検索モード中の改行（CTRL+MまたはENTER）で検索でマッチした文字列が削除されないようにしました。
   - 検索ウィジェット上のCTRL+E（前履歴）およびCTRL+X（次履歴）が効かなくなっていたのを修正しました。
 - [WIP] Added support of Web Extension (VS Code on browsers).
 - Fixed:
   - Keyboard macro recording was failing to record New Line (Ctrl+M or Enter) in some situations.
+  - In finding mode, New Line (Ctrl+M or Enter) was deleting the matched string.
   - On the find widget, Ctrl+E (Previous in History) and Ctrl+X (Next in History) were not working.
 
 ### [0.17.0] - 2021-09-10
