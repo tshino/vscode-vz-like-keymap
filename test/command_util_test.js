@@ -199,5 +199,4 @@ describe('CommandUtil', function() {
             ]);
         });
     });
-    // TODO: add tests for makeRegisterTextEditorCommand
 });
