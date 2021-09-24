@@ -26,6 +26,21 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 
 ### [0.16.0] - 2021-08-17
+- ついにキーボードマクロ機能を実現しました。
+  - CTRL+_でキー操作の記録開始またはキャンセルします。
+  - CTRL+^でキー操作の記録を終了し、さらに同じキーで記録した操作を再生できます。
+- 改善:
+  - ESC（矩形選択モードの解除）のwhen節の不備を直しました。
+  - 範囲選択してCTRL+Q T（カーソルより左側を削除）したときのCTRL+U（削除した文字の復元）の動作を直しました。
+- 変更:
+  - クリップボード系コマンドの動作を以下のように整理しました。
+    - `vz.clipboardCutAndPush` ... 設定`vzKeymap.textStack`に依らず常にテキストスタックを使用するようにしました.
+    - `vz.clipboardCut` ... カットした文字列をクリップボードに書くとともにテキストスタックのトップに保持（上書き）します。
+    - `vz.clipboardCopyAndPush` ... 設定`vzKeymap.textStack`に依らず常にテキストスタックを使用するようにしました.
+    - `vz.clipboardCopy` ... コピーした文字列をクリップボードに書くとともにテキストスタックのトップに保持（上書き）します。
+    - `vz.clipboardPopAndPaste` ... 設定`vzKeymap.textStack`に依らず常にテキストスタックを使用するようにしました.
+    - `vz.clipboardPaste` ... 常にクリップボードの文字列をペーストします。
+
 - Added the Keyboard Macro function which is the final big piece of this extension:
   - Ctrl+_ for start or cancel recording keyboard sequence.
   - Ctrl+^ for finish recording or replay the recorded sequence.
@@ -35,11 +50,11 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Changed:
   - Arranged the behavior of clipboard commands slightly as described below:
     - `vz.clipboardCutAndPush` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
-    - `vz.clipboardCut` ... does cut the text to the clipboard and also keep it at top of the Text Stack.
+    - `vz.clipboardCut` ... does cut a text and write it to the clipboard and also to top of the Text Stack.
     - `vz.clipboardCopyAndPush` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
-    - `vz.clipboardCopy` ... does copy the text to the clipboard and also keep it at top of the Text Stack.
+    - `vz.clipboardCopy` ... does copy a text and write it to the clipboard and also to top of the Text Stack.
     - `vz.clipboardPopAndPaste` ... always uses the Text Stack regardless the setting `vzKeymap.textStack`.
-    - `vz.clipboardPaste` ... does only paste the text from the clipboard.
+    - `vz.clipboardPaste` ... always pastes the text in the clipboard.
 
 
 ### [0.15.0] - 2021-02-18
