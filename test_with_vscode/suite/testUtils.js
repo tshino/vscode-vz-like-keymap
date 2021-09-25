@@ -48,16 +48,16 @@ const testUtils = (function() {
         return EditUtil.enumVisibleLines(textEditor).includes(cursorLine);
     };
     const waitForReveal = async function(textEditor) {
-        while (await sleep(1), !isCursorVisible(textEditor)) {}
+        while (!isCursorVisible(textEditor)) { await sleep(1); }
     };
     const waitForStartSelection = async (mode) => {
-        while (await sleep(1), !mode.inSelection()) {}
+        while (!mode.inSelection()) { await sleep(1); }
     };
     const waitForEndSelection = async (mode) => {
-        while (await sleep(1), mode.inSelection()) {}
+        while (mode.inSelection()) { await sleep(1); }
     };
     const waitForSynchronized = async (mode) => {
-        while (await sleep(1), !mode.synchronized()) {}
+        while (!mode.synchronized()) { await sleep(1); }
     };
     const revealCursor = async (textEditor, revealType=undefined) => {
         let cursor = textEditor.selections[0].active;
@@ -69,18 +69,22 @@ const testUtils = (function() {
         if (textEditor.selections[0].active.line !== anotherLine) {
             mode.expectSync();
             textEditor.selections = [ new vscode.Selection(anotherLine, 0, anotherLine, 0) ];
-            while (await sleep(1), !mode.synchronized()) {}
+            while (!mode.synchronized()) {
+                await sleep(1);
+            }
         }
         textEditor.selections = [ new vscode.Selection(line, character, line, character) ];
         mode.initialize(textEditor);
         if (revealType !== null) {
             await revealCursor(textEditor, revealType);
         }
-        while (await sleep(1),
+        while (
             !mode.synchronized() ||
             textEditor.selections[0].active.line !== line ||
             textEditor.selections[0].active.character !== character
-        ) {}
+        ) {
+            await sleep(1);
+        }
     };
     const locateCursor = async (textEditor, mode, line, character, revealType=vscode.TextEditorRevealType.Default) => {
         mode.expectSync();
