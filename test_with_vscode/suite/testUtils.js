@@ -11,13 +11,14 @@ const testUtils = (function() {
         assert.ok( textEditor );
         return textEditor;
     };
-    const resetDocument = async function(textEditor, content, eol = vscode.EndOfLine.LF) {
+    const resetDocument = async function(textEditor, content, eol = vscode.EndOfLine.LF, languageId = 'plaintext') {
         let lineCount = textEditor.document.lineCount;
         let entireDocument = new vscode.Range(0, 0, lineCount, 0);
         await textEditor.edit((edit) => {
             edit.replace(entireDocument, content);
             edit.setEndOfLine(eol);
         });
+        await vscode.languages.setTextDocumentLanguage(textEditor.document, languageId);
     };
     const setEndOfLine = async function(textEditor, eol) {
         await textEditor.edit((edit) => {
