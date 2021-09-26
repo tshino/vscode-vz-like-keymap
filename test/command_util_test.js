@@ -150,7 +150,7 @@ describe('CommandUtil', function() {
                 'name',
                 async function() {
                     logs.push('begin');
-                    await sleep(1000);
+                    await sleep(1500);
                     logs.push('end');
                 }
             );

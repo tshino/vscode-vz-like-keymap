@@ -148,7 +148,11 @@ const CursorHandler = function(modeHandler) {
         if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
             mode.expectSync();
             textEditor.selections = newSelections;
-            promises.push(mode.waitForSyncTimeout(200).catch(() => {}));
+            promises.push(
+                mode.waitForSyncTimeout(200).catch(() => {}).then(
+                    () => { mode.sync(textEditor); }
+                )
+            );
         }
         if (reveal) {
             promises.push(waitForScrollTimeout(() => {}).catch(() => {}));
