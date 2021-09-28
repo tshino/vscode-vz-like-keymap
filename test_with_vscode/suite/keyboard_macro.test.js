@@ -2851,6 +2851,10 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '(' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<cursor-uniform-motion>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 1]]);
 
@@ -2881,6 +2885,10 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '(' }]
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<cursor-uniform-motion>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '()');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 1], [2, 1]]);
@@ -2896,6 +2904,11 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution([
                 ['type', { text: '(' }], // => '(|)'
                 ['type', { text: ')' }]  // => '()|'
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<cursor-uniform-motion>',
+                '<cursor-uniform-motion>'
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 2]]);
@@ -2929,6 +2942,11 @@ describe('KeyboardMacro', () => {
                 ['type', { text: '(' }], // => '(|)'
                 ['type', { text: ')' }]  // => '()|'
             ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
+                '<cursor-uniform-motion>',
+                '<cursor-uniform-motion>'
+            ]);
             assert.deepStrictEqual(textEditor.document.lineAt(1).text, '()');
             assert.deepStrictEqual(textEditor.document.lineAt(2).text, '()');
             assert.deepStrictEqual(selectionsAsArray(), [[1, 2], [2, 2]]);
@@ -2943,6 +2961,9 @@ describe('KeyboardMacro', () => {
             await resetCursor(5, 0);
             await recordThroughExecution([
                 ['type', { text: '(' }]
+            ]);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                '<insert-uniform-text>',
             ]);
             assert.deepStrictEqual(textEditor.document.lineAt(5).text, '(123 ');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 1]]);
