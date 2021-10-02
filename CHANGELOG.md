@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.18.0] - 2021-10-03
 - 新規:
   - Visual Studio Code Web（ブラウザで動くVS Code）に対応しました。
 - 修正:
