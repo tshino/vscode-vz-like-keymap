@@ -4,5 +4,6 @@ build/**
 test/**
 test_with_vscode/**
 **/.eslintrc.json
+**/*.map
 .github/**
 .gitignore
