@@ -83,7 +83,7 @@ const CursorHandler = function(modeHandler) {
         );
     };
 
-    const waitForScrollTimeout = async function(task, timeout=300) {
+    const waitForScrollTimeout = async function(task, timeout=600) {
         return new Promise((resolve, reject) => {
             let res = async function(textEditor) {
                 if (textEditor) {
