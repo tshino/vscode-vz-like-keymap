@@ -189,7 +189,7 @@ const CursorHandler = function(modeHandler) {
                     )
                 );
                 await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
-            });
+            }).catch(() => {});
             let center = 2 <= vlines.length ? vlines[1] : vlines[0];
             textEditor.revealRange(
                 new vscode.Range(center, 0, center, 0),
@@ -217,7 +217,7 @@ const CursorHandler = function(modeHandler) {
                 let newVlines = EditUtil.enumVisibleLines(textEditor);
                 let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
                 await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
-            });
+            }).catch(() => {});
             let center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
             textEditor.revealRange(
                 new vscode.Range(center, 0, center, 0),
@@ -359,12 +359,12 @@ const CursorHandler = function(modeHandler) {
     const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
     const scrollLineUp = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
-        let res1 = exec(['scrollLineUp']);
+        const promise1 = exec(['scrollLineUp']).catch(() => {});
         if (0 < textEditor.selection.active.line) {
-            await cursorUp(textEditor);
-            await res1;
+            const promise2 = cursorUp(textEditor);
+            await Promise.all([promise1, promise2]);
         } else {
-            await res1;
+            await promise1;
         }
     };
     const cancelSelection = async function(textEditor) {
@@ -382,9 +382,9 @@ const CursorHandler = function(modeHandler) {
     const scrollLineDown = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            let res1 = exec(['scrollLineDown']);
-            await cursorDown(textEditor);
-            await res1;
+            const promise1 = exec(['scrollLineDown']);
+            const promise2 = cursorDown(textEditor);
+            await Promise.all([promise1, promise2]);
         }
     };
 
@@ -503,7 +503,7 @@ const CursorHandler = function(modeHandler) {
             if (mode.inSelection() && mode.inBoxSelection()) {
                 mode.resetBoxSelection();
             }
-            promise = moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection());
+            promise = moveCursorTo(textEditor, pos.line, pos.character, mode.inSelection()).catch(() => {});
         }
         vscode.window.setStatusBarMessage('Here is the marked position.', 3000);
         if (promise) {
