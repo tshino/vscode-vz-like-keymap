@@ -58,6 +58,8 @@ function activate(context) {
             }
         })
     );
+    context.subscriptions.push(modeIndicator);
+    context.subscriptions.push(macroModeIndicator);
 }
 exports.activate = activate;
 
