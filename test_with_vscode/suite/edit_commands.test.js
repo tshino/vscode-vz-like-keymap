@@ -507,7 +507,9 @@ describe('EditHandler', () => {
             });
             await selectRange(4, 0, 104, 0);
             textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
-            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
+            while (!EditUtil.enumVisibleLines(textEditor).includes(104)) {
+                await sleep(1);
+            }
             assert.strictEqual(textEditor.document.lineCount, 107);
             await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(textEditor.document.lineCount, 7);

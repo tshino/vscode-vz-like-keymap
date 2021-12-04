@@ -11,7 +11,7 @@ const getHomePath = function() {
 };
 
 const expandTildePrefix = function(path) {
-    if (path.match(/^\~[\\\/]/)) {
+    if (path.match(/^~[\\/]/)) {
         let home = getHomePath();
         if (home !== '') {
             path = home + '/' + path.substring(2);
@@ -21,7 +21,7 @@ const expandTildePrefix = function(path) {
 };
 
 const isUNCPath = function(path) {
-    return path.match(/^\/\/[^\/]+\//) ? true : false;
+    return path.match(/^\/\/[^/]+\//) ? true : false;
 };
 
 const isAbsolutePath = function(path) {
@@ -68,8 +68,8 @@ const makeFileUri = function(folderUri, path) {
         if (isUNCPath(path)) {
             return folderUri.with({
                 scheme: 'file',
-                authority: path.replace(/^\/\/|(?<=[^\/])\/.+/g, ''),
-                path: path.replace(/^\/\/[^\/]+/, ''),
+                authority: path.replace(/^\/\/|(?<=[^/])\/.+/g, ''),
+                path: path.replace(/^\/\/[^/]+/, ''),
                 query: '',
                 fragment: ''
             });

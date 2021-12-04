@@ -3314,7 +3314,9 @@ describe('KeyboardMacro', () => {
             });
             await selectRange(4, 0, 104, 0);
             textEditor.revealRange(new vscode.Range(104, 0, 104, 0), vscode.TextEditorRevealType.Default);
-            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(104)) {}
+            while (!EditUtil.enumVisibleLines(textEditor).includes(104)) {
+                await sleep(1);
+            }
             await assertDocumentLineCount(107);
             const commands = ['vz.clipboardCutAndPush'];
             await recordThroughExecution(commands);
@@ -3329,7 +3331,9 @@ describe('KeyboardMacro', () => {
             });
             await selectRange(3, 0, 103, 0);
             textEditor.revealRange(new vscode.Range(103, 0, 103, 0), vscode.TextEditorRevealType.Default);
-            while (await sleep(1), !EditUtil.enumVisibleLines(textEditor).includes(103)) {}
+            while (!EditUtil.enumVisibleLines(textEditor).includes(103)) {
+                await sleep(1);
+            }
             await assertDocumentLineCount(107);
             await kb_macro.replay(textEditor);
             await assertDocumentLineCount(7);

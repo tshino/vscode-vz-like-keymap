@@ -62,8 +62,8 @@ describe('CommandUtil', function() {
                 'func',
                 function() {
                     logs.push('begin');
-                    throw '(expected exception)';
-                    logs.push('end');
+                    throw '(intended exception)';
+                    // logs.push('end');
                 }
             );
 
