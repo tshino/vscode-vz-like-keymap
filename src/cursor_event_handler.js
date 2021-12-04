@@ -33,8 +33,8 @@ const CursorEventHandler = function(mode) {
         lastTextEditor = textEditor || null;
         expectedSelections = null;
     };
-    const setExpectedSelections = function(expectedSelections_) {
-        expectedSelections = expectedSelections_; // can be undefined/null
+    const setExpectedSelections = function(expected) {
+        expectedSelections = expected || null;
     };
     const makeCursorUniformMotion = function(delta) {
         return function(textEditor) {
