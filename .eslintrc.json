@@ -1,8 +1,13 @@
 {
     "env": {
         "commonjs": true,
-        "es6": true
+        "es6": true,
+        "node": true,
+        "mocha": true
     },
+    "ignorePatterns": [
+        "/dist"
+    ],
     "extends": [
         "eslint:recommended"
     ],
