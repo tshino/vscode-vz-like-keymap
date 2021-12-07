@@ -21,6 +21,11 @@ const CursorEventHandler = function(mode) {
     const onDetectCursorMotion = function(callback) {
         onDetectCursorMotionCallback = callback;
     };
+    const notifyDetectedMotion = function(motion) {
+        if (onDetectCursorMotionCallback) {
+            onDetectCursorMotionCallback('<cursor-uniform-motion>', motion);
+        }
+    };
     // let unhandleCount = 0;
     // const printSelectionChangeEventInfo = function(event) {
     //     console.log('selections: ' +
@@ -49,7 +54,7 @@ const CursorEventHandler = function(mode) {
             textEditor.selections = selections;
         };
     };
-    const recordImplicitMotion = function(expected, current) {
+    const detectImplicitMotion = function(expected, current) {
         let delta = current[0].start.character - expected[0].start.character;
         let isUniformCursorMotion = (
             expected.length === current.length &&
@@ -63,33 +68,33 @@ const CursorEventHandler = function(mode) {
             // console.log('<<< cursor-uniform-motion (' + delta + ') >>>');
             // console.log('expected: ' + selectionsToString(expected));
             // console.log('current: ' + selectionsToString(current));
-            if (onDetectCursorMotionCallback) {
-                onDetectCursorMotionCallback('<cursor-uniform-motion>', cursorUniformMotion);
-            }
-            return true;
+            return cursorUniformMotion;
         }
-        return false;
     };
     const detectAndRecordImplicitMotion = function(event) {
         if (mode.synchronized()) {
-            let current = Array.from(event.selections);
-            let ok = recordImplicitMotion(lastSelections, current);
-            if (!ok) {
+            const current = Array.from(event.selections);
+            const motion = detectImplicitMotion(lastSelections, current);
+            if (motion) {
+                notifyDetectedMotion(motion);
+            } else {
                 // unhandleCount += 1;
                 // console.log('=== unexpected selection change (event) #' + unhandleCount);
                 // printSelectionChangeEventInfo(event);
             }
         } else {
             if (expectedSelections) {
-                let current = Array.from(event.selections);
+                const current = Array.from(event.selections);
                 current.sort((a, b) => a.start.compareTo(b.start));
-                let sameSelections = EditUtil.isEqualSelections(expectedSelections, current);
+                const sameSelections = EditUtil.isEqualSelections(expectedSelections, current);
                 if (!sameSelections) {
                     // Here, occurence of this change event was expected but the result is not the expected one.
                     // This is probably a kind of code completion like bracket completion.
                     // e.g. typing '(' would insert '()' and put back the cursor to right before the ')'
-                    let ok = recordImplicitMotion(expectedSelections, current);
-                    if (!ok) {
+                    const motion = detectImplicitMotion(expectedSelections, current);
+                    if (motion) {
+                        notifyDetectedMotion(motion);
+                    } else {
                         // unhandleCount += 1;
                         // console.log('=== unexpected selection change (selections) #' + unhandleCount);
                         // console.log('expectation: ' + selectionsToString(expectedSelections));
