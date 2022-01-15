@@ -96,7 +96,8 @@ const EditHandler = function(modeHandler) {
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.workspace.onDidChangeTextDocument(function(event) {
-                if (event.document === vscode.window.activeTextEditor.document) {
+                if (vscode.window.activeTextEditor &&
+                    vscode.window.activeTextEditor.document === event.document) {
                     editsFreeCounter += 1;
                     if (editsExpected) {
                         editsConfirmed = true;
