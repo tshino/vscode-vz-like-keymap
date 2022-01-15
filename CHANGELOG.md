@@ -4,37 +4,37 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [0.18.1] - 2022-01-15
 - 修正:
-  - vscode上の一部の操作（Gitなど）によりVz Keymapのエラーが表示される問題を修正しました。
+  - vscode上の一部の操作（Gitなど）によりVz Keymapのエラーが表示される問題を修正しました。 [#41](https://github.com/tshino/vscode-vz-like-keymap/issues/41)
 - Fixed:
-  - By some operations on vscode (such as git related), Vz Keymap was displaying error messages.
+  - By some operations on vscode (such as git related), Vz Keymap was displaying error messages. [#41](https://github.com/tshino/vscode-vz-like-keymap/issues/41)
 
 ### [0.18.0] - 2021-10-03
 - 新規:
-  - Visual Studio Code Web（ブラウザで動くVS Code）に対応しました。
+  - Visual Studio Code Web（ブラウザで動くVS Code）に対応しました。 [#14](https://github.com/tshino/vscode-vz-like-keymap/issues/14)
 - 修正:
   - キーボードマクロで改行（CTRL+MまたはENTER）が記録されない場合がある問題を修正しました。
   - 検索モード中の改行（CTRL+MまたはENTER）で検索でマッチした文字列が削除されないようにしました。
   - 検索ウィジェット上のCTRL+E（前履歴）およびCTRL+X（次履歴）が効かなくなっていたのを修正しました。
 - New:
-  - Added support of Web Extension (VS Code on browsers).
+  - Added support of Web Extension (VS Code on browsers). [#14](https://github.com/tshino/vscode-vz-like-keymap/issues/14)
 - Fixed:
   - Keyboard macro recording was failing to record New Line (Ctrl+M or Enter) in some situations.
   - In finding mode, New Line (Ctrl+M or Enter) was deleting the matched string.
   - On the find widget, Ctrl+E (Previous in History) and Ctrl+X (Next in History) were not working.
 
 ### [0.17.0] - 2021-09-10
-- 検索と置換のキーバインドと挙動を改善しました
+- 検索と置換のキーバインドと挙動を改善しました。 [#13](https://github.com/tshino/vscode-vz-like-keymap/issues/13)
   - 新しい操作方法の詳細はREADMEの「検索と置換の操作について」を参照してください。
   - CTRL+R（前候補）またはCTR+C（次候補）でジャンプした直後のカーソル位置を検索文字列の末尾から先頭に変更しました。VZエディタの挙動に近づけています。
   - CTRL+Q F（検索）およびCTRL+Q A（置換）によりキーボードフォーカスを検索ウィジェットとドキュメントの間で切り替えられるようにしました。
-- Updated Find and Replace key bindings and behaviors to improve usability:
+- Updated Find and Replace key bindings and behaviors to improve usability: [#13](https://github.com/tshino/vscode-vz-like-keymap/issues/13)
   - See 'How to use Find and Replace' in the README for the details of the new behavior.
   - Changed the cursor position after the jump by Ctrl+R (Previous match) or Ctrl+C (Next match) from the end of the match to the beginning of one. It simulates a similar behavior as the original VZ Editor.
   - With Ctrl+Q F (Find) and Ctrl+Q A (Replace), now you can switch the keyboard focus between the find widget and the document.
 
 
 ### [0.16.0] - 2021-08-17
-- ついにキーボードマクロ機能を実現しました。
+- ついにキーボードマクロ機能を実現しました。 [#8](https://github.com/tshino/vscode-vz-like-keymap/issues/8)
   - CTRL+_でキー操作の記録開始またはキャンセルします。
   - CTRL+^でキー操作の記録を終了し、さらに同じキーで記録した操作を再生できます。
 - 改善:
@@ -49,7 +49,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - `vz.clipboardPopAndPaste` ... 設定`vzKeymap.textStack`に依らず常にテキストスタックを使用するようにしました.
     - `vz.clipboardPaste` ... 常にクリップボードの文字列をペーストします。
 
-- Added the Keyboard Macro function which is the final big piece of this extension:
+- Added the Keyboard Macro function which is the final big piece of this extension: [#8](https://github.com/tshino/vscode-vz-like-keymap/issues/8)
   - Ctrl+_ for start or cancel recording keyboard sequence.
   - Ctrl+^ for finish recording or replay the recorded sequence.
 - Improved:
