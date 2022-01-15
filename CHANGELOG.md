@@ -2,11 +2,11 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.18.1] - 2022-01-15
 - 修正:
   - vscode上の一部の操作（Gitなど）によりVz Keymapのエラーが表示される問題を修正しました。
 - Fixed:
-  - By Some operations on vscode (such as git), Vz Keymap was displaying error messages.
+  - By some operations on vscode (such as git related), Vz Keymap was displaying error messages.
 
 ### [0.18.0] - 2021-10-03
 - 新規:
