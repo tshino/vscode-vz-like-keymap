@@ -2,6 +2,16 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規:
+  - 「次の論理行頭へのカーソル移動」コマンドを追加しました。[#43](https://github.com/tshino/vscode-vz-like-keymap/issues/43)
+    - コマンドIDは`vz.cursorNextLineStart`。
+    - キー割り当てはありません。このコマンドはVZエディタの上書きモード時のENTERキーに近い動作を提供します。
+- New:
+  - Added new command that moves the cursor to the beginning of the next line. [#43](https://github.com/tshino/vscode-vz-like-keymap/issues/43)
+    - The command ID is `vz.cursorNextLineStart`.
+    - It has no keybinding. It provides a similar behavior to that of the Enter key in overwrite mode of VZ Editor.
+
 ### [0.18.1] - 2022-01-15
 - 修正:
   - vscode上の一部の操作（Gitなど）によりVz Keymapのエラーが表示される問題を修正しました。 [#41](https://github.com/tshino/vscode-vz-like-keymap/issues/41)
