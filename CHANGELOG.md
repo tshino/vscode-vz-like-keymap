@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.18.2] - 2022-01-22
 - 新規:
   - 「次の論理行頭へのカーソル移動」コマンドを追加しました。[#43](https://github.com/tshino/vscode-vz-like-keymap/issues/43)
     - キー割り当てはありません。
