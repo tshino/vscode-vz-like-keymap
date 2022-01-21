@@ -5276,6 +5276,13 @@ describe('KeyboardMacro', () => {
             await selectRange(2, 2, 2, 7);
             await testReplayFindStartCursorXXX([[10, 0]]);
         });
+        it('should cancel selection and move cursor to beginning of next line (findStartCursorNextLineStart)', async () => {
+            await selectRange(7, 2, 7, 5);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorNextLineStart'], [[8, 0]]);
+
+            await selectRange(2, 2, 2, 7);
+            await testReplayFindStartCursorXXX([[3, 0]]);
+        });
     });
     describe('findStartCursorTop, findStartCursorBottom', () => {
         beforeEach(async () => {

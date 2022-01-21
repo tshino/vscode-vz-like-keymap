@@ -505,6 +505,10 @@ describe('SearchHandler', () => {
             await selectRange(7, 3, 7, 8);
             await testWithMatch(searchHandler.findStartCursorViewBottom, [[10, 0]]);
         });
+        it('should cancel selection and move cursor to beginning of the next line (findStartCursorNextLineStart)', async () => {
+            await selectRange(7, 7, 7, 10);
+            await testWithMatch(searchHandler.findStartCursorNextLineStart, [[8, 0]]);
+        });
 
         it('should not cancel selection if it is not a match (findStartCursorLeft)', async () => {
             await selectRange(5, 2, 5, 5);
@@ -561,6 +565,10 @@ describe('SearchHandler', () => {
         it('should not cancel selection if it is not a match (findStartCursorViewBottom)', async () => {
             await selectRange(5, 2, 5, 7);
             await testWithoutMatch(searchHandler.findStartCursorViewBottom, [[5, 2, 10, 0]]);
+        });
+        it('should not cancel selection if it is not a match (findStartCursorNextLineStart)', async () => {
+            await selectRange(5, 2, 5, 7);
+            await testWithoutMatch(searchHandler.findStartCursorNextLineStart, [[5, 2, 6, 0]]);
         });
     });
     describe('findStartScrollLineXXX', () => {
