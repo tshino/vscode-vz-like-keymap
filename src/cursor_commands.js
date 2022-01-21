@@ -345,6 +345,18 @@ const CursorHandler = function(modeHandler) {
         let col = textEditor.document.lineAt(line).range.end.character;
         await moveCursorTo(textEditor, line, col, true);
     };
+    const cursorNextLineStart = async function(textEditor, _edit) {
+        mode.sync(textEditor);
+        mode.resetBoxSelection();
+        const lineCount = textEditor.document.lineCount;
+        const line = textEditor.selection.active.line + 1;
+        if (line < lineCount) {
+            await moveCursorTo(textEditor, line, 0, mode.inSelection());
+        } else {
+            const col = textEditor.document.lineAt(lineCount - 1).text.length;
+            await moveCursorTo(textEditor, lineCount - 1, col, mode.inSelection());
+        }
+    };
     const cursorLeft = makeCursorCommand('cursorLeft', 'cursorLeftSelect', 'cursorColumnSelectLeft');
     const cursorRight = makeCursorCommand('cursorRight', 'cursorRightSelect', 'cursorColumnSelectRight');
     const cursorUp = makeCursorCommand('cursorUp', 'cursorUpSelect', 'cursorColumnSelectUp');
@@ -619,6 +631,7 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'cursorEnd', cursorEnd);
         registerTextEditorCommand(context, 'cursorTop', cursorTop);
         registerTextEditorCommand(context, 'cursorBottom', cursorBottom);
+        registerTextEditorCommand(context, 'cursorNextLineStart', cursorNextLineStart);
         registerCursorCommand(context, 'cursorLeftSelect', 'cursorLeftSelect');
         registerCursorCommand(context, 'cursorRightSelect', 'cursorRightSelect');
         registerCursorCommand(context, 'cursorUpSelect', 'cursorUpSelect');
@@ -665,6 +678,7 @@ const CursorHandler = function(modeHandler) {
         cursorEnd,
         cursorTop,
         cursorBottom,
+        cursorNextLineStart,
         scrollLineUp,
         scrollLineDown,
         stopBoxSelection,
