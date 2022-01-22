@@ -66,11 +66,10 @@ const CursorHandler = function(modeHandler) {
         );
     };
 
-    const waitForScrollTimeout = async function(task, timeout=600) {
+    const waitForScrollTimeout = async function(timeout=600) {
         return new Promise((resolve, reject) => {
-            let res = async function(textEditor) {
+            const res = async function(textEditor) {
                 if (textEditor) {
-                    await task(textEditor);
                     if (resolve) {
                         resolve();
                     }
@@ -129,24 +128,26 @@ const CursorHandler = function(modeHandler) {
         await moveCursorTo(textEditor, line, col, select, reveal);
     };
     const moveCursorTo = async function(textEditor, line, col, select, reveal=true) {
-        let cursor = new vscode.Position(line, col);
-        let anchor = select ? textEditor.selection.anchor : cursor;
-        let newSelections = [new vscode.Selection(anchor, cursor)];
-        let promises = [];
-        if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
-            mode.expectSync();
-            textEditor.selections = newSelections;
-            promises.push(
-                mode.waitForSyncTimeout(200).catch(() => {}).then(
-                    () => { mode.sync(textEditor); }
-                )
-            );
+        const cursor = new vscode.Position(line, col);
+        const anchor = select ? textEditor.selection.anchor : cursor;
+        const newSelections = [new vscode.Selection(anchor, cursor)];
+        const promises = [];
+        try {
+            if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
+                promises.push((async function() {
+                    mode.expectSync();
+                    textEditor.selections = newSelections;
+                    await mode.waitForSyncTimeout(200).catch(() => {});
+                    mode.sync(textEditor);
+                })());
+            }
+            if (reveal) {
+                promises.push(waitForScrollTimeout().catch(() => {}));
+                textEditor.revealRange(new vscode.Range(cursor, cursor));
+            }
+        } finally {
+            await Promise.all(promises);
         }
-        if (reveal) {
-            promises.push(waitForScrollTimeout(() => {}).catch(() => {}));
-            textEditor.revealRange(new vscode.Range(cursor, cursor));
-        }
-        await Promise.all(promises);
     };
 
     const cursorHalfPageUpCommon = async function(textEditor, select) {
@@ -160,30 +161,29 @@ const CursorHandler = function(modeHandler) {
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2) - 1);
         if (0 === vlines[0]) {
-            let newLine = vlines[Math.max(0, currIndex - halfPage)];
+            const newLine = vlines[Math.max(0, currIndex - halfPage)];
             await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         } else {
-            let promise = waitForScrollTimeout(async function(textEditor) {
-                let newVlines = EditUtil.enumVisibleLines(textEditor);
-                let deltaScroll = EditUtil.getLowerBoundLineIndex(newVlines, vlines[0]);
-                let delta = Math.max(halfPage, deltaScroll);
-                let newLine = (
-                    0 === newVlines[0] ? (
-                        delta <= currIndex
-                            ? vlines[currIndex - delta]
-                            : newVlines[Math.max(0, deltaScroll + currIndex - delta)]
-                    ) : (
-                        newVlines[Math.min(newVlines.length - 1, currIndex)]
-                    )
-                );
-                await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
-            }).catch(() => {});
-            let center = 2 <= vlines.length ? vlines[1] : vlines[0];
+            const promise = waitForScrollTimeout().catch(() => {});
+            const center = 2 <= vlines.length ? vlines[1] : vlines[0];
             textEditor.revealRange(
                 new vscode.Range(center, 0, center, 0),
                 vscode.TextEditorRevealType.InCenter
             );
             await promise;
+            const newVlines = EditUtil.enumVisibleLines(textEditor);
+            const deltaScroll = EditUtil.getLowerBoundLineIndex(newVlines, vlines[0]);
+            const delta = Math.max(halfPage, deltaScroll);
+            const newLine = (
+                0 === newVlines[0] ? (
+                    delta <= currIndex
+                        ? vlines[currIndex - delta]
+                        : newVlines[Math.max(0, deltaScroll + currIndex - delta)]
+                ) : (
+                    newVlines[Math.min(newVlines.length - 1, currIndex)]
+                )
+            );
+            await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         }
     };
     const cursorHalfPageDownCommon = async function(textEditor, select) {
@@ -198,20 +198,19 @@ const CursorHandler = function(modeHandler) {
         let onePage = Math.max(1, vlines.length);
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
-            let newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
+            const newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
             await moveCursorTo(textEditor, newLine, curr.character, select);
         } else {
-            let promise = waitForScrollTimeout(async function(textEditor) {
-                let newVlines = EditUtil.enumVisibleLines(textEditor);
-                let newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
-                await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
-            }).catch(() => {});
-            let center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
+            const promise = waitForScrollTimeout().catch(() => {});
+            const center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
             textEditor.revealRange(
                 new vscode.Range(center, 0, center, 0),
                 vscode.TextEditorRevealType.InCenter
             );
             await promise;
+            const newVlines = EditUtil.enumVisibleLines(textEditor);
+            const newLine = newVlines[Math.min(newVlines.length - 1, currIndex)];
+            await moveCursorToWithoutScroll(textEditor, newLine, curr.character, select);
         }
     };
     const cursorHalfPageUpImpl = async function(textEditor, _edit) {
@@ -523,14 +522,16 @@ const CursorHandler = function(modeHandler) {
         }
     };
 
-    const openTextDocument = function(uri, line) {
-        vscode.workspace.openTextDocument(uri).then(function(doc) {
-            vscode.window.showTextDocument(doc).then(function(textEditor) {
-                if (line) {
-                    moveCursorTo(textEditor, line - 1, 0, false);
-                }
-            }, function(_err) {});
-        }, function(_err) {});
+    const openTextDocument = async function(uri, line) {
+        try {
+            const doc = await vscode.workspace.openTextDocument(uri);
+            const textEditor = await vscode.window.showTextDocument(doc);
+            if (line) {
+                await moveCursorTo(textEditor, line - 1, 0, false);
+            }
+        } catch (err) {
+            //
+        }
     };
     const getCurrentLineText = function(textEditor) {
         let line = textEditor.selection.active.line;
@@ -597,7 +598,7 @@ const CursorHandler = function(modeHandler) {
         const statFunc = vscode.workspace.fs.stat;
         const target = await findTagJumpTarget(folders, names, statFunc);
         if (target) {
-            openTextDocument(target.uri, target.line);
+            await openTextDocument(target.uri, target.line);
         }
     };
 
