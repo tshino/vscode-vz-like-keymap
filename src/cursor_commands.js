@@ -6,23 +6,6 @@ const tag_jump = require("./tag_jump.js");
 const mode_handler = require("./mode_handler.js");
 const keyboard_macro = require("./keyboard_macro.js");
 
-const exec = function(commands, index = 0, textEditor = null) {
-    if (typeof commands === 'string' || typeof commands === 'function') {
-        commands = [ commands ];
-    }
-    const cmd = commands[index];
-    let res = null;
-    if (typeof cmd === 'function') {
-        res = new Promise((resolve) => { resolve(cmd(textEditor)); });
-    } else {
-        res = vscode.commands.executeCommand(cmd);
-    }
-    if (index + 1 < commands.length) {
-        res = res.then(function() { return exec(commands, index + 1, textEditor); });
-    }
-    return res;
-};
-
 const kbMacroHandler = keyboard_macro.getInstance();
 const registerTextEditorCommand0 = CommandUtil.makeRegisterTextEditorCommand(vscode);
 const registerTextEditorCommand = function(context, name, func) {
@@ -106,7 +89,7 @@ const CursorHandler = function(modeHandler) {
         });
     };
     const makeCursorCommand = function(basicCmd, selectCmd, boxSelectCmd) {
-        return function(textEditor, _edit) {
+        return async function(textEditor, _edit) {
             mode.sync(textEditor);
             let cmd = basicCmd;
             if (mode.inSelection()) {
@@ -120,15 +103,20 @@ const CursorHandler = function(modeHandler) {
                 }
             }
             if (typeof cmd === 'function') {
-                return exec(cmd, 0, textEditor);
+                await cmd(textEditor);
             } else {
                 mode.expectSync();
-                let res = exec(cmd, 0, textEditor);
-                res = res.then(result => {
-                    mode.sync(textEditor);
-                    return result;
-                });
-                return res;
+                if (typeof cmd === 'string') {
+                    cmd = [ cmd ];
+                }
+                for (const command of cmd) {
+                    if (typeof command === 'function') {
+                        await command(textEditor);
+                    } else {
+                        await vscode.commands.executeCommand(command);
+                    }
+                }
+                mode.sync(textEditor);
             }
         };
     };
@@ -262,20 +250,26 @@ const CursorHandler = function(modeHandler) {
         ['cursorPageDownSelect']
     );
     const cursorFullPageDownImpl = async function(textEditor) {
-        let promises = [];
-        if (!EditUtil.isLastLineVisible(textEditor)) {
-            promises.push(exec('scrollPageDown'));
+        const promises = [];
+        try {
+            if (!EditUtil.isLastLineVisible(textEditor)) {
+                promises.push(vscode.commands.executeCommand('scrollPageDown'));
+            }
+            promises.push(cursorFullPageDownWithoutScroll(textEditor));
+        } finally {
+            await Promise.all(promises);
         }
-        promises.push(cursorFullPageDownWithoutScroll(textEditor));
-        await Promise.all(promises);
     };
     const cursorFullPageDownSelectImpl = async function(textEditor) {
-        let promises = [];
-        if (!EditUtil.isLastLineVisible(textEditor)) {
-            promises.push(exec('scrollPageDown'));
+        const promises = [];
+        try {
+            if (!EditUtil.isLastLineVisible(textEditor)) {
+                promises.push(vscode.commands.executeCommand('scrollPageDown'));
+            }
+            promises.push(cursorFullPageDownSelectWithoutScroll(textEditor));
+        } finally {
+            await Promise.all(promises);
         }
-        promises.push(cursorFullPageDownSelectWithoutScroll(textEditor));
-        await Promise.all(promises);
     };
     const cursorFullPageUp = makeGuardedCommand('cursorFullPageUp', cursorFullPageUpImpl);
     const cursorFullPageDown = makeGuardedCommand('cursorFullPageDown', cursorFullPageDownImpl);
@@ -371,12 +365,14 @@ const CursorHandler = function(modeHandler) {
     const cursorBottom = makeCursorCommand('cursorBottom', 'cursorBottomSelect');
     const scrollLineUp = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
-        const promise1 = exec(['scrollLineUp']).catch(() => {});
-        if (0 < textEditor.selection.active.line) {
-            const promise2 = cursorUp(textEditor);
-            await Promise.all([promise1, promise2]);
-        } else {
-            await promise1;
+        const promises = [];
+        try {
+            promises.push(vscode.commands.executeCommand('scrollLineUp'));
+            if (0 < textEditor.selection.active.line) {
+                promises.push(cursorUp(textEditor));
+            }
+        } finally {
+            await Promise.all(promises);
         }
     };
     const cancelSelection = async function(textEditor) {
@@ -394,9 +390,13 @@ const CursorHandler = function(modeHandler) {
     const scrollLineDown = async function(textEditor, _edit) {
         // Commands for scroll and cursor should be dispatched concurrently to avoid flickering.
         if (textEditor.selection.active.line + 1 < textEditor.document.lineCount) {
-            const promise1 = exec(['scrollLineDown']);
-            const promise2 = cursorDown(textEditor);
-            await Promise.all([promise1, promise2]);
+            const promises = [];
+            try {
+                promises.push(vscode.commands.executeCommand('scrollLineDown'));
+                promises.push(cursorDown(textEditor));
+            } finally {
+                await Promise.all(promises);
+            }
         }
     };
 
@@ -650,8 +650,6 @@ const CursorHandler = function(modeHandler) {
         registerTextEditorCommand(context, 'tagJump', tagJump);
     };
     return {
-        makeCursorCommand,
-        registerCursorCommand,
         moveCursorToWithoutScroll,
         moveCursorTo,
         cursorHalfPageUp,
