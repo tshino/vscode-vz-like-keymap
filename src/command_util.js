@@ -2,6 +2,8 @@
 
 const CommandUtil = (function() {
     let reentryGuard = null;
+    const commandQueue = [];
+    const MaxQueueLength = 1;
     let commandListener = null;
 
     const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
@@ -12,10 +14,16 @@ const CommandUtil = (function() {
     const makeGuardedCommand = function(name, func) {
         const commandName = CommandPrefix + name;
         const guardedCommand = async function(textEditor, edit) {
-            if (reentryGuard === name) {
-                return;
+            if (reentryGuard !== null) {
+                if (commandQueue.length >= MaxQueueLength) {
+                    return;
+                }
+                await new Promise(resolve => {
+                    commandQueue.push(resolve);
+                });
+            } else {
+                reentryGuard = name;
             }
-            reentryGuard = name;
             try {
                 if (commandListener) {
                     commandListener(commandName, guardedCommand);
@@ -24,7 +32,13 @@ const CommandUtil = (function() {
             } catch (error) {
                 console.log('*** debug: unhandled exception in execution of command ' + commandName, error);
             }
-            reentryGuard = null;
+            if (0 < commandQueue.length) {
+                const resolve = commandQueue[0];
+                commandQueue.splice(0, 1);
+                resolve();
+            } else {
+                reentryGuard = null;
+            }
         };
         return guardedCommand;
     };
