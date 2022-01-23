@@ -215,14 +215,14 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(4, 0, 4, 3);
             let p1 = searchHandler.expandWordToFind(textEditor);
             let p2 = searchHandler.expandWordToFind(textEditor);
             await p1;
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 14]]);
         });
     });
     describe('findStart', () => {
@@ -320,7 +320,7 @@ describe('SearchHandler', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
-        it('should prevent reentry (no Start)', async () => {
+        it('should prevent reentry and serialize concurrent calls (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findPreviousMatch(textEditor);
@@ -328,10 +328,10 @@ describe('SearchHandler', () => {
             await p1;
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should prevent reentry (with Start)', async () => {
+        it('should prevent reentry and serialize concurrent calls (with Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findStartPreviousMatch(textEditor);
@@ -339,7 +339,7 @@ describe('SearchHandler', () => {
             await p1;
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
     });
@@ -400,7 +400,7 @@ describe('SearchHandler', () => {
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
-        it('should prevent reentry (no Start)', async () => {
+        it('should prevent reentry and serialize concurrent calls (no Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findNextMatch(textEditor);
@@ -408,10 +408,10 @@ describe('SearchHandler', () => {
             await p1;
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 4]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 6, 3, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should prevent reentry (with Start)', async () => {
+        it('should prevent reentry and serialize concurrent calls (with Start)', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             let p1 = searchHandler.findStartNextMatch(textEditor);
@@ -419,7 +419,7 @@ describe('SearchHandler', () => {
             await p1;
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 4]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 6, 3, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
     });

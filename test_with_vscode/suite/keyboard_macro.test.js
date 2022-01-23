@@ -442,14 +442,14 @@ describe('KeyboardMacro', () => {
         await CommandUtil.waitForEndOfGuardedCommand();
         kb_macro.finishRecording();
         assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-            command
+            command, command
         ]);
-        let deltaCursor = textEditor.selections[0].active.line - 500;
+        const deltaCursor = textEditor.selections[0].active.line - 500;
 
         const lineToReplayAt = up ? 600 : 400;
         await resetCursor(lineToReplayAt, 5);
         await kb_macro.replay(textEditor);
-        let deltaCursorReplay = textEditor.selections[0].active.line - lineToReplayAt;
+        const deltaCursorReplay = textEditor.selections[0].active.line - lineToReplayAt;
         assert.strictEqual(deltaCursor, deltaCursorReplay);
     };
     describe('cursorHalfPageUp, cursorHalfPageDown', () => {
@@ -475,17 +475,17 @@ describe('KeyboardMacro', () => {
                 'vz.cursorHalfPageUp'
             ], 'Up');
         });
-        it('should prevent reentry (cursorHalfPageUp)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorHalfPageUp)', async () => {
             await testScrollPagePreventReentry('vz.cursorHalfPageUp', 'Up');
         });
-        it('should prevent reentry (cursorHalfPageDown)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorHalfPageDown)', async () => {
             await testScrollPagePreventReentry('vz.cursorHalfPageDown', 'Down');
         });
-        it('should prevent reentry (cursorHalfPageUpSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorHalfPageUpSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorHalfPageUpSelect', 'Up');
             assert.strictEqual(mode.inSelection(), true);
         });
-        it('should prevent reentry (cursorHalfPageDownSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorHalfPageDownSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorHalfPageDownSelect', 'Down');
             assert.strictEqual(mode.inSelection(), true);
         });
@@ -513,17 +513,17 @@ describe('KeyboardMacro', () => {
                 'vz.cursorFullPageUp'
             ], 'Up');
         });
-        it('should prevent reentry (cursorFullPageUp)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorFullPageUp)', async () => {
             await testScrollPagePreventReentry('vz.cursorFullPageUp', 'Up');
         });
-        it('should prevent reentry (cursorFullPageDown)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorFullPageDown)', async () => {
             await testScrollPagePreventReentry('vz.cursorFullPageDown', 'Down');
         });
-        it('should prevent reentry (cursorFullPageUpSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorFullPageUpSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorFullPageUpSelect', 'Up');
             assert.strictEqual(mode.inSelection(), true);
         });
-        it('should prevent reentry (cursorFullPageDownSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorFullPageDownSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorFullPageDownSelect', 'Down');
             assert.strictEqual(mode.inSelection(), true);
         });
@@ -551,17 +551,17 @@ describe('KeyboardMacro', () => {
                 'vz.cursorPageUp'
             ], 'Up');
         });
-        it('should prevent reentry (cursorPageUp)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorPageUp)', async () => {
             await testScrollPagePreventReentry('vz.cursorPageUp', 'Up');
         });
-        it('should prevent reentry (cursorPageDown)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorPageDown)', async () => {
             await testScrollPagePreventReentry('vz.cursorPageDown', 'Down');
         });
-        it('should prevent reentry (cursorPageUpSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorPageUpSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorPageUpSelect', 'Up');
             assert.strictEqual(mode.inSelection(), true);
         });
-        it('should prevent reentry (cursorPageDownSelect)', async () => {
+        it('should prevent reentry and serialize concurrent calls (cursorPageDownSelect)', async () => {
             await testScrollPagePreventReentry('vz.cursorPageDownSelect', 'Down');
             assert.strictEqual(mode.inSelection(), true);
         });
@@ -3236,7 +3236,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardCutAndPush');
@@ -3246,16 +3246,16 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardCutAndPush'
+                'vz.clipboardCutAndPush', 'vz.clipboardCutAndPush'
             ]);
 
-            await selectRange(1, 3, 2, 2);
+            await selectRange(1, 3, 3, 2);
             await kb_macro.replay(textEditor);
-            await assertDocumentLineCount(5);
+            await assertDocumentLineCount(2);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, 'de\nfg');
+            assert.strictEqual(clipboard, 'fgh345\n');
         });
         it('should delete an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
@@ -3416,7 +3416,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardCut');
@@ -3426,16 +3426,16 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardCut'
+                'vz.clipboardCut', 'vz.clipboardCut'
             ]);
 
-            await selectRange(1, 3, 2, 2);
+            await selectRange(1, 3, 3, 2);
             await kb_macro.replay(textEditor);
-            await assertDocumentLineCount(5);
+            await assertDocumentLineCount(2);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 3]]);
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, 'de\nfg');
+            assert.strictEqual(clipboard, 'fgh345\n');
         });
     });
     describe('clipboardCopyAndPush', () => {
@@ -3471,7 +3471,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardCopyAndPush');
@@ -3481,7 +3481,7 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardCopyAndPush'
+                'vz.clipboardCopyAndPush', 'vz.clipboardCopyAndPush'
             ]);
 
             await selectRange(2, 3, 3, 2);
@@ -3490,7 +3490,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 2]]);
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, 'de\nfg');
+            assert.strictEqual(clipboard, 'fghij\n');
         });
         it('should copy an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
@@ -3610,7 +3610,7 @@ describe('KeyboardMacro', () => {
             let clipboard = await vscode.env.clipboard.readText();
             assert.strictEqual(clipboard, '4567890\n1234567');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardCopy');
@@ -3620,7 +3620,7 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardCopy'
+                'vz.clipboardCopy', 'vz.clipboardCopy'
             ]);
 
             await selectRange(2, 3, 3, 2);
@@ -3629,7 +3629,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 2]]);
             assert.strictEqual(mode.inSelection(), false);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, 'de\nfg');
+            assert.strictEqual(clipboard, 'fghij\n');
         });
     });
     describe('clipboardPopAndPaste', () => {
@@ -3664,7 +3664,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
             assert.strictEqual(mode.inSelection(), false);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 1);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardPopAndPaste');
@@ -3674,15 +3674,14 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardPopAndPaste'
+                'vz.clipboardPopAndPaste', 'vz.clipboardPopAndPaste'
             ]);
 
             await resetCursor(1, 1);
             await assertDocumentLineCount(7);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
-            await kb_macro.replay(textEditor);
-            await assertDocumentLineCount(6);
+            await assertDocumentLineCount(5);
             await kb_macro.replay(textEditor);
             await assertDocumentLineCount(7);
         });
@@ -3830,7 +3829,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
             assert.strictEqual(mode.inSelection(), false);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 1);
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.clipboardPaste');
@@ -3840,15 +3839,14 @@ describe('KeyboardMacro', () => {
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
-                'vz.clipboardPaste'
+                'vz.clipboardPaste', 'vz.clipboardPaste'
             ]);
 
             await resetCursor(1, 1);
             await assertDocumentLineCount(7);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
-            await kb_macro.replay(textEditor);
-            await assertDocumentLineCount(6);
+            await assertDocumentLineCount(5);
             await kb_macro.replay(textEditor);
             await assertDocumentLineCount(7);
         });
@@ -4753,7 +4751,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(0, 5);
             await kb_macro.replay(textEditor);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.find');
             let p2 = vscode.commands.executeCommand('vz.find');
@@ -4761,7 +4759,7 @@ describe('KeyboardMacro', () => {
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.find']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.find', 'vz.find']);
         });
     });
     describe('findReplace', () => {
@@ -4788,7 +4786,7 @@ describe('KeyboardMacro', () => {
             await resetCursor(0, 5);
             await kb_macro.replay(textEditor);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.findReplace');
             let p2 = vscode.commands.executeCommand('vz.findReplace');
@@ -4796,7 +4794,9 @@ describe('KeyboardMacro', () => {
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findReplace']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.findReplace', 'vz.findReplace'
+            ]);
         });
     });
     describe('selectWordToFind, expandWordToFind', () => {
@@ -5078,7 +5078,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 14, 2, 11]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 7);
             await searchHandler.selectWordToFind(textEditor);
             kb_macro.startRecording(textEditor);
@@ -5088,7 +5088,10 @@ describe('KeyboardMacro', () => {
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.findStart']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.findStart',
+                'vz.findStart'
+            ]);
         });
     });
     describe('findPreviousMatch, findStartPreviousMatch, findNextMatch, findStartNextMatch', () => {
@@ -5510,7 +5513,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[3, 10, 3, 7]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.replaceOne');
             let p2 = vscode.commands.executeCommand('vz.replaceOne');
@@ -5518,7 +5521,10 @@ describe('KeyboardMacro', () => {
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.replaceOne']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.replaceOne',
+                'vz.replaceOne'
+            ]);
         });
     });
     describe('closeFindWidget', () => {
@@ -5574,7 +5580,7 @@ describe('KeyboardMacro', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             kb_macro.startRecording(textEditor);
             let p1 = vscode.commands.executeCommand('vz.closeFindWidget');
             let p2 = vscode.commands.executeCommand('vz.closeFindWidget');
@@ -5582,7 +5588,10 @@ describe('KeyboardMacro', () => {
             await p2;
             await CommandUtil.waitForEndOfGuardedCommand();
             kb_macro.finishRecording();
-            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), ['vz.closeFindWidget']);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), [
+                'vz.closeFindWidget',
+                'vz.closeFindWidget'
+            ]);
         });
     });
 });
