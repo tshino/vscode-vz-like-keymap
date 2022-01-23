@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 修正:
+  - vscode拡張 [Keyboard Macro Beta](https://marketplace.visualstudio.com/items?itemName=tshino.kb-macro)との組み合わせで、同じショートカットキーが2回以上続く操作のマクロが正しく再生されない場合がある問題を修正しました。[#44](https://github.com/tshino/vscode-vz-like-keymap/issues/44)
+- Fixed:
+  - When combined with [Keyboard Macro Beta](https://marketplace.visualstudio.com/items?itemName=tshino.kb-macro), a macro that contains two or more times repeat of the same shortcut key was not being correctly reproduced during the playback. [#44](https://github.com/tshino/vscode-vz-like-keymap/issues/44)
+
 ### [0.18.2] - 2022-01-22
 - 新規:
   - 「次の論理行頭へのカーソル移動」コマンドを追加しました。[#43](https://github.com/tshino/vscode-vz-like-keymap/issues/43)
