@@ -34,7 +34,7 @@ describe('CommandUtil', function() {
             await retval();
             assert.deepStrictEqual(logs, ['invoked', 'invoked']);
         });
-        it('should return a function that is non-reentrant', async () => {
+        it('should return a function that prevents concurrent calls from reentry and serializes executions', async () => {
             const logs = [];
             const retval = CommandUtil.makeGuardedCommand(
                 'name',
@@ -54,7 +54,49 @@ describe('CommandUtil', function() {
             const p2 = retval();
             await p1;
             await p2;
-            assert.deepStrictEqual(logs, ['begin', 'end']);
+            assert.deepStrictEqual(logs, ['begin', 'end', 'begin', 'end']);
+        });
+        it('should accept at most one concurrent call and reject the rest (1)', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'name',
+                async function() {
+                    logs.push('begin');
+                    await sleep(30);
+                    logs.push('end');
+                }
+            );
+
+            const p1 = retval();
+            const p2 = retval();
+            const p3 = retval(); // should be rejected
+            const p4 = retval(); // should be rejected
+            await p1;
+            await p2;
+            await p3;
+            await p4;
+            assert.deepStrictEqual(logs, ['begin', 'end', 'begin', 'end']);
+        });
+        it('should accept at most one concurrent call and reject the rest (2)', async () => {
+            const logs = [];
+            const retval = CommandUtil.makeGuardedCommand(
+                'name',
+                async function() {
+                    logs.push('begin');
+                    await sleep(30);
+                    logs.push('end');
+                }
+            );
+
+            const p1 = retval();
+            const p2 = retval();
+            await p1;
+            const p3 = retval();
+            await p2;
+            const p4 = retval();
+            await p3;
+            await p4;
+            assert.deepStrictEqual(logs, ['begin', 'end', 'begin', 'end', 'begin', 'end', 'begin', 'end']);
         });
         it('should return a function that handles exceptions raised from the given function', async () => {
             const logs = [];

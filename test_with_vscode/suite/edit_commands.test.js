@@ -426,13 +426,14 @@ describe('EditHandler', () => {
             await editHandler.clipboardCutAndPush(textEditor);
             assert.strictEqual(editHandler.getTextStackLength(), 2);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCutAndPush(textEditor);
             let p2 = editHandler.clipboardCutAndPush(textEditor);
             await Promise.all([p1, p2]);
+            assert.strictEqual(editHandler.getTextStackLength(), 2);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, '4567890\n1234567');
+            assert.strictEqual(clipboard, '123890\n');
         });
         it('should delete an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
@@ -555,13 +556,13 @@ describe('EditHandler', () => {
             await editHandler.clipboardCut(textEditor);
             assert.strictEqual(editHandler.getTextStackLength(), 1);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(0, 3, 1, 7);
             let p1 = editHandler.clipboardCut(textEditor);
             let p2 = editHandler.clipboardCut(textEditor);
             await Promise.all([p1, p2]);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, '4567890\n1234567');
+            assert.strictEqual(clipboard, '123890\n');
         });
     });
     describe('clipboardCopyAndPush', () => {
@@ -600,13 +601,14 @@ describe('EditHandler', () => {
             await editHandler.clipboardCopyAndPush(textEditor);
             assert.strictEqual(editHandler.getTextStackLength(), 2);
         });
-        it('should prevent reentry', async () => {
-            await selectRange(0, 3, 1, 7);
+        it('should prevent reentry and serialize concurrent calls', async () => {
+            await selectRange(0, 3, 2, 2);
             let p1 = editHandler.clipboardCopyAndPush(textEditor);
             let p2 = editHandler.clipboardCopyAndPush(textEditor);
             await Promise.all([p1, p2]);
+            assert.strictEqual(editHandler.getTextStackLength(), 2);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, '4567890\n1234567');
+            assert.strictEqual(clipboard, 'abcde\n');
         });
         it('should copy an entire line when selection is empty', async () => {
             await resetCursor(2, 3);
@@ -701,13 +703,13 @@ describe('EditHandler', () => {
             await editHandler.clipboardCopy(textEditor);
             assert.strictEqual(editHandler.getTextStackLength(), 1);
         });
-        it('should prevent reentry', async () => {
-            await selectRange(0, 3, 1, 7);
+        it('should prevent reentry and serialize concurrent calls', async () => {
+            await selectRange(0, 3, 2, 2);
             let p1 = editHandler.clipboardCopy(textEditor);
             let p2 = editHandler.clipboardCopy(textEditor);
             await Promise.all([p1, p2]);
             let clipboard = await vscode.env.clipboard.readText();
-            assert.strictEqual(clipboard, '4567890\n1234567');
+            assert.strictEqual(clipboard, 'abcde\n');
         });
     });
     describe('peekTextStack', () => {
@@ -1213,7 +1215,7 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[1, 10]]);
             assert.strictEqual(mode.inSelection(), false);
         });
-        it('should prevent reentry (clipboardPopAndPaste)', async () => {
+        it('should prevent reentry and serialize concurrent calls (clipboardPopAndPaste)', async () => {
             await resetCursor(1, 1);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -1221,9 +1223,11 @@ describe('EditHandler', () => {
             let p1 = editHandler.clipboardPopAndPaste(textEditor);
             let p2 = editHandler.clipboardPopAndPaste(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineCount, 6);
+            assert.strictEqual(textEditor.document.lineAt(1).text, '1234567890');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineCount, 7);
         });
-        it('should prevent reentry (clipboardPaste)', async () => {
+        it('should prevent reentry and serialize concurrent calls (clipboardPaste)', async () => {
             await resetCursor(1, 1);
             assert.strictEqual(textEditor.document.lineCount, 7);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -1231,7 +1235,9 @@ describe('EditHandler', () => {
             let p1 = editHandler.clipboardPaste(textEditor);
             let p2 = editHandler.clipboardPaste(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineCount, 6);
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineAt(2).text, 'abcde');
+            assert.strictEqual(textEditor.document.lineCount, 7);
         });
         it('should retain the text stack (paste)', async () => {
             await selectRange(1, 1, 1, 9);
@@ -1513,12 +1519,12 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'de' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 3);
             let p1 = editHandler.deleteLeft(textEditor);
             let p2 = editHandler.deleteLeft(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(0).text, '124567890');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '14567890');
         });
     });
     describe('deleteRight', () => {
@@ -1646,12 +1652,12 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: 'de' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 3);
             let p1 = editHandler.deleteRight(textEditor);
             let p2 = editHandler.deleteRight(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(0).text, '123567890');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '12367890');
         });
     });
     describe('deleteWordLeft', () => {
@@ -1748,12 +1754,12 @@ describe('EditHandler', () => {
                 { isLeftward: false, text: 'fo' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 8);
             let p1 = editHandler.deleteWordLeft(textEditor);
             let p2 = editHandler.deleteWordLeft(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(0).text, '123 789');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '789');
         });
     });
     describe('deleteWordRight', () => {
@@ -1850,12 +1856,12 @@ describe('EditHandler', () => {
                 { isLeftward: false, text: 'fo' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 3);
             let p1 = editHandler.deleteWordRight(textEditor);
             let p2 = editHandler.deleteWordRight(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(0).text, '123 789');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123');
         });
     });
     describe('deleteAllLeft', () => {
@@ -1952,12 +1958,12 @@ describe('EditHandler', () => {
                 { isLeftward: true, text: '123 456' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 3);
             let p1 = editHandler.deleteAllLeft(textEditor);
             let p2 = editHandler.deleteAllLeft(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'lo world');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123 456 789lo world');
         });
     });
     describe('deleteAllRight', () => {
@@ -2054,12 +2060,12 @@ describe('EditHandler', () => {
                 { isLeftward: false, text: '456' }
             ]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 3);
             let p1 = editHandler.deleteAllRight(textEditor);
             let p2 = editHandler.deleteAllRight(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'hel');
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'helfoo()');
         });
     });
     describe('undelete', () => {
@@ -2358,15 +2364,15 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, '     fgh');
             assert.deepStrictEqual(editHandler.readUndeleteStack(), []);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 5);
             editHandler.pushUndeleteStack([{ isLeftward: true, text: 'a' }]);
             editHandler.pushUndeleteStack([{ isLeftward: true, text: 'b' }]);
             let p1 = editHandler.undelete(textEditor);
             let p2 = editHandler.undelete(textEditor);
             await Promise.all([p1, p2]);
-            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '12345b67890');
-            assert.deepStrictEqual(editHandler.getUndeleteStack().length, 1);
+            assert.deepStrictEqual(textEditor.document.lineAt(1).text, '12345ba67890');
+            assert.deepStrictEqual(editHandler.getUndeleteStack().length, 0);
         });
     });
     describe('enter', () => {
@@ -2545,12 +2551,13 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0], [2, 0]]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 2);
             let p1 = editHandler.insertLineBefore(textEditor);
             let p2 = editHandler.insertLineBefore(textEditor);
             await Promise.all([p1, p2]);
-            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '1234');
+            assert.deepStrictEqual(textEditor.document.lineAt(2).text, '');
+            assert.deepStrictEqual(textEditor.document.lineAt(3).text, '1234');
         });
     });
     describe('copyLinesDown', () => {
@@ -2639,12 +2646,12 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(4).text, 'fghijklmno');
             assert.strictEqual(textEditor.document.lineCount, 6);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 0);
             let p1 = editHandler.copyLinesDown(textEditor);
             let p2 = editHandler.copyLinesDown(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineCount, 5);
+            assert.strictEqual(textEditor.document.lineCount, 6);
         });
     });
     describe('transformCase', () => {
@@ -2890,12 +2897,12 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(2).text, '    abcd efgh ijkl');
             assert.strictEqual(textEditor.document.lineAt(3).text, '123 ABC def');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 16);
             let p1 = editHandler.transformCase(textEditor);
             let p2 = editHandler.transformCase(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn opqrstu Vwxyz');
+            assert.strictEqual(textEditor.document.lineAt(1).text, 'Abcdefg Hijklmn OPQRSTU Vwxyz');
         });
     });
     describe('insertPath', () => {
@@ -2928,12 +2935,15 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
             assert.strictEqual(textEditor.document.lineAt(2).text, 'ABCDEFG');
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(1, 0);
             let p1 = editHandler.insertPath(textEditor);
             let p2 = editHandler.insertPath(textEditor);
             await Promise.all([p1, p2]);
-            assert.strictEqual(textEditor.document.lineAt(1).text, textEditor.document.fileName);
+            assert.strictEqual(
+                textEditor.document.lineAt(1).text,
+                textEditor.document.fileName + textEditor.document.fileName
+            );
         });
     });
     describe('undo', () => {
@@ -2988,7 +2998,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(1).text, '123456');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 2]]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 2);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -2996,7 +3006,7 @@ describe('EditHandler', () => {
             let p2 = editHandler.undo(textEditor);
             await p1;
             await p2;
-            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 2]]);
         });
         it('should revert the last edit (paste)', async () => {
@@ -3076,7 +3086,7 @@ describe('EditHandler', () => {
             assert.strictEqual(textEditor.document.lineAt(0).text, '123456789');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
-        it('should prevent reentry', async () => {
+        it('should prevent reentry and serialize concurrent calls', async () => {
             await resetCursor(0, 0);
             await editHandler.clipboardCutAndPush(textEditor);
             await editHandler.clipboardCutAndPush(textEditor);
@@ -3086,7 +3096,7 @@ describe('EditHandler', () => {
             let p2 = editHandler.redo(textEditor);
             await p1;
             await p2;
-            assert.strictEqual(textEditor.document.lineAt(0).text, '123456');
+            assert.strictEqual(textEditor.document.lineAt(0).text, '123456789');
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
         });
         it('should reproduce the last undo-ed edit (paste)', async () => {
