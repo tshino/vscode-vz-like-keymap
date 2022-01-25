@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.18.3] - 2022-01-25
 - 修正:
   - vscode拡張 [Keyboard Macro Beta](https://marketplace.visualstudio.com/items?itemName=tshino.kb-macro)との組み合わせで、同じショートカットキーが2回以上続く操作のマクロが正しく再生されない場合がある問題を修正しました。[#44](https://github.com/tshino/vscode-vz-like-keymap/issues/44)
 - Fixed:
