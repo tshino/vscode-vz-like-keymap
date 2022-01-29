@@ -15,7 +15,7 @@ const EditEventHandler = function(mode) {
     // };
     const makeInsertUniformText2 = function(text, numDeleteLeft) {
         return async (textEditor) => {
-            let selections = Array.from(textEditor.selections);
+            const selections = Array.from(textEditor.selections);
             const bottomToTop = 1 < selections.length && selections[0].start.isAfter(selections[1].start);
             if (bottomToTop) {
                 selections.reverse();
@@ -23,12 +23,13 @@ const EditEventHandler = function(mode) {
             const numLF = Array.from(text).filter(c => c === '\n').length;
             const lenLastLine = numLF === 0 ? 0 : text.length - (text.lastIndexOf('\n') + 1);
             let lineOffset = 0;
+            const newSelections = [];
             await textEditor.edit(edit => {
-                for (let i = 0; i < selections.length; i++) {
-                    let pos = selections[i].active;
+                for (const selection of selections) {
+                    let pos = selection.active;
                     let removedLineCount = 0;
                     if (0 < numDeleteLeft) {
-                        let range = new vscode.Range(
+                        const range = new vscode.Range(
                             new vscode.Position(
                                 pos.line,
                                 Math.max(0, pos.character - numDeleteLeft)
@@ -36,10 +37,10 @@ const EditEventHandler = function(mode) {
                             pos
                         );
                         edit.delete(range);
-                    } else if (!selections[i].isEmpty) {
-                        edit.delete(selections[i]);
-                        pos = selections[i].start;
-                        removedLineCount = selections[i].end.line - selections[i].start.line;
+                    } else if (!selection.isEmpty) {
+                        edit.delete(selection);
+                        pos = selection.start;
+                        removedLineCount = selection.end.line - selection.start.line;
                     }
                     edit.insert(pos, text);
                     lineOffset += numLF;
@@ -52,24 +53,24 @@ const EditEventHandler = function(mode) {
                         pos = new vscode.Position(pos.line + lineOffset, lenLastLine);
                     }
                     lineOffset -= removedLineCount;
-                    selections[i] = new vscode.Selection(pos, pos);
+                    newSelections.push(new vscode.Selection(pos, pos));
                 }
             });
             if (mode.inSelection()) {
                 mode.resetSelection(textEditor);
             }
             if (bottomToTop) {
-                selections.reverse();
+                newSelections.reverse();
             }
-            if (!EditUtil.isEqualSelections(textEditor.selections, selections)) {
+            if (!EditUtil.isEqualSelections(textEditor.selections, newSelections)) {
                 mode.expectSync();
-                textEditor.selections = selections;
-                if (1 < selections.length) {
+                textEditor.selections = newSelections;
+                if (1 < newSelections.length) {
                     mode.startSelection(textEditor, true);
                 }
                 await mode.waitForSyncTimeout(200).catch(() => {});
             } else {
-                if (1 < selections.length) {
+                if (1 < newSelections.length) {
                     mode.startSelection(textEditor, true);
                 }
             }

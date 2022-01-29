@@ -3,11 +3,10 @@
 const EditUtil = {};
 
 EditUtil.enumVisibleLines = function(textEditor) {
-    let vranges = textEditor.visibleRanges;
-    let lines = [];
-    for (let i = 0; i < vranges.length; i++) {
-        let start = vranges[i].start.line;
-        let end = vranges[i].end.line;
+    const lines = [];
+    for (const vrange of textEditor.visibleRanges) {
+        const start = vrange.start.line;
+        const end = vrange.end.line;
         for (let j = start; j <= end; j++) {
             lines.push(j);
         }
@@ -25,14 +24,14 @@ EditUtil.getLowerBoundLineIndex = function(lines, line) {
 };
 
 EditUtil.isLastLineVisible = function(textEditor) {
-    let vlines = EditUtil.enumVisibleLines(textEditor);
-    let lineCount = textEditor.document.lineCount;
+    const vlines = EditUtil.enumVisibleLines(textEditor);
+    const lineCount = textEditor.document.lineCount;
     return vlines[vlines.length - 1] === lineCount - 1;
 };
 
 EditUtil.isCursorAtEndOfLine = function(textEditor) {
-    let cursor = textEditor.selection.active;
-    let lineLen = textEditor.document.lineAt(cursor.line).range.end.character;
+    const cursor = textEditor.selection.active;
+    const lineLen = textEditor.document.lineAt(cursor.line).range.end.character;
     return lineLen <= cursor.character;
 };
 
