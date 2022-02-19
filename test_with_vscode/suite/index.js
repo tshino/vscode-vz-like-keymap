@@ -2,6 +2,7 @@
 const path = require('path');
 const Mocha = require('mocha');
 const glob = require('glob');
+const vscode = require('vscode');
 
 function run() {
     // Create the mocha test
@@ -36,6 +37,8 @@ function run() {
                 e(err);
             }
         });
+    }).finally(() => {
+        return vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 }
 
