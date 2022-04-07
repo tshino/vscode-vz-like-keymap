@@ -44,19 +44,17 @@ const SearchHandler = function(modeHandler) {
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
         async function(textEditor, _edit) {
-            if (textEditor.selection.isEmpty) {
-                if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-                    await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-                } else {
-                    mode.expectSync();
-                    await vscode.commands.executeCommand('cursorWordEndRightSelect');
-                    await vscode.commands.executeCommand('actions.findWithSelection');
-                    await vscode.commands.executeCommand('actions.find');
-                    await waitForSynchronizedShort(mode, textEditor);
-                }
-            } else {
+            if (!textEditor.selection.isEmpty) {
                 await vscode.commands.executeCommand('actions.findWithSelection');
                 await vscode.commands.executeCommand('actions.find');
+            } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+                await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+            } else {
+                mode.expectSync();
+                await vscode.commands.executeCommand('cursorWordEndRightSelect');
+                await vscode.commands.executeCommand('actions.findWithSelection');
+                await vscode.commands.executeCommand('actions.find');
+                await waitForSynchronizedShort(mode, textEditor);
             }
             if (!textEditor.selection.isEmpty) {
                 selectingMatch = true;
@@ -66,13 +64,13 @@ const SearchHandler = function(modeHandler) {
     const expandWordToFind = makeGuardedCommand(
         'expandWordToFind',
         async function(textEditor, _edit) {
-            let sel = textEditor.selection;
+            const sel = textEditor.selection;
             if (sel.anchor.line !== sel.active.line) {
                 return;
             }
             let expectSync = false;
             if (sel.anchor.character > sel.active.character) {
-                let sels = Array.from(textEditor.selections).map(
+                const sels = Array.from(textEditor.selections).map(
                     sel => new vscode.Selection(sel.start, sel.end)
                 );
                 textEditor.selections = sels;
