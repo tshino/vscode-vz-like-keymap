@@ -81,6 +81,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should select the word the cursor is on and open findWidget (case 1)', async () => {
@@ -91,6 +92,9 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
             // FIXME: check that findWidget is visible (but it seems not possible to test)
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
         it('should select the word the cursor is on and open findWidget (case 2)', async () => {
             await selectRanges([[4, 0, 4, 0], [5, 0, 5, 0]]);
@@ -98,6 +102,9 @@ describe('SearchHandler', () => {
             await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 3], [5, 0, 5, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
         it('should not change selection if it is not empty (case 1)', async () => {
             await selectRange(2, 0, 2, 3);
@@ -105,6 +112,9 @@ describe('SearchHandler', () => {
             await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 10]]);
         });
         it('should not change selection if it is not empty (case 2)', async () => {
             await selectRanges([[4, 0, 4, 3], [5, 0, 5, 6]]);
@@ -112,6 +122,9 @@ describe('SearchHandler', () => {
             await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 3], [5, 0, 5, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
         it('should not change selection if the cursor is at end of a line (case 1)', async () => {
             await resetCursor(4, 14);
@@ -119,13 +132,19 @@ describe('SearchHandler', () => {
             await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
         });
         it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(4, 11, 4, 14);
+            await selectRange(2, 10, 2, 13);
 
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 13]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 7, 4, 10]]);
         });
     });
     describe('expandWordToFind', () => {
@@ -144,6 +163,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
         });
         it('should select the word the cursor is on and open findWidget (case 1)', async () => {
             await resetCursor(2, 0);
@@ -153,6 +173,9 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
             // FIXME: check that findWidget is visible (but it seems not possible to test)
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
         it('should select the word the cursor is on and open findWidget (case 2)', async () => {
             await selectRanges([[4, 0, 4, 0], [5, 0, 5, 0]]);
@@ -160,6 +183,9 @@ describe('SearchHandler', () => {
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 3], [5, 0, 5, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
         it('should select multiple words starting from the cursor position and open findWidget (case 1)', async () => {
             await selectRange(4, 0, 4, 3);
@@ -186,6 +212,9 @@ describe('SearchHandler', () => {
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
         it('should not change selection if the cursor is at end of a line (case 1)', async () => {
             await resetCursor(4, 14);
@@ -193,6 +222,9 @@ describe('SearchHandler', () => {
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
         });
         it('should not change selection if the cursor is at end of a line (case 2)', async () => {
             await selectRange(4, 11, 4, 14);
@@ -214,6 +246,9 @@ describe('SearchHandler', () => {
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 6]]);
         });
         it('should prevent reentry and serialize concurrent calls', async () => {
             await selectRange(4, 0, 4, 3);
@@ -239,6 +274,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xyz' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should move keyboard focus from findWidget to the document', async () => {
@@ -276,6 +312,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should find and select previous match of finding (no Start)', async () => {
@@ -357,6 +394,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should find and select next match of finding (no Start)', async () => {
@@ -709,6 +747,7 @@ describe('SearchHandler', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should replace a match of current search word with replace word and find next match', async () => {

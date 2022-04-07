@@ -4,8 +4,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - 修正:
+  - VS Codeの設定によってCTRL+L（カーソル位置の文字列を選択して検索）が効かない場合がある問題を修正しました。 [#57](https://github.com/tshino/vscode-vz-like-keymap/issues/57)
   - (internal) 自動テストのたびにエディタのタブが増えて遅くなる問題を修正。
 - Fixed:
+  - Ctrl+L (Select word to find) was not working depending on the VS Code settings. [#57](https://github.com/tshino/vscode-vz-like-keymap/issues/57)
   - (internal) Editor tabs ramain open after testing and that slows down the test runs.
 
 ### [0.18.3] - 2022-01-25

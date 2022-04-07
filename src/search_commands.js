@@ -44,12 +44,18 @@ const SearchHandler = function(modeHandler) {
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
         async function(textEditor, _edit) {
-            if (textEditor.selection.isEmpty && !EditUtil.isCursorAtEndOfLine(textEditor)) {
-                mode.expectSync();
-                await vscode.commands.executeCommand('cursorWordEndRightSelect');
-                await vscode.commands.executeCommand('actions.find');
-                await waitForSynchronizedShort(mode, textEditor);
+            if (textEditor.selection.isEmpty) {
+                if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+                    await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+                } else {
+                    mode.expectSync();
+                    await vscode.commands.executeCommand('cursorWordEndRightSelect');
+                    await vscode.commands.executeCommand('actions.findWithSelection');
+                    await vscode.commands.executeCommand('actions.find');
+                    await waitForSynchronizedShort(mode, textEditor);
+                }
             } else {
+                await vscode.commands.executeCommand('actions.findWithSelection');
                 await vscode.commands.executeCommand('actions.find');
             }
             if (!textEditor.selection.isEmpty) {
@@ -79,7 +85,11 @@ const SearchHandler = function(modeHandler) {
                     expectSync = true;
                 }
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
-                await vscode.commands.executeCommand('actions.find');
+                await vscode.commands.executeCommand('actions.findWithSelection');
+            } else if (textEditor.selection.isEmpty) {
+                await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+            } else {
+                await vscode.commands.executeCommand('actions.findWithSelection');
             }
             if (expectSync) {
                 await waitForSynchronizedShort(mode, textEditor);
