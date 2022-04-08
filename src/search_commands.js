@@ -133,7 +133,7 @@ const SearchHandler = function(modeHandler) {
     const findStart = makeGuardedCommand(
         'findStart',
         async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
             await flipSelectionBackward(textEditor);
             await promise;
         }
@@ -145,7 +145,7 @@ const SearchHandler = function(modeHandler) {
         await flipSelectionBackward(textEditor);
     };
     const findStartPreviousMatchImpl = async function(textEditor, _edit) {
-        let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         await findPreviousMatchImpl(textEditor);
         await promise;
     };
@@ -156,7 +156,7 @@ const SearchHandler = function(modeHandler) {
         await flipSelectionBackward(textEditor);
     };
     const findStartNextMatchImpl = async function(textEditor, _edit) {
-        let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         await findNextMatchImpl(textEditor);
         await promise;
     };
@@ -167,7 +167,7 @@ const SearchHandler = function(modeHandler) {
 
     const makeFindStartCursorImpl = function(funcBody) {
         return async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
             await cancelMatchSelection(textEditor);
             await funcBody(textEditor);
             await promise;
@@ -245,7 +245,7 @@ const SearchHandler = function(modeHandler) {
     const findStartCancelSelection = makeGuardedCommand(
         'findStartCancelSelection',
         async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
             await cancelSelection(textEditor);
             await promise;
         }
@@ -253,7 +253,7 @@ const SearchHandler = function(modeHandler) {
     const findStartEnter = makeGuardedCommand(
         'findStartEnter',
         async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+            const promise = vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
             await cancelMatchSelection(textEditor);
             await editHandler.enterImpl(textEditor);
             await promise;
@@ -274,7 +274,7 @@ const SearchHandler = function(modeHandler) {
     const closeFindWidget = makeGuardedCommand(
         'closeFindWidget',
         async function(textEditor, _edit) {
-            let promise = vscode.commands.executeCommand('closeFindWidget');
+            const promise = vscode.commands.executeCommand('closeFindWidget');
             await cancelMatchSelection(textEditor);
             await promise;
             selectingMatch = false;
