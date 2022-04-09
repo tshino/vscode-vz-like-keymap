@@ -178,7 +178,15 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 14]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should select multiple words starting from the existing selection (case 2)', async () => {
+        it('should select multiple words starting from the cursor position (case 2)', async () => {
+            await selectRanges([[4, 0, 4, 0], [5, 0, 5, 0]]);
+
+            await searchHandler.selectWordToFind(textEditor);
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10], [5, 0, 5, 10]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+        });
+        it('should select multiple words starting from the existing selection', async () => {
             await selectRange(4, 0, 4, 3);
 
             await searchHandler.selectWordToFind(textEditor);
@@ -188,14 +196,6 @@ describe('SearchHandler', () => {
 
             await searchHandler.selectWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 14]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
-        });
-        it('should select multiple words starting from the cursor position (case 3)', async () => {
-            await selectRanges([[4, 0, 4, 0], [5, 0, 5, 0]]);
-
-            await searchHandler.selectWordToFind(textEditor);
-            await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10], [5, 0, 5, 10]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
         it('should select an entire word when the first part of the word is already selected', async () => {

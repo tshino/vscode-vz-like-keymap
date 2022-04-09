@@ -4813,6 +4813,7 @@ describe('KeyboardMacro', () => {
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: 'xxx' });
             await vscode.commands.executeCommand('closeFindWidget');
         });
         after(async () => {
@@ -4902,6 +4903,35 @@ describe('KeyboardMacro', () => {
             await selectRange(2, 11, 2, 14);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 2, 14]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+        });
+
+        it('should select multiple words starting from the cursor position', async () => {
+            await resetCursor(2, 0);
+            const commands = ['vz.selectWordToFind', 'vz.selectWordToFind'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await resetCursor(1, 0);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 13]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+        });
+        it('should select multiple words starting from the existing selection', async () => {
+            await selectRange(2, 0, 2, 3);
+            const commands = ['vz.selectWordToFind', 'vz.selectWordToFind'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            await vscode.commands.executeCommand('closeFindWidget');
+
+            await selectRange(1, 0, 1, 3);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
 
