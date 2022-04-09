@@ -72,7 +72,7 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('actions.findWithSelection');
         } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
             await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-            await vscode.commands.executeCommand('closeFindWidget');
+            await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         } else {
             mode.expectSync();
             expectSync = true;
@@ -84,8 +84,8 @@ const SearchHandler = function(modeHandler) {
         }
         if (!textEditor.selection.isEmpty) {
             selectingMatch = true;
-            selectingWordToFind = true;
         }
+        selectingWordToFind = true;
     };
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
