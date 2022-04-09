@@ -137,7 +137,7 @@ Vz Keymapでは、VZエディタのESCキーで始まる2ストロークキー�
   - このとき検索ウィジェットは表示されたままですが、キーボードフォーカスがドキュメントに戻っているので、CTRL+R（前候補）とCTRL+C（次候補）で検索結果にジャンプしながら通常の操作でテキスト編集もできます。
   - ESCなどで検索ウィジェットを閉じれば、検索モードは終了します。
   - 備考:
-    - CTRL+Q Fの代わりにCTRL+L（文字列を選択して検索）でも検索ウィジェットが開きます。この場合はカーソル位置にある文字列（単語）が検索文字列として設定されます。ここでCTRL+Lを繰り返せばカーソル位置から取得する文字列を単語単位で伸ばしていくことができます。オリジナルのVZエディタに近い動作を再現しています。
+    - CTRL+Q Fの代わりにCTRL+L（文字列を選択して検索）でも検索ウィジェットが開きます。この場合はカーソル位置にある文字列（単語）が検索文字列として設定され、キーボードフォーカスはドキュメントにとどまります。ここでCTRL+Lを繰り返せばカーソル位置から取得する文字列を単語単位で伸ばしていくことができます。オリジナルのVZエディタに近い動作を再現しています。
     - 検索ウィジェットにフォーカスがあるときに、CTRL+Mなどで検索文字列を確定する操作を省略して、いきなりCTRL+C（次候補）などのキーで検索を開始することもできます。その時点でキーボードフォーカスがドキュメントに移ります。
 - 置換
   - CTRL+Q A（置換）で検索置換ウィジェットを開き、検索文字列と置換文字列を入力します。
@@ -287,7 +287,7 @@ Thus, please be notified that it can't record the execution of commands other th
   - At this moment the find widget should still be open, but the keyboard focus has moved back to the document, so you can edit the document in a normal way while also you move around by Ctrl+R (Previous match) and Ctrl+C (Next match).
   - Press ESC to close the find widget and finish the finding mode.
   - Note:
-    - Ctrl+L (Select Word to Find) instead of Ctrl+Q F is also available for opening the find widget, and in this case, the string (word) which starts from the location of the cursor is set as the new search string. If you repeat pressing Ctrl+L here, you can make the string longer by the word repeatedly. It simulates a similar behavior as the original VZ Editor.
+    - Ctrl+L (Select Word to Find) instead of Ctrl+Q F is also available for opening the find widget, and in this case, the string (word) which starts from the location of the cursor is set as the new search string and the keyboard focus stays on the document. If you repeat pressing Ctrl+L here, you can make the string longer by the word repeatedly. It simulates a similar behavior as the original VZ Editor.
     - When the keyboard focus is on the find widget, you can also skip the confirmation step like pressing Ctrl+M, and immediately start searching matches by pressing Ctrl+C (Next match) for instance. Either way, the keyboard focus will move to the document.
 - Replace
   - Press Ctrl+Q A (Replace) to open the find and replace widget, input your search string and your replacement string.

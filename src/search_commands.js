@@ -12,12 +12,14 @@ const SearchHandler = function(modeHandler) {
     const cursorHandler = cursor_commands.getInstance();
 
     let selectingMatch = false;
+    let selectingWordToFind = false;
 
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
                 if (event.textEditor === vscode.window.activeTextEditor) {
                     selectingMatch = false;
+                    selectingWordToFind = false;
                 }
             })
         );
@@ -41,34 +43,13 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('editor.action.startFindReplaceAction');
         }
     );
-    const selectWordToFind = makeGuardedCommand(
-        'selectWordToFind',
-        async function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty) {
-                await vscode.commands.executeCommand('actions.findWithSelection');
-                await vscode.commands.executeCommand('actions.find');
-            } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-                await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-            } else {
-                mode.expectSync();
-                await vscode.commands.executeCommand('cursorWordEndRightSelect');
-                await vscode.commands.executeCommand('actions.findWithSelection');
-                await vscode.commands.executeCommand('actions.find');
-                await waitForSynchronizedShort(mode, textEditor);
-            }
-            if (!textEditor.selection.isEmpty) {
-                selectingMatch = true;
-            }
-        }
-    );
-    const expandWordToFind = makeGuardedCommand(
-        'expandWordToFind',
-        async function(textEditor, _edit) {
+    const selectWordToFindImpl = async function(textEditor, _edit) {
+        let expectSync = false;
+        if (selectingWordToFind) {
             const sel = textEditor.selection;
             if (sel.anchor.line !== sel.active.line) {
                 return;
             }
-            let expectSync = false;
             if (sel.anchor.character > sel.active.character) {
                 const sels = Array.from(textEditor.selections).map(
                     sel => new vscode.Selection(sel.start, sel.end)
@@ -84,17 +65,37 @@ const SearchHandler = function(modeHandler) {
                 }
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.findWithSelection');
-            } else if (textEditor.selection.isEmpty) {
-                await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-            } else {
+            } else if (!textEditor.selection.isEmpty) {
                 await vscode.commands.executeCommand('actions.findWithSelection');
             }
-            if (expectSync) {
-                await waitForSynchronizedShort(mode, textEditor);
-            }
-            if (!textEditor.selection.isEmpty) {
-                selectingMatch = true;
-            }
+        } else if (!textEditor.selection.isEmpty) {
+            await vscode.commands.executeCommand('actions.findWithSelection');
+        } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+            await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        } else {
+            mode.expectSync();
+            expectSync = true;
+            await vscode.commands.executeCommand('cursorWordEndRightSelect');
+            await vscode.commands.executeCommand('actions.findWithSelection');
+        }
+        if (expectSync) {
+            await waitForSynchronizedShort(mode, textEditor);
+        }
+        if (!textEditor.selection.isEmpty) {
+            selectingMatch = true;
+        }
+        selectingWordToFind = true;
+    };
+    const selectWordToFind = makeGuardedCommand(
+        'selectWordToFind',
+        selectWordToFindImpl
+    );
+    const expandWordToFind = makeGuardedCommand(
+        'expandWordToFind',
+        async function(textEditor, _edit) {
+            selectingWordToFind = true;
+            await selectWordToFindImpl(textEditor);
         }
     );
     const flipSelectionBackward = async function(textEditor) {
