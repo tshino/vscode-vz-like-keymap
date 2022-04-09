@@ -12,12 +12,14 @@ const SearchHandler = function(modeHandler) {
     const cursorHandler = cursor_commands.getInstance();
 
     let selectingMatch = false;
+    let selectingWordToFind = false;
 
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
                 if (event.textEditor === vscode.window.activeTextEditor) {
                     selectingMatch = false;
+                    selectingWordToFind = false;
                 }
             })
         );
@@ -44,20 +46,47 @@ const SearchHandler = function(modeHandler) {
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
         async function(textEditor, _edit) {
-            if (!textEditor.selection.isEmpty) {
+            let expectSync = false;
+            if (selectingWordToFind) {
+                const sel = textEditor.selection;
+                if (sel.anchor.line !== sel.active.line) {
+                    return;
+                }
+                if (sel.anchor.character > sel.active.character) {
+                    const sels = Array.from(textEditor.selections).map(
+                        sel => new vscode.Selection(sel.start, sel.end)
+                    );
+                    textEditor.selections = sels;
+                    mode.expectSync();
+                    expectSync = true;
+                }
+                if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
+                    if (!expectSync) {
+                        mode.expectSync();
+                        expectSync = true;
+                    }
+                    await vscode.commands.executeCommand('cursorWordEndRightSelect');
+                    await vscode.commands.executeCommand('actions.findWithSelection');
+                } else if (!textEditor.selection.isEmpty) {
+                    await vscode.commands.executeCommand('actions.findWithSelection');
+                }
+            } else if (!textEditor.selection.isEmpty) {
                 await vscode.commands.executeCommand('actions.findWithSelection');
-                await vscode.commands.executeCommand('actions.find');
             } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
                 await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+                await vscode.commands.executeCommand('closeFindWidget');
             } else {
                 mode.expectSync();
+                expectSync = true;
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.findWithSelection');
-                await vscode.commands.executeCommand('actions.find');
+            }
+            if (expectSync) {
                 await waitForSynchronizedShort(mode, textEditor);
             }
             if (!textEditor.selection.isEmpty) {
                 selectingMatch = true;
+                selectingWordToFind = true;
             }
         }
     );
@@ -94,6 +123,7 @@ const SearchHandler = function(modeHandler) {
             }
             if (!textEditor.selection.isEmpty) {
                 selectingMatch = true;
+                selectingWordToFind = true;
             }
         }
     );
