@@ -77,7 +77,7 @@ describe('SearchHandler', () => {
                     'xyz abcdef 123\n' +
                     'abcdef xyz\n'
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.LF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
@@ -117,6 +117,16 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 10]]);
         });
         it('should not change selection if it is not empty (case 2)', async () => {
+            await selectRange(1, 0, 2, 6); // '\nabcdef' (multiple lines)
+
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 2, 6]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14, 5, 6]]);
+        });
+        it('should not change selection if it is not empty (case 3)', async () => {
             await selectRanges([[4, 0, 4, 3], [5, 0, 5, 6]]);
 
             await searchHandler.selectWordToFind(textEditor);
@@ -159,7 +169,7 @@ describe('SearchHandler', () => {
                     'xyz abcdef 123\n' +
                     'abcdef xyz\n'
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.LF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
