@@ -43,14 +43,20 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('editor.action.startFindReplaceAction');
         }
     );
+    const selectionReachesEndOfDocument = function(textEditor) {
+        let selection = textEditor.selections[0];
+        let lastLine = textEditor.document.lineCount - 1;
+        if (selection.end.line === lastLine &&
+            selection.end.character === textEditor.document.lineAt(lastLine).text.length) {
+            return true;
+        }
+        return false;
+    };
     const selectWordToFindImpl = async function(textEditor, _edit) {
         let expectSync = false;
         if (selectingWordToFind) {
             const sel = textEditor.selection;
-            if (sel.anchor.line !== sel.active.line) {
-                return;
-            }
-            if (sel.anchor.character > sel.active.character) {
+            if (sel.anchor.isAfter(sel.active)) {
                 const sels = Array.from(textEditor.selections).map(
                     sel => new vscode.Selection(sel.start, sel.end)
                 );
@@ -58,7 +64,7 @@ const SearchHandler = function(modeHandler) {
                 mode.expectSync();
                 expectSync = true;
             }
-            if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
+            if (!selectionReachesEndOfDocument(textEditor)) {
                 if (!expectSync) {
                     mode.expectSync();
                     expectSync = true;
@@ -70,7 +76,7 @@ const SearchHandler = function(modeHandler) {
             }
         } else if (!textEditor.selection.isEmpty) {
             await vscode.commands.executeCommand('actions.findWithSelection');
-        } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+        } else if (selectionReachesEndOfDocument(textEditor)) {
             await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
             await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         } else {

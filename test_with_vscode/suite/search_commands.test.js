@@ -77,7 +77,7 @@ describe('SearchHandler', () => {
                     'xyz abcdef 123\n' +
                     'abcdef xyz\n'
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.LF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
@@ -106,6 +106,16 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
+        it('should select the text beyond the line end', async () => {
+            await resetCursor(4, 14);
+
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14, 5, 6]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 2, 6]]);
+        });
         it('should not change selection if it is not empty (case 1)', async () => {
             await selectRange(2, 0, 2, 3);
 
@@ -117,6 +127,16 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 10]]);
         });
         it('should not change selection if it is not empty (case 2)', async () => {
+            await selectRange(1, 0, 2, 6); // '\nabcdef' (multiple lines)
+
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 2, 6]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+
+            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14, 5, 6]]);
+        });
+        it('should not change selection if it is not empty (case 3)', async () => {
             await selectRanges([[4, 0, 4, 3], [5, 0, 5, 6]]);
 
             await searchHandler.selectWordToFind(textEditor);
@@ -126,25 +146,15 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
-        });
-        it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(2, 10, 2, 13);
-
-            await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 10, 2, 13]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
-
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 7, 4, 10]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
     });
     describe('selectWordToFind calling multiple times', () => {
@@ -159,7 +169,7 @@ describe('SearchHandler', () => {
                     'xyz abcdef 123\n' +
                     'abcdef xyz\n'
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.LF
             );
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
             mode.initialize(textEditor);
@@ -186,6 +196,37 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10], [5, 0, 5, 10]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
+        it('should select multiple lines (case 1)', async () => {
+            await resetCursor(4, 11);
+
+            await searchHandler.selectWordToFind(textEditor);
+            await searchHandler.selectWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
+
+            await searchHandler.selectWordToFind(textEditor); // '123\nabcdef xyz'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 10]]);
+        });
+        it('should select multiple lines (case 2)', async () => {
+            await resetCursor(4, 14);
+
+            await searchHandler.selectWordToFind(textEditor); // '\nabcdef'
+            await searchHandler.selectWordToFind(textEditor); // '\nabcdef xyz'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14, 5, 10]]);
+        });
+        it('should select multiple lines (case 3)', async () => {
+            await selectRange(4, 11, 4, 14);
+
+            await searchHandler.selectWordToFind(textEditor); // '123'
+            await searchHandler.selectWordToFind(textEditor); // '123\nabcdef'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
+        });
+        it('should select multiple lines (case 4)', async () => {
+            await selectRange(4, 11, 5, 3);
+
+            await searchHandler.selectWordToFind(textEditor);
+            await searchHandler.selectWordToFind(textEditor); // '123\nabcdef'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
+        });
         it('should select multiple words starting from the existing selection', async () => {
             await selectRange(4, 0, 4, 3);
 
@@ -209,35 +250,27 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document (case 1)', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(4, 11, 4, 14);
+        it('should not change selection if the cursor is at end of the document (case 2)', async () => {
+            await selectRange(5, 7, 6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 4, 14]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
-        });
-        it('should not change selection if the selection reaches multiple lines', async () => {
-            await selectRange(4, 11, 5, 6);
-
-            await searchHandler.selectWordToFind(textEditor);
-            await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
         it('should reverse selection if the direction of selection is backward', async () => {
-            await selectRange(0, 6, 0, 0);
+            await selectRange(0, 3, 0, 0);
 
             await searchHandler.selectWordToFind(textEditor);
             await searchHandler.selectWordToFind(textEditor);
@@ -316,6 +349,37 @@ describe('SearchHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0, 4, 10], [5, 0, 5, 10]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
+        it('should select multiple lines (case 1)', async () => {
+            await resetCursor(4, 11);
+
+            await searchHandler.expandWordToFind(textEditor);
+            await searchHandler.expandWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
+
+            await searchHandler.expandWordToFind(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 10]]); // '123\nabcdef xyz'
+        });
+        it('should select multiple lines (case 2)', async () => {
+            await resetCursor(4, 14);
+
+            await searchHandler.expandWordToFind(textEditor); // '\nabcdef'
+            await searchHandler.expandWordToFind(textEditor); // '\nabcdef xyz'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 14, 5, 10]]);
+        });
+        it('should select multiple lines (case 3)', async () => {
+            await selectRange(4, 11, 4, 14);
+
+            await searchHandler.expandWordToFind(textEditor); // '123\nabcdef'
+            await searchHandler.expandWordToFind(textEditor); // '123\nabcdef xyz'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 10]]);
+        });
+        it('should select multiple lines (case 4)', async () => {
+            await selectRange(4, 11, 5, 3);
+
+            await searchHandler.expandWordToFind(textEditor); // '123\nabcdef'
+            await searchHandler.expandWordToFind(textEditor); // '123\nabcdef xyz'
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 10]]);
+        });
         it('should select an entire word when the first part of the word is already selected', async () => {
             await selectRange(2, 0, 2, 3);
 
@@ -326,32 +390,25 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document (case 1)', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.expandWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(4, 11, 4, 14);
+        it('should not change selection if the cursor is at end of the document (case 2)', async () => {
+            await selectRange(5, 7, 6, 0);
 
             await searchHandler.expandWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        it('should not change selection if the selection reaches multiple lines', async () => {
-            await selectRange(4, 11, 5, 6);
-
-            await searchHandler.expandWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 5, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
-        });
         it('should reverse selection if the direction of selection is backward', async () => {
-            await selectRange(0, 6, 0, 0);
+            await selectRange(0, 3, 0, 0);
 
             await searchHandler.expandWordToFind(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
