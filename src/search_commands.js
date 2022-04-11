@@ -47,10 +47,7 @@ const SearchHandler = function(modeHandler) {
         let expectSync = false;
         if (selectingWordToFind) {
             const sel = textEditor.selection;
-            if (sel.anchor.line !== sel.active.line) {
-                return;
-            }
-            if (sel.anchor.character > sel.active.character) {
+            if (sel.anchor.isAfter(sel.active)) {
                 const sels = Array.from(textEditor.selections).map(
                     sel => new vscode.Selection(sel.start, sel.end)
                 );
@@ -58,21 +55,21 @@ const SearchHandler = function(modeHandler) {
                 mode.expectSync();
                 expectSync = true;
             }
-            if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
+            // if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
                 if (!expectSync) {
                     mode.expectSync();
                     expectSync = true;
                 }
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.findWithSelection');
-            } else if (!textEditor.selection.isEmpty) {
-                await vscode.commands.executeCommand('actions.findWithSelection');
-            }
+            // } else if (!textEditor.selection.isEmpty) {
+                // await vscode.commands.executeCommand('actions.findWithSelection');
+            // }
         } else if (!textEditor.selection.isEmpty) {
             await vscode.commands.executeCommand('actions.findWithSelection');
-        } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-            await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        // } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
+            // await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+            // await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         } else {
             mode.expectSync();
             expectSync = true;
