@@ -43,6 +43,15 @@ const SearchHandler = function(modeHandler) {
             await vscode.commands.executeCommand('editor.action.startFindReplaceAction');
         }
     );
+    const selectionReachesEndOfDocument = function(textEditor) {
+        let selection = textEditor.selections[0];
+        let lastLine = textEditor.document.lineCount - 1;
+        if (selection.end.line === lastLine &&
+            selection.end.character === textEditor.document.lineAt(lastLine).text.length) {
+            return true;
+        }
+        return false;
+    };
     const selectWordToFindImpl = async function(textEditor, _edit) {
         let expectSync = false;
         if (selectingWordToFind) {
@@ -55,21 +64,21 @@ const SearchHandler = function(modeHandler) {
                 mode.expectSync();
                 expectSync = true;
             }
-            // if (!EditUtil.isCursorAtEndOfLine(textEditor)) {
+            if (!selectionReachesEndOfDocument(textEditor)) {
                 if (!expectSync) {
                     mode.expectSync();
                     expectSync = true;
                 }
                 await vscode.commands.executeCommand('cursorWordEndRightSelect');
                 await vscode.commands.executeCommand('actions.findWithSelection');
-            // } else if (!textEditor.selection.isEmpty) {
-                // await vscode.commands.executeCommand('actions.findWithSelection');
-            // }
+            } else if (!textEditor.selection.isEmpty) {
+                await vscode.commands.executeCommand('actions.findWithSelection');
+            }
         } else if (!textEditor.selection.isEmpty) {
             await vscode.commands.executeCommand('actions.findWithSelection');
-        // } else if (EditUtil.isCursorAtEndOfLine(textEditor)) {
-            // await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
-            // await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+        } else if (selectionReachesEndOfDocument(textEditor)) {
+            await vscode.commands.executeCommand('editor.actions.findWithArgs', { searchString: '' });
+            await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
         } else {
             mode.expectSync();
             expectSync = true;

@@ -146,18 +146,16 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 5, 10]]);
         });
-        /*
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        */
     });
     describe('selectWordToFind calling multiple times', () => {
         beforeEach(async () => {
@@ -252,27 +250,25 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
-        /*
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document (case 1)', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(4, 11, 4, 14);
+        it('should not change selection if the cursor is at end of the document (case 2)', async () => {
+            await selectRange(5, 7, 6, 0);
 
             await searchHandler.selectWordToFind(textEditor);
             await searchHandler.selectWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        */
         it('should reverse selection if the direction of selection is backward', async () => {
             await selectRange(0, 3, 0, 0);
 
@@ -394,25 +390,23 @@ describe('SearchHandler', () => {
             await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
             assert.deepStrictEqual(selectionsAsArray(), [[2, 7, 2, 13]]);
         });
-        /*
-        it('should not change selection if the cursor is at end of a line (case 1)', async () => {
-            await resetCursor(4, 14);
+        it('should not change selection if the cursor is at end of the document (case 1)', async () => {
+            await resetCursor(6, 0);
 
             await searchHandler.expandWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
-            await vscode.commands.executeCommand('editor.action.nextMatchFindAction');
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 14]]);
+            await vscode.commands.executeCommand('editor.action.previousMatchFindAction');
+            assert.deepStrictEqual(selectionsAsArray(), [[6, 0]]);
         });
-        it('should not change selection if the cursor is at end of a line (case 2)', async () => {
-            await selectRange(4, 11, 4, 14);
+        it('should not change selection if the cursor is at end of the document (case 2)', async () => {
+            await selectRange(5, 7, 6, 0);
 
             await searchHandler.expandWordToFind(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 11, 4, 14]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 7, 6, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
         });
-        */
         it('should reverse selection if the direction of selection is backward', async () => {
             await selectRange(0, 3, 0, 0);
 
