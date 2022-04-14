@@ -323,6 +323,7 @@ const SearchHandler = function(modeHandler) {
     };
     return {
         isSelectingMatch: function() { return selectingMatch; }, // for testing purpose
+        isSelectingSearchWord: function() { return selectingWordToFind; }, // for testing purpose
         find,
         findReplace,
         selectWordToFind,
