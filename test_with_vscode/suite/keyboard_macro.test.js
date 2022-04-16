@@ -5220,13 +5220,15 @@ describe('KeyboardMacro', () => {
     });
     const testRecordingFindStartCursorXXX = async function(commands, expectedSelection) {
         assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
         await searchHandler.selectWordToFind(textEditor);
-        assert.strictEqual(searchHandler.isSelectingMatch(), true);
+        assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         await recordThroughExecution(commands);
         assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
         assert.strictEqual(mode.inSelection(), false);
         assert.deepStrictEqual(selectionsAsArray(), expectedSelection);
         assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
     };
     const testReplayFindStartCursorXXX = async function(expectedSelection) {
         await searchHandler.selectWordToFind(textEditor);
@@ -5234,6 +5236,7 @@ describe('KeyboardMacro', () => {
         assert.strictEqual(mode.inSelection(), false);
         assert.deepStrictEqual(selectionsAsArray(), expectedSelection);
         assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
         // FIXME: check that findWidget is still visible (but it seems not possible to test)
         // FIXME: check that the focus is on the document (but it seems not possible to test)
     };
@@ -5257,17 +5260,17 @@ describe('KeyboardMacro', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should cancel selection and move cursor left one character', async () => {
-            await selectRange(1, 7, 1, 13);
+            await resetCursor(1, 7);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorLeft'], [[1, 6]]);
 
-            await selectRange(2, 4, 2, 10);
+            await resetCursor(2, 4);
             await testReplayFindStartCursorXXX([[2, 3]]);
         });
         it('should cancel selection and move cursor right one character', async () => {
-            await selectRange(1, 0, 1, 6);
+            await resetCursor(1, 0);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorRight'], [[1, 1]]);
 
-            await selectRange(2, 4, 2, 10);
+            await resetCursor(2, 4);
             await testReplayFindStartCursorXXX([[2, 5]]);
         });
     });
@@ -5282,43 +5285,43 @@ describe('KeyboardMacro', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should cancel selection and move cursor up one line (findStartCursorUp)', async () => {
-            await selectRange(5, 2, 5, 5);
+            await resetCursor(5, 2);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorUp'], [[4, 2]]);
 
-            await selectRange(2, 4, 2, 10);
+            await resetCursor(2, 4);
             await testReplayFindStartCursorXXX([[1, 4]]);
         });
         it('should cancel selection and move cursor down one line (findStartCursorDown)', async () => {
-            await selectRange(5, 2, 5, 5);
+            await resetCursor(5, 2);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorDown'], [[6, 2]]);
 
-            await selectRange(2, 4, 2, 10);
+            await resetCursor(2, 4);
             await testReplayFindStartCursorXXX([[3, 4]]);
         });
         it('should cancel selection and move cursor to the last word start (findStartCursorWordStartLeft)', async () => {
-            await selectRange(1, 7, 1, 10);
+            await resetCursor(1, 7);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartLeft'], [[1, 2]]);
 
-            await selectRange(2, 4, 2, 9);
+            await resetCursor(2, 4);
             await testReplayFindStartCursorXXX([[2, 2]]);
         });
         it('should cancel selection and move cursor to the next word start (findStartCursorWordStartRight)', async () => {
-            await selectRange(1, 3, 1, 7);
+            await resetCursor(1, 3);
             await testRecordingFindStartCursorXXX(['vz.findStartCursorWordStartRight'], [[1, 7]]);
 
-            await selectRange(2, 2, 2, 7);
+            await resetCursor(2, 2);
             await testReplayFindStartCursorXXX([[2, 7]]);
         });
         it('should cancel selection and move cursor to beginning of current line (findStartCursorLineStart)', async () => {
             await selectRange(4, 5, 7, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineStart'], [[4, 0]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineStart'], [[7, 0]]);
 
-            await selectRange(2, 2, 2, 7);
+            await resetCursor(2, 2);
             await testReplayFindStartCursorXXX([[2, 0]]);
         });
         it('should cancel selection and move cursor to end of current line (findStartCursorLineEnd)', async () => {
             await selectRange(4, 5, 7, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineEnd'], [[4, 16]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorLineEnd'], [[7, 16]]);
 
             await selectRange(2, 2, 2, 7);
             await testReplayFindStartCursorXXX([[2, 16]]);
@@ -5339,10 +5342,10 @@ describe('KeyboardMacro', () => {
         });
         it('should cancel selection and move cursor to top of current visible area (findStartCursorViewTop)', async () => {
             await selectRange(7, 2, 7, 5);
-            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewTop'], [[0, 2]]);
+            await testRecordingFindStartCursorXXX(['vz.findStartCursorViewTop'], [[0, 5]]);
 
             await selectRange(2, 2, 2, 7);
-            await testReplayFindStartCursorXXX([[0, 2]]);
+            await testReplayFindStartCursorXXX([[0, 7]]);
         });
         it('should cancel selection and move cursor to bottom of current visible area (findStartCursorViewBottom)', async () => {
             await selectRange(7, 2, 7, 5);
@@ -5405,10 +5408,8 @@ describe('KeyboardMacro', () => {
             await vscode.commands.executeCommand('closeFindWidget');
         });
         it('should cancel selection and move cursor one line up/down with scroll', async () => {
-            await selectRange(5, 2, 5, 8);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            await resetCursor(5, 2);
             await searchHandler.selectWordToFind(textEditor);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
             const commands = [
                 'vz.findStartScrollLineDown',
                 'vz.findStartScrollLineUp',
@@ -5416,18 +5417,18 @@ describe('KeyboardMacro', () => {
             ];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
 
-            await selectRange(7, 5, 7, 8);
+            await resetCursor(7, 5);
             await searchHandler.selectWordToFind(textEditor);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 5]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
-        it('should not cancel selection if it is not a match', async () => {
+        it('should not cancel selection if it is neither a match nor a search word', async () => {
             await selectRange(5, 2, 5, 8);
             const commands = [
                 'vz.findStartScrollLineDown',
@@ -5436,13 +5437,16 @@ describe('KeyboardMacro', () => {
             ];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[5, 2, 4, 8]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
 
             await selectRange(7, 5, 7, 8);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), true);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 5, 6, 8]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), false);
         });
     });
     describe('findStartCancelSelection', () => {
@@ -5478,13 +5482,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[3, 7]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 12]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
             await selectRange(4, 2, 4, 6);
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
-            assert.deepStrictEqual(selectionsAsArray(), [[4, 2]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[4, 6]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
         it('should retain selection if it is already empty', async () => {
@@ -5530,13 +5534,13 @@ describe('KeyboardMacro', () => {
             );
         });
         it('should cancel selection of a match and insert line-break at middle of a line with auto-indent', async () => {
-            await selectRange(1, 3, 1, 11);
+            await resetCursor(1, 3);
             await searchHandler.selectWordToFind(textEditor); // 'infinity'
             const commands = ['vz.findStartEnter'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
 
-            await selectRange(4, 8, 4, 15);
+            await resetCursor(4, 8);
             await searchHandler.selectWordToFind(textEditor); // 'beyond!'
             await kb_macro.replay(textEditor);
             assert.strictEqual(mode.inSelection(), false);
@@ -5626,17 +5630,30 @@ describe('KeyboardMacro', () => {
             await kb_macro.replay(textEditor);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
-        it('should cancel selection and locate the cursor to beginning of the last selection', async () => {
+        it('should cancel selection', async () => {
             await selectRange(1, 7, 1, 13);
             const commands = ['vz.selectWordToFind', 'vz.closeFindWidget'];
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
-            assert.deepStrictEqual(selectionsAsArray(), [[1, 7]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 13]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
 
             await selectRange(2, 11, 2, 14);
             await kb_macro.replay(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[2, 11]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 14]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+        });
+        it('should cancel selection and locate the cursor at beginning of the last match', async () => {
+            await resetCursor(1, 7);
+            const commands = ['vz.selectWordToFind', 'vz.findNextMatch', 'vz.closeFindWidget'];
+            await recordThroughExecution(commands);
+            assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            assert.deepStrictEqual(selectionsAsArray(), [[2, 4]]);
+            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+
+            await selectRange(2, 0, 2, 3);
+            await kb_macro.replay(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[3, 7]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), false);
         });
         it('should not cancel selection if it is not a match', async () => {
