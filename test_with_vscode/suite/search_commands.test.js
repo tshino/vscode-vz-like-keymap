@@ -480,15 +480,42 @@ describe('SearchHandler', () => {
             // FIXME: check that findWidget is still visible (but it seems not possible to test)
             // FIXME: check that the focus is on the document (but it seems not possible to test)
         });
-        it('should reverse the direction of current selection', async () => {
+        it('should reverse the direction of current selection of a match', async () => {
             await resetCursor(0, 0);
             await searchHandler.selectWordToFind(textEditor); // 'abcdef'
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+            await searchHandler.findNextMatch(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
 
             await searchHandler.findStart(textEditor);
-            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
+            assert.deepStrictEqual(selectionsAsArray(), [[1, 6, 1, 0]]);
             assert.strictEqual(searchHandler.isSelectingMatch(), true);
+        });
+        it('should not reverse the direction of current selection of a search word (case 1)', async () => {
+            await resetCursor(0, 0);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
+
+            await searchHandler.findStart(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
+
+            await searchHandler.closeFindWidget(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0]]);
+        });
+        it('should not reverse the direction of current selection of a search word (case 2)', async () => {
+            await selectRange(0, 0, 0, 6);
+            await searchHandler.selectWordToFind(textEditor); // 'abcdef'
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
+
+            await searchHandler.findStart(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6, 0, 0]]);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
+
+            await searchHandler.closeFindWidget(textEditor);
+            assert.deepStrictEqual(selectionsAsArray(), [[0, 6]]);
         });
     });
     describe('findPreviousMatch findStartPreviousMatch', () => {
@@ -915,7 +942,9 @@ describe('SearchHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor,
                 'To infinity\n'.repeat(3) +
-                '    and beyond!\n'.repeat(3)
+                '    and beyond!\n'.repeat(3),
+                vscode.EndOfLine.LF,
+                'javascript'
             );
         });
         it('should cancel selection of a search word and insert line-break at middle of a line with auto-indent', async () => {

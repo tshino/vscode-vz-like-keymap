@@ -4826,14 +4826,14 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             // FIXME: we can't check findWidget visibility due to lack of such API.
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(2, 4);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select the word the cursor is on and open findWidget (case 2)', async () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
@@ -4841,13 +4841,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6], [2, 0, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRanges([[2, 0, 2, 0], [3, 0, 3, 0]]);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3], [3, 0, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should not change selection if it is not empty (case 1)', async () => {
             await selectRange(2, 0, 2, 3);
@@ -4855,13 +4855,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 0, 1, 6);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should not change selection if it is not empty (case 2)', async () => {
             await selectRanges([[2, 0, 2, 3], [3, 0, 3, 6]]);
@@ -4869,13 +4869,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3], [3, 0, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRanges([[1, 0, 1, 6], [2, 0, 2, 3]]);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6], [2, 0, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should not change selection if the cursor is at end of the document', async () => {
             await resetCursor(4, 0);
@@ -4883,13 +4883,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(4, 0);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
 
         it('should select multiple words starting from the cursor position', async () => {
@@ -4898,13 +4898,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(1, 0);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 13]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple lines starting from the cursor position', async () => {
             await resetCursor(2, 11);
@@ -4912,13 +4912,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(1, 7);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple words starting from the existing selection', async () => {
             await selectRange(2, 0, 2, 3);
@@ -4926,13 +4926,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 0, 1, 3);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple lines starting from the existing selection', async () => {
             await selectRange(2, 11, 2, 14);
@@ -4940,13 +4940,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 0, 1, 3);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
 
         it('should select the word the cursor is on and open findWidget (case 1)', async () => {
@@ -4955,14 +4955,14 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             // FIXME: we can't check findWidget visibility due to lack of such API.
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(2, 4);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select the word the cursor is on and open findWidget (case 2)', async () => {
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
@@ -4970,13 +4970,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6], [2, 0, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRanges([[2, 0, 2, 0], [3, 0, 3, 0]]);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 3], [3, 0, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple words starting from the cursor position and open findWidget (case 1)', async () => {
             await selectRange(2, 0, 2, 3);
@@ -4984,13 +4984,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 0, 1, 6);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 13]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple words starting from the cursor position and open findWidget (case 2)', async () => {
             await selectRanges([[2, 0, 2, 0], [3, 0, 3, 0]]);
@@ -4998,13 +4998,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 0, 2, 10], [3, 0, 3, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRanges([[1, 0, 1, 0], [2, 0, 2, 0]]);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 13], [2, 0, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select an entire word when the first part of the word is already selected', async () => {
             await selectRange(1, 0, 1, 3);
@@ -5012,13 +5012,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 0, 1, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(3, 7, 3, 8);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 7, 3, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple lines (case 1)', async () => {
             await resetCursor(2, 14);
@@ -5026,13 +5026,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 14, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(1, 13);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 13, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple lines (case 2)', async () => {
             await selectRange(2, 11, 2, 14);
@@ -5040,13 +5040,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 7, 1, 13);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 2, 3]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should select multiple lines (case 3)', async () => {
             await selectRange(2, 11, 3, 3);
@@ -5054,13 +5054,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 11, 3, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(1, 7, 2, 3);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[1, 7, 2, 10]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should not change selection if the cursor is at end of the document (case 1)', async () => {
             await resetCursor(4, 0);
@@ -5068,13 +5068,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await resetCursor(4, 0);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), false);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should not change selection if the cursor is at end of the document (case 2)', async () => {
             await selectRange(3, 7, 4, 0);
@@ -5082,13 +5082,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 7, 4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(3, 7, 4, 0);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[3, 7, 4, 0]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
         it('should reverse selection if the direction of selection is backward', async () => {
             await selectRange(0, 3, 0, 0);
@@ -5096,13 +5096,13 @@ describe('KeyboardMacro', () => {
             await recordThroughExecution(commands);
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
             assert.deepStrictEqual(selectionsAsArray(), [[0, 0, 0, 6]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
             await vscode.commands.executeCommand('closeFindWidget');
 
             await selectRange(2, 10, 2, 4);
             await kb_macro.replay(textEditor);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 4, 2, 14]]);
-            assert.strictEqual(searchHandler.isSelectingMatch(), true);
+            assert.strictEqual(searchHandler.isSelectingSearchWord(), true);
         });
     });
     describe('findStart', () => {
