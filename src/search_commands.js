@@ -92,9 +92,6 @@ const SearchHandler = function(modeHandler) {
         if (expectSync) {
             await waitForSynchronizedShort(mode, textEditor);
         }
-        if (!textEditor.selection.isEmpty) {
-            selectingMatch = true;
-        }
         selectingSearchWord = true;
     };
     const selectWordToFind = makeGuardedCommand(
@@ -112,6 +109,7 @@ const SearchHandler = function(modeHandler) {
         }
     );
     const flipSelectionBackward = async function(textEditor) {
+        const isSearchWord = selectingSearchWord;
         const flipped = Array.from(textEditor.selections).map(
             sel => new vscode.Selection(sel.end, sel.start)
         );
@@ -123,6 +121,7 @@ const SearchHandler = function(modeHandler) {
         if (!textEditor.selections[0].isEmpty) {
             selectingMatch = true;
         }
+        selectingSearchWord = isSearchWord;
     };
     const cancelSelection = async function(textEditor) {
         if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
@@ -149,7 +148,7 @@ const SearchHandler = function(modeHandler) {
         selectingSearchWord = false;
     };
     const cancelMatchSelection = async function(textEditor) {
-        if (mode.inSelection() && selectingMatch) {
+        if (selectingMatch || selectingSearchWord) {
             await cancelSelection(textEditor);
         }
     };
