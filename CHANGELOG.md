@@ -16,7 +16,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Extended Ctrl+L to support seeding multiple-line search strings. This is intentionally different behavior from the original VZ Editor to utilize the feature of VS Code which supports multiple-line search strings. [#62](https://github.com/tshino/vscode-vz-like-keymap/issues/62)
 - Fixed:
   - Ctrl+L was not working depending on the VS Code settings. [#57](https://github.com/tshino/vscode-vz-like-keymap/issues/57)
-  - (internal) Editor tabs ramain open after testing and that slows down the test runs.
+  - (internal) Editor tabs remain open after testing and that slows down the test runs.
 
 ### [0.18.3] - 2022-01-25
 - 修正:
