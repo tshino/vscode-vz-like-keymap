@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.0] - 2022-04-19
 - 改善:
   - CTRL+L（カーソル位置の文字列を選択して検索）でフォーカスが検索ウィジェットに移動しないようにしました。VZエディタの挙動に近づけています。 [#54](https://github.com/tshino/vscode-vz-like-keymap/issues/54)
   - CTRL+Lで検索文字列を設定した直後にカーソルを移動した場合、常にCTRL+Lを押す直前のカーソル位置が起点となるようにしました。VZエディタの挙動に近づけています。 [#64](https://github.com/tshino/vscode-vz-like-keymap/issues/64)
