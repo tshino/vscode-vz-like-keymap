@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規:
+  - (internal) 自動テストにeslintの実行を追加。 [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
+- New:
+  - (internal) Added eslint to run before test. [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
+
 ### [0.19.0] - 2022-04-19
 - 改善:
   - CTRL+L（カーソル位置の文字列を選択して検索）でフォーカスが検索ウィジェットに移動しないようにしました。VZエディタの挙動に近づけています。 [#54](https://github.com/tshino/vscode-vz-like-keymap/issues/54)
