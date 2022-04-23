@@ -27,6 +27,8 @@
     "main": "./src/extension.js",
     "browser": "./dist/web/extension.js",
     "scripts": {
+        "lint": "eslint .",
+        "pretest": "npm run lint",
         "test": "mocha",
         "test_with_vscode": "node ./test_with_vscode/runTest.js",
         "vscode:prepublish": "npm run package-web",
@@ -1201,6 +1203,7 @@
         ]
     },
     "devDependencies": {
+        "eslint": "^8.14.0",
         "mocha": "^9.2.2",
         "vscode-test": "^1.6.1",
         "webpack": "^5.72.0",
