@@ -3216,7 +3216,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
         });
@@ -3396,7 +3397,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
         });
@@ -3451,7 +3453,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
         });
@@ -3590,7 +3593,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
         });
@@ -3645,7 +3649,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
@@ -3810,7 +3815,8 @@ describe('KeyboardMacro', () => {
                     '12345\n' +
                     '67890' // <= no new line
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
@@ -3913,7 +3919,8 @@ describe('KeyboardMacro', () => {
                     '}\n' +
                     'const e = 100000;\n'
                 ),
-                vscode.EndOfLine.CRLF
+                vscode.EndOfLine.CRLF,
+                'javascript'
             );
             editHandler.clearTextStack();
             textEditor.selections = [ new vscode.Selection(0, 0, 0, 0) ];
