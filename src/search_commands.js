@@ -14,13 +14,54 @@ const SearchHandler = function(modeHandler) {
     let selectingMatch = false;
     let selectingSearchWord = false;
     let selectingSearchWordReverse = false;
+    let selectingTextEditor = null;
+    let selectingMatchSelections = null;
+    const discardSelectionList = new Map();
 
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
-                if (event.textEditor === vscode.window.activeTextEditor) {
-                    selectingMatch = false;
-                    selectingSearchWord = false;
+                if (selectingMatch || selectingSearchWord) {
+                    if (event.textEditor === selectingTextEditor) {
+                        if (!EditUtil.isEqualSelections(selectingMatchSelections, event.textEditor.selections)) {
+                            selectingMatch = false;
+                            selectingSearchWord = false;
+                            selectingTextEditor = null;
+                            selectingMatchSelections = null;
+                        } else {
+                            cancelSelection(event.textEditor);
+                        }
+                    }
+                }
+            })
+        );
+        context.subscriptions.push(
+            vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
+                if (selectingMatch || selectingSearchWord) {
+                    if (selectingTextEditor && textEditor !== selectingTextEditor) {
+                        const key = selectingTextEditor.document.uri.toString();
+                        discardSelectionList.set(key, {
+                            selections: Array.from(selectingTextEditor.selections),
+                            selectingTextEditor,
+                            selectingMatch,
+                            selectingSearchWord,
+                            selectingSearchWordReverse
+                        });
+                    }
+                }
+                if (textEditor) {
+                    const key = textEditor.document.uri.toString();
+                    if (discardSelectionList.has(key)) {
+                        const vars = discardSelectionList.get(key);
+                        discardSelectionList.delete(key);
+                        if (vars.selectingMatch || vars.selectingSearchWord) {
+                            selectingTextEditor = textEditor;
+                            selectingMatch = vars.selectingMatch;
+                            selectingSearchWord = vars.selectingSearchWord;
+                            selectingSearchWordReverse = vars.selectingSearchWordReverse;
+                            selectingMatchSelections = vars.selections;
+                        }
+                    }
                 }
             })
         );
@@ -93,6 +134,8 @@ const SearchHandler = function(modeHandler) {
             await waitForSynchronizedShort(mode, textEditor);
         }
         selectingSearchWord = true;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
     };
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
@@ -104,6 +147,8 @@ const SearchHandler = function(modeHandler) {
             if (!selectingSearchWord) {
                 selectingSearchWordReverse = !textEditor.selection.active.isAfter(textEditor.selection.anchor);
                 selectingSearchWord = true;
+                selectingTextEditor = textEditor;
+                selectingMatchSelections = Array.from(textEditor.selections);
             }
             await selectWordToFindImpl(textEditor);
         }
@@ -120,8 +165,12 @@ const SearchHandler = function(modeHandler) {
         }
         if (!textEditor.selections[0].isEmpty) {
             selectingMatch = true;
+            selectingTextEditor = textEditor;
+            selectingMatchSelections = Array.from(textEditor.selections);
         }
         selectingSearchWord = isSearchWord;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
     };
     const cancelSelection = async function(textEditor) {
         if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
@@ -146,6 +195,8 @@ const SearchHandler = function(modeHandler) {
         }
         selectingMatch = false;
         selectingSearchWord = false;
+        selectingTextEditor = null;
+        selectingMatchSelections = null;
     };
     const cancelMatchSelection = async function(textEditor) {
         if (selectingMatch || selectingSearchWord) {
