@@ -18,16 +18,20 @@ const SearchHandler = function(modeHandler) {
     let selectingMatchSelections = null;
     const discardSelectionList = new Map();
 
+    const resetSelectionState = function() {
+        selectingMatch = false;
+        selectingSearchWord = false;
+        selectingTextEditor = null;
+        selectingMatchSelections = null;
+    };
+
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
                 if (selectingMatch || selectingSearchWord) {
                     if (event.textEditor === selectingTextEditor) {
                         if (!EditUtil.isEqualSelections(selectingMatchSelections, event.textEditor.selections)) {
-                            selectingMatch = false;
-                            selectingSearchWord = false;
-                            selectingTextEditor = null;
-                            selectingMatchSelections = null;
+                            resetSelectionState();
                         } else {
                             cancelSelection(event.textEditor);
                         }
@@ -193,10 +197,7 @@ const SearchHandler = function(modeHandler) {
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
         }
-        selectingMatch = false;
-        selectingSearchWord = false;
-        selectingTextEditor = null;
-        selectingMatchSelections = null;
+        resetSelectionState();
     };
     const cancelMatchSelection = async function(textEditor) {
         if (selectingMatch || selectingSearchWord) {
