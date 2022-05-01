@@ -18,6 +18,16 @@ const SearchHandler = function(modeHandler) {
     let selectingMatchSelections = null;
     const discardSelectionList = new Map();
 
+    const setSelectingMatch = function(textEditor) {
+        selectingMatch = true;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
+    };
+    const setSelectingSearchWord = function(textEditor) {
+        selectingSearchWord = true;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
+    };
     const resetSelectionState = function() {
         selectingMatch = false;
         selectingSearchWord = false;
@@ -137,9 +147,7 @@ const SearchHandler = function(modeHandler) {
         if (expectSync) {
             await waitForSynchronizedShort(mode, textEditor);
         }
-        selectingSearchWord = true;
-        selectingTextEditor = textEditor;
-        selectingMatchSelections = Array.from(textEditor.selections);
+        setSelectingSearchWord(textEditor);
     };
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
@@ -150,9 +158,7 @@ const SearchHandler = function(modeHandler) {
         async function(textEditor, _edit) {
             if (!selectingSearchWord) {
                 selectingSearchWordReverse = !textEditor.selection.active.isAfter(textEditor.selection.anchor);
-                selectingSearchWord = true;
-                selectingTextEditor = textEditor;
-                selectingMatchSelections = Array.from(textEditor.selections);
+                setSelectingSearchWord(textEditor);
             }
             await selectWordToFindImpl(textEditor);
         }
@@ -168,13 +174,11 @@ const SearchHandler = function(modeHandler) {
             await waitForSynchronizedShort(mode, textEditor);
         }
         if (!textEditor.selections[0].isEmpty) {
-            selectingMatch = true;
-            selectingTextEditor = textEditor;
-            selectingMatchSelections = Array.from(textEditor.selections);
+            setSelectingMatch(textEditor);
         }
-        selectingSearchWord = isSearchWord;
-        selectingTextEditor = textEditor;
-        selectingMatchSelections = Array.from(textEditor.selections);
+        if (isSearchWord) {
+            setSelectingSearchWord(textEditor);
+        }
     };
     const cancelSelection = async function(textEditor) {
         if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
