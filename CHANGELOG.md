@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.1] - 2022-05-05
 - 新規:
   - (internal) 自動テストにeslintの実行を追加。 [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
 - 修正:
