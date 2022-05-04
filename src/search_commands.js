@@ -14,13 +14,68 @@ const SearchHandler = function(modeHandler) {
     let selectingMatch = false;
     let selectingSearchWord = false;
     let selectingSearchWordReverse = false;
+    let selectingTextEditor = null;
+    let selectingMatchSelections = null;
+    const discardSelectionList = new Map();
+
+    const setSelectingMatch = function(textEditor) {
+        selectingMatch = true;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
+    };
+    const setSelectingSearchWord = function(textEditor) {
+        selectingSearchWord = true;
+        selectingTextEditor = textEditor;
+        selectingMatchSelections = Array.from(textEditor.selections);
+    };
+    const resetSelectionState = function() {
+        selectingMatch = false;
+        selectingSearchWord = false;
+        selectingTextEditor = null;
+        selectingMatchSelections = null;
+    };
 
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
-                if (event.textEditor === vscode.window.activeTextEditor) {
-                    selectingMatch = false;
-                    selectingSearchWord = false;
+                if (selectingMatch || selectingSearchWord) {
+                    if (event.textEditor === selectingTextEditor) {
+                        if (!EditUtil.isEqualSelections(selectingMatchSelections, event.textEditor.selections)) {
+                            resetSelectionState();
+                        } else {
+                            cancelSelection(event.textEditor);
+                        }
+                    }
+                }
+            })
+        );
+        context.subscriptions.push(
+            vscode.window.onDidChangeActiveTextEditor(function(textEditor) {
+                if (selectingMatch || selectingSearchWord) {
+                    if (selectingTextEditor && textEditor !== selectingTextEditor) {
+                        const key = selectingTextEditor.document.uri.toString();
+                        discardSelectionList.set(key, {
+                            selections: Array.from(selectingTextEditor.selections),
+                            selectingTextEditor,
+                            selectingMatch,
+                            selectingSearchWord,
+                            selectingSearchWordReverse
+                        });
+                    }
+                }
+                if (textEditor) {
+                    const key = textEditor.document.uri.toString();
+                    if (discardSelectionList.has(key)) {
+                        const vars = discardSelectionList.get(key);
+                        discardSelectionList.delete(key);
+                        if (vars.selectingMatch || vars.selectingSearchWord) {
+                            selectingTextEditor = textEditor;
+                            selectingMatch = vars.selectingMatch;
+                            selectingSearchWord = vars.selectingSearchWord;
+                            selectingSearchWordReverse = vars.selectingSearchWordReverse;
+                            selectingMatchSelections = vars.selections;
+                        }
+                    }
                 }
             })
         );
@@ -92,7 +147,7 @@ const SearchHandler = function(modeHandler) {
         if (expectSync) {
             await waitForSynchronizedShort(mode, textEditor);
         }
-        selectingSearchWord = true;
+        setSelectingSearchWord(textEditor);
     };
     const selectWordToFind = makeGuardedCommand(
         'selectWordToFind',
@@ -103,7 +158,7 @@ const SearchHandler = function(modeHandler) {
         async function(textEditor, _edit) {
             if (!selectingSearchWord) {
                 selectingSearchWordReverse = !textEditor.selection.active.isAfter(textEditor.selection.anchor);
-                selectingSearchWord = true;
+                setSelectingSearchWord(textEditor);
             }
             await selectWordToFindImpl(textEditor);
         }
@@ -119,9 +174,11 @@ const SearchHandler = function(modeHandler) {
             await waitForSynchronizedShort(mode, textEditor);
         }
         if (!textEditor.selections[0].isEmpty) {
-            selectingMatch = true;
+            setSelectingMatch(textEditor);
         }
-        selectingSearchWord = isSearchWord;
+        if (isSearchWord) {
+            setSelectingSearchWord(textEditor);
+        }
     };
     const cancelSelection = async function(textEditor) {
         if (1 < textEditor.selections.length || !textEditor.selections[0].isEmpty) {
@@ -144,8 +201,7 @@ const SearchHandler = function(modeHandler) {
         if (mode.inSelection()) {
             mode.resetSelection(textEditor);
         }
-        selectingMatch = false;
-        selectingSearchWord = false;
+        resetSelectionState();
     };
     const cancelMatchSelection = async function(textEditor) {
         if (selectingMatch || selectingSearchWord) {
