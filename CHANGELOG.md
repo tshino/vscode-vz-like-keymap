@@ -5,8 +5,12 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - 新規:
   - (internal) 自動テストにeslintの実行を追加。 [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
+- 修正:
+  - 検索操作の直後に他のタブへ行って戻ると選択モードになっている問題を修正しました。 [#67](https://github.com/tshino/vscode-vz-like-keymap/issues/67)
 - New:
   - (internal) Added eslint to run before test. [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
+- Fixed:
+  - Switching to and back from other tabs right after searching operations was causing an unexpected selection mode. [#67](https://github.com/tshino/vscode-vz-like-keymap/issues/67)
 
 ### [0.19.0] - 2022-04-19
 - 改善:
