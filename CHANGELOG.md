@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 修正:
+  - (内部) `vz.jumpToBracket` コマンドのテストがVS Code 1.67.0で失敗するのを修正しました。 [#74](https://github.com/tshino/vscode-vz-like-keymap/pull/74)
+- Fixed:
+  - (internal) Tests for `vz.jumpToBracket` is failing with VS Code 1.67.0. [#74](https://github.com/tshino/vscode-vz-like-keymap/pull/74)
+
 ### [0.19.1] - 2022-05-05
 - 新規:
   - (internal) 自動テストにeslintの実行を追加。 [#69](https://github.com/tshino/vscode-vz-like-keymap/pull/69)
