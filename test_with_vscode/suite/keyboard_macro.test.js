@@ -1357,7 +1357,9 @@ describe('KeyboardMacro', () => {
                 'aaaa( bbbb )\n' +
                 '{\n' +
                 '    { cccc }\n' +
-                '}\n'
+                '}\n',
+                vscode.EndOfLine.LF,
+                'javascript'
             );
         });
         it('should move cursor to opposite side of the pair of bracket', async () => {
