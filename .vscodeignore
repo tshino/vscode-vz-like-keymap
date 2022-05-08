@@ -1,6 +1,7 @@
 .vscode/**
 .vscode-test/**
 .nyc_output/**
+coverage/**
 build/**
 test/**
 test_with_vscode/**

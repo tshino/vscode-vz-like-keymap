@@ -4,7 +4,34 @@ const Mocha = require('mocha');
 const glob = require('glob');
 const vscode = require('vscode');
 
-function run() {
+async function setupCoverage() {
+    const NYC = require('nyc');
+    const nyc = new NYC({
+        cwd: path.join(__dirname, '..', '..'),
+        reporter: ['text', 'html'],
+        all: true,
+        silent: false,
+        instrument: true,
+        hookRequire: true,
+        hookRunInContext: true,
+        hookRunInThisContext: true,
+        include: [
+            'src/*.js',
+        ],
+        exclude: [
+            'test_with_vscode/**',
+            '.vscode-test/**'
+        ],
+    });
+
+    nyc.wrap();
+
+    return nyc;
+}
+
+async function run() {
+    const nyc = await setupCoverage();
+
     // Create the mocha test
     const mocha = new Mocha({
         ui: 'bdd',
@@ -14,7 +41,7 @@ function run() {
 
     const testsRoot = path.resolve(__dirname, '..');
 
-    return new Promise((c, e) => {
+    return await new Promise((c, e) => {
         glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
             if (err) {
                 return e(err);
@@ -37,8 +64,12 @@ function run() {
                 e(err);
             }
         });
-    }).finally(() => {
-        return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    }).finally(async () => {
+        await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+        if (nyc) {
+            nyc.writeCoverageFile();
+            await nyc.report();
+        }
     });
 }
 

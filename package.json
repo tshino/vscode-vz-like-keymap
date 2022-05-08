@@ -22,7 +22,7 @@
         "url": "https://github.com/tshino/vscode-vz-like-keymap.git"
     },
     "activationEvents": [
-        "*"
+        "onStartupFinished"
     ],
     "main": "./src/extension.js",
     "browser": "./dist/web/extension.js",
