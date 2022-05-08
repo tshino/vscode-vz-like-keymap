@@ -1,5 +1,6 @@
 .vscode/**
 .vscode-test/**
+.nyc_output/**
 build/**
 test/**
 test_with_vscode/**
