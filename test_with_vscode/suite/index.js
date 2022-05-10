@@ -9,7 +9,6 @@ async function setupCoverage() {
     const nyc = new NYC({
         cwd: path.join(__dirname, '..', '..'),
         reporter: ['text', 'html'],
-        all: true,
         silent: false,
         instrument: true,
         hookRequire: true,
