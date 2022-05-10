@@ -29,7 +29,7 @@
     "scripts": {
         "lint": "eslint .",
         "pretest": "npm run lint",
-        "test": "nyc mocha",
+        "test": "nyc --cache false mocha",
         "test_with_vscode": "node ./test_with_vscode/runTest.js",
         "vscode:prepublish": "npm run package-web",
         "compile-web": "webpack --config ./build/web-extension.webpack.config.js",
