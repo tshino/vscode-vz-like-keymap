@@ -199,7 +199,9 @@ const CursorHandler = function(modeHandler) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
             const newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
-            await moveCursorTo(textEditor, newLine, curr.character, select);
+            if (curr.line != lineCount - 1) {
+                await moveCursorTo(textEditor, newLine, curr.character, select);
+            }
         } else {
             const promise = waitForScrollTimeout().catch(() => {});
             const center = (2 <= vlines.length && halfPage * 2 < onePage) ? vlines[vlines.length - 2] : vlines[vlines.length - 1];
