@@ -278,6 +278,16 @@ describe('CursorHandler', () => {
             assert(vlines1.includes(1000));
             assert.strictEqual(vlines1[0], vlines0[0]);
         });
+        it('should not move cursor if it is already at the bottom of document', async () => {
+            await resetCursor(1000, 0);
+            let vlines0 = EditUtil.enumVisibleLines(textEditor);
+
+            await cursorHandler.cursorHalfPageDown(textEditor);
+
+            assert.deepStrictEqual(selectionsAsArray(), [[1000, 0]]);
+            let vlines1 = EditUtil.enumVisibleLines(textEditor);
+            assert.strictEqual(vlines1[0], vlines0[0]);
+        });
         it('should extend existing selection', async () => {
             await selectRange(50, 5, 70, 3);
 
