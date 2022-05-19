@@ -60,6 +60,17 @@ function activate(context) {
     );
     context.subscriptions.push(modeIndicator);
     context.subscriptions.push(macroModeIndicator);
+
+    // This code fragment is for making the 'activationEvents' in the package.json.
+    // It should contain all the commands that this extension registers.
+    //
+    // vscode.commands.getCommands().then(commands => {
+    //     const myCommands = commands.filter(command => command.startsWith('vz.'));
+    //     const activationEvents = [
+    //         'onStartupFinished'
+    //     ].concat(myCommands.map(command => `onCommand:${command}`));
+    //     console.log(JSON.stringify({ activationEvents }, null, '    '));
+    // });
 }
 exports.activate = activate;
 
