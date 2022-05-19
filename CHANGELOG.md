@@ -5,11 +5,13 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - 改善:
   - 最終行でCTRL+C（またはPageDown）した直後に他のキーの反応が0.5秒くらい遅れる問題を修正しました。 [#79](https://github.com/tshino/vscode-vz-like-keymap/issues/79)
+  - 拡張の起動条件（`activationEvents`）を変更して、VS Codeの起動速度に与える影響を軽減しました。 [#81](https://github.com/tshino/vscode-vz-like-keymap/issues/81)
 - 内部:
   - 新規: 自動テストにコードカバレッジの計測を追加しました。 [#75](https://github.com/tshino/vscode-vz-like-keymap/issues/75)
   - 修正: `vz.jumpToBracket` コマンドのテストがVS Code 1.67.0で失敗するのを修正しました。 [#74](https://github.com/tshino/vscode-vz-like-keymap/pull/74)
 - Improved:
   - Fixed pressing Ctrl+C (or PageDown) at the last line of the document was causing a half-second of delay for the subsequent keys. [#79](https://github.com/tshino/vscode-vz-like-keymap/issues/79)
+  - Changed the loading timing of this extension (`activationEvents`) to mitigate the effect on the startup speed of VS Code. [#81](https://github.com/tshino/vscode-vz-like-keymap/issues/81)
 - Internal:
   - New: Added code coverage measurement on testing. [#75](https://github.com/tshino/vscode-vz-like-keymap/issues/75)
   - Fixed: Tests for `vz.jumpToBracket` is failing with VS Code 1.67.0. [#74](https://github.com/tshino/vscode-vz-like-keymap/pull/74)
