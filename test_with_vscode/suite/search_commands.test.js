@@ -953,6 +953,7 @@ describe('SearchHandler', () => {
             await searchHandler.findNextMatch(textEditor);
 
             await searchHandler.findStartEnter(textEditor);
+            await testUtils.sleep(200); // auto-indent seems happen asynchronously
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[6, 4]]);
