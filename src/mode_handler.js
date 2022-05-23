@@ -60,7 +60,7 @@ const ModeHandler = function() {
     const expectSync = function(count=1) {
         expectedSyncCount = count;
     };
-    const waitForSyncTimeout = function(timeout=100) {
+    const waitForSyncTimeout = function(timeout) {
         return new Promise((resolve, reject) => {
             if (expectedSyncCount === 0) {
                 resolve();
