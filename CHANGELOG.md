@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.2] - 2022-05-25
 - 改善:
   - 最終行でCTRL+C（またはPageDown）した直後に他のキーの反応が0.5秒くらい遅れる問題を修正しました。 [#79](https://github.com/tshino/vscode-vz-like-keymap/issues/79)
   - 拡張の起動条件（`activationEvents`）を変更して、VS Codeの起動速度に与える影響を軽減しました。 [#81](https://github.com/tshino/vscode-vz-like-keymap/issues/81)
