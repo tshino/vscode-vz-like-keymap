@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 内部:
+  - Dependabotによるgitbub-actionsのバージョン更新を有効化しました。
+- Internal:
+  - Enabled github-actions version updates with Dependabot.
+
 ### [0.19.2] - 2022-05-25
 - 改善:
   - 最終行でCTRL+C（またはPageDown）した直後に他のキーの反応が0.5秒くらい遅れる問題を修正しました。 [#79](https://github.com/tshino/vscode-vz-like-keymap/issues/79)
