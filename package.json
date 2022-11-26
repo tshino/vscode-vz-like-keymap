@@ -838,12 +838,12 @@
             {
                 "key": "ctrl+e",
                 "command": "history.showPrevious",
-                "when": "historyNavigationBackwardsEnabled && historyNavigationWidget"
+                "when": "historyNavigationBackwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+x",
                 "command": "history.showNext",
-                "when": "historyNavigationForwardsEnabled && historyNavigationWidget"
+                "when": "historyNavigationForwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
             },
             {
                 "key": "enter",
