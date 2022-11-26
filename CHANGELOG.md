@@ -3,8 +3,12 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
+- 修正:
+  - CTRL+EとCTRL+Xによる検索履歴の選択が効かなくなっているのを修正しました。 [#108](https://github.com/tshino/vscode-vz-like-keymap/issues/108)
 - 内部:
   - Dependabotによるgitbub-actionsのバージョン更新を有効化しました。
+- Fixed:
+  - History navigation on search input box by Ctrl+E and Ctrl+X was not working. [#108](https://github.com/tshino/vscode-vz-like-keymap/issues/108)
 - Internal:
   - Enabled github-actions version updates with Dependabot.
 
