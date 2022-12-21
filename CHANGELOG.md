@@ -2,6 +2,18 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unrelease]
+- 新規:
+  - Code Action（Quick Fix）メニューの操作に対応しました。 [#115](https://github.com/tshino/vscode-vz-like-keymap/pull/115)
+    - CTRL+E, CTRL+Xで上下選択
+    - CTRL+Mで決定
+    - これらは設定の 'Vz Keymap: Code Action Keys' で有効化できます。
+- New:
+  - Added Code Action menu keys. [#115](https://github.com/tshino/vscode-vz-like-keymap/pull/115)
+    - Ctrl+E, Ctrl+X to select action,
+    - Ctrl+M to accept selected action.
+    - These keys are enabled by turning on the 'Vz Keymap: Settings Page Keys' in the Settings.
+
 ### [0.19.3] - 2022-11-27
 - 修正:
   - CTRL+EとCTRL+Xによる検索履歴の選択が効かなくなっているのを修正しました。 [#108](https://github.com/tshino/vscode-vz-like-keymap/issues/108)

@@ -226,6 +226,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to select Parameter hints\n(Ctrl+E, Ctrl+X)"
+                },
+                "vzKeymap.codeActionKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to select Code Action menu\n(Ctrl+E, Ctrl+X, Ctrl+M)"
                 }
             }
         },
@@ -1299,6 +1304,21 @@
                 "key": "ctrl+x",
                 "command": "showNextParameterHint",
                 "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "selectNextCodeAction",
+                "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "selectPrevCodeAction",
+                "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "acceptSelectedCodeAction",
+                "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
             }
         ]
     },
