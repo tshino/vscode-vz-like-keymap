@@ -638,12 +638,12 @@
             {
                 "key": "ctrl+m",
                 "command": "vz.enter",
-                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible && !codeActionMenuVisible"
             },
             {
                 "key": "enter",
                 "command": "vz.enter",
-                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible && !codeActionMenuVisible"
             },
             {
                 "key": "ctrl+n",
@@ -1273,7 +1273,7 @@
             {
                 "key": "ctrl+m",
                 "command": "acceptSelectedSuggestion",
-                "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+x",
