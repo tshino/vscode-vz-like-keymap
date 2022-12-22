@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unrelease]
+### [0.19.4] - 2022-12-22
 - 新規:
   - Code Action（Quick Fix）メニューの操作に対応しました。 [#115](https://github.com/tshino/vscode-vz-like-keymap/pull/115)
     - CTRL+E, CTRL+Xで上下選択
