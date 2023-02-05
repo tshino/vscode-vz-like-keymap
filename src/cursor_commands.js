@@ -25,14 +25,12 @@ const CursorHandler = function(modeHandler) {
             copied.forEach(res => res(arg));
         }
     };
-    const cancelAll = function(tasks) { invokeAll(tasks, null); };
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
 
     const setupListeners = function(context) {
         context.subscriptions.push(
             vscode.window.onDidChangeTextEditorSelection(function(event) {
                 if (event.textEditor === vscode.window.activeTextEditor) {
-                    cancelAll(taskAfterScroll);
                     if (kbMacroHandler.recording()) {
                         kbMacroHandler.processOnChangeSelections(event);
                     }
@@ -66,7 +64,7 @@ const CursorHandler = function(modeHandler) {
         );
     };
 
-    const waitForScrollTimeout = async function(timeout=600) {
+    const waitForScrollTimeout = function(timeout=600) {
         return new Promise((resolve, reject) => {
             const res = async function(textEditor) {
                 if (textEditor) {
@@ -83,6 +81,9 @@ const CursorHandler = function(modeHandler) {
             };
             taskAfterScroll.push(res);
             setTimeout(() => {
+                while (0 < taskAfterScroll.indexOf(res)) {
+                    taskAfterScroll.splice(taskAfterScroll.indexOf(res), 1);
+                }
                 res(null);
             }, timeout);
         });
@@ -142,7 +143,7 @@ const CursorHandler = function(modeHandler) {
                 })());
             }
             if (reveal) {
-                promises.push(waitForScrollTimeout().catch(() => {}));
+                promises.push(waitForScrollTimeout(100).catch(() => {}));
                 textEditor.revealRange(new vscode.Range(cursor, cursor));
             }
         } finally {
