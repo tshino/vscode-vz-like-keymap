@@ -17,12 +17,13 @@ const registerTextEditorCommand = function(context, name, func) {
 
 const CursorHandler = function(modeHandler) {
     const mode = modeHandler;
+    let taskId = 0;
     const taskAfterScroll = [];
     const invokeAll = function(tasks, arg) {
         if (0 < tasks.length) {
             let copied = Array.from(tasks);
             tasks.length = 0;
-            copied.forEach(res => res(arg));
+            copied.forEach(task => task.res(arg));
         }
     };
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
@@ -79,12 +80,16 @@ const CursorHandler = function(modeHandler) {
                 resolve = null;
                 reject = null;
             };
-            taskAfterScroll.push(res);
+            const id = ++taskId;
+            taskAfterScroll.push({ id, res });
             setTimeout(() => {
-                while (0 < taskAfterScroll.indexOf(res)) {
-                    taskAfterScroll.splice(taskAfterScroll.indexOf(res), 1);
+                for (let i = 0; i < taskAfterScroll.length; i++) {
+                    if (taskAfterScroll[i].id === id) {
+                        taskAfterScroll.splice(i, 1);
+                        res(null);
+                        break;
+                    }
                 }
-                res(null);
             }, timeout);
         });
     };
