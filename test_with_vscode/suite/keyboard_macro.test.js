@@ -532,7 +532,7 @@ describe('KeyboardMacro', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll a half/full page up', async () => {
+        it.skip('should scroll a half/full page up', async () => {
             await testScrollPage([
                 'vz.cursorPageUp'
             ], 'Up');

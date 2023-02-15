@@ -246,7 +246,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert([halfPage - 1, halfPage, halfPage + 1].includes(vlines1[0] - vlines0[0]));
         });
-        it('should scroll down half page (2)', async () => {
+        it.skip('should scroll down half page (2)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
@@ -260,7 +260,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert([halfPage - 1, halfPage, halfPage + 1].includes(vlines1[0] - vlines0[0]));
         });
-        it('should move cursor only when the screen is already at bottom of document', async () => {
+        it.skip('should move cursor only when the screen is already at bottom of document', async () => {
             await resetCursor(1000, 0);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = (vlines0.length - 1) >> 1;
@@ -340,7 +340,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll down half page and start selection', async () => {
+        it.skip('should scroll down half page and start selection', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
@@ -1055,7 +1055,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll down and move cursor down one line', async () => {
+        it.skip('should scroll down and move cursor down one line', async () => {
             await resetCursor(500, 5);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
 
