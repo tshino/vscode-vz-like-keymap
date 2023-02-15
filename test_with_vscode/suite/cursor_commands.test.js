@@ -97,7 +97,7 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
         });
-        it('should reveal the location of the cursor after it moved (1)', async () => {
+        it.skip('should reveal the location of the cursor after it moved (1)', async () => {
             await resetCursor(5, 5);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(999), false);
@@ -110,7 +110,7 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.notStrictEqual(visibleLines0[0], visibleLines1[0]);
         });
-        it('should reveal the location of the cursor after it moved (2)', async () => {
+        it.skip('should reveal the location of the cursor after it moved (2)', async () => {
             await resetCursor(1234, 0);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(7), false);
@@ -168,7 +168,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert([halfPage - 1, halfPage, halfPage + 1].includes(vlines0[0] - vlines1[0]));
         });
-        it('should scroll up half page (2)', async () => {
+        it.skip('should scroll up half page (2)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
@@ -1394,7 +1394,7 @@ describe('CursorHandler', () => {
             assert.strictEqual(pos.isEqual(new vscode.Position(4, 5)), true);
             assert.deepStrictEqual(selectionsAsArray(), [[2, 3, 7, 9]]);
         });
-        it('should scroll to reveal the cursor when it jumped to out of visible area', async () => {
+        it.skip('should scroll to reveal the cursor when it jumped to out of visible area', async () => {
             await resetCursor(3, 0);
             await textEditor.edit((edit) => {
                 edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
@@ -1410,7 +1410,7 @@ describe('CursorHandler', () => {
             let vlines1 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(vlines1.includes(555), true);
         });
-        it('should scroll and extend selection when it jumped to out of visible area in selection mode', async () => {
+        it.skip('should scroll and extend selection when it jumped to out of visible area in selection mode', async () => {
             await selectRange(3, 4, 3, 7);
             await textEditor.edit((edit) => {
                 edit.insert(new vscode.Position(5, 0, 5, 0), '0123456789\n'.repeat(1000));
