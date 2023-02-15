@@ -613,9 +613,20 @@ const EditHandler = function(modeHandler) {
         for (let i = 0; i < n; i++) {
             let newCursor = null;
             if (!deleted[i].isLeftward) {
-                newCursor = selections[i].anchor;
+                const active = selections[i].active;
+                const text = deleted[i].text;
+                const lineBreakCount = text.split('\n').length - 1;
+                if (0 < lineBreakCount) {
+                    const firstLineBreak = text.indexOf('\n');
+                    const newLine = active.line - lineBreakCount;
+                    const lineLength = textEditor.document.lineAt(newLine).text.length;
+                    const newChar = lineLength - firstLineBreak;
+                    newCursor = active.with(newLine, newChar);
+                } else {
+                    newCursor = active.translate({characterDelta: -text.length});
+                }
                 if (deleted[i].offset !== undefined) {
-                    newCursor = selections[i].anchor.translate({characterDelta: deleted[i].offset});
+                    newCursor = newCursor.translate({characterDelta: deleted[i].offset});
                 }
             } else if (!selections[i].isEmpty) {
                 newCursor = selections[i].active;

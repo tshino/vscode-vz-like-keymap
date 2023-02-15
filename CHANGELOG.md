@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 修正:
+  - CTRL+U（削除した文字を復元）で出力される文字の方向が逆になる問題が VS Code 1.75.0 以降で発生していたのを修正しました。 [#121](https://github.com/tshino/vscode-vz-like-keymap/issues/121)
+- Fixed:
+  - Ctrl+U (Restore deleted characters) was producing characters in the wrong direction from VS Code 1.75.0. [#121](https://github.com/tshino/vscode-vz-like-keymap/issues/121)
+
 ### [0.19.4] - 2022-12-22
 - 新規:
   - Code Action（Quick Fix）メニューの操作に対応しました。 [#115](https://github.com/tshino/vscode-vz-like-keymap/pull/115)
