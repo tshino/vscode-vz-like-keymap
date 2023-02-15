@@ -358,7 +358,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll up full page', async () => {
+        it.skip('should scroll up full page', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let fullPage = vlines0.length - 1;

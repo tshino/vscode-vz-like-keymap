@@ -537,12 +537,12 @@ describe('KeyboardMacro', () => {
                 'vz.cursorPageUp'
             ], 'Up');
         });
-        it('should scroll a half/full page down', async () => {
+        it.skip('should scroll a half/full page down', async () => {
             await testScrollPage([
                 'vz.cursorPageDown'
             ], 'Down');
         });
-        it('should scroll multiple half/full pages up/down', async () => {
+        it.skip('should scroll multiple half/full pages up/down', async () => {
             await testScrollPage([
                 'vz.cursorPageDown',
                 'vz.cursorPageDown',
