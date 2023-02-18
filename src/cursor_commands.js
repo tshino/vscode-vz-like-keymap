@@ -17,13 +17,12 @@ const registerTextEditorCommand = function(context, name, func) {
 
 const CursorHandler = function(modeHandler) {
     const mode = modeHandler;
-    let taskId = 0;
     const taskAfterScroll = [];
     const invokeAll = function(tasks, arg) {
         if (0 < tasks.length) {
             let copied = Array.from(tasks);
             tasks.length = 0;
-            copied.forEach(task => task.res(arg));
+            copied.forEach(res => res(arg));
         }
     };
     const makeGuardedCommand = CommandUtil.makeGuardedCommand;
@@ -80,16 +79,12 @@ const CursorHandler = function(modeHandler) {
                 resolve = null;
                 reject = null;
             };
-            const id = ++taskId;
-            taskAfterScroll.push({ id, res });
+            taskAfterScroll.push(res);
             setTimeout(() => {
-                for (let i = 0; i < taskAfterScroll.length; i++) {
-                    if (taskAfterScroll[i].id === id) {
-                        taskAfterScroll.splice(i, 1);
-                        res(null);
-                        break;
-                    }
+                while (0 < taskAfterScroll.indexOf(res)) {
+                    taskAfterScroll.splice(taskAfterScroll.indexOf(res), 1);
                 }
+                res(null);
             }, timeout);
         });
     };
@@ -131,9 +126,9 @@ const CursorHandler = function(modeHandler) {
 
     const moveCursorToWithoutScroll = async function(textEditor, line, col, select) {
         const reveal = false;
-        await moveCursorTo(textEditor, line, col, select, reveal);
+        await moveCursorTo(textEditor, line, col, select, { reveal });
     };
-    const moveCursorTo = async function(textEditor, line, col, select, reveal=true) {
+    const moveCursorTo = async function(textEditor, line, col, select, { reveal=true, awaitReveal=false } = {}) {
         const cursor = new vscode.Position(line, col);
         const anchor = select ? textEditor.selection.anchor : cursor;
         const newSelections = [new vscode.Selection(anchor, cursor)];
@@ -148,7 +143,9 @@ const CursorHandler = function(modeHandler) {
                 })());
             }
             if (reveal) {
-                promises.push(waitForScrollTimeout(200).catch(() => {}));
+                if (awaitReveal) {
+                    promises.push(waitForScrollTimeout(100).catch(() => {}));
+                }
                 textEditor.revealRange(new vscode.Range(cursor, cursor));
             }
         } finally {
