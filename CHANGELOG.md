@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.6] - 2023-02-19
 - 修正:
     - 一部のカーソル移動コマンドを繰り返したときの動作が遅い問題を修正しました。 [#125](https://github.com/tshino/vscode-vz-like-keymap/issues/125)
 - Fixed:
