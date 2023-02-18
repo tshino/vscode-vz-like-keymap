@@ -126,9 +126,9 @@ const CursorHandler = function(modeHandler) {
 
     const moveCursorToWithoutScroll = async function(textEditor, line, col, select) {
         const reveal = false;
-        await moveCursorTo(textEditor, line, col, select, reveal);
+        await moveCursorTo(textEditor, line, col, select, { reveal });
     };
-    const moveCursorTo = async function(textEditor, line, col, select, reveal=true) {
+    const moveCursorTo = async function(textEditor, line, col, select, { reveal=true, awaitReveal=false } = {}) {
         const cursor = new vscode.Position(line, col);
         const anchor = select ? textEditor.selection.anchor : cursor;
         const newSelections = [new vscode.Selection(anchor, cursor)];
@@ -143,7 +143,9 @@ const CursorHandler = function(modeHandler) {
                 })());
             }
             if (reveal) {
-                promises.push(waitForScrollTimeout(100).catch(() => {}));
+                if (awaitReveal) {
+                    promises.push(waitForScrollTimeout(100).catch(() => {}));
+                }
                 textEditor.revealRange(new vscode.Range(cursor, cursor));
             }
         } finally {
