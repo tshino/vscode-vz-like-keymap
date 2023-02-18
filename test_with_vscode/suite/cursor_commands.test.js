@@ -97,12 +97,12 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.deepStrictEqual(visibleLines0, visibleLines1);
         });
-        it.skip('should reveal the location of the cursor after it moved (1)', async () => {
+        it('should reveal the location of the cursor after it moved (1)', async () => {
             await resetCursor(5, 5);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(999), false);
 
-            await cursorHandler.moveCursorTo(textEditor, 999, 0, false);
+            await cursorHandler.moveCursorTo(textEditor, 999, 0, false, { awaitReveal: true });
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[999, 0]]);
@@ -110,12 +110,12 @@ describe('CursorHandler', () => {
             let visibleLines1 = EditUtil.enumVisibleLines(textEditor);
             assert.notStrictEqual(visibleLines0[0], visibleLines1[0]);
         });
-        it.skip('should reveal the location of the cursor after it moved (2)', async () => {
+        it('should reveal the location of the cursor after it moved (2)', async () => {
             await resetCursor(1234, 0);
             let visibleLines0 = EditUtil.enumVisibleLines(textEditor);
             assert.strictEqual(visibleLines0.includes(7), false);
 
-            await cursorHandler.moveCursorTo(textEditor, 7, 3, false);
+            await cursorHandler.moveCursorTo(textEditor, 7, 3, false, { awaitReveal: true });
 
             assert.strictEqual(mode.inSelection(), false);
             assert.deepStrictEqual(selectionsAsArray(), [[7, 3]]);
