@@ -1,7 +1,7 @@
 "use strict";
 const path = require('path');
 const Mocha = require('mocha');
-const glob = require('glob');
+const fs = require('fs');
 const vscode = require('vscode');
 
 async function setupCoverage() {
@@ -41,16 +41,20 @@ async function run() {
     });
     mocha.timeout(5000);
 
-    const testsRoot = path.resolve(__dirname, '..');
+    const testsRoot = path.resolve(__dirname, '.');
 
     return await new Promise((c, e) => {
-        glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
+        fs.readdir(testsRoot, (err, files) => {
             if (err) {
                 return e(err);
             }
 
             // Add files to the test suite
-            files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
+            for (const f of files) {
+                if (f.endsWith('.test.js')) {
+                    mocha.addFile(path.resolve(testsRoot, f));
+                }
+            }
 
             try {
                 // Run the mocha test
