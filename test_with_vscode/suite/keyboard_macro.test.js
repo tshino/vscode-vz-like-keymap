@@ -3942,8 +3942,13 @@ describe('KeyboardMacro', () => {
                 'vz.clipboardPaste'
             ];
             await recordThroughExecution(commands);
-            await sleep(300); // auto-indent seems to happen asynchronously
             assert.deepStrictEqual(kb_macro.getRecordedCommandNames(), commands);
+            for (let i = 0; i < 20; i++) {
+                await sleep(50); // auto-indent seems to happen asynchronously
+                if (textEditor.document.lineAt(2).text === '    function foo() {') {
+                    break;
+                }
+            }
             let line2 = textEditor.document.lineAt(2).text;
             let line3 = textEditor.document.lineAt(3).text;
             assert.strictEqual(line2, '    function foo() {');
