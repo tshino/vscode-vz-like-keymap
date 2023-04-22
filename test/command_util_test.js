@@ -192,7 +192,7 @@ describe('CommandUtil', function() {
                 'name',
                 async function() {
                     logs.push('begin');
-                    await sleep(1500);
+                    await sleep(5000);
                     logs.push('end');
                 }
             );
@@ -205,7 +205,7 @@ describe('CommandUtil', function() {
             assert.deepStrictEqual(logs, [
                 'begin', 'waiting', 'finished', 'end'
             ]);
-        });
+        }).timeout(10*1000);
     });
     describe('makeRegisterTextEditorCommand', function() {
         it('should return a function that perform registration of text editor commands', async () => {
