@@ -30,7 +30,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
   - Added Code Action menu keys. [#115](https://github.com/tshino/vscode-vz-like-keymap/pull/115)
     - Ctrl+E, Ctrl+X to select action,
     - Ctrl+M to accept selected action.
-    - These keys are enabled by turning on the 'Vz Keymap: Settings Page Keys' in the Settings.
+    - These keys are enabled by turning on the 'Vz Keymap: Code Action Keys' in the Settings.
 
 ### [0.19.3] - 2022-11-27
 - 修正:
