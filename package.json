@@ -1293,7 +1293,7 @@
             {
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingControl",
-                "when": "settingRowFocus && config.vzKeymap.settingsPageKeys"
+                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+e",
