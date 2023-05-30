@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unrelease]
+- 修正:
+    - Settings画面で使うキー定義を更新。 [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
+- Fixed:
+    - Updated key definitions for the Settings page. [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
+
 ### [0.19.6] - 2023-02-19
 - 修正:
     - 一部のカーソル移動コマンドを繰り返したときの動作が遅い問題を修正しました。 [#125](https://github.com/tshino/vscode-vz-like-keymap/issues/125)
