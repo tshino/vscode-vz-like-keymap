@@ -235,7 +235,7 @@
                 "vzKeymap.interactivePlaygroundKeys": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables vz-style keys to scroll in Interactive Playground page\n(Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C)"
+                    "description": "Enables vz-style keys to scroll in Interactive Playground pages\n(Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C)"
                 }
             }
         },
