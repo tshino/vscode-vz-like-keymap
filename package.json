@@ -231,6 +231,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to select Code Action menu\n(Ctrl+E, Ctrl+X, Ctrl+M)"
+                },
+                "vzKeymap.interactivePlaygroundKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to scroll in Interactive Playground page\n(Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C)"
                 }
             }
         },
@@ -1319,6 +1324,26 @@
                 "key": "ctrl+m",
                 "command": "acceptSelectedCodeAction",
                 "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "workbench.action.interactivePlayground.arrowUp",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "workbench.action.interactivePlayground.arrowDown",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "workbench.action.interactivePlayground.pageUp",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "workbench.action.interactivePlayground.pageDown",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
             }
         ]
     },
