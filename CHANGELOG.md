@@ -3,8 +3,16 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unrelease]
+- 新規:
+    - Interactive Playgroundページのスクロール操作に対応しました。 [#171](https://github.com/tshino/vscode-vz-like-keymap/pull/171)
+        - CTRL+E, CTRL+X, CTRL+R, CTRL+C でスクロール。
+        - これらは設定の 'Vz Keymap: Interactive Playground Keys' で有効化できます。
 - 修正:
     - Settings画面で使うキー定義を更新。 [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
+- New:
+    - Added scroll keys support in Interactive Playground pages. [#171](https://github.com/tshino/vscode-vz-like-keymap/pull/171)
+        - Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C to scroll.
+        - These keys are enabled by turning on the 'Vz Keymap: Interactive Playground Keys' in the Settings.
 - Fixed:
     - Updated key definitions for the Settings page. [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
 
