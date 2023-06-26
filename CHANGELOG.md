@@ -6,13 +6,19 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - 新規:
     - Interactive Playgroundページのスクロール操作に対応しました。 [#171](https://github.com/tshino/vscode-vz-like-keymap/pull/171)
         - CTRL+E, CTRL+X, CTRL+R, CTRL+C でスクロール。
-        - これらは設定の 'Vz Keymap: Interactive Playground Keys' で有効化できます。
+        - これらは設定の 'Vz Keymap: Interactive Playground Keys' で有効化できます。デフォルトで有効です。
+    - Editor Hover領域のスクロール操作に対応しました。 [#172](https://github.com/tshino/vscode-vz-like-keymap/pull/172)
+        - CTRL+E, CTRL+X, CTRL+S, CTRL+D, CTRL+R, CTRL+C, CTRL+Q R, CTRL+Q C でスクロール。
+        - これらは設定の 'Vz Keymap: Editor Hover Keys' で有効化できます。デフォルトで有効です。
 - 修正:
     - Settings画面で使うキー定義を更新。 [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
 - New:
     - Added scroll keys support in Interactive Playground pages. [#171](https://github.com/tshino/vscode-vz-like-keymap/pull/171)
         - Ctrl+E, Ctrl+X, Ctrl+R, Ctrl+C to scroll.
         - These keys are enabled by turning on the 'Vz Keymap: Interactive Playground Keys' in the Settings.
+    - Added scroll keys support in Editor Hovers. [#172](https://github.com/tshino/vscode-vz-like-keymap/pull/172)
+        - Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C to scroll.
+        - These keys are enabled by turning on the 'Vz Keymap: Editor Hover Keys' in the Settings.
 - Fixed:
     - Updated key definitions for the Settings page. [#160](https://github.com/tshino/vscode-vz-like-keymap/pull/160)
 
