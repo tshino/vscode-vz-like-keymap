@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unrelease]
+### [0.19.7] - 2023-06-28
 - 新規:
     - Interactive Playgroundページのスクロール操作に対応しました。 [#171](https://github.com/tshino/vscode-vz-like-keymap/pull/171)
         - CTRL+E, CTRL+X, CTRL+R, CTRL+C でスクロール。
