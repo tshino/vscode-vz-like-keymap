@@ -1198,12 +1198,12 @@
             {
                 "key": "ctrl+s",
                 "command": "list.collapse",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+                "when": "listFocus && treeElementCanCollapse && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasParent && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+d",
                 "command": "list.expand",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+                "when": "listFocus && treeElementCanExpand && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasChild && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+r",
