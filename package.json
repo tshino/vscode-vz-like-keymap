@@ -1243,22 +1243,22 @@
             {
                 "key": "ctrl+e",
                 "command": "selectPrevSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "selectNextSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+r",
                 "command": "selectPrevPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+c",
                 "command": "selectNextPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+q ctrl+r",

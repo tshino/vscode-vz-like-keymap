@@ -5,8 +5,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - 修正:
     - リストビューで使うキー定義を更新。 [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
+    - 補完候補リストの操作で使うキー定義を更新。 [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
 - Fixed:
     - Updated key definitions for list views. [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
+    - Updated key definitions for suggestion widgets. [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
 
 
 ### [0.19.7] - 2023-06-28
