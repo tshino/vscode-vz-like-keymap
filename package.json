@@ -207,6 +207,11 @@
                     "default": true,
                     "description": "On: Tag Jump / Off: Show Editor Context Menu (VS Code default)"
                 },
+                "vzKeymap.breadcrumbsKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus and select on Breadcrumbs\n(Ctrl+S, Ctrl+D, Ctrl+A, Ctrl+F, Ctrl+X, Ctrl+M)"
+                },
                 "vzKeymap.listViewKeys": {
                     "type": "boolean",
                     "default": true,
@@ -1184,6 +1189,46 @@
                 "key": "ctrl+alt+j",
                 "command": "workbench.action.togglePanel",
                 "when": ""
+            },
+            {
+                "key": "ctrl+f",
+                "command": "breadcrumbs.focusNext",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "breadcrumbs.focusNext",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "breadcrumbs.focusPrevious",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "breadcrumbs.focusPrevious",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "breadcrumbs.selectFocused",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "breadcrumbs.selectFocused",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+f",
+                "command": "breadcrumbs.focusNextWithPicker",
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "breadcrumbs.focusPreviousWithPicker",
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
             },
             {
                 "key": "ctrl+e",
