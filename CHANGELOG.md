@@ -10,6 +10,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - 修正:
     - リストビューで使うキー定義を更新。 [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
     - 補完候補リストの操作で使うキー定義を更新。 [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
+    - 補完候補リストが非選択状態で表示されているときのCTRL+MとENTERの動作を修正。 [#178](https://github.com/tshino/vscode-vz-like-keymap/pull/178)
 - New:
     - Added navigation keys support on Breadcrumbds. [#176](https://github.com/tshino/vscode-vz-like-keymap/pull/176)
         - Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D to mvoe focus on the list view.
@@ -17,6 +18,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - Fixed:
     - Updated key definitions for list views. [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
     - Updated key definitions for suggestion widgets. [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
+    - Fixed the behavior of Ctrl+M/Enter when the suggestion list is visible with no focused item. [#178](https://github.com/tshino/vscode-vz-like-keymap/pull/178)
 
 
 ### [0.19.7] - 2023-06-28

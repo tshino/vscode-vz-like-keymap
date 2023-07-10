@@ -653,12 +653,12 @@
             {
                 "key": "ctrl+m",
                 "command": "vz.enter",
-                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible && !codeActionMenuVisible"
+                "when": "editorTextFocus && !editorReadonly && !renameInputVisible && !codeActionMenuVisible && !suggestWidgetHasFocusedSuggestion || editorTextFocus && !editorReadonly && !renameInputVisible && !codeActionMenuVisible && suggestWidgetHasFocusedSuggestion && !acceptSuggestionOnEnter"
             },
             {
                 "key": "enter",
                 "command": "vz.enter",
-                "when": "editorTextFocus && !editorReadonly && !suggestWidgetVisible && !renameInputVisible && !codeActionMenuVisible"
+                "when": "editorTextFocus && !editorReadonly && !renameInputVisible && !codeActionMenuVisible && !suggestWidgetHasFocusedSuggestion || editorTextFocus && !editorReadonly && !renameInputVisible && !codeActionMenuVisible && suggestWidgetHasFocusedSuggestion && !acceptSuggestionOnEnter"
             },
             {
                 "key": "ctrl+n",
@@ -1118,12 +1118,12 @@
             {
                 "key": "ctrl+m",
                 "command": "vz.findStartEnter",
-                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !renameInputVisible && !suggestWidgetHasFocusedSuggestion || editorTextFocus && findWidgetVisible && !editorReadonly && !renameInputVisible && suggestWidgetHasFocusedSuggestion && !acceptSuggestionOnEnter"
             },
             {
                 "key": "enter",
                 "command": "vz.findStartEnter",
-                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !suggestWidgetVisible && !renameInputVisible"
+                "when": "editorTextFocus && findWidgetVisible && !editorReadonly && !renameInputVisible && !suggestWidgetHasFocusedSuggestion || editorTextFocus && findWidgetVisible && !editorReadonly && !renameInputVisible && suggestWidgetHasFocusedSuggestion && !acceptSuggestionOnEnter"
             },
             {
                 "key": "escape",
