@@ -7,6 +7,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - パンくずリストの操作に対応しました。 [#176](https://github.com/tshino/vscode-vz-like-keymap/pull/176)
         - CTRL+E, CTRL+X, CTRL+S, CTRL+D でリスト操作。
         - CTRL+A, CTRL+F で列移動。
+        - これらは設定の 'Vz Keymap: Breadcrumbs Keys' で有効化できます。デフォルトで有効です。
 - 修正:
     - リストビューで使うキー定義を更新。 [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
     - 補完候補リストの操作で使うキー定義を更新。 [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
@@ -15,6 +16,7 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - Added navigation keys support on Breadcrumbds. [#176](https://github.com/tshino/vscode-vz-like-keymap/pull/176)
         - Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D to mvoe focus on the list view.
         - Ctrl+A, Ctrl+F to move across columns.
+        - These keys are enabled by turning on the 'Vz Keymap: Breadcrumbs Keys' in the Settings.
 - Fixed:
     - Updated key definitions for list views. [#173](https://github.com/tshino/vscode-vz-like-keymap/pull/173)
     - Updated key definitions for suggestion widgets. [#175](https://github.com/tshino/vscode-vz-like-keymap/pull/175)
