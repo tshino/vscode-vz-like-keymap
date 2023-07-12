@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.8] - 2023-07-13
 - 新規:
     - パンくずリストの操作に対応しました。 [#176](https://github.com/tshino/vscode-vz-like-keymap/pull/176)
         - CTRL+E, CTRL+X, CTRL+S, CTRL+D でリスト操作。
