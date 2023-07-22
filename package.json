@@ -246,6 +246,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to scroll in Editor Hovers\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C)"
+                },
+                "vzKeymap.searchViewletKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus between panes in the Search viewlet\n(Ctrl+W, Ctrl+Z, Ctrl+M)"
                 }
             }
         },
@@ -1444,6 +1449,21 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "search.focus.previousInputBox",
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "search.focus.nextInputBox",
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "search.action.openResult",
+                "when": "fileMatchOrMatchFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
             }
         ]
     },
