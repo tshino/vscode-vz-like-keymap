@@ -8,11 +8,17 @@ All notable changes to the Vz Keymap extension will be documented in this file.
         - CTRL+W, CTRL+Z で検索入力と検索結果の間でフォーカスを移動。
         - CTRL+M で検索結果にフォーカスがあるとき選択されたファイルを開く。
         - これらは設定の 'Vz Keymap: Search Viewlet Keys' で有効化できます。デフォルトで有効です。
+    - Statusバー上でフォーカスを移動する操作に対応しました。 [#182](https://github.com/tshino/vscode-vz-like-keymap/pull/182)
+        - CTRL+S, CTRL+D, CTRL+A, CTRL+F, CTRL+Q S, CTRL+Q D でフォーカスを移動。
+        - これらは設定の 'Vz Keymap: Status Bar Keys' で有効化できます。デフォルトで有効です。
 - New:
     - Added navigation keys support in Search viewlet. [#181](https://github.com/tshino/vscode-vz-like-keymap/pull/181)
         - Ctrl+W, Ctrl+Z to move focus between the search input box and search result.
         - Ctrl+M to open the selected file in search result.
         - These keys are enabled by turning on the 'Vz Keymap: Search Viewlet Keys' in the Settings.
+    - Added navigation keys to move focus on Status bar. [#182](https://github.com/tshino/vscode-vz-like-keymap/pull/182)
+        - Ctrl+S, Ctrl+D, Ctrl+A, Ctrl+F, Ctrl+Q S, Ctrl+Q D to move focus on the Status bar.
+        - These keys are enabled by turning on the 'Vz Keymap: Status Bar Keys' in the Settings.
 
 ### [0.19.8] - 2023-07-13
 - 新規:
