@@ -255,7 +255,7 @@
                 "vzKeymap.statusBarKeys": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables vz-style keys to move focus on the Status Bar\n(Ctrl+S, Ctrl+D)"
+                    "description": "Enables vz-style keys to move focus on the Status Bar\n(Ctrl+S, Ctrl+D, Ctrl+A, Ctrl+F, Ctrl+Q S, Ctrl+Q D)"
                 }
             }
         },
@@ -1478,6 +1478,36 @@
             {
                 "key": "ctrl+s",
                 "command": "workbench.statusBar.focusPrevious",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "workbench.statusBar.focusFirst",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+s",
+                "command": "workbench.statusBar.focusFirst",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+q s",
+                "command": "workbench.statusBar.focusFirst",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+f",
+                "command": "workbench.statusBar.focusLast",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+d",
+                "command": "workbench.statusBar.focusLast",
+                "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+q d",
+                "command": "workbench.statusBar.focusLast",
                 "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
             }
         ]
