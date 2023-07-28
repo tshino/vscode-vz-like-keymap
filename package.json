@@ -777,8 +777,7 @@
             },
             {
                 "key": "ctrl+k ctrl+u",
-                "command": "undo",
-                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+                "command": "undo"
             },
             {
                 "key": "ctrl+k ctrl+u",
@@ -787,8 +786,7 @@
             },
             {
                 "key": "ctrl+k u",
-                "command": "undo",
-                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+                "command": "undo"
             },
             {
                 "key": "ctrl+k u",
@@ -797,8 +795,7 @@
             },
             {
                 "key": "alt+backspace",
-                "command": "undo",
-                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+                "command": "undo"
             },
             {
                 "key": "alt+backspace",
@@ -807,8 +804,7 @@
             },
             {
                 "key": "shift+alt+backspace",
-                "command": "redo",
-                "when": "editorTextFocus && !editorReadonly && !vz.keyboardMacroRecording"
+                "command": "redo"
             },
             {
                 "key": "shift+alt+backspace",
