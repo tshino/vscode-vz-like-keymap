@@ -13,6 +13,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
         - これらは設定の 'Vz Keymap: Status Bar Keys' で有効化できます。デフォルトで有効です。
 - 改善:
     - UndoとRedoのキーバインド（ALT+BACKSPACEなど）をエディタ内以外でも使えるようにしました。 [#183](https://github.com/tshino/vscode-vz-like-keymap/issues/183)
+    - リストビューで使うキー定義にスクロール操作を追加。 [#187](https://github.com/tshino/vscode-vz-like-keymap/pull/187)
+        - CTRL+W, CTRL+Z でスクロール。
 - New:
     - Added navigation keys support in Search viewlet. [#181](https://github.com/tshino/vscode-vz-like-keymap/pull/181)
         - Ctrl+W, Ctrl+Z to move focus between the search input box and search result.
@@ -23,6 +25,8 @@ All notable changes to the Vz Keymap extension will be documented in this file.
         - These keys are enabled by turning on the 'Vz Keymap: Status Bar Keys' in the Settings.
 - Improved:
     - Made Undo and Redo keys (e.g. Alt+Backspace) available everywhere not only in editors. [#183](https://github.com/tshino/vscode-vz-like-keymap/issues/183)
+    - Added scroll keys for list views. [#187](https://github.com/tshino/vscode-vz-like-keymap/pull/187)
+        - Ctrl+W, Ctrl+Z to scroll the list view.
 
 ### [0.19.8] - 2023-07-13
 - 新規:
