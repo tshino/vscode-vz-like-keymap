@@ -215,7 +215,7 @@
                 "vzKeymap.listViewKeys": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables vz-style keys to move focus and select on list views like Explorer pane\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C, Ctrl+M)"
+                    "description": "Enables vz-style keys to move focus and select on list views like Explorer pane\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C, Ctrl+W, Ctrl+Z, Ctrl+M)"
                 },
                 "vzKeymap.suggestionWidgetKeys": {
                     "type": "boolean",
@@ -1284,6 +1284,16 @@
             {
                 "key": "ctrl+q c",
                 "command": "list.focusLast",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "list.scrollUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "list.scrollDown",
                 "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
