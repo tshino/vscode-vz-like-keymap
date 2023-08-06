@@ -1289,12 +1289,12 @@
             {
                 "key": "ctrl+w",
                 "command": "list.scrollUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+W"
             },
             {
                 "key": "ctrl+z",
                 "command": "list.scrollDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+Z"
             },
             {
                 "key": "ctrl+m",
@@ -1464,12 +1464,12 @@
             {
                 "key": "ctrl+w",
                 "command": "search.focus.previousInputBox",
-                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+W"
             },
             {
                 "key": "ctrl+z",
                 "command": "search.focus.nextInputBox",
-                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+Z"
             },
             {
                 "key": "ctrl+m",
