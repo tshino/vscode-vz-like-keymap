@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.9] - 2023-08-10
 - 新規:
     - Searchビューで使う操作に対応しました。 [#181](https://github.com/tshino/vscode-vz-like-keymap/pull/181)
         - CTRL+W, CTRL+Z で検索入力と検索結果の間でフォーカスを移動。
