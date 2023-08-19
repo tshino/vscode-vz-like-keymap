@@ -256,6 +256,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus on the Status Bar\n(Ctrl+S, Ctrl+D, Ctrl+A, Ctrl+F, Ctrl+Q S, Ctrl+Q D)"
+                },
+                "vzKeymap.widgetNavigationKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus over widgets in widget containers\n(Ctrl+W, Ctrl+Z)"
                 }
             }
         },
@@ -1513,6 +1518,16 @@
                 "key": "ctrl+q d",
                 "command": "workbench.statusBar.focusLast",
                 "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "widgetNavigation.focusPrevious",
+                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'top' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "widgetNavigation.focusNext",
+                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'bottom' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z"
             }
         ]
     },
