@@ -2,6 +2,17 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規:
+    - ウィジェット間のフォーカス移動操作に対応しました。 [#190](https://github.com/tshino/vscode-vz-like-keymap/pull/190)
+        - これは `widgetNavigation.focusPrevious` と `widgetNavigation.focusNext` コマンドに対応し、一例としては Keyboard Shortcuts の画面で検索入力と検索結果の間でフォーカスを移動するときに使えます。
+        - CTRL+W, CTRL+Z でフォーカスを移動。
+        - これらは設定の 'Vz Keymap: Widget Navigation Keys' で有効化できます。デフォルトで有効です。
+- New:
+    - Added navigation keys support in navigable widget containers. [#190](https://github.com/tshino/vscode-vz-like-keymap/pull/190)
+        - Ctrl+W, Ctrl+Z to move focus over widgets in widget containers.
+        - These keys are enabled by turning on the 'Vz Keymap: Widget Navigation Keys' in the Settings.
+
 ### [0.19.9] - 2023-08-10
 - 新規:
     - Searchビューで使う操作に対応しました。 [#181](https://github.com/tshino/vscode-vz-like-keymap/pull/181)
