@@ -1188,13 +1188,11 @@
             },
             {
                 "key": "ctrl+alt+b",
-                "command": "workbench.action.toggleSidebarVisibility",
-                "when": ""
+                "command": "workbench.action.toggleSidebarVisibility"
             },
             {
                 "key": "ctrl+alt+j",
-                "command": "workbench.action.togglePanel",
-                "when": ""
+                "command": "workbench.action.togglePanel"
             },
             {
                 "key": "ctrl+f",
