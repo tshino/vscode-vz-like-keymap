@@ -8,10 +8,18 @@ All notable changes to the Vz Keymap extension will be documented in this file.
         - これは `widgetNavigation.focusPrevious` と `widgetNavigation.focusNext` コマンドに対応し、一例としては Keyboard Shortcuts の画面で検索入力と検索結果の間でフォーカスを移動するときに使えます。
         - CTRL+W, CTRL+Z でフォーカスを移動。
         - これらは設定の 'Vz Keymap: Widget Navigation Keys' で有効化できます。デフォルトで有効です。
+    - 通知リストの操作に対応しました。 [#191](https://github.com/tshino/vscode-vz-like-keymap/pull/191)
+        - CTRL+E, CTRL+X などの上下のフォーカス移動操作はリストビューの操作（設定項目 List View Keys）として対応済み。
+        - CTRL+S, CTRL+D, CTRL+M で通知項目の縮小、展開およびトグル。
+        - これらは設定の 'Vz Keymap: Notification Keys' で有効化できます。デフォルトで有効です。
 - New:
     - Added navigation keys support in navigable widget containers. [#190](https://github.com/tshino/vscode-vz-like-keymap/pull/190)
         - Ctrl+W, Ctrl+Z to move focus over widgets in widget containers.
         - These keys are enabled by turning on the 'Vz Keymap: Widget Navigation Keys' in the Settings.
+    - Added navigation keys support on Notifications. [#191](https://github.com/tshino/vscode-vz-like-keymap/pull/191)
+        - Vertical navigation keys such as Ctrl+E and Ctrl+X are already supported as List View Keys.
+        - CtrL+S, Ctrl+D, Ctrl+M to collapse/expand/toggle a notification item.
+        - These keys are enabled by turning on the 'Vz Keymap: Notification Keys' in the Settings.
 
 ### [0.19.9] - 2023-08-10
 - 新規:
