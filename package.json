@@ -257,6 +257,11 @@
                     "default": true,
                     "description": "Enables vz-style keys to move focus on the Status Bar\n(Ctrl+S, Ctrl+D, Ctrl+A, Ctrl+F, Ctrl+Q S, Ctrl+Q D)"
                 },
+                "vzKeymap.notificationKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on the Notifications\n(Ctrl+S, Ctrl+D, Ctrl+M)\nOther keys such as Ctrl+E, Ctrl+X are enabled by List View Keys"
+                },
                 "vzKeymap.widgetNavigationKeys": {
                     "type": "boolean",
                     "default": true,
@@ -1393,6 +1398,21 @@
                 "key": "ctrl+m",
                 "command": "acceptSelectedCodeAction",
                 "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "notification.collapse",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "notification.expand",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "notification.toggle",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
             },
             {
                 "key": "ctrl+e",
