@@ -1401,26 +1401,6 @@
             },
             {
                 "key": "ctrl+e",
-                "command": "workbench.action.interactivePlayground.arrowUp",
-                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "workbench.action.interactivePlayground.arrowDown",
-                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "workbench.action.interactivePlayground.pageUp",
-                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "workbench.action.interactivePlayground.pageDown",
-                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
-            },
-            {
-                "key": "ctrl+e",
                 "command": "editor.action.scrollUpHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
@@ -1493,6 +1473,26 @@
                 "key": "ctrl+z",
                 "command": "widgetNavigation.focusNext",
                 "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'bottom' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "workbench.action.interactivePlayground.arrowUp",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "workbench.action.interactivePlayground.arrowDown",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "workbench.action.interactivePlayground.pageUp",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "workbench.action.interactivePlayground.pageDown",
+                "when": "interactivePlaygroundFocus && !editorTextFocus && config.vzKeymap.interactivePlaygroundKeys"
             },
             {
                 "key": "ctrl+d",
