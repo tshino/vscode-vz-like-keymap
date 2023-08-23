@@ -1355,26 +1355,6 @@
                 "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
-                "key": "ctrl+x",
-                "command": "settings.action.focusSettingsFromSearch",
-                "when": "inSettingsSearch && !suggestWidgetVisible && config.vzKeymap.settingsPageKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "settings.action.focusTOC",
-                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "settings.action.focusSettingsList",
-                "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.settingsPageKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "settings.action.focusSettingControl",
-                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
-            },
-            {
                 "key": "ctrl+e",
                 "command": "showPrevParameterHint",
                 "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
@@ -1463,6 +1443,26 @@
                 "key": "ctrl+m",
                 "command": "search.action.openResult",
                 "when": "fileMatchOrMatchFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "settings.action.focusSettingsFromSearch",
+                "when": "inSettingsSearch && !suggestWidgetVisible && config.vzKeymap.settingsPageKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "settings.action.focusTOC",
+                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "settings.action.focusSettingsList",
+                "when": "inSettingsEditor && settingsTocRowFocus && config.vzKeymap.settingsPageKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "settings.action.focusSettingControl",
+                "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
             },
             {
                 "key": "ctrl+w",
