@@ -1365,21 +1365,6 @@
                 "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
             {
-                "key": "ctrl+s",
-                "command": "notification.collapse",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "notification.expand",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "notification.toggle",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
                 "key": "ctrl+e",
                 "command": "editor.action.scrollUpHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
@@ -1428,6 +1413,21 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "notification.collapse",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "notification.expand",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "notification.toggle",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
             },
             {
                 "key": "ctrl+w",
