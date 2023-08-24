@@ -1246,6 +1246,111 @@
             },
             {
                 "key": "ctrl+e",
+                "command": "selectPrevSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "selectNextSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "selectPrevPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "selectNextPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "selectLastSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "selectLastSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "acceptSelectedSuggestion",
+                "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "showPrevParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "showNextParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "editor.action.scrollUpHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "editor.action.scrollDownHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "editor.action.scrollLeftHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "editor.action.scrollRightHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "editor.action.pageUpHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "editor.action.pageDownHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "editor.action.goToTopHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "editor.action.goToTopHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "editor.action.goToBottomHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "editor.action.goToBottomHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
                 "command": "list.focusUp",
                 "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
@@ -1310,49 +1415,34 @@
                 "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
-                "key": "ctrl+e",
-                "command": "selectPrevSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+                "key": "ctrl+s",
+                "command": "notification.collapse",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
             },
             {
-                "key": "ctrl+x",
-                "command": "selectNextSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "selectPrevPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "selectNextPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
-                "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q r",
-                "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "key": "ctrl+d",
+                "command": "notification.expand",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
             },
             {
                 "key": "ctrl+m",
-                "command": "acceptSelectedSuggestion",
-                "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+                "command": "notification.toggle",
+                "when": "notificationFocus && config.vzKeymap.notificationKeys"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "search.focus.previousInputBox",
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+W"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "search.focus.nextInputBox",
+                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+Z"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "search.action.openResult",
+                "when": "fileMatchOrMatchFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
             },
             {
                 "key": "ctrl+x",
@@ -1373,96 +1463,6 @@
                 "key": "ctrl+m",
                 "command": "settings.action.focusSettingControl",
                 "when": "inSettingsEditor && settingRowFocus && config.vzKeymap.settingsPageKeys"
-            },
-            {
-                "key": "ctrl+e",
-                "command": "showPrevParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "showNextParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "notification.collapse",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "notification.expand",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "notification.toggle",
-                "when": "notificationFocus && config.vzKeymap.notificationKeys"
-            },
-            {
-                "key": "ctrl+e",
-                "command": "editor.action.scrollUpHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "editor.action.scrollDownHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "editor.action.scrollLeftHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "editor.action.scrollRightHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "editor.action.pageUpHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "editor.action.pageDownHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
-                "command": "editor.action.goToTopHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q r",
-                "command": "editor.action.goToTopHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "editor.action.goToBottomHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "editor.action.goToBottomHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+w",
-                "command": "search.focus.previousInputBox",
-                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+W"
-            },
-            {
-                "key": "ctrl+z",
-                "command": "search.focus.nextInputBox",
-                "when": "searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys && config.vzKeymap.ctrl+Z"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "search.action.openResult",
-                "when": "fileMatchOrMatchFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
             },
             {
                 "key": "ctrl+w",
