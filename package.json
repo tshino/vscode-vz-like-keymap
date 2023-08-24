@@ -1246,71 +1246,6 @@
             },
             {
                 "key": "ctrl+e",
-                "command": "list.focusUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "list.focusDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "list.collapse",
-                "when": "listFocus && treeElementCanCollapse && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasParent && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "list.expand",
-                "when": "listFocus && treeElementCanExpand && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasChild && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "list.focusPageUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "list.focusPageDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
-                "command": "list.focusFirst",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+q r",
-                "command": "list.focusFirst",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "list.focusLast",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "list.focusLast",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+w",
-                "command": "list.scrollUp",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+W"
-            },
-            {
-                "key": "ctrl+z",
-                "command": "list.scrollDown",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+Z"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "list.select",
-                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
-            },
-            {
-                "key": "ctrl+e",
                 "command": "selectPrevSuggestion",
                 "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
             },
@@ -1413,6 +1348,71 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "list.focusUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "list.focusDown",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "list.collapse",
+                "when": "listFocus && treeElementCanCollapse && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasParent && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "list.expand",
+                "when": "listFocus && treeElementCanExpand && !inputFocus && config.vzKeymap.listViewKeys || listFocus && treeElementHasChild && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "list.focusPageUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "list.focusPageDown",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "list.focusFirst",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "list.focusFirst",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "list.focusLast",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "list.focusLast",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+w",
+                "command": "list.scrollUp",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+W"
+            },
+            {
+                "key": "ctrl+z",
+                "command": "list.scrollDown",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys && config.vzKeymap.ctrl+Z"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "list.select",
+                "when": "listFocus && !inputFocus && config.vzKeymap.listViewKeys"
             },
             {
                 "key": "ctrl+s",
