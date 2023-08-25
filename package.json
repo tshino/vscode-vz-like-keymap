@@ -872,16 +872,6 @@
                 "when": "editorFocus && replaceInputFocussed"
             },
             {
-                "key": "ctrl+e",
-                "command": "history.showPrevious",
-                "when": "historyNavigationBackwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "history.showNext",
-                "when": "historyNavigationForwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
-            },
-            {
                 "key": "enter",
                 "command": "vz.findStart",
                 "when": "editorFocus && findInputFocussed"
@@ -1348,6 +1338,16 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "history.showPrevious",
+                "when": "historyNavigationBackwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "history.showNext",
+                "when": "historyNavigationForwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+e",
