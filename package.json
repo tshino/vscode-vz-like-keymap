@@ -1196,51 +1196,6 @@
             },
             {
                 "key": "ctrl+e",
-                "command": "selectPrevSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "selectNextSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "selectPrevPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "selectNextPageSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
-                "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q r",
-                "command": "selectFirstSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "selectLastSuggestion",
-                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "acceptSelectedSuggestion",
-                "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
-            },
-            {
-                "key": "ctrl+e",
                 "command": "showPrevParameterHint",
                 "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
@@ -1298,6 +1253,51 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "selectPrevSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "selectNextSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "selectPrevPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "selectNextPageSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q r",
+                "command": "selectFirstSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "selectLastSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "selectLastSuggestion",
+                "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "acceptSelectedSuggestion",
+                "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
                 "key": "ctrl+f",
