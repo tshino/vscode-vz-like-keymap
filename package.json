@@ -1195,46 +1195,6 @@
                 "command": "workbench.action.togglePanel"
             },
             {
-                "key": "ctrl+f",
-                "command": "breadcrumbs.focusNext",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "breadcrumbs.focusNext",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+a",
-                "command": "breadcrumbs.focusPrevious",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "breadcrumbs.focusPrevious",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "breadcrumbs.selectFocused",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "breadcrumbs.selectFocused",
-                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+f",
-                "command": "breadcrumbs.focusNextWithPicker",
-                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
-                "key": "ctrl+a",
-                "command": "breadcrumbs.focusPreviousWithPicker",
-                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
-            },
-            {
                 "key": "ctrl+e",
                 "command": "selectPrevSuggestion",
                 "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus && config.vzKeymap.suggestionWidgetKeys || suggestWidgetVisible && textInputFocus && !suggestWidgetHasFocusedSuggestion && config.vzKeymap.suggestionWidgetKeys"
@@ -1338,6 +1298,36 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+f",
+                "command": "breadcrumbs.focusNext",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "breadcrumbs.focusNext",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "breadcrumbs.focusPrevious",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "breadcrumbs.focusPrevious",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "breadcrumbs.selectFocused",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "breadcrumbs.selectFocused",
+                "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
             },
             {
                 "key": "ctrl+e",
@@ -1533,6 +1523,16 @@
                 "key": "ctrl+q d",
                 "command": "workbench.statusBar.focusLast",
                 "when": "statusBarFocused && config.vzKeymap.statusBarKeys"
+            },
+            {
+                "key": "ctrl+f",
+                "command": "breadcrumbs.focusNextWithPicker",
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
+            },
+            {
+                "key": "ctrl+a",
+                "command": "breadcrumbs.focusPreviousWithPicker",
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
             },
             {
                 "key": "ctrl+e",
