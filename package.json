@@ -1196,16 +1196,6 @@
             },
             {
                 "key": "ctrl+e",
-                "command": "showPrevParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "showNextParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
-            },
-            {
-                "key": "ctrl+e",
                 "command": "editor.action.scrollUpHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
@@ -1253,6 +1243,16 @@
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "showPrevParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "showNextParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
             {
                 "key": "ctrl+e",
