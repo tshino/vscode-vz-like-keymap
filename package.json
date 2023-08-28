@@ -1195,14 +1195,34 @@
                 "command": "workbench.action.togglePanel"
             },
             {
-                "key": "ctrl+e",
-                "command": "showPrevParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+                "key": "ctrl+q ctrl+r",
+                "command": "editor.action.goToTopHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
             {
-                "key": "ctrl+x",
-                "command": "showNextParameterHint",
-                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
+                "key": "ctrl+q r",
+                "command": "editor.action.goToTopHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q ctrl+c",
+                "command": "editor.action.goToBottomHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+q c",
+                "command": "editor.action.goToBottomHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "editor.action.pageUpHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "editor.action.pageDownHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
             {
                 "key": "ctrl+e",
@@ -1225,34 +1245,14 @@
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
             {
-                "key": "ctrl+r",
-                "command": "editor.action.pageUpHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+                "key": "ctrl+e",
+                "command": "showPrevParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
             {
-                "key": "ctrl+c",
-                "command": "editor.action.pageDownHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+r",
-                "command": "editor.action.goToTopHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q r",
-                "command": "editor.action.goToTopHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q ctrl+c",
-                "command": "editor.action.goToBottomHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+q c",
-                "command": "editor.action.goToBottomHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+                "key": "ctrl+x",
+                "command": "showNextParameterHint",
+                "when": "editorFocus && parameterHintsMultipleSignatures && parameterHintsVisible && config.vzKeymap.parameterHintKeys"
             },
             {
                 "key": "ctrl+e",
