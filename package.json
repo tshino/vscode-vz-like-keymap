@@ -1195,36 +1195,6 @@
                 "command": "workbench.action.togglePanel"
             },
             {
-                "key": "ctrl+e",
-                "command": "editor.action.scrollUpHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+x",
-                "command": "editor.action.scrollDownHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+s",
-                "command": "editor.action.scrollLeftHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+d",
-                "command": "editor.action.scrollRightHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+r",
-                "command": "editor.action.pageUpHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
-                "key": "ctrl+c",
-                "command": "editor.action.pageDownHover",
-                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
-            },
-            {
                 "key": "ctrl+q ctrl+r",
                 "command": "editor.action.goToTopHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
@@ -1242,6 +1212,36 @@
             {
                 "key": "ctrl+q c",
                 "command": "editor.action.goToBottomHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+r",
+                "command": "editor.action.pageUpHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+c",
+                "command": "editor.action.pageDownHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "editor.action.scrollUpHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "editor.action.scrollDownHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "editor.action.scrollLeftHover",
+                "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "editor.action.scrollRightHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
             },
             {
