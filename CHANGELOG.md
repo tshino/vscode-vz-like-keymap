@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.10] - 2023-09-03
 - 新規:
     - ウィジェット間のフォーカス移動操作に対応しました。 [#190](https://github.com/tshino/vscode-vz-like-keymap/pull/190)
         - これは `widgetNavigation.focusPrevious` と `widgetNavigation.focusNext` コマンドに対応し、一例としては Keyboard Shortcuts の画面で検索入力と検索結果の間でフォーカスを移動するときに使えます。
