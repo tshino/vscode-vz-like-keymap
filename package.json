@@ -1553,7 +1553,7 @@
     },
     "devDependencies": {
         "@vscode/test-electron": "^2.3.5",
-        "eslint": "^8.51.0",
+        "eslint": "^8.52.0",
         "mocha": "^10.2.0",
         "nyc": "^15.1.0",
         "process": "^0.11.10",
