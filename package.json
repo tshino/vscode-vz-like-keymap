@@ -1332,12 +1332,12 @@
             {
                 "key": "ctrl+e",
                 "command": "history.showPrevious",
-                "when": "historyNavigationBackwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
+                "when": "historyNavigationBackwardsEnabled && historyNavigationWidgetFocus && !isComposing && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+x",
                 "command": "history.showNext",
-                "when": "historyNavigationForwardsEnabled && historyNavigationWidgetFocus && !suggestWidgetVisible"
+                "when": "historyNavigationForwardsEnabled && historyNavigationWidgetFocus && !isComposing && !suggestWidgetVisible"
             },
             {
                 "key": "ctrl+e",

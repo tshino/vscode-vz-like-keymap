@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 改善:
+    - 履歴選択（入力欄の入力履歴をカーソル上下で選択する操作）のCTRL+E, CTRL+Xのwhen節をVS Code側の変更に合わせて変更しました。 [#210](https://github.com/tshino/vscode-vz-like-keymap/pull/210)
+- Improved:
+    - Modified the When clause of history navigation keys (up and down arrow keys to recall the history of a text input box) Ctrl+E and Ctrl+X to match the VS Code default. [#210](https://github.com/tshino/vscode-vz-like-keymap/pull/210)
+
 ### [0.19.10] - 2023-09-03
 - 新規:
     - ウィジェット間のフォーカス移動操作に対応しました。 [#190](https://github.com/tshino/vscode-vz-like-keymap/pull/190)
