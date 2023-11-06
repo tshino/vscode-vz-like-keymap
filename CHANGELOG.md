@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.11] - 2023-11-07
 - 改善:
     - 履歴選択（入力欄の入力履歴をカーソル上下で選択する操作）のCTRL+E, CTRL+Xのwhen節をVS Code側の変更に合わせて変更しました。 [#210](https://github.com/tshino/vscode-vz-like-keymap/pull/210)
 - Improved:
