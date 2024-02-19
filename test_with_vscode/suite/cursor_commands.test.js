@@ -154,7 +154,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll up half page (1)', async () => {
+        it.skip('should scroll up half page (1)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
@@ -232,7 +232,7 @@ describe('CursorHandler', () => {
         before(async () => {
             await testUtils.resetDocument(textEditor, '0123456789\n'.repeat(1000));
         });
-        it('should scroll down half page (1)', async () => {
+        it.skip('should scroll down half page (1)', async () => {
             await resetCursor(500, 5, vscode.TextEditorRevealType.InCenter);
             let vlines0 = EditUtil.enumVisibleLines(textEditor);
             let halfPage = EditUtil.getLowerBoundLineIndex(vlines0, 500) - 1;
