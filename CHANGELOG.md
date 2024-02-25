@@ -5,8 +5,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - 改善:
     - リストビュー/ツリービューで使うキー定義を更新。 [#226](https://github.com/tshino/vscode-vz-like-keymap/pull/226)
+    - リストビュー/ツリービューのスティッキースクロールに関するキー定義を追加。 [#221](https://github.com/tshino/vscode-vz-like-keymap/issues/221)
 - Improved:
     - Updated key definitions for list/tree views. [#226](https://github.com/tshino/vscode-vz-like-keymap/pull/226)
+    - Added sticky scroll related keys support for list/tree views. [#221](https://github.com/tshino/vscode-vz-like-keymap/issues/221)
 
 ### [0.19.11] - 2023-11-07
 - 改善:
