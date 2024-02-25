@@ -1535,6 +1535,16 @@
                 "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
             },
             {
+                "key": "ctrl+s",
+                "command": "list.stickyScroll.collapse",
+                "when": "treestickyScrollFocused && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "list.stickyScrollselect",
+                "when": "treestickyScrollFocused && config.vzKeymap.listViewKeys"
+            },
+            {
                 "key": "ctrl+e",
                 "command": "selectPrevCodeAction",
                 "when": "codeActionMenuVisible && config.vzKeymap.codeActionKeys"
