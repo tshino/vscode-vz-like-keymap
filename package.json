@@ -1527,12 +1527,12 @@
             {
                 "key": "ctrl+f",
                 "command": "breadcrumbs.focusNextWithPicker",
-                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && !treestickyScrollFocused && config.vzKeymap.breadcrumbsKeys"
             },
             {
                 "key": "ctrl+a",
                 "command": "breadcrumbs.focusPreviousWithPicker",
-                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && config.vzKeymap.breadcrumbsKeys"
+                "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && !treestickyScrollFocused && config.vzKeymap.breadcrumbsKeys"
             },
             {
                 "key": "ctrl+s",
