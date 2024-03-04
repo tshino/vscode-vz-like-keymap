@@ -1457,12 +1457,12 @@
             {
                 "key": "ctrl+w",
                 "command": "widgetNavigation.focusPrevious",
-                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'top' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W"
+                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && treestickyScrollFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W || navigableContainerFocused && listScrollAtBoundary == 'top' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+W"
             },
             {
                 "key": "ctrl+z",
                 "command": "widgetNavigation.focusNext",
-                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'bottom' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z"
+                "when": "inputFocus && navigableContainerFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && treestickyScrollFocused && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && !listFocus && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'both' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z || navigableContainerFocused && listScrollAtBoundary == 'bottom' && config.vzKeymap.widgetNavigationKeys && config.vzKeymap.ctrl+Z"
             },
             {
                 "key": "ctrl+e",
