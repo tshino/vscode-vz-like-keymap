@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.12] - 2024-03-07
 - 改善:
     - リストビュー/ツリービューで使うキー定義を更新。 [#226](https://github.com/tshino/vscode-vz-like-keymap/pull/226)
     - リストビュー/ツリービューのスティッキースクロールに関するキー定義を追加。 [#221](https://github.com/tshino/vscode-vz-like-keymap/issues/221)
