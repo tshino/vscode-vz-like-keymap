@@ -271,6 +271,11 @@
         },
         "keybindings": [
             {
+                "key": "ctrl+z",
+                "command": "",
+                "when": "config.vzKeymap.ctrl+Z"
+            },
+            {
                 "key": "ctrl+s",
                 "command": "",
                 "when": "editorFocus"
