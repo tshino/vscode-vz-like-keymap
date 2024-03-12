@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 改善:
+    - エディタやリストビュー以外の場所で意図せず CTRL+Z が undo になる問題を修正。 [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
+- Improved:
+    - Fixed: pressing CTRL+Z outside of editors or list/tree views causes unintended invocation of the undo command. [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
+
 ### [0.19.12] - 2024-03-07
 - 改善:
     - リストビュー/ツリービューで使うキー定義を更新。 [#226](https://github.com/tshino/vscode-vz-like-keymap/pull/226)
