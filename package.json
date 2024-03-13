@@ -271,6 +271,11 @@
         },
         "keybindings": [
             {
+                "key": "ctrl+w",
+                "command": "",
+                "when": "config.vzKeymap.ctrl+W"
+            },
+            {
                 "key": "ctrl+z",
                 "command": "",
                 "when": "config.vzKeymap.ctrl+Z"
