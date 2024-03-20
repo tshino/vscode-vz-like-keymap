@@ -6,9 +6,11 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 - 改善:
     - エディタやリストビュー以外の場所で意図せず CTRL+Z が undo になる問題を修正。 [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
     - エディタやリストビュー以外の場所で意図せず CTRL+W が「エディタを閉じる」になる問題を修正。 [#235](https://github.com/tshino/vscode-vz-like-keymap/issues/235)
+    - エディタやリストビュー以外の場所で意図せず CTRL+E が「ファイルに移動」になる問題を修正。 [#237](https://github.com/tshino/vscode-vz-like-keymap/issues/237)
 - Improved:
     - Fixed: pressing Ctrl+Z outside of editors or list/tree views causes unintended invocation of the undo command. [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
     - Fixed: pressing Ctrl+W outside of editors or list/tree views causes unintended invocation of `workbench.action.closeActiveEditor` command. [#235](https://github.com/tshino/vscode-vz-like-keymap/issues/235)
+    - Fixed: pressing Ctrl+E outside of editors or list/tree views causes unintended invocation of `workbench.action.quickOpen` command. [#237](https://github.com/tshino/vscode-vz-like-keymap/issues/237)
 
 ### [0.19.12] - 2024-03-07
 - 改善:
