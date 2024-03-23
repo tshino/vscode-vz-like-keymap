@@ -266,6 +266,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus over widgets in widget containers\n(Ctrl+W, Ctrl+Z)"
+                },
+                "vzKeymap.quickOpenKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on the QuickOpen pickers\n(Ctrl+E, Ctrl+X)"
                 }
             }
         },
