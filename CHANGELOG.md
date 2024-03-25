@@ -3,10 +3,21 @@
 All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
+- 新規:
+    - Quick Open系のポップアップする候補リスト上の操作に対応しました。 [#239](https://github.com/tshino/vscode-vz-like-keymap/issues/239)
+        - 確認済みのものは「ファイルに移動（CTRL+P）」「ビューを開く（CTR+P CTR+Q）」「最近開いた項目（CTRL+P CTRL+R）」です。
+        - CTRL+E, CTRL+X でフォーカスを移動、CTRL+M で決定。
+        - これらは設定の 'Vz Keymap: Quick Open Keys' で有効化できます。デフォルトで有効です。
 - 改善:
     - エディタやリストビュー以外の場所で意図せず CTRL+Z が undo になる問題を修正。 [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
     - エディタやリストビュー以外の場所で意図せず CTRL+W が「エディタを閉じる」になる問題を修正。 [#235](https://github.com/tshino/vscode-vz-like-keymap/issues/235)
     - エディタやリストビュー以外の場所で意図せず CTRL+E が「ファイルに移動」になる問題を修正。 [#237](https://github.com/tshino/vscode-vz-like-keymap/issues/237)
+- New:
+    - Added navigation keys support for Quick Open popup menus. [#239](https://github.com/tshino/vscode-vz-like-keymap/issues/239)
+        - Supported menus are Go to File... (Ctrl+P), Open View... (Ctrl+P Ctrl+Q) and Open Recent... (Ctrl+P Ctrl+R).
+        - Ctrl+E, Ctrl+X to move the focus in the candidates list.
+        - Ctrl+M to accept the selected item.
+        - These keys are enabled by turning on the 'Vz Keymap: Quick Open Keys' in the Settings.
 - Improved:
     - Fixed: pressing Ctrl+Z outside of editors or list/tree views causes unintended invocation of the undo command. [#233](https://github.com/tshino/vscode-vz-like-keymap/issues/233)
     - Fixed: pressing Ctrl+W outside of editors or list/tree views causes unintended invocation of `workbench.action.closeActiveEditor` command. [#235](https://github.com/tshino/vscode-vz-like-keymap/issues/235)

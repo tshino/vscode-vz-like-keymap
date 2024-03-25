@@ -266,6 +266,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus over widgets in widget containers\n(Ctrl+W, Ctrl+Z)"
+                },
+                "vzKeymap.quickOpenKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on the QuickOpen pickers\n(Ctrl+E, Ctrl+X, Ctrl+M)"
                 }
             }
         },
@@ -1557,6 +1562,21 @@
                 "key": "ctrl+m",
                 "command": "list.stickyScrollselect",
                 "when": "treestickyScrollFocused && config.vzKeymap.listViewKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "workbench.action.quickOpenNavigatePrevious",
+                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "workbench.action.quickOpenNavigateNext",
+                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "workbench.action.acceptSelectedQuickOpenItem",
+                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
             },
             {
                 "key": "ctrl+e",
