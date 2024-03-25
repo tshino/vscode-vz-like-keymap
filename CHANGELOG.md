@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.13] - 2024-03-26
 - 新規:
     - Quick Open系のポップアップする候補リスト上の操作に対応しました。 [#239](https://github.com/tshino/vscode-vz-like-keymap/issues/239)
         - 確認済みのものは「ファイルに移動（CTRL+P）」「ビューを開く（CTR+P CTR+Q）」「最近開いた項目（CTRL+P CTRL+R）」です。
