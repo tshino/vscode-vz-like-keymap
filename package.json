@@ -271,6 +271,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus on the QuickOpen pickers\n(Ctrl+E, Ctrl+X, Ctrl+M)"
+                },
+                "vzKeymap.renameInputKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on the rename suggestion list\n(Ctrl+E, Ctrl+X, Ctrl+M)"
                 }
             }
         },
