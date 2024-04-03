@@ -1324,6 +1324,21 @@
                 "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
             },
             {
+                "key": "ctrl+x",
+                "command": "focusNextRenameSuggestion",
+                "when": "renameInputVisible && config.vzKeymap.renameInputKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "focusPreviousRenameSuggestion",
+                "when": "renameInputVisible && !renameInputFocused && config.vzKeymap.renameInputKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "acceptRenameInput",
+                "when": "editorFocus && renameInputVisible && !isComposing && config.vzKeymap.renameInputKeys"
+            },
+            {
                 "key": "ctrl+f",
                 "command": "breadcrumbs.focusNext",
                 "when": "breadcrumbsActive && breadcrumbsVisible && config.vzKeymap.breadcrumbsKeys"
