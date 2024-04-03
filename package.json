@@ -271,6 +271,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus on the QuickOpen pickers\n(Ctrl+E, Ctrl+X, Ctrl+M)"
+                },
+                "vzKeymap.renameInputKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on the rename suggestion list\n(Ctrl+E, Ctrl+X, Ctrl+M)"
                 }
             }
         },
@@ -1317,6 +1322,21 @@
                 "key": "ctrl+m",
                 "command": "acceptSelectedSuggestion",
                 "when": "acceptSuggestionOnEnter && suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && config.vzKeymap.suggestionWidgetKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "focusNextRenameSuggestion",
+                "when": "renameInputVisible && config.vzKeymap.renameInputKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "focusPreviousRenameSuggestion",
+                "when": "renameInputVisible && !renameInputFocused && config.vzKeymap.renameInputKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "acceptRenameInput",
+                "when": "editorFocus && renameInputVisible && !isComposing && config.vzKeymap.renameInputKeys"
             },
             {
                 "key": "ctrl+f",
