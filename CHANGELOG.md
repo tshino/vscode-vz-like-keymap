@@ -2,6 +2,17 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規:
+    - リネーム入力時の操作に対応しました。 [#243](https://github.com/tshino/vscode-vz-like-keymap/issues/243)
+        - CTRL+E, CTRL+X で候補リスト上のフォーカスを移動、CTRL+M で決定。
+        - これらは設定の 'Vz Keymap: Rename Input Keys' で有効化できます。デフォルトで有効です。
+- New:
+    - Added navigation keys support for Rename Input popups. [#243](https://github.com/tshino/vscode-vz-like-keymap/issues/243)
+        - Ctrl+E, Ctrl+X to move the focus in the candidates list.
+        - Ctrl+M to accept the selected item.
+        - These keys are enabled by turning on the 'Vz Keymap: Rename Input Keys' in the Settings.
+
 ### [0.19.13] - 2024-03-26
 - 新規:
     - Quick Open系のポップアップする候補リスト上の操作に対応しました。 [#239](https://github.com/tshino/vscode-vz-like-keymap/issues/239)
