@@ -1331,7 +1331,7 @@
             {
                 "key": "ctrl+e",
                 "command": "focusPreviousRenameSuggestion",
-                "when": "renameInputVisible && !renameInputFocused && config.vzKeymap.renameInputKeys"
+                "when": "renameInputVisible && config.vzKeymap.renameInputKeys"
             },
             {
                 "key": "ctrl+m",
