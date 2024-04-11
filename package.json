@@ -247,6 +247,11 @@
                     "default": true,
                     "description": "Enables vz-style keys to scroll in Editor Hovers\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+R, Ctrl+C, Ctrl+Q R, Ctrl+Q C)"
                 },
+                "vzKeymap.editorStickyScrollKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to select/accept items in editor's Sticky Scroll area\n(Ctrl+E, Ctrl+X, Ctrl+M)"
+                },
                 "vzKeymap.searchViewletKeys": {
                     "type": "boolean",
                     "default": true,
@@ -1267,6 +1272,21 @@
                 "key": "ctrl+d",
                 "command": "editor.action.scrollRightHover",
                 "when": "editorHoverFocused && config.vzKeymap.editorHoverKeys"
+            },
+            {
+                "key": "ctrl+e",
+                "command": "editor.action.selectPreviousStickyScrollLine",
+                "when": "stickyScrollFocused && config.vzKeymap.editorStickyScrollKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "editor.action.selectNextStickyScrollLine",
+                "when": "stickyScrollFocused && config.vzKeymap.editorStickyScrollKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "editor.action.goToFocusedStickyScrollLine",
+                "when": "stickyScrollFocused && config.vzKeymap.editorStickyScrollKeys"
             },
             {
                 "key": "ctrl+e",
