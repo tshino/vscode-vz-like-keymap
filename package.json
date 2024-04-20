@@ -290,6 +290,10 @@
                 "command": ""
             },
             {
+                "key": "ctrl+x",
+                "command": ""
+            },
+            {
                 "key": "ctrl+w",
                 "command": "",
                 "when": "config.vzKeymap.ctrl+W"
