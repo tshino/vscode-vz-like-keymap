@@ -5,8 +5,10 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 ### [Unreleased]
 - 改善:
     - エディタやリストビュー以外の場所で意図せず CTRL+X が「切り取り」になる問題を修正。 [#249](https://github.com/tshino/vscode-vz-like-keymap/issues/249)
+    - エディタやリストビュー以外の場所で意図せず CTRL+M が「Tabフォーカス移動のトグル」になる問題を修正。 [#253](https://github.com/tshino/vscode-vz-like-keymap/issues/253)
 - Improved:
     - Fixed: pressing Ctrl+X outside of editors or list/tree views causes unintended invocation of `editor.action.clipboardCutAction` command. [#249](https://github.com/tshino/vscode-vz-like-keymap/issues/249)
+    - Fixed: pressing Ctrl+M outside of editors or list/tree views causes unintended invocation of `editor.action.toggleTabFocusMode` command. [#253](https://github.com/tshino/vscode-vz-like-keymap/issues/253)
 
 ### [0.19.14] - 2024-04-14
 - 新規:

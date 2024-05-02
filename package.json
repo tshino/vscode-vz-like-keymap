@@ -309,6 +309,10 @@
                 "when": "editorFocus"
             },
             {
+                "key": "ctrl+m",
+                "command": ""
+            },
+            {
                 "key": "ctrl+s",
                 "command": "vz.cursorLeft",
                 "when": "editorTextFocus"
@@ -697,11 +701,6 @@
                 "key": "ctrl+i",
                 "command": "tab",
                 "when": "editorTextFocus && !editorReadonly && config.vzKeymap.ctrl+I"
-            },
-            {
-                "key": "ctrl+m",
-                "command": "",
-                "when": "editorFocus"
             },
             {
                 "key": "ctrl+m",
