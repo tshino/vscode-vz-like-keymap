@@ -1493,6 +1493,11 @@
             },
             {
                 "key": "ctrl+m",
+                "command": "search.action.refreshSearchResults",
+                "when": "inputBoxFocus && searchViewletFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
+            },
+            {
+                "key": "ctrl+m",
                 "command": "search.action.openResult",
                 "when": "fileMatchOrMatchFocus && searchViewletVisible && config.vzKeymap.searchViewletKeys"
             },
