@@ -4,13 +4,13 @@ All notable changes to the Vz Keymap extension will be documented in this file.
 
 ### [Unreleased]
 - 新規:
-    - Searchビューで使えるVZ風キーを強化しました。 [#257](https://github.com/tshino/vscode-vz-like-keymap/pull/257)
+    - Searchビューで使えるVZ風キーを強化しました。 [#254](https://github.com/tshino/vscode-vz-like-keymap/issues/254)
         - 入力欄にフォーカスがあるときに CTRL+M で検索を（再）実行できるようにしました。
 - 改善:
     - エディタやリストビュー以外の場所で意図せず CTRL+X が「切り取り」になる問題を修正。 [#249](https://github.com/tshino/vscode-vz-like-keymap/issues/249)
     - エディタやリストビュー以外の場所で意図せず CTRL+M が「Tabフォーカス移動のトグル」になる問題を修正。 [#253](https://github.com/tshino/vscode-vz-like-keymap/issues/253)
 - New:
-    - Added more vz-style keys support in Search viewlet. [#257](https://github.com/tshino/vscode-vz-like-keymap/pull/257)
+    - Added more vz-style keys support in Search viewlet. [#254](https://github.com/tshino/vscode-vz-like-keymap/issues/254)
         - Ctrl+M to execute the search or to refresh search results.
 - Improved:
     - Fixed: pressing Ctrl+X outside of editors or list/tree views causes unintended invocation of `editor.action.clipboardCutAction` command. [#249](https://github.com/tshino/vscode-vz-like-keymap/issues/249)
