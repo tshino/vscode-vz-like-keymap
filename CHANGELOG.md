@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.15] - 2024-05-10
 - 新規:
     - Searchビューで使えるVZ風キーを強化しました。 [#254](https://github.com/tshino/vscode-vz-like-keymap/issues/254)
         - 入力欄にフォーカスがあるときに CTRL+M で検索を（再）実行できるようにしました。
