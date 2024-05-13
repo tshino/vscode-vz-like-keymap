@@ -1408,6 +1408,31 @@
             },
             {
                 "key": "ctrl+e",
+                "command": "iconSelectBox.focusUp",
+                "when": "iconSelectBoxFocus && config.vzKeymap.iconPickerKeys"
+            },
+            {
+                "key": "ctrl+x",
+                "command": "iconSelectBox.focusDown",
+                "when": "iconSelectBoxFocus && config.vzKeymap.iconPickerKeys"
+            },
+            {
+                "key": "ctrl+s",
+                "command": "iconSelectBox.focusPrevious",
+                "when": "iconSelectBoxFocus && iconSelectBoxInputEmpty && config.vzKeymap.iconPickerKeys || iconSelectBoxFocus && !iconSelectBoxInputFocus && config.vzKeymap.iconPickerKeys"
+            },
+            {
+                "key": "ctrl+d",
+                "command": "iconSelectBox.focusNext",
+                "when": "iconSelectBoxFocus && iconSelectBoxInputEmpty && config.vzKeymap.iconPickerKeys || iconSelectBoxFocus && !iconSelectBoxInputFocus && config.vzKeymap.iconPickerKeys"
+            },
+            {
+                "key": "ctrl+m",
+                "command": "iconSelectBox.selectFocused",
+                "when": "iconSelectBoxFocus && config.vzKeymap.iconPickerKeys"
+            },
+            {
+                "key": "ctrl+e",
                 "command": "list.focusUp",
                 "when": "listFocus && !inputFocus && !treestickyScrollFocused && config.vzKeymap.listViewKeys"
             },
@@ -1619,17 +1644,17 @@
             {
                 "key": "ctrl+e",
                 "command": "workbench.action.quickOpenNavigatePrevious",
-                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
+                "when": "inQuickOpen && !iconSelectBoxFocus && config.vzKeymap.quickOpenKeys"
             },
             {
                 "key": "ctrl+x",
                 "command": "workbench.action.quickOpenNavigateNext",
-                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
+                "when": "inQuickOpen && !iconSelectBoxFocus && config.vzKeymap.quickOpenKeys"
             },
             {
                 "key": "ctrl+m",
                 "command": "workbench.action.acceptSelectedQuickOpenItem",
-                "when": "inQuickOpen && config.vzKeymap.quickOpenKeys"
+                "when": "inQuickOpen && !iconSelectBoxFocus && config.vzKeymap.quickOpenKeys"
             },
             {
                 "key": "ctrl+e",
