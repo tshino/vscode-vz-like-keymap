@@ -281,6 +281,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables vz-style keys to move focus on the rename suggestion list\n(Ctrl+E, Ctrl+X, Ctrl+M)"
+                },
+                "vzKeymap.iconPickerKeys": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables vz-style keys to move focus on an Icon Picker\n(Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D, Ctrl+M)"
                 }
             }
         },
