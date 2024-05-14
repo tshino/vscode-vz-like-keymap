@@ -2,6 +2,17 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規:
+    - アイコン選択の操作に対応しました。 [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)
+        - CTRL+E, CTRL+X, CTRL+S, CTRL+D でフォーカスを移動、CTRL+M で決定。
+        - これらは設定の 'Vz Keymap: Icon Picker Keys' で有効化できます。デフォルトで有効です。
+- New:
+    - Added navigation keys support for Icon Picker. [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)
+        - Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D to move the focus.
+        - Ctrl+M to accept the selected item.
+        - These keys are enabled by turning on the 'Vz Keymap: Icon Picker Keys' in the Settings.
+
 ### [0.19.15] - 2024-05-10
 - 新規:
     - Searchビューで使えるVZ風キーを強化しました。 [#254](https://github.com/tshino/vscode-vz-like-keymap/issues/254)
