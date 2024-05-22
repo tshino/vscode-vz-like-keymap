@@ -560,22 +560,22 @@
             {
                 "key": "escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
             },
             {
                 "key": "escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !findWidgetVisible"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+j",
@@ -1171,7 +1171,7 @@
             {
                 "key": "escape",
                 "command": "vz.closeFindWidget",
-                "when": "editorFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && findWidgetVisible"
+                "when": "editorFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && findWidgetVisible"
             },
             {
                 "key": "ctrl+oem_102",
