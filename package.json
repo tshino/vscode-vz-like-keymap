@@ -560,12 +560,12 @@
             {
                 "key": "escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !referenceSearchVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.toggleSelection",
-                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
+                "when": "editorTextFocus && vz.inSelectionMode && !editorHasSelection && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !referenceSearchVisible && !findWidgetVisible"
             },
             {
                 "key": "escape",
