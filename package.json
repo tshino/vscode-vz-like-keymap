@@ -570,12 +570,12 @@
             {
                 "key": "escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !referenceSearchVisible && !findWidgetVisible"
             },
             {
                 "key": "shift+escape",
                 "command": "vz.stopBoxSelection",
-                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !findWidgetVisible"
+                "when": "editorHasMultipleSelections && editorTextFocus && !suggestWidgetVisible && !parameterHintsVisible && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !renameInputVisible && !referenceSearchVisible && !findWidgetVisible"
             },
             {
                 "key": "ctrl+q ctrl+j",
