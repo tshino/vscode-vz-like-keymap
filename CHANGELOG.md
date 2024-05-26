@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.16] - 2024-05-27
 - 新規:
     - アイコン選択の操作に対応しました。 [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)
         - CTRL+E, CTRL+X, CTRL+S, CTRL+D でフォーカスを移動、CTRL+M で決定。
