@@ -7,11 +7,15 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - アイコン選択の操作に対応しました。 [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)
         - CTRL+E, CTRL+X, CTRL+S, CTRL+D でフォーカスを移動、CTRL+M で決定。
         - これらは設定の 'Vz Keymap: Icon Picker Keys' で有効化できます。デフォルトで有効です。
+- 改善:
+    - エディタ上の文字列検索や範囲選択をESCキーで解除するためのVz Keymap側のキー割り当てが、F2キーによる名前変更UIやSHIFT+F12キーによる参照の検索UIをESCキーで閉じるためのVS Codeが定義しているキー割り当てよりも優先してしまう問題を修正。 [#262](https://github.com/tshino/vscode-vz-like-keymap/issues/262)
 - New:
     - Added navigation keys support for Icon Picker. [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)
         - Ctrl+E, Ctrl+X, Ctrl+S, Ctrl+D to move the focus.
         - Ctrl+M to accept the selected item.
         - These keys are enabled by turning on the 'Vz Keymap: Icon Picker Keys' in the Settings.
+- Improved:
+    - Fixed: The keybindings defined by Vz Keymap for ESC key to cancel text selections or searches in an editor were taking precedence over the keybindings defined by VS Code for ESC key to close rename UI (F2) or reference search UI (Shift+F12). [#262](https://github.com/tshino/vscode-vz-like-keymap/issues/262)
 
 ### [0.19.15] - 2024-05-10
 - 新規:
