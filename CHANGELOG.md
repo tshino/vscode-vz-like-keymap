@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 新規
+    - 差分エディタの左右間のフォーカス移動にALT+Wを割り当てました。 [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
+- New:
+    - Assigned Alt+W to switching focus between two panes of a compare editor. [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
+
 ### [0.19.16] - 2024-05-27
 - 新規:
     - アイコン選択の操作に対応しました。 [#258](https://github.com/tshino/vscode-vz-like-keymap/issues/258)

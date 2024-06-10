@@ -1219,6 +1219,11 @@
                 "when": "multipleEditorGroups && !sideBarFocus && !panelFocus && !findWidgetVisible && config.vzKeymap.alt+W"
             },
             {
+                "key": "alt+w",
+                "command": "workbench.action.compareEditor.focusOtherSide",
+                "when": "textCompareEditorActive && !sideBarFocus && !panelFocus && !findWidgetVisible && config.vzKeymap.alt+W"
+            },
+            {
                 "key": "ctrl+q ctrl+q",
                 "command": "workbench.action.quickOpenView",
                 "when": "editorFocus"
