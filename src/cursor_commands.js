@@ -534,7 +534,7 @@ const CursorHandler = function(modeHandler) {
             if (line) {
                 await moveCursorTo(textEditor, line - 1, 0, false);
             }
-        } catch (err) {
+        } catch (_err) {
             //
         }
     };
