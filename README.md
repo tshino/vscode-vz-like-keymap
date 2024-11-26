@@ -5,7 +5,7 @@
 [![Node.js CI](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/node.js.yml)
 [![CodeQL](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/tshino/vscode-vz-like-keymap/actions/workflows/codeql-analysis.yml)
 
-Vz KeymapはVZエディタのキーバインドを再現するVisual Studio Code拡張です。
+Vz Keymapは[VZエディタ](https://github.com/vcraftjp/VZEditor)のキーバインドを再現するVisual Studio Code拡張です。
 
 - ダイヤモンドカーソルを始めとするVZのほとんどの基本操作をカバー（ESC系とファンクションキー以外）。
 - スタック式のクリップボードを再現。カット、コピー、ペーストでクリップボードにPUSH、POPできる。
@@ -153,7 +153,7 @@ Vz Keymapでは、VZエディタのESCキーで始まる2ストロークキー�
 #### English
 # Vz Keymap for VS Code
 
-This is a Visual Studio Code extension which provides a keymap similar to good old VZ Editor.
+This is a Visual Studio Code extension that provides a keymap similar to good old [VZ Editor](https://github.com/vcraftjp/VZEditor).
 
 - Covers the basic experience which is almost identical to VZ Editor (except ESC-* and function keys)
 - Emulates the Text stack (push/pop to the clibboard) with Cut, Copy and Paste

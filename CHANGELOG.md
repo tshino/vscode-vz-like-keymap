@@ -7,10 +7,14 @@ All notable changes to the Vz Keymap extension will be documented in this file.
     - 差分エディタの左右間のフォーカス移動にALT+Wを割り当てました。 [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
 - 内部:
     - 使用するeslintのメジャーバージョンを8から9に移行。 [#284](https://github.com/tshino/vscode-vz-like-keymap/issues/284)
+- 他:
+    - 本家VZ EditorがオープンソースになったのでREADME.mdからリンクを貼りました。
 - New:
     - Assigned Alt+W to switching focus between two panes of a compare editor. [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
 - Internal:
     - Migrated eslint from major version of 8 to 9. [#284](https://github.com/tshino/vscode-vz-like-keymap/issues/284)
+- Etc:
+    - The original VZ Editor has now become open source, so I have added a link to it from README.md.
 
 ### [0.19.16] - 2024-05-27
 - 新規:
