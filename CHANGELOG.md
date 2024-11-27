@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.19.17] - 2024-11-28
 - 新規
     - 差分エディタの左右間のフォーカス移動にALT+Wを割り当てました。 [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
 - 内部:
