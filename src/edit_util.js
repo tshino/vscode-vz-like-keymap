@@ -75,4 +75,17 @@ EditUtil.normalizeEOL = function(text) {
     return text.replace(/\r\n/g, '\n');
 };
 
+EditUtil.calculateWidth = function(text, tabSize) {
+    let x = 0;
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] == '\t') {
+            x += tabSize;
+            x -= x % tabSize;
+        } else {
+            x += 1;
+        }
+    }
+    return x;
+};
+
 module.exports = EditUtil;

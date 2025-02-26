@@ -240,4 +240,18 @@ describe('EditUtil', function() {
             );
         });
     });
+    describe('calculateWidth', function() {
+        const TAB_SIZE = 4;
+        it('should count number of charactors in text', () => {
+            assert.strictEqual(EditUtil.calculateWidth('', TAB_SIZE), 0);
+            assert.strictEqual(EditUtil.calculateWidth('abcde', TAB_SIZE), 5);
+            assert.strictEqual(EditUtil.calculateWidth('0123456789', TAB_SIZE), 10);
+            assert.strictEqual(EditUtil.calculateWidth('hello world', TAB_SIZE), 11);
+        });
+        it('should respect the tab size setting', () => {
+            assert.strictEqual(EditUtil.calculateWidth('\t', TAB_SIZE), TAB_SIZE);
+            assert.strictEqual(EditUtil.calculateWidth('AB\t', TAB_SIZE), TAB_SIZE);
+            assert.strictEqual(EditUtil.calculateWidth('\tABC', TAB_SIZE), TAB_SIZE+3);
+        });
+    });
 });
