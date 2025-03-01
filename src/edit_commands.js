@@ -374,13 +374,30 @@ const EditHandler = function(modeHandler) {
         if (0 < lines.length && lines[lines.length - 1] === '') {
             lines.length = lines.length - 1;
         }
+        const tabSize = vscode.workspace.getConfiguration('editor').get('tabSize');
+        let targetX = 0;
+        let insertPositions = [];
         let lineCount = textEditor.document.lineCount;
         for (let i = 0, n = lines.length; i < n; i++) {
-            let len = pos.line + i < lineCount ? (
-                textEditor.document.lineAt(pos.line + i).text.length
-            ) : 0;
-            if (len < pos.character) {
-                lines[i] = ' '.repeat(pos.character - len) + lines[i];
+            if (i === 0) {
+                let lineText = textEditor.document.lineAt(pos.line).text;
+                targetX = EditUtil.calculateWidth(lineText.slice(0, pos.character), tabSize);
+                insertPositions[0] = pos;
+            } else {
+                let loc;
+                if (pos.line + i < lineCount) {
+                    let lineText = textEditor.document.lineAt(pos.line + i).text;
+                    loc = EditUtil.locateHorizontalPosition(lineText, targetX, tabSize);
+                } else {
+                    loc = { x: 0, character: 0 };
+                }
+                if (loc.x < targetX) {
+                    lines[i] = ' '.repeat(targetX - loc.x) + lines[i];
+                }
+                insertPositions[i] = pos.with({
+                    character: loc.character,
+                    line: pos.line + i
+                });
             }
         }
         let overflow = pos.line + lines.length - lineCount;
@@ -394,7 +411,7 @@ const EditHandler = function(modeHandler) {
         await textEditor.edit((edit) => {
             for (let i = 0, n = lines.length; i < n; i++) {
                 edit.insert(
-                    pos.with(pos.line + i),
+                    insertPositions[i],
                     lines[i]
                 );
             }

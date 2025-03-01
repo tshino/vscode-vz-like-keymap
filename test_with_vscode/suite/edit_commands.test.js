@@ -1194,6 +1194,40 @@ describe('EditHandler', () => {
             assert.deepStrictEqual(selectionsAsArray(), [[6, 9]]);
             assert.strictEqual(mode.inSelection(), false);
         });
+        it('should respect the tabSize option to align the pasting positions', async () => {
+            const TAB_SIZE = vscode.workspace.getConfiguration('editor').get('tabSize');
+            assert.ok(4 <= TAB_SIZE);
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(6, 5),
+                    '\n' +
+                    'A\t; \n' +
+                    'AB\t;\n' +
+                    'ABC\t;\n'
+                );
+            });
+            await resetCursor(7, 4);
+            await editHandler.pasteBoxText(textEditor, 'One,\nTwo,\nThree.');
+            assert.strictEqual(textEditor.document.lineAt(7).text, 'A\t; One,');
+            assert.strictEqual(textEditor.document.lineAt(8).text, 'AB\t; Two,');
+            assert.strictEqual(textEditor.document.lineAt(9).text, 'ABC\t; Three.');
+        });
+        it('should insert additional spaces to align inside a tab at the pasting location', async () => {
+            const TAB_SIZE = vscode.workspace.getConfiguration('editor').get('tabSize');
+            assert.ok(4 <= TAB_SIZE);
+            await textEditor.edit((edit) => {
+                edit.insert(new vscode.Position(6, 5),
+                    '\n' +
+                    'abcd = \t//\n' +
+                    'abc =\t//\n' +
+                    'ab =\t\t//\n'
+                );
+            });
+            await resetCursor(7, 7);
+            await editHandler.pasteBoxText(textEditor, 'One\nTwo\nThree');
+            assert.strictEqual(textEditor.document.lineAt(7).text, 'abcd = One\t//');
+            assert.strictEqual(textEditor.document.lineAt(8).text, 'abc =  Two\t//');
+            assert.strictEqual(textEditor.document.lineAt(9).text, 'ab =   Three\t\t//');
+        });
     });
     describe('clipboardPopAndPaste, clipboardPaste', () => {
         beforeEach(async () => {
