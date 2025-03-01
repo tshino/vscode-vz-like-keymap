@@ -240,4 +240,39 @@ describe('EditUtil', function() {
             );
         });
     });
+    describe('calculateWidth', function() {
+        const TAB_SIZE = 4;
+        it('should count number of characters in text', () => {
+            assert.strictEqual(EditUtil.calculateWidth('', TAB_SIZE), 0);
+            assert.strictEqual(EditUtil.calculateWidth('abcde', TAB_SIZE), 5);
+            assert.strictEqual(EditUtil.calculateWidth('0123456789', TAB_SIZE), 10);
+            assert.strictEqual(EditUtil.calculateWidth('hello world', TAB_SIZE), 11);
+        });
+        it('should respect the tab size setting', () => {
+            assert.strictEqual(EditUtil.calculateWidth('\t', TAB_SIZE), TAB_SIZE);
+            assert.strictEqual(EditUtil.calculateWidth('AB\t', TAB_SIZE), TAB_SIZE);
+            assert.strictEqual(EditUtil.calculateWidth('\tABC', TAB_SIZE), TAB_SIZE+3);
+        });
+    });
+    describe('locateHorizontalPosition', function() {
+        const locateHorizontalPosition = EditUtil.locateHorizontalPosition;
+        it('should find nearest position to the left from specified position', () => {
+            const TAB_SIZE = 4;
+            assert.deepStrictEqual(locateHorizontalPosition('', 5, TAB_SIZE), { x: 0, character: 0 });
+            assert.deepStrictEqual(locateHorizontalPosition('abc', 5, TAB_SIZE), { x: 3, character: 3 });
+            assert.deepStrictEqual(locateHorizontalPosition('abcde', 5, TAB_SIZE), { x: 5, character: 5 });
+            assert.deepStrictEqual(locateHorizontalPosition('abcdefghi', 5, TAB_SIZE), { x: 5, character: 5 });
+        });;
+        it('should respect the tab size setting', () => {
+            assert.deepStrictEqual(locateHorizontalPosition('\t\t\t', 0, 4), { x: 0, character: 0 });
+            assert.deepStrictEqual(locateHorizontalPosition('\t\t\t', 1, 4), { x: 0, character: 0 });
+            assert.deepStrictEqual(locateHorizontalPosition('\t\t\t', 4, 4), { x: 4, character: 1 });
+            assert.deepStrictEqual(locateHorizontalPosition('\t\t\t', 5, 4), { x: 4, character: 1 });
+            assert.deepStrictEqual(locateHorizontalPosition('\tAB\t\t', 5, 4), { x: 5, character: 2 });
+            assert.deepStrictEqual(locateHorizontalPosition('\tAB\t\t', 7, 4), { x: 6, character: 3 });
+            assert.deepStrictEqual(locateHorizontalPosition('\tAB\t\t', 8, 4), { x: 8, character: 4 });
+            assert.deepStrictEqual(locateHorizontalPosition('AB\t\t\t', 2, 4), { x: 2, character: 2 });
+            assert.deepStrictEqual(locateHorizontalPosition('AB\t\t\t', 3, 4), { x: 2, character: 2 });
+        });
+    });
 });
