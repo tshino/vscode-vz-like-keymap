@@ -2,7 +2,7 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
-### [Unreleased]
+### [0.20.0] - 2025-03-01
 - 改善:
     - 矩形選択したテキストを貼り付けるとき、貼り付け先にあるタブ文字を考慮して水平位置を揃えるようにしました。 [#326](https://github.com/tshino/vscode-vz-like-keymap/pull/326)
 - Improved:
