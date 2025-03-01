@@ -78,7 +78,7 @@ EditUtil.normalizeEOL = function(text) {
 EditUtil.calculateWidth = function(text, tabSize) {
     let x = 0;
     for (let i = 0; i < text.length; i++) {
-        if (text[i] == '\t') {
+        if (text[i] === '\t') {
             x += tabSize;
             x -= x % tabSize;
         } else {
@@ -86,6 +86,26 @@ EditUtil.calculateWidth = function(text, tabSize) {
         }
     }
     return x;
+};
+
+EditUtil.locateHorizontalPosition = function(text, target, tabSize) {
+    let i = 0, x = 0;
+    for (; i < text.length; i++) {
+        if (x === target) {
+            break;
+        }
+        let next;
+        if (text[i] === '\t') {
+            next = (x + tabSize) - (x + tabSize) % tabSize;
+        } else {
+            next = x + 1;
+        }
+        if (next > target) {
+            break;
+        }
+        x = next;
+    }
+    return { x, character: i };
 };
 
 module.exports = EditUtil;
