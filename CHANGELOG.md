@@ -2,6 +2,12 @@
 
 All notable changes to the Vz Keymap extension will be documented in this file.
 
+### [Unreleased]
+- 改善:
+    - 矩形選択したテキストを貼り付けるとき、貼り付け先にあるタブ文字を考慮して水平位置を揃えるようにしました。 [#326](https://github.com/tshino/vscode-vz-like-keymap/pull/326)
+- Improved:
+    - Pasting a text copied with box selection now considers tab characters contained in the lines where to paste to align horizontal positions. [#326](https://github.com/tshino/vscode-vz-like-keymap/pull/326)
+
 ### [0.19.17] - 2024-11-28
 - 新規
     - 差分エディタの左右間のフォーカス移動にALT+Wを割り当てました。 [#268](https://github.com/tshino/vscode-vz-like-keymap/issues/268)
