@@ -202,7 +202,7 @@ const CursorHandler = function(modeHandler) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
             const newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
-            if (curr.line != lineCount - 1) {
+            if (curr.line !== lineCount - 1) {
                 await moveCursorTo(textEditor, newLine, curr.character, select);
             }
         } else {
