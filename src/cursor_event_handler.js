@@ -70,6 +70,7 @@ const CursorEventHandler = function(mode) {
             // console.log('current: ' + selectionsToString(current));
             return cursorUniformMotion;
         }
+        return undefined;
     };
     const detectAndRecordImplicitMotion = function(event) {
         if (mode.synchronized()) {
