@@ -46,7 +46,8 @@ async function run() {
     return await new Promise((c, e) => {
         fs.readdir(testsRoot, (err, files) => {
             if (err) {
-                return e(err);
+                e(err);
+                return;
             }
 
             // Add files to the test suite

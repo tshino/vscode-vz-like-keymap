@@ -202,7 +202,7 @@ const CursorHandler = function(modeHandler) {
         let halfPage = Math.max(1, Math.floor(onePage / 2));
         if (lineCount - 1 === vlines[vlines.length - 1]) {
             const newLine = vlines[Math.min(currIndex + halfPage, vlines.length - 1)];
-            if (curr.line != lineCount - 1) {
+            if (curr.line !== lineCount - 1) {
                 await moveCursorTo(textEditor, newLine, curr.character, select);
             }
         } else {
@@ -559,7 +559,7 @@ const CursorHandler = function(modeHandler) {
         for (let i = 0; i < fileNames.length; i++) {
             let line = 0;
             if (i + 1 < fileNames.length) {
-                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0');
+                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0', 10);
             }
             for (let j = 0; j < folders.length; j++) {
                 candidates.push({
