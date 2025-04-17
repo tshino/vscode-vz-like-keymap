@@ -24,6 +24,7 @@ js.configs.recommended,
             "argsIgnorePattern": "^_",
             "caughtErrorsIgnorePattern": "^_"
         } ],
+        "consistent-return": "warn",
         "eqeqeq": "warn",
         "radix": "warn",
     },
