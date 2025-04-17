@@ -25,6 +25,7 @@ js.configs.recommended,
             "caughtErrorsIgnorePattern": "^_"
         } ],
         "eqeqeq": "warn",
+        "radix": "warn",
     },
 }, {
     ignores: [

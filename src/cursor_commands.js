@@ -559,7 +559,7 @@ const CursorHandler = function(modeHandler) {
         for (let i = 0; i < fileNames.length; i++) {
             let line = 0;
             if (i + 1 < fileNames.length) {
-                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0');
+                line = parseInt(fileNames[i + 1].match(/^[0-9]+/) || '0', 10);
             }
             for (let j = 0; j < folders.length; j++) {
                 candidates.push({
