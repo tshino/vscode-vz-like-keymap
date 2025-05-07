@@ -1683,7 +1683,7 @@
         "@vscode/test-electron": "^2.5.2",
         "eslint": "^9.25.1",
         "globals": "^16.0.0",
-        "mocha": "^11.1.0",
+        "mocha": "^11.2.2",
         "nyc": "^17.1.0",
         "process": "^0.11.10",
         "webpack": "^5.99.7",
