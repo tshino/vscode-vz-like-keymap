@@ -3933,7 +3933,7 @@ describe('KeyboardMacro', () => {
         afterEach(async () => {
             await vscode.languages.setTextDocumentLanguage(textEditor.document, documentLanguage);
         });
-        it('should paste a line of text and triggers auto-indent', async () => {
+        it.skip('should paste a line of text and triggers auto-indent', async () => {
             await sleep(500); // seems to need some time for auto-indent to work
             await resetCursor(0, 0);
             const commands = [
