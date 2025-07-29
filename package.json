@@ -1679,7 +1679,7 @@
         ]
     },
     "devDependencies": {
-        "@eslint/js": "^9.31.0",
+        "@eslint/js": "^9.32.0",
         "@vscode/test-electron": "^2.5.2",
         "eslint": "^9.31.0",
         "globals": "^16.3.0",
