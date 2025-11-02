@@ -823,6 +823,36 @@
                 "when": "editorTextFocus"
             },
             {
+                "key": "ctrl+y",
+                "command": "editor.action.clipboardCutAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+k ctrl+k",
+                "command": "editor.action.clipboardCopyAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+k k",
+                "command": "editor.action.clipboardCopyAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+j",
+                "command": "editor.action.clipboardPasteAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+k ctrl+c",
+                "command": "editor.action.clipboardPasteAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
+                "key": "ctrl+k c",
+                "command": "editor.action.clipboardPasteAction",
+                "when": "editorFocus && findInputFocussed || editorFocus && replaceInputFocussed"
+            },
+            {
                 "key": "ctrl+k ctrl+u",
                 "command": "undo"
             },
