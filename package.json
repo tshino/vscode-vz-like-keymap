@@ -1712,7 +1712,7 @@
         "@eslint/js": "^9.39.2",
         "@vscode/test-electron": "^2.5.2",
         "eslint": "^9.39.2",
-        "globals": "^17.0.0",
+        "globals": "^17.1.0",
         "mocha": "^11.7.5",
         "nyc": "^17.1.0",
         "process": "^0.11.10",
