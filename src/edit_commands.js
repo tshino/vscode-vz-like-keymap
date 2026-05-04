@@ -820,7 +820,7 @@ const EditHandler = function(modeHandler) {
     const detectCurrentCaseOfSelection = function(textEditor) {
         for (let i = 0; i < textEditor.selections.length; i++) {
             let range = textEditor.selections[i];
-            let current = null;
+            let current;
             if (range.isEmpty) {
                 let text = textEditor.document.lineAt(range.start.line).text;
                 current = detectCurrentCaseAt(text, range.start.character);
@@ -845,7 +845,7 @@ const EditHandler = function(modeHandler) {
             lastCaseTransformTo = null;
         }
         lastCaseTransformPos = textEditor.selections[0].start;
-        let next = null;
+        let next;
         let current = detectCurrentCaseOfSelection(textEditor);
         if (current === null && lastCaseTransformTo !== null) {
             next = (lastCaseTransformTo + 1) % 3;
